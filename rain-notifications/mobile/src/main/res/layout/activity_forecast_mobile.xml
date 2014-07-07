@@ -15,4 +15,36 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true" />
 
+    <TextView
+        android:id="@+id/txt_response1"
+        android:layout_below="@+id/btn_call"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="left" />
+
+    <TextView
+        android:id="@+id/txt_response2"
+        android:layout_below="@+id/txt_response1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="left" />
+
+    <TextView
+        android:id="@+id/txt_response3"
+        android:layout_below="@+id/txt_response2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="left" />
+
+    <TextView
+        android:id="@+id/txt_response4"
+        android:layout_below="@+id/txt_response3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="left" />
+
 </RelativeLayout>

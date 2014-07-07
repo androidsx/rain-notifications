@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.forecast.io.network.responses.INetworkResponse;
 import com.forecast.io.network.responses.NetworkResponse;
@@ -23,7 +23,12 @@ import com.forecast.io.v2.network.services.ForecastService;
 public class forecast_mobile extends Activity implements View.OnClickListener {
 
     private static final String API_KEY = "2358ea11167b29a20c2fb02d634b9d3f";
+
     private Button btn_call;
+    private TextView txt_response1;
+    private TextView txt_response2;
+    private TextView txt_response3;
+    private TextView txt_response4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +40,15 @@ public class forecast_mobile extends Activity implements View.OnClickListener {
 
     private void setupUI() {
         btn_call = (Button) findViewById(R.id.btn_call);
+        txt_response1 = (TextView) findViewById(R.id.txt_response1);
+        txt_response2 = (TextView) findViewById(R.id.txt_response2);
+        txt_response3 = (TextView) findViewById(R.id.txt_response3);
+        txt_response4 = (TextView) findViewById(R.id.txt_response4);
 
         btn_call.setOnClickListener(this);
     }
 
-    private void forecast_call() {
+    private void forecast_calls() {
         HourlyForecastService.Request request = HourlyForecastService.Request.newBuilder( API_KEY )
                 .setForecastType( HourlyForecastService.ForecastType.FORECAST )
                 .setLatitude( 37.422006 )
@@ -51,14 +60,12 @@ public class forecast_mobile extends Activity implements View.OnClickListener {
             @Override
             protected void onPostExecute( INetworkResponse network ) {
                 if ( network == null || network.getStatus() == NetworkResponse.Status.FAIL ) {
-                    Toast.makeText(forecast_mobile.this, "HOURLY ERROR", Toast.LENGTH_SHORT).show();
-
+                    txt_response1.setText("HOURLY ERROR: " + network.getStatus().toString());
                     return;
                 }
 
                 HourlyForecastService.Response response = (HourlyForecastService.Response) network;
-
-                Toast.makeText( forecast_mobile.this, response.getSkyResponse().getCurrentSummary(), Toast.LENGTH_SHORT ).show();
+                txt_response1.setText("HOURLY OK: " + response.getSkyResponse().getCurrentSummary());
             }
 
         }.execute( request );
@@ -79,17 +86,15 @@ public class forecast_mobile extends Activity implements View.OnClickListener {
             @Override
             protected void onPostExecute( INetworkResponse network ) {
                 if ( network == null || network.getStatus() == NetworkResponse.Status.FAIL ) {
-                    Toast.makeText( forecast_mobile.this, "MULTI POINT ERROR", Toast.LENGTH_SHORT ).show();
-
+                    txt_response2.setText("MULTI POINT ERROR: " + network.getStatus().toString());
                     return;
                 }
 
                 MultiplePointsService.Response response = (MultiplePointsService.Response) network;
 
                 MultiplePointsTimesResponse points = response.getMultiplePointsTimes();
-
-                Toast.makeText( forecast_mobile.this, points.getSkyPrecipitation() != null ?
-                        points.getSkyPrecipitation().get( 0 ).getType() : "NO MULTIPLE POINTS AND TIMES", Toast.LENGTH_SHORT ).show();
+                txt_response2.setText("MULTI POINT OK: " + points.getSkyPrecipitation() != null ?
+                        points.getSkyPrecipitation().get( 0 ).getType() : "NO MULTIPLE POINTS AND TIMES");
             }
 
         }.execute( multiple );
@@ -99,17 +104,15 @@ public class forecast_mobile extends Activity implements View.OnClickListener {
             @Override
             protected void onPostExecute( INetworkResponse network ) {
                 if ( network == null || network.getStatus() == NetworkResponse.Status.FAIL ) {
-                    Toast.makeText( forecast_mobile.this, "INTERESTING STORMS ERROR", Toast.LENGTH_SHORT ).show();
-
+                    txt_response3.setText("INTERESTING STORMS ERROR: " + network.getStatus().toString());
                     return;
                 }
 
                 InterestingStormsService.Response response = (InterestingStormsService.Response) network;
 
                 InterestingStormsResponse storms = response.getInterestingStorms();
-
-                Toast.makeText( forecast_mobile.this, storms.getInterestingStorms() != null ?
-                        storms.getInterestingStorms().get( 0 ).getCity() : "NO INTERESTING STORMS", Toast.LENGTH_SHORT ).show();
+                txt_response3.setText("INTERESTING STORMS OK: " + storms.getInterestingStorms() != null ?
+                        storms.getInterestingStorms().get( 0 ).getCity() : "NO INTERESTING STORMS");
             }
 
         }.execute(InterestingStormsService.Request.newBuilder(API_KEY).build());
@@ -119,15 +122,13 @@ public class forecast_mobile extends Activity implements View.OnClickListener {
             @Override
             protected void onPostExecute( INetworkResponse network ) {
                 if ( network == null || network.getStatus() == NetworkResponse.Status.FAIL ) {
-                    Toast.makeText( forecast_mobile.this, "FORECAST ERROR", Toast.LENGTH_SHORT ).show();
-
+                    txt_response4.setText("FORECAST ERROR: " + network.getStatus().toString());
                     return;
                 }
 
                 ForecastService.Response response = ( ForecastService.Response ) network;
-
-                Toast.makeText( forecast_mobile.this, response.getForecast() != null ?
-                        response.getForecast().getCurrently().getSummary() : "FORECAST", Toast.LENGTH_SHORT ).show();
+                txt_response4.setText("FORECAST OK: " + response.getForecast() != null ?
+                        response.getForecast().getCurrently().getSummary() : "FORECAST");
             }
         }.execute( request );
     }
@@ -153,7 +154,7 @@ public class forecast_mobile extends Activity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        forecast_call();
+        forecast_calls();
     }
 }
 
