@@ -14,21 +14,39 @@ import com.forecast.io.toolbox.NetworkServiceTask;
 import com.forecast.io.v2.network.services.ForecastService;
 import com.forecast.io.v2.transfer.LatLng;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
+
+import static com.google.android.gms.wearable.DataApi.DataItemResult;
+
 
 public class forecast_mobile extends Activity implements View.OnClickListener {
 
     private static final String API_KEY = "f1fd27e70564bd6765bf40b3497cbf4f";
     private static final Double NEW_YORK_LAT = 40.72228267283148;
     private static final Double NEW_YORK_LON = -73.9434814453125;
+    private static final String FORECAST = "FORECAST";
 
     private Button btn_call;
     private TextView txt_response;
+
+    public GoogleApiClient mGoogleApiClient;
+
+    public void setupGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Wearable.API).build();
+        mGoogleApiClient.connect();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast_mobile);
 
+        setupGoogleApiClient();
         setupUI();
         onClick(null);
     }
@@ -65,10 +83,18 @@ public class forecast_mobile extends Activity implements View.OnClickListener {
                 }
 
                 ForecastService.Response response = (ForecastService.Response) network;
-                txt_response.setText("FORECAST: " + response.getForecast().getCurrently().getSummary());
+
+                String summary = response.getForecast().getCurrently().getSummary();
+                txt_response.setText("FORECAST: " + summary);
+
+                sendToWatch(summary);
             }
 
         }.execute( request );
+    }
+
+    private void sendToWatch(String summary) {
+
     }
 
     @Override
