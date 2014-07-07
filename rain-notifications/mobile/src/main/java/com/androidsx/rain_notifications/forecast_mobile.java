@@ -60,12 +60,12 @@ public class forecast_mobile extends Activity implements View.OnClickListener {
             @Override
             protected void onPostExecute( INetworkResponse network ) {
                 if ( network == null || network.getStatus() == NetworkResponse.Status.FAIL ) {
-                    txt_response.setText("HOURLY ERROR: " + network.getStatus().toString());
+                    txt_response.setText("FORECAST ERROR: " + network.getStatus().toString());
                     return;
                 }
 
                 ForecastService.Response response = (ForecastService.Response) network;
-                txt_response.setText("HOURLY OK: " + response.getForecast().getCurrently().getSummary());
+                txt_response.setText("FORECAST: " + response.getForecast().getCurrently().getSummary());
             }
 
         }.execute( request );
