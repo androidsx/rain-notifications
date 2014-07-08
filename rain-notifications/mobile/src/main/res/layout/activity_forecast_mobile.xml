@@ -16,11 +16,26 @@
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:id="@+id/txt_response"
+        android:id="@+id/txt_city"
         android:layout_below="@+id/btn_call"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:gravity="left" />
+        android:gravity="left"
+        android:textColor="#ff0000"
+        android:textStyle="bold"
+        android:textSize="24dip"
+        android:textAllCaps="true"
+        android:text="Ciudad de prueba"/>
+
+    <TextView
+        android:id="@+id/txt_response"
+        android:layout_below="@+id/txt_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="left"
+        android:textSize="20dip"
+        android:text="Texto de prueba"/>
 
 </RelativeLayout>

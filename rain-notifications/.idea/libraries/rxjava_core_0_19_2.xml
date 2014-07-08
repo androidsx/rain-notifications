@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="android-support-v4">
+  <library name="rxjava-core-0.19.2">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/Forecast/libs/android-support-v4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/mobile/libs/rxjava-core-0.19.2.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
