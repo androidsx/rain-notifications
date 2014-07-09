@@ -1,9 +1,9 @@
 package com.androidsx.rain_notifications;
 
 import android.app.Activity;
-import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,21 +11,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.androidsx.rain_notifications.Services.LocationService;
+import com.androidsx.rain_notifications.Models.LocationObservable;
 import com.androidsx.rain_notifications.Services.WeatherService;
 
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Observer;
+import java.util.Observable;
 
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.functions.Func2;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
-
-public class forecast_mobile extends Activity implements View.OnClickListener/*, DataApi.DataListener*/ {
+public class forecast_mobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
 
     private static final String TAG = forecast_mobile.class.getSimpleName();
 
@@ -33,12 +28,14 @@ public class forecast_mobile extends Activity implements View.OnClickListener/*,
     private static final String NEW_YORK_CITY = "New York City";
     private static final Double NEW_YORK_LAT = 40.72228267283148;
     private static final Double NEW_YORK_LON = -73.9434814453125;
+    private static final Integer TIME_AGO = 3660;
     private static final String EXTRA_FORECAST = "FORECAST";
 
-    private static final long LOCATION_TIMEOUT_SECONDS = 20;
+    private static final long LOCATION_GPS_TIMEOUT = 1 * 30 * 1000;
+    private static final long LOCATION_NETWORK_TIMEOUT = 2 * 60 * 1000;
+    private static final long LOCATION_DISTANCE = 0;
 
-    private final CompositeSubscription mCompositeSubscription = new CompositeSubscription();
-
+    private LocationObservable locationObservable;
     private Button btn_call;
 
     /*private GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -66,59 +63,57 @@ public class forecast_mobile extends Activity implements View.OnClickListener/*,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast_mobile);
 
+        locationObservable =
+                new LocationObservable(this, LOCATION_GPS_TIMEOUT, LOCATION_NETWORK_TIMEOUT, LOCATION_DISTANCE);
+        locationObservable.addObserver(this);
+
         setupUI();
+    }
+
+    @Override
+    public void update(Observable observable, Object o) {
+        Location location = (Location) o;
+
+        String address = "Uknown Location";
+
+        Geocoder gcd = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (addresses != null && addresses.size() > 0) {
+            address = addresses.get(0).getLocality();
+        }
+
+        /*WeatherService.getWeather(
+                this,
+                address,
+                location.getLatitude(),
+                location.getLongitude(),
+                TIME_AGO);*/
+
+        Log.d(TAG, "Observer update...");
     }
 
     private void setupUI() {
         btn_call = (Button) findViewById(R.id.btn_call);
         btn_call.setOnClickListener(this);
+        btn_call.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        locationObservable.deleteObserver(this);
+        locationObservable = null;
     }
 
     @Override
     public void onClick(View view) {
-        weatherRequest(this);
-    }
 
-    private void weatherRequest(final Context context) {
-        final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        final LocationService locationService = new LocationService(locationManager);
-
-        final Observable location = locationService.getLocation()
-        .timeout(LOCATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-        .flatMap(new Func1<Location, Observable<?>>() {
-            @Override
-            public Observable<?> call(Location location) {
-                final double longitude = location.getLongitude();
-                final double latitude = location.getLatitude();
-
-                HashMap latLng = new HashMap();
-                latLng.put("Latitud", latitude);
-                latLng.put("Longitud", longitude);
-
-                Log.d(TAG, "Observable...");
-                return Observable.from(latLng);
-            }
-        });
-
-        location
-        .subscribeOn(Schedulers.newThread())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Subscriber<HashMap>() {
-            @Override
-            public void onCompleted() {
-                Log.d(TAG, "Completed...");
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-
-            }
-
-            @Override
-            public void onNext(HashMap hashMap) {
-                Log.d(TAG, hashMap.get("Latitud").toString() + " - " + hashMap.get("Longitud").toString());
-            }
-        });
     }
 
     /*private void sendToWatch(String summary) {

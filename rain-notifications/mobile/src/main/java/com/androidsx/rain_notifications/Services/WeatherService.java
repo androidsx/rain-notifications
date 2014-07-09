@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.format.DateUtils;
 import android.widget.TextView;
 
+import com.androidsx.rain_notifications.Models.LocationObservable;
 import com.forecast.io.network.responses.INetworkResponse;
 import com.forecast.io.network.responses.NetworkResponse;
 import com.forecast.io.toolbox.NetworkServiceTask;
@@ -21,8 +22,10 @@ import com.androidsx.rain_notifications.R;
 public class WeatherService {
 
     private static final String API_KEY = "f1fd27e70564bd6765bf40b3497cbf4f";
+    private static final String TIME_ZONE = "Europe/Madrid";
+    private static final String TIME_FORMAT = "HH:mm";
 
-    public static void getWeather(Context context, String city, Double lat, Double lon, int time) {
+    public static void getWeather(Context context, final String city, Double lat, Double lon, int time) {
         LatLng.Builder builderL = LatLng.newBuilder();
         builderL.setLatitude(lat).setLongitude(lon).setTime(System.currentTimeMillis() / 1000 + time).build();
         LatLng latlng = new LatLng(builderL);
@@ -42,6 +45,7 @@ public class WeatherService {
             protected void onPreExecute() {
                 super.onPreExecute();
                 txt_response.setText("Loading...");
+                txt_city.setText("Loading...");
             }
 
             @Override
@@ -62,10 +66,11 @@ public class WeatherService {
                         System.currentTimeMillis(),
                         DateUtils.MINUTE_IN_MILLIS);
 
-                SimpleDateFormat sdfDateTime = new SimpleDateFormat("HH:mm", Locale.US);
-                sdfDateTime.setTimeZone(TimeZone.getTimeZone("America/New_York"));
+                SimpleDateFormat sdfDateTime = new SimpleDateFormat(TIME_FORMAT, Locale.US);
+                sdfDateTime.setTimeZone(TimeZone.getTimeZone(TIME_ZONE));
                 String newTime =  sdfDateTime.format(new Date(response.getForecast().getCurrently().getTime() * 1000));
 
+                txt_city.setText(city);
                 txt_response.setText(summary + "\n\n" + realTime.toString() + " at " + newTime);
             }
 
