@@ -5,6 +5,13 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Observer;
+import java.util.Observable;
+
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,51 +19,22 @@ import android.view.View;
 import android.widget.Button;
 
 import com.androidsx.rain_notifications.Models.LocationObservable;
-import com.androidsx.rain_notifications.Services.WeatherService;
+import com.androidsx.rain_notifications.Models.WeatherObservable;
+import com.androidsx.rain_notifications.Utils.DateHelper;
+import com.forecast.io.v2.network.services.ForecastService.Response;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Observer;
-import java.util.Observable;
+import com.androidsx.rain_notifications.Utils.Constants.Time;
+import com.androidsx.rain_notifications.Utils.Constants.Localization;
 
 public class forecast_mobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
 
     private static final String TAG = forecast_mobile.class.getSimpleName();
 
-    private static final String API_KEY = "f1fd27e70564bd6765bf40b3497cbf4f";
-    private static final String NEW_YORK_CITY = "New York City";
-    private static final Double NEW_YORK_LAT = 40.72228267283148;
-    private static final Double NEW_YORK_LON = -73.9434814453125;
-    private static final Integer TIME_AGO = 3660;
-    private static final String EXTRA_FORECAST = "FORECAST";
-
-    private static final long LOCATION_GPS_TIMEOUT = 1 * 30 * 1000;
-    private static final long LOCATION_NETWORK_TIMEOUT = 2 * 60 * 1000;
-    private static final long LOCATION_DISTANCE = 0;
-
     private LocationObservable locationObservable;
+    private WeatherObservable weatherObservable;
     private Button btn_call;
 
-    /*private GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
-            .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                @Override
-                public void onConnected(Bundle connectionHint) {
-                    Log.d(TAG, "onConnected: " + connectionHint);
-                }
-                @Override
-                public void onConnectionSuspended(int cause) {
-                    Log.d(TAG, "onConnectionSuspended: " + cause);
-                }
-            })
-            .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                @Override
-                public void onConnectionFailed(ConnectionResult result) {
-                    Log.d(TAG, "onConnectionFailed: " + result);
-                }
-            })
-            .addApi(Wearable.API)
-            .build();*/
+    //private GoogleApiClient mGoogleApiClient = getGoogleApiClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,38 +42,61 @@ public class forecast_mobile extends Activity implements Observer, View.OnClickL
         setContentView(R.layout.activity_forecast_mobile);
 
         locationObservable =
-                new LocationObservable(this, LOCATION_GPS_TIMEOUT, LOCATION_NETWORK_TIMEOUT, LOCATION_DISTANCE);
+                new LocationObservable(this, Localization.LOCATION_GPS_TIMEOUT,
+                        Localization.LOCATION_NETWORK_TIMEOUT, Localization.LOCATION_DISTANCE);
         locationObservable.addObserver(this);
+
+        weatherObservable = new WeatherObservable();
+        weatherObservable.addObserver(this);
 
         setupUI();
     }
 
     @Override
     public void update(Observable observable, Object o) {
-        Location location = (Location) o;
+        if(observable.getClass().equals(LocationObservable.class)){
+            Location location = (Location) o;
 
-        String address = "Uknown Location";
+            String address = "Uknown Location";
 
-        Geocoder gcd = new Geocoder(this, Locale.getDefault());
-        List<Address> addresses = null;
-        try {
-            addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-        } catch (IOException e) {
-            e.printStackTrace();
+            Geocoder gcd = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = null;
+            try {
+                addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (addresses != null && addresses.size() > 0) {
+                address = addresses.get(0).getLocality();
+            }
+
+            //TODO: something if location has changed
+            weatherObservable.getWeather(
+                    location.getLatitude(),
+                    location.getLongitude(),
+                    Time.TEN_MINUTES_AGO);
+
+            Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                    " --> lat: " + location.getLatitude() +
+                    " - long: " + location.getLongitude());
+
+        } else if(observable.getClass().equals(WeatherObservable.class)) {
+            Response response = (Response) o;
+
+            String summary = response.getForecast().getCurrently().getSummary();
+            String icon = response.getForecast().getCurrently().getIcon();
+
+            String deltaTime = new DateHelper()
+                    .deltaTime(response, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
+
+            String forecastTime = new DateHelper()
+                    .getForecastTime(response, Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
+
+            //TODO: something if weather has changed
+            //sendToWatch(summary, icon, deltaTime, forecastTime);
+            Log.d(TAG, "Weather Observer update...");
         }
-
-        if (addresses != null && addresses.size() > 0) {
-            address = addresses.get(0).getLocality();
-        }
-
-        /*WeatherService.getWeather(
-                this,
-                address,
-                location.getLatitude(),
-                location.getLongitude(),
-                TIME_AGO);*/
-
-        Log.d(TAG, "Observer update...");
     }
 
     private void setupUI() {
@@ -116,7 +117,7 @@ public class forecast_mobile extends Activity implements Observer, View.OnClickL
 
     }
 
-    /*private void sendToWatch(String summary) {
+    /*private void sendToWatch(String summary, String icon, String deltaTime, String forecastTime) {
         PutDataMapRequest dataMap = PutDataMapRequest.create("/forecast");
         dataMap.getDataMap().putString(EXTRA_FORECAST, summary);
 
@@ -163,5 +164,27 @@ public class forecast_mobile extends Activity implements Observer, View.OnClickL
         }
         return super.onOptionsItemSelected(item);
     }
+
+    /*private GoogleApiClient getGoogleApiClient() {
+        return new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle connectionHint) {
+                        Log.d(TAG, "onConnected: " + connectionHint);
+                    }
+                    @Override
+                    public void onConnectionSuspended(int cause) {
+                        Log.d(TAG, "onConnectionSuspended: " + cause);
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult result) {
+                        Log.d(TAG, "onConnectionFailed: " + result);
+                    }
+                })
+                .addApi(Wearable.API)
+                .build();
+    }*/
 }
 
