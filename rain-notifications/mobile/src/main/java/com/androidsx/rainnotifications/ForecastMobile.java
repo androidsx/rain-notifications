@@ -1,4 +1,4 @@
-package com.androidsx.rain_notifications;
+package com.androidsx.rainnotifications;
 
 import android.app.Activity;
 import android.location.Address;
@@ -18,17 +18,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.androidsx.rain_notifications.Models.LocationObservable;
-import com.androidsx.rain_notifications.Models.WeatherObservable;
-import com.androidsx.rain_notifications.Utils.DateHelper;
+import com.androidsx.rainnotifications.Models.LocationObservable;
+import com.androidsx.rainnotifications.Models.WeatherObservable;
+import com.androidsx.rainnotifications.Utils.DateHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 
-import com.androidsx.rain_notifications.Utils.Constants.Time;
-import com.androidsx.rain_notifications.Utils.Constants.Localization;
+import com.androidsx.rainnotifications.Utils.Constants.Time;
+import com.androidsx.rainnotifications.Utils.Constants.Localization;
 
-public class forecast_mobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
+public class ForecastMobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
 
-    private static final String TAG = forecast_mobile.class.getSimpleName();
+    private static final String TAG = ForecastMobile.class.getSimpleName();
 
     private LocationObservable locationObservable;
     private WeatherObservable weatherObservable;

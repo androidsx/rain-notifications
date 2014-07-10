@@ -1,4 +1,4 @@
-package com.androidsx.rain_notifications.Utils;
+package com.androidsx.rainnotifications.Utils;
 
 import android.text.format.DateUtils;
 

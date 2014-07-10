@@ -1,10 +1,10 @@
-package com.androidsx.rain_notifications.Utils;
+package com.androidsx.rainnotifications.Utils;
 
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
-import com.androidsx.rain_notifications.Utils.Constants.Time;
+import com.androidsx.rainnotifications.Utils.Constants.Time;
 
 public class LocationHelper {
 

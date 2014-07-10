@@ -1,17 +1,13 @@
-package com.androidsx.rain_notifications;
+package com.androidsx.rainnotifications;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.TextView;
 
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.NotificationCompat.WearableExtender;
+public class ForecastWear extends Activity {
 
-public class forecast_wear extends Activity {
-
-    private static final String TAG = forecast_wear.class.getSimpleName();
+    private static final String TAG = ForecastWear.class.getSimpleName();
     private TextView mTextView;
 
     @Override

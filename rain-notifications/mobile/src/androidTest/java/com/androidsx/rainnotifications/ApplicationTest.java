@@ -1,4 +1,4 @@
-package com.androidsx.rain_notifications;
+package com.androidsx.rainnotifications;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
