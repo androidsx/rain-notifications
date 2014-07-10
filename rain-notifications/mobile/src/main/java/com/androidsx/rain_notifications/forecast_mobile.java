@@ -95,7 +95,11 @@ public class forecast_mobile extends Activity implements Observer, View.OnClickL
 
             //TODO: something if weather has changed
             //sendToWatch(summary, icon, deltaTime, forecastTime);
-            Log.d(TAG, "Weather Observer update...");
+            Log.d(TAG, "Weather Observer update..." +
+                    "\nSummary: " + summary +
+                    "\nicon: " + icon +
+                    "\ndeltaTime: " + deltaTime +
+                    "\nforecastTime: " + forecastTime);
         }
     }
 

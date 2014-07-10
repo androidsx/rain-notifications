@@ -21,7 +21,7 @@ public class WeatherObservable extends Observable {
         LatLng.Builder builderL = LatLng.newBuilder();
         builderL.setLatitude(latitude)
                 .setLongitude(longitude)
-                .setTime(System.currentTimeMillis() / 1000 + timeAgo) //Time in seconds
+                .setTime(System.currentTimeMillis() / 1000 + (timeAgo / 1000) + 60) //Time in seconds
                 .build();
         LatLng latlng = new LatLng(builderL);
 
@@ -45,7 +45,7 @@ public class WeatherObservable extends Observable {
                 Response response = (Response) network;
 
                 //TODO: For notify when weather match in our rules
-                //notifyWeatherChange(response);
+                notifyWeatherChange(response);
             }
 
         }.execute( request );
