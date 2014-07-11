@@ -11,20 +11,20 @@ import java.util.TimeZone;
 
 public class DateHelper {
 
-    public String deltaTime(Response response, long currentTime, long type) {
+    public String deltaTime(long time, long currentTime, long type) {
         CharSequence deltaTime = DateUtils.getRelativeTimeSpanString(
-                response.getForecast().getCurrently().getTime() * 1000,
+                time * 1000,
                 currentTime,
                 type);
 
         return deltaTime.toString();
     }
 
-    public String getForecastTime(Response response, String time_format, String time_zone, Locale locale) {
+    public String getForecastTime(long forecastTime, String time_format, String time_zone, Locale locale) {
         SimpleDateFormat sdf = new SimpleDateFormat(time_format, locale);
         sdf.setTimeZone(TimeZone.getTimeZone(time_zone));
 
-        String time =  sdf.format(new Date(response.getForecast().getCurrently().getTime() * 1000));
+        String time =  sdf.format(new Date(forecastTime * 1000));
 
         return time;
     }
