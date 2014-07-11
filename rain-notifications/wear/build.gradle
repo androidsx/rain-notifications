@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 
 android {
-    compileSdkVersion 'android-L'
+    compileSdkVersion 20
     buildToolsVersion "20.0.0"
 
     defaultConfig {
         applicationId "com.androidsx.rain_notifications"
         minSdkVersion 20
-        targetSdkVersion 'L'
+        targetSdkVersion 20
         versionCode 1
         versionName "1.0"
     }

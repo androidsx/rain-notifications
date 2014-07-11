@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="rxjava-core-0.19.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/mobile/libs/rxjava-core-0.19.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
