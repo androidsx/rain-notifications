@@ -26,4 +26,4 @@ local.properties
 proguard/
 
 # Android Studio
-.idea/workspace.xml # We could consider ignoring the whole .idea folder
+.idea/
