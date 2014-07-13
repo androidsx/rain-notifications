@@ -25,26 +25,11 @@ public class ForecastAnalyzer {
         if(currentlyIcon.equals(Icon.RAIN)) {
             return setNextApiCallTime(analyzer.nextRainChange());
         } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLEAR_DAY)) {
-            dpHelp = analyzer.nextClearChange();
-            if(dpHelp == null) {
-                return setNextApiCallTime(analyzer.highProbabilityRain());
-            } else {
-                return setNextApiCallTime(dpHelp);
-            }
+            return setNextApiCallTime(analyzer.highProbabilityRain(analyzer.nextClearChange()));
         } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.PARTLY_CLOUDY_DAY)) {
-            dpHelp = analyzer.nextPartlyCloudyChange();
-            if(dpHelp == null) {
-                return setNextApiCallTime(analyzer.highProbabilityRain());
-            } else {
-                return setNextApiCallTime(dpHelp);
-            }
+            return setNextApiCallTime(analyzer.highProbabilityRain(analyzer.nextPartlyCloudyChange()));
         } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLOUDY)) {
-            dpHelp = analyzer.nextCloudyChange();
-            if(dpHelp == null) {
-                return setNextApiCallTime(analyzer.highProbabilityRain());
-            } else {
-                return setNextApiCallTime(dpHelp);
-            }
+            return setNextApiCallTime(analyzer.highProbabilityRain(analyzer.nextCloudyChange()));
         }
 
         return null;
@@ -52,14 +37,17 @@ public class ForecastAnalyzer {
 
     private DataPoint setNextApiCallTime(DataPoint dp) {
         if(dp != null) {
-            if (dp.getTime() - currentTime > HOUR * 2) {
+            if(dp.getTime() - currentTime > HOUR * 4) {
+                ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 4));
+            }else if (dp.getTime() - currentTime > HOUR * 2) {
                 ForecastMobile.setNextApiCallTime(dp.getTime() - HOUR);
             } else if(dp.getTime() - currentTime > HOUR / 2) {
                 ForecastMobile.setNextApiCallTime(dp.getTime() - (HOUR / 2));
             } else {
                 ForecastMobile.setNextApiCallTime(dp.getTime());
             }
-
+        } else {
+            ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 4));
         }
 
         return dp;

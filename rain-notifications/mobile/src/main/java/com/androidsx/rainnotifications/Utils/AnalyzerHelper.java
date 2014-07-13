@@ -105,7 +105,7 @@ public class AnalyzerHelper {
         return null;
     }
 
-    public DataPoint highProbabilityRain() {
+    public DataPoint highProbabilityRain(DataPoint dpChanged) {
         DataPoint dp1 = nextCloudyChange();
         DataPoint dp2 = nextPartlyCloudyChange();
 
@@ -116,12 +116,12 @@ public class AnalyzerHelper {
                 return dp2;
             }
         } else if(dp1 != null && dp2 == null) {
-            return dp1;
+                return dp1;
         } else if(dp1 == null && dp2 != null) {
-            return dp2;
+                return dp2;
+        } else {
+            return dpChanged;
         }
-
-        return null;
     }
 
     public static boolean compareTo(String icon1, String icon2) {
