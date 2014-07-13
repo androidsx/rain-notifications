@@ -17,7 +17,7 @@ public class WeatherObservable extends Observable {
 
     private static final String TAG = WeatherObservable.class.getSimpleName();
 
-    public void getWeather(Double latitude, Double longitude, int timeAgo) {
+    public void getWeather(Double latitude, Double longitude) {
         LatLng.Builder builderL = LatLng.newBuilder();
         builderL.setLatitude(latitude)
                 .setLongitude(longitude)

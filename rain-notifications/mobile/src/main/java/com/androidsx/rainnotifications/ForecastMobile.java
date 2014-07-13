@@ -23,15 +23,20 @@ import com.androidsx.rainnotifications.Utils.AddressHelper;
 import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
 import com.androidsx.rainnotifications.Utils.DateHelper;
 import com.androidsx.rainnotifications.Utils.Constants.Time;
+import com.androidsx.rainnotifications.Utils.Constants.Distance;
 import com.androidsx.rainnotifications.Utils.Constants.Localization;
 
 public class ForecastMobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
+    private static long nextApiCall = -1;
+
+    private Location lastLocation;
 
     private LocationObservable locationObservable;
     private WeatherObservable weatherObservable;
     private Button btn_call;
+
 
     //private GoogleApiClient mGoogleApiClient = getGoogleApiClient();
 
@@ -61,12 +66,19 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
             String address = new AddressHelper().getLocationAddress(this, location);
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
+            long locationTime = location.getTime() / 1000;
 
-            //TODO: something if location has changed
-            weatherObservable.getWeather(
-                    latitude,
-                    longitude,
-                    Time.TEN_MINUTES_AGO);
+            if(lastLocation != null) {
+                lastLocation = location;
+            }
+
+            if (locationTime > nextApiCall || lastLocation.distanceTo(location) > Distance.KM) {
+                weatherObservable.getWeather(
+                        latitude,
+                        longitude);
+            }
+
+            lastLocation = location;
 
             Log.d(TAG, "Location Observer update...\nLocation: " + address +
                     " --> lat: " + latitude +
@@ -84,7 +96,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
             ForecastAnalyzer fa = new ForecastAnalyzer();
             fa.setResponse(response);
-            dp = fa.analyzeForecastFor(currently.getIcon(), Icon.CLEAR_DAY);
+            dp = fa.analyzeForecastFor(currently.getIcon(), Icon.RAIN);
 
             if(dp == null) {
                 forecast = "No changes expected until tomorrow.";
@@ -110,6 +122,10 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         btn_call = (Button) findViewById(R.id.btn_call);
         btn_call.setOnClickListener(this);
         btn_call.setVisibility(View.GONE);
+    }
+
+    public static void setNextApiCall(long time) {
+        nextApiCall = time;
     }
 
     @Override

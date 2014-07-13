@@ -12,6 +12,9 @@ public class Constants {
         public static final int HOUR_AGO = 1000 * 60 * 60 * 1;
         public static final int TWO_HOURS_AGO = 1000 * 60 * 60 * 2;
     }
+    public static class Distance{
+        public static final int KM = 1000;
+    }
     public static class Localization {
         public static final Double NEW_YORK_LAT = 40.72228267283148;
         public static final Double NEW_YORK_LON = -73.9434814453125;
