@@ -18,462 +18,131 @@ public class AnalyzerHelper {
 
     //TODO: make methods for determine when weather going to occur
 
-    public long nextRainTime() {
+    public DataPoint nextRainTime() {
+        return getNextIconTime(Icon.RAIN);
+    }
+
+    public DataPoint nextCloudyTime() {
+        return getNextIconTime(Icon.CLOUDY);
+    }
+
+    public DataPoint nextPartlyCloudyTime() {
+        return getNextIconTime(Icon.PARTLY_CLOUDY_DAY, Icon.PARTLY_CLOUDY_NIGHT);
+    }
+
+    public DataPoint nextClearTime() {
+        return getNextIconTime(Icon.CLEAR_DAY, Icon.CLEAR_NIGHT);
+    }
+
+    public DataPoint nextSnowTime() {
+        return getNextIconTime(Icon.SNOW);
+    }
+
+    public DataPoint nextSleetTime() {
+        return getNextIconTime(Icon.SLEET);
+    }
+
+    public DataPoint nextWindTime() {
+        return getNextIconTime(Icon.WIND);
+    }
+
+    public DataPoint nextFogTime() {
+        return getNextIconTime(Icon.FOG);
+    }
+
+    public DataPoint nextHailTime() {
+        return getNextIconTime(Icon.HAIL);
+    }
+
+    public DataPoint nextThunderStormTime() {
+        return getNextIconTime(Icon.THUNDERSTORM);
+    }
+
+    public DataPoint nextTornadoTime() {
+        return getNextIconTime(Icon.TORNADO);
+    }
+
+    private DataPoint getNextIconTime(String icon) {
 
         DataBlock hourly = response.getForecast().getHourly();
         DataBlock minutely = response.getForecast().getMinutely();
         String currentForecast = response.getForecast().getCurrently().getIcon();
 
-        if(currentForecast.equals(Icon.RAIN)) {
+        if(currentForecast.equals(icon)) {
             if(minutely != null) {
                 for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.RAIN) && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
+                    if(!dpM.getIcon().equals(icon) && !dpM.getIcon().equals("")) {
+                        return dpM;
                     }
                 }
             }
             if(hourly != null) {
                 for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.RAIN) && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
+                    if (!dpH.getIcon().equals(icon) && !dpH.getIcon().equals("")) {
+                        return dpH;
                     }
                 }
             }
         } else {
             if (minutely != null) {
                 for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.RAIN)  && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
+                    if (dpM.getIcon().equals(icon)  && !dpM.getIcon().equals("")) {
+                        return dpM;
                     }
                 }
             }
             if(hourly != null) {
                 for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.RAIN)  && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
+                    if (dpH.getIcon().equals(icon)  && !dpH.getIcon().equals("")) {
+                        return dpH;
                     }
                 }
             }
         }
 
-        return -1;
+        return null;
     }
-
-    public long nextCloudyTime() {
-
+    private DataPoint getNextIconTime(String icon1, String icon2) {
         DataBlock hourly = response.getForecast().getHourly();
         DataBlock minutely = response.getForecast().getMinutely();
         String currentForecast = response.getForecast().getCurrently().getIcon();
 
-        if(currentForecast.equals(Icon.CLOUDY)) {
+        if(currentForecast.equals(icon1) || currentForecast.equals(icon2)) {
             if(minutely != null) {
                 for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.CLOUDY) && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.CLOUDY) && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.CLOUDY)  && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.CLOUDY)  && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public long nextPartlyCloudyTime() {
-
-        DataBlock hourly = response.getForecast().getHourly();
-        DataBlock minutely = response.getForecast().getMinutely();
-        String currentForecast = response.getForecast().getCurrently().getIcon();
-
-        if(currentForecast.equals(Icon.PARTLY_CLOUDY_DAY) || currentForecast.equals(Icon.PARTLY_CLOUDY_NIGHT)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.PARTLY_CLOUDY_DAY) || !dpM.getIcon().equals(Icon.PARTLY_CLOUDY_NIGHT)
+                    if(!dpM.getIcon().equals(icon1) || !dpM.getIcon().equals(icon2)
                             && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
+                        return dpM;
                     }
                 }
             }
             if(hourly != null) {
                 for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.PARTLY_CLOUDY_DAY) || !dpH.getIcon().equals(Icon.PARTLY_CLOUDY_NIGHT)
+                    if (!dpH.getIcon().equals(icon1) || !dpH.getIcon().equals(icon2)
                             && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
+                        return dpH;
                     }
                 }
             }
         } else {
             if (minutely != null) {
                 for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.PARTLY_CLOUDY_DAY) || dpM.getIcon().equals(Icon.PARTLY_CLOUDY_NIGHT)
+                    if (dpM.getIcon().equals(icon1) || dpM.getIcon().equals(icon2)
                             && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
+                        return dpM;
                     }
                 }
             }
             if(hourly != null) {
                 for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.PARTLY_CLOUDY_DAY) || dpH.getIcon().equals(Icon.PARTLY_CLOUDY_NIGHT)
+                    if (dpH.getIcon().equals(icon1) || dpH.getIcon().equals(icon2)
                             && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
+                        return dpH;
                     }
                 }
             }
         }
 
-        return -1;
-    }
-
-    public long nextClearTime() {
-
-        DataBlock hourly = response.getForecast().getHourly();
-        DataBlock minutely = response.getForecast().getMinutely();
-        String currentForecast = response.getForecast().getCurrently().getIcon();
-
-        if(currentForecast.equals(Icon.CLEAR_DAY) || currentForecast.equals(Icon.CLEAR_NIGHT)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.CLEAR_DAY) || !dpM.getIcon().equals(Icon.CLEAR_NIGHT)
-                            && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.CLEAR_DAY) || !dpH.getIcon().equals(Icon.CLEAR_NIGHT)
-                            && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.CLEAR_DAY) || dpM.getIcon().equals(Icon.CLEAR_NIGHT)
-                            && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.CLEAR_DAY) || dpH.getIcon().equals(Icon.CLEAR_NIGHT)
-                            && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public long nextSnowTime() {
-
-        DataBlock hourly = response.getForecast().getHourly();
-        DataBlock minutely = response.getForecast().getMinutely();
-        String currentForecast = response.getForecast().getCurrently().getIcon();
-
-        if(currentForecast.equals(Icon.SNOW)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.SNOW) && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.SNOW) && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.SNOW)  && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.SNOW)  && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public long nextSleetTime() {
-
-        DataBlock hourly = response.getForecast().getHourly();
-        DataBlock minutely = response.getForecast().getMinutely();
-        String currentForecast = response.getForecast().getCurrently().getIcon();
-
-        if(currentForecast.equals(Icon.SLEET)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.SLEET) && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.SLEET) && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.SLEET)  && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.SLEET)  && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public long nextWindTime() {
-
-        DataBlock hourly = response.getForecast().getHourly();
-        DataBlock minutely = response.getForecast().getMinutely();
-        String currentForecast = response.getForecast().getCurrently().getIcon();
-
-        if(currentForecast.equals(Icon.WIND)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.WIND) && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.WIND) && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.WIND)  && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.WIND)  && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public long nextFogTime() {
-
-        DataBlock hourly = response.getForecast().getHourly();
-        DataBlock minutely = response.getForecast().getMinutely();
-        String currentForecast = response.getForecast().getCurrently().getIcon();
-
-        if(currentForecast.equals(Icon.FOG)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.FOG) && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.FOG) && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.FOG)  && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.FOG)  && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public long nextHailTime() {
-
-        DataBlock hourly = response.getForecast().getHourly();
-        DataBlock minutely = response.getForecast().getMinutely();
-        String currentForecast = response.getForecast().getCurrently().getIcon();
-
-        if(currentForecast.equals(Icon.HAIL)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.HAIL) && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.HAIL) && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.HAIL)  && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.HAIL)  && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public long nextThunderStormTime() {
-
-        DataBlock hourly = response.getForecast().getHourly();
-        DataBlock minutely = response.getForecast().getMinutely();
-        String currentForecast = response.getForecast().getCurrently().getIcon();
-
-        if(currentForecast.equals(Icon.THUNDERSTORM)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.THUNDERSTORM) && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.THUNDERSTORM) && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.THUNDERSTORM)  && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.THUNDERSTORM)  && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        }
-
-        return -1;
-    }
-
-    public long nextTornadoTime() {
-
-        DataBlock hourly = response.getForecast().getHourly();
-        DataBlock minutely = response.getForecast().getMinutely();
-        String currentForecast = response.getForecast().getCurrently().getIcon();
-
-        if(currentForecast.equals(Icon.TORNADO)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!dpM.getIcon().equals(Icon.TORNADO) && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!dpH.getIcon().equals(Icon.TORNADO) && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (dpM.getIcon().equals(Icon.TORNADO)  && !dpM.getIcon().equals("")) {
-                        return dpM.getTime();
-                    }
-                }
-            }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (dpH.getIcon().equals(Icon.TORNADO)  && !dpH.getIcon().equals("")) {
-                        return dpH.getTime();
-                    }
-                }
-            }
-        }
-
-        return -1;
+        return null;
     }
 }
