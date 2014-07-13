@@ -1,16 +1,11 @@
 package com.androidsx.rainnotifications;
 
-import android.util.Log;
-
 import com.androidsx.rainnotifications.Utils.Constants.Time;
-import com.androidsx.rainnotifications.Utils.DateHelper;
+import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
 
-import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
 import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
-
-import java.util.Locale;
 
 public class ForecastAnalyzer {
 
@@ -35,7 +30,7 @@ public class ForecastAnalyzer {
                 }
                 return null;
             } else {
-                if(!compareTo(dpHelp.getIcon(), expectedIcon)) {
+                if(!AnalyzerHelper.compareTo(dpHelp.getIcon(), expectedIcon)) {
                     ForecastMobile.setNextApiCall(dpHelp.getTime() - HOUR);
                 }
                 return dpHelp;
@@ -45,7 +40,7 @@ public class ForecastAnalyzer {
             if(dpHelp == null) {
                 return null;
             } else {
-                if(!compareTo(dpHelp.getIcon(), expectedIcon)) {
+                if(!AnalyzerHelper.compareTo(dpHelp.getIcon(), expectedIcon)) {
                     ForecastMobile.setNextApiCall(dpHelp.getTime() - HOUR);
                 }
                 return dpHelp;
@@ -55,7 +50,7 @@ public class ForecastAnalyzer {
             if(dpHelp == null) {
                 return null;
             } else {
-                if(!compareTo(dpHelp.getIcon(), expectedIcon)) {
+                if(!AnalyzerHelper.compareTo(dpHelp.getIcon(), expectedIcon)) {
                     ForecastMobile.setNextApiCall(dpHelp.getTime() - HOUR);
                 }
                 return dpHelp;
@@ -65,7 +60,7 @@ public class ForecastAnalyzer {
             if(dpHelp == null) {
                 return null;
             } else {
-                if(!compareTo(dpHelp.getIcon(), expectedIcon)) {
+                if(!AnalyzerHelper.compareTo(dpHelp.getIcon(), expectedIcon)) {
                     ForecastMobile.setNextApiCall(dpHelp.getTime() - HOUR);
                 }
                 return dpHelp;
@@ -73,21 +68,5 @@ public class ForecastAnalyzer {
         }
 
         return null;
-    }
-
-    private boolean compareTo(String dpIcon, String expectedIcon) {
-        if(dpIcon.equals(expectedIcon)) {
-            return true;
-        } else if (expectedIcon.equals(Icon.CLEAR_NIGHT) || expectedIcon.equals(Icon.CLEAR_DAY)) {
-            if (dpIcon.equals(Icon.CLEAR_NIGHT) || dpIcon.equals(Icon.CLEAR_DAY)) {
-                return true;
-            }
-        } else if(expectedIcon.equals(Icon.PARTLY_CLOUDY_NIGHT) || expectedIcon.equals(Icon.PARTLY_CLOUDY_DAY)) {
-            if (dpIcon.equals(Icon.PARTLY_CLOUDY_NIGHT) || dpIcon.equals(Icon.PARTLY_CLOUDY_DAY)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

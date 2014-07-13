@@ -99,7 +99,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
             dp = fa.analyzeForecastFor(currently.getIcon(), Icon.RAIN);
 
             if(dp == null) {
-                forecast = "No changes expected until tomorrow.";
+                forecast = "No changes expected until tomorrow. - Currently: " + currently.getIcon();
             }
             else {
                 deltaTime = new DateHelper()
