@@ -17,16 +17,21 @@ public class ForecastAnalyzer {
     }
 
     public DataPoint analyzeForecastFor(String weatherIcon) {
-
+        DataPoint dpHelp;
         //TODO: adjust for obtain the correct expected value
         if(weatherIcon.equals(Icon.RAIN)) {
-            return analyzer.nextCloudy();
+            dpHelp = analyzer.nextRain();
+            if(dpHelp == null) {
+                return analyzer.highProbabilityRain();
+            } else {
+                return dpHelp;
+            }
         } else if (weatherIcon.equals(Icon.CLEAR_DAY) || weatherIcon.equals(Icon.CLEAR_NIGHT)) {
-            return analyzer.nextPartlyCloudy();
-        } else if (weatherIcon.equals(Icon.PARTLY_CLOUDY_DAY) || weatherIcon.equals(Icon.PARTLY_CLOUDY_NIGHT)) {
             return analyzer.nextClear();
+        } else if (weatherIcon.equals(Icon.PARTLY_CLOUDY_DAY) || weatherIcon.equals(Icon.PARTLY_CLOUDY_NIGHT)) {
+            return analyzer.nextPartlyCloudy();
         } else if (weatherIcon.equals(Icon.CLOUDY)) {
-            return analyzer.nextRain();
+            return analyzer.nextCloudy();
         }
 
         return null;

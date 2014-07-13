@@ -75,7 +75,6 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         } else if(observable.getClass().equals(WeatherObservable.class)) {
             Response response = (Response) o;
 
-            String icon = Icon.CLEAR_DAY;
             String forecast;
             String deltaTime;
             String forecastTime;
@@ -85,10 +84,10 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
             ForecastAnalyzer fa = new ForecastAnalyzer();
             fa.setResponse(response);
-            dp = fa.analyzeForecastFor(icon);
+            dp = fa.analyzeForecastFor(currently.getIcon());
 
             if(dp == null) {
-                forecast = "No " + icon + " expected until tomorrow.";
+                forecast = "No " + currently.getIcon() + " expected until tomorrow.";
             }
             else {
                 deltaTime = new DateHelper()
@@ -97,13 +96,13 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
                 forecastTime = new DateHelper()
                         .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
 
-                forecast = dp.getIcon() + " expected at " + forecastTime +
+                forecast = "Currently: " + currently.getIcon() + " --> " + dp.getIcon() + " expected at " + forecastTime +
                         "\n" + deltaTime + ".";
             }
 
             //TODO: something
             Log.d(TAG, "Weather Observer update..." +
-                    "\nForecast: " + forecast);
+                    "\n" + forecast);
         }
     }
 
