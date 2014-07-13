@@ -2,8 +2,6 @@ package com.androidsx.rainnotifications.Utils;
 
 import android.text.format.DateUtils;
 
-import com.forecast.io.v2.network.services.ForecastService.Response;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -20,7 +18,7 @@ public class DateHelper {
         return deltaTime.toString();
     }
 
-    public String getForecastTime(long forecastTime, String time_format, String time_zone, Locale locale) {
+    public String formatTime(long forecastTime, String time_format, String time_zone, Locale locale) {
         SimpleDateFormat sdf = new SimpleDateFormat(time_format, locale);
         sdf.setTimeZone(TimeZone.getTimeZone(time_zone));
 

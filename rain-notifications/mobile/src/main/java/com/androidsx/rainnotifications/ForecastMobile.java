@@ -1,12 +1,8 @@
 package com.androidsx.rainnotifications;
 
 import android.app.Activity;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
-import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 import java.util.Observer;
 import java.util.Observable;
@@ -18,12 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.androidsx.rainnotifications.Models.LocationObservable;
-import com.androidsx.rainnotifications.Models.WeatherObservable;
-import com.androidsx.rainnotifications.Utils.Constants.ForecastIO;
-import com.androidsx.rainnotifications.Utils.DateHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 
+import com.androidsx.rainnotifications.Models.LocationObservable;
+import com.androidsx.rainnotifications.Models.WeatherObservable;
+import com.androidsx.rainnotifications.Utils.AddressHelper;
+import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
+import com.androidsx.rainnotifications.Utils.DateHelper;
 import com.androidsx.rainnotifications.Utils.Constants.Time;
 import com.androidsx.rainnotifications.Utils.Constants.Localization;
 
@@ -60,23 +57,9 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
             //double latitude = Localization.NEW_YORK_LAT;
             //double longitude = Localization.NEW_YORK_LON;
-            String address = "Uknown Location";
+            String address = new AddressHelper().getLocationAddress(this, location);
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
-
-            Geocoder gcd = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = null;
-            try {
-                addresses = gcd.getFromLocation(latitude, longitude, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (addresses != null && addresses.size() > 0) {
-                if(addresses.get(0).getAddressLine(0) != null) address = addresses.get(0).getAddressLine(0);
-                else if(addresses.get(0).getSubLocality() != null) address = addresses.get(0).getSubLocality();
-                else if(addresses.get(0).getLocality() != null) address = addresses.get(0).getLocality();
-            }
 
             //TODO: something if location has changed
             weatherObservable.getWeather(
@@ -90,24 +73,33 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
         } else if(observable.getClass().equals(WeatherObservable.class)) {
             Response response = (Response) o;
-            String forecastRequest = ForecastIO.CLEAR_NIGHT;
-            ForecastAnalyzer fa = new ForecastAnalyzer(response, forecastRequest);
 
-            long time = fa.getNextForecastChangeTime();
-            String icon = fa.getNextForecastChangeIcon();
+            String icon = Icon.RAIN;
             String forecast;
+            String deltaTime;
+            String forecastTime;
 
-            String deltaTime = new DateHelper()
+            long time;
+
+            ForecastAnalyzer fa = new ForecastAnalyzer();
+            fa.setResponse(response);
+            time = fa.analyzeForecastFor(icon);
+
+            deltaTime = new DateHelper()
                     .deltaTime(time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
 
-            String forecastTime = new DateHelper()
-                    .getForecastTime(time, Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
+            forecastTime = new DateHelper()
+                    .formatTime(time, Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
 
-            if(time == -1) forecast = "No " + icon + " expected until tomorrow.";
-            else forecast = icon + " expected at " + forecastTime +
-                    "\n" + deltaTime + ".";
+            if(time == -1) {
+                forecast = "No " + icon + " expected until tomorrow.";
+            }
+            else {
+                forecast = icon + " expected at " + forecastTime +
+                        "\n" + deltaTime + ".";
+            }
 
-            //TODO: something if weather has changed
+            //TODO: something
             Log.d(TAG, "Weather Observer update..." +
                     "\nForecast: " + forecast);
         }

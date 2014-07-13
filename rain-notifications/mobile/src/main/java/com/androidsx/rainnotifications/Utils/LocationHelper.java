@@ -75,5 +75,4 @@ public class LocationHelper {
         }
         return provider1.equals(provider2);
     }
-
 }
