@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.forecast.io.v2.network.services.ForecastService.Response;
+import com.forecast.io.v2.transfer.DataPoint;
 
 import com.androidsx.rainnotifications.Models.LocationObservable;
 import com.androidsx.rainnotifications.Models.WeatherObservable;
@@ -74,28 +75,29 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         } else if(observable.getClass().equals(WeatherObservable.class)) {
             Response response = (Response) o;
 
-            String icon = Icon.RAIN;
+            String icon = Icon.CLEAR_DAY;
             String forecast;
             String deltaTime;
             String forecastTime;
 
-            long time;
+            DataPoint currently = response.getForecast().getCurrently();
+            DataPoint dp;
 
             ForecastAnalyzer fa = new ForecastAnalyzer();
             fa.setResponse(response);
-            time = fa.analyzeForecastFor(icon);
+            dp = fa.analyzeForecastFor(icon);
 
-            deltaTime = new DateHelper()
-                    .deltaTime(time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-
-            forecastTime = new DateHelper()
-                    .formatTime(time, Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
-
-            if(time == -1) {
+            if(dp == null) {
                 forecast = "No " + icon + " expected until tomorrow.";
             }
             else {
-                forecast = icon + " expected at " + forecastTime +
+                deltaTime = new DateHelper()
+                        .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
+
+                forecastTime = new DateHelper()
+                        .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
+
+                forecast = dp.getIcon() + " expected at " + forecastTime +
                         "\n" + deltaTime + ".";
             }
 

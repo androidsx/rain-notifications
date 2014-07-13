@@ -1,6 +1,7 @@
 package com.androidsx.rainnotifications;
 
 import com.forecast.io.v2.network.services.ForecastService.Response;
+import com.forecast.io.v2.transfer.DataPoint;
 
 import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
 import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
@@ -15,20 +16,19 @@ public class ForecastAnalyzer {
         this.analyzer = new AnalyzerHelper(res);
     }
 
-    public long analyzeForecastFor(String weatherIcon) {
+    public DataPoint analyzeForecastFor(String weatherIcon) {
 
-        long time = -1;
-
+        //TODO: adjust for obtain the correct expected value
         if(weatherIcon.equals(Icon.RAIN)) {
-            time = analyzer.nextRainTime();
+            return analyzer.nextCloudy();
         } else if (weatherIcon.equals(Icon.CLEAR_DAY) || weatherIcon.equals(Icon.CLEAR_NIGHT)) {
-            time = analyzer.nextClearTime();
+            return analyzer.nextPartlyCloudy();
         } else if (weatherIcon.equals(Icon.PARTLY_CLOUDY_DAY) || weatherIcon.equals(Icon.PARTLY_CLOUDY_NIGHT)) {
-            time = analyzer.nextPartlyCloudyTime();
+            return analyzer.nextClear();
         } else if (weatherIcon.equals(Icon.CLOUDY)) {
-            time = analyzer.nextCloudyTime();
+            return analyzer.nextRain();
         }
 
-        return time;
+        return null;
     }
 }
