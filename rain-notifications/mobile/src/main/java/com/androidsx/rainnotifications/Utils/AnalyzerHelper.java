@@ -1,14 +1,10 @@
 package com.androidsx.rainnotifications.Utils;
 
-import android.util.Log;
-
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataBlock;
 import com.forecast.io.v2.transfer.DataPoint;
 
 import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
-
-import java.util.List;
 
 public class AnalyzerHelper {
 

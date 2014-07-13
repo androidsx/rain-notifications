@@ -1,11 +1,11 @@
 package com.androidsx.rainnotifications;
 
-import com.androidsx.rainnotifications.Utils.Constants.Time;
 import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
+import com.androidsx.rainnotifications.Utils.Constants.Time;
+import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
+
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
-
-import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
 
 public class ForecastAnalyzer {
 
@@ -53,9 +53,11 @@ public class ForecastAnalyzer {
     private DataPoint setNextApiCallTime(DataPoint dp) {
         if(dp != null) {
             if (dp.getTime() - currentTime > HOUR * 2) {
-                ForecastMobile.setNextApiCall(dp.getTime() - HOUR);
+                ForecastMobile.setNextApiCallTime(dp.getTime() - HOUR);
+            } else if(dp.getTime() - currentTime > HOUR / 2) {
+                ForecastMobile.setNextApiCallTime(dp.getTime() - (HOUR / 2));
             } else {
-                ForecastMobile.setNextApiCall(dp.getTime());
+                ForecastMobile.setNextApiCallTime(dp.getTime());
             }
 
         }

@@ -14,23 +14,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
 
 import com.androidsx.rainnotifications.Models.LocationObservable;
 import com.androidsx.rainnotifications.Models.WeatherObservable;
 import com.androidsx.rainnotifications.Utils.AddressHelper;
-import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
 import com.androidsx.rainnotifications.Utils.DateHelper;
+import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
 import com.androidsx.rainnotifications.Utils.Constants.Time;
 import com.androidsx.rainnotifications.Utils.Constants.Distance;
 import com.androidsx.rainnotifications.Utils.Constants.Localization;
+import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
 
 public class ForecastMobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
-    private static long nextApiCall = -1;
+    private static long nextApiCallTime = -1;
 
     private Location lastLocation;
 
@@ -62,18 +62,19 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         if(observable.getClass().equals(LocationObservable.class)){
             Location location = (Location) o;
 
-            double latitude = Localization.NEW_YORK_LAT;
-            double longitude = Localization.NEW_YORK_LON;
-            String address = new AddressHelper().getLocationAddress(this, latitude, longitude);
-            //double latitude = location.getLatitude();
-            //double longitude = location.getLongitude();
+            //double latitude = Localization.NEW_YORK_LAT;
+            //double longitude = Localization.NEW_YORK_LON;
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
             long locationTime = location.getTime() / 1000;
+
+            String address = new AddressHelper().getLocationAddress(this, latitude, longitude);
 
             if(lastLocation != null) {
                 lastLocation = location;
             }
 
-            if (locationTime > nextApiCall || lastLocation.distanceTo(location) > Distance.KM) {
+            if (locationTime > nextApiCallTime || lastLocation.distanceTo(location) > Distance.KM) {
                 weatherObservable.getWeather(
                         latitude,
                         longitude);
@@ -95,16 +96,22 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
             fa.setResponse(response);
             dpRain = fa.analyzeForecastForRain(currently.getIcon());
 
+            Log.d(TAG, "Weather Observer update..." +
+                    "\n");
+
             writeResult(dpRain, currently, Icon.RAIN);
         }
     }
 
     private void writeResult(DataPoint dp, DataPoint currently, String icon) {
         String forecast;
+        String currentTime = new DateHelper()
+                .formatTime(System.currentTimeMillis() / 1000, Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
+        String nextApiCall = new DateHelper()
+                .formatTime(nextApiCallTime, Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
         if(dp == null) {
             forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() +
-                    " at "+ new DateHelper()
-                    .formatTime(System.currentTimeMillis() / 1000, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US) +
+                    " at "+ currentTime +
                     "\nNo changes expected until tomorrow.";
         }
         else {
@@ -112,28 +119,22 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
                     .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
 
             String forecastTime = new DateHelper()
-                    .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
+                    .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
 
             if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
                 forecast = "Found: " + dp.getIcon() + "\nCurrently: " + currently.getIcon() +
-                        " at "+ new DateHelper()
-                        .formatTime(System.currentTimeMillis() / 1000, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US) +
+                        " at "+ currentTime +
                         " --> " + dp.getIcon() + " expected at " + forecastTime +
-                        " " + deltaTime + ".\nNext API call at: " + new DateHelper()
-                        .formatTime(nextApiCall, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
+                        " " + deltaTime + ".\nNext API call at: " + nextApiCall;
             } else {
                 forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() +
-                        " at "+ new DateHelper()
-                        .formatTime(System.currentTimeMillis() / 1000, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US) +
+                        " at "+ currentTime +
                         " --> " + dp.getIcon() + " expected at " + forecastTime +
-                        " " + deltaTime + ".\nNext API call at: " + new DateHelper()
-                        .formatTime(nextApiCall, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
+                        " " + deltaTime + ".\nNext API call at: " + nextApiCall;
             }
         }
 
-        //TODO: something
-        Log.d(TAG, "Weather Observer update..." +
-                "\n" + forecast);
+        Log.d(TAG, ".\n" + forecast);
     }
 
     private void setupUI() {
@@ -142,8 +143,8 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         btn_call.setVisibility(View.GONE);
     }
 
-    public static void setNextApiCall(long time) {
-        nextApiCall = time;
+    public static void setNextApiCallTime(long time) {
+        nextApiCallTime = time;
     }
 
     @Override
