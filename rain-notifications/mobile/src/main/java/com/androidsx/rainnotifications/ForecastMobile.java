@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
 
@@ -87,35 +88,42 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         } else if(observable.getClass().equals(WeatherObservable.class)) {
             Response response = (Response) o;
 
-            String forecast;
-            String deltaTime;
-            String forecastTime;
-
             DataPoint currently = response.getForecast().getCurrently();
             DataPoint dp;
 
             ForecastAnalyzer fa = new ForecastAnalyzer();
             fa.setResponse(response);
-            dp = fa.analyzeForecastFor(currently.getIcon(), Icon.RAIN);
+            dp = fa.analyzeForecastFor(currently.getIcon(), Icon.PARTLY_CLOUDY_DAY);
 
-            if(dp == null) {
-                forecast = "No changes expected until tomorrow. - Currently: " + currently.getIcon();
-            }
-            else {
-                deltaTime = new DateHelper()
-                        .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
+            writeResult(dp, currently, Icon.PARTLY_CLOUDY_DAY);
+        }
+    }
 
-                forecastTime = new DateHelper()
-                        .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
+    private void writeResult(DataPoint dp, DataPoint currently, String icon) {
+        String forecast;
+        if(dp == null) {
+            forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() +
+                    "\nNo changes expected until tomorrow.";
+        }
+        else {
+            String deltaTime = new DateHelper()
+                    .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
 
-                forecast = "Currently: " + currently.getIcon() + " --> " + dp.getIcon() + " expected at " + forecastTime +
+            String forecastTime = new DateHelper()
+                    .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
+
+            if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
+                forecast = "Found: " + dp.getIcon() + "\nCurrently: " + currently.getIcon() + " --> " + dp.getIcon() + " expected at " + forecastTime +
+                        "\n" + deltaTime + ".";
+            } else {
+                forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() + " --> " + dp.getIcon() + " expected at " + forecastTime +
                         "\n" + deltaTime + ".";
             }
-
-            //TODO: something
-            Log.d(TAG, "Weather Observer update..." +
-                    "\n" + forecast);
         }
+
+        //TODO: something
+        Log.d(TAG, "Weather Observer update..." +
+                "\n" + forecast);
     }
 
     private void setupUI() {
