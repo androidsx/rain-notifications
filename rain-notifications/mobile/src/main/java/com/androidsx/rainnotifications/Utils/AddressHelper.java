@@ -11,13 +11,13 @@ import java.util.Locale;
 
 public class AddressHelper {
 
-    public String getLocationAddress(Context context, Location location) {
+    public String getLocationAddress(Context context, double latitude, double longitude) {
         String address = "Unknown location";
 
         Geocoder gcd = new Geocoder(context, Locale.getDefault());
         List<Address> addresses = null;
         try {
-            addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+            addresses = gcd.getFromLocation(latitude, longitude, 1);
         } catch (IOException e) {
             e.printStackTrace();
         }

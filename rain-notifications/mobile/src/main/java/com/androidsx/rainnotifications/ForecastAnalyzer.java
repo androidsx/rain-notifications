@@ -13,60 +13,53 @@ public class ForecastAnalyzer {
     private static final long HOUR = Time.HOUR_AGO / 1000;
 
     private AnalyzerHelper analyzer;
+    private long currentTime = System.currentTimeMillis() / 1000;
 
     public void setResponse(Response res) {
         this.analyzer = new AnalyzerHelper(res);
     }
 
-    public DataPoint analyzeForecastFor(String currentlyIcon, String expectedIcon) {
+    public DataPoint analyzeForecastForRain(String currentlyIcon) {
         DataPoint dpHelp;
         //TODO: adjust for obtain the correct expected value
         if(currentlyIcon.equals(Icon.RAIN)) {
-            dpHelp = analyzer.nextRainChange();
-            if(dpHelp == null) {
-                dpHelp = analyzer.highProbabilityRain();
-                if(dpHelp != null) {
-                    ForecastMobile.setNextApiCall(dpHelp.getTime() - HOUR);
-                }
-                return null;
-            } else {
-                if(!AnalyzerHelper.compareTo(dpHelp.getIcon(), expectedIcon)) {
-                    ForecastMobile.setNextApiCall(dpHelp.getTime() - HOUR);
-                }
-                return dpHelp;
-            }
-        } else if (currentlyIcon.equals(Icon.CLEAR_DAY) || currentlyIcon.equals(Icon.CLEAR_NIGHT)) {
+            return setNextApiCallTime(analyzer.nextRainChange());
+        } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLEAR_DAY)) {
             dpHelp = analyzer.nextClearChange();
             if(dpHelp == null) {
-                return null;
+                return setNextApiCallTime(analyzer.highProbabilityRain());
             } else {
-                if(!AnalyzerHelper.compareTo(dpHelp.getIcon(), expectedIcon)) {
-                    ForecastMobile.setNextApiCall(dpHelp.getTime() - HOUR);
-                }
-                return dpHelp;
+                return setNextApiCallTime(dpHelp);
             }
-        } else if (currentlyIcon.equals(Icon.PARTLY_CLOUDY_DAY) || currentlyIcon.equals(Icon.PARTLY_CLOUDY_NIGHT)) {
+        } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.PARTLY_CLOUDY_DAY)) {
             dpHelp = analyzer.nextPartlyCloudyChange();
             if(dpHelp == null) {
-                return null;
+                return setNextApiCallTime(analyzer.highProbabilityRain());
             } else {
-                if(!AnalyzerHelper.compareTo(dpHelp.getIcon(), expectedIcon)) {
-                    ForecastMobile.setNextApiCall(dpHelp.getTime() - HOUR);
-                }
-                return dpHelp;
+                return setNextApiCallTime(dpHelp);
             }
-        } else if (currentlyIcon.equals(Icon.CLOUDY)) {
+        } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLOUDY)) {
             dpHelp = analyzer.nextCloudyChange();
             if(dpHelp == null) {
-                return null;
+                return setNextApiCallTime(analyzer.highProbabilityRain());
             } else {
-                if(!AnalyzerHelper.compareTo(dpHelp.getIcon(), expectedIcon)) {
-                    ForecastMobile.setNextApiCall(dpHelp.getTime() - HOUR);
-                }
-                return dpHelp;
+                return setNextApiCallTime(dpHelp);
             }
         }
 
         return null;
+    }
+
+    private DataPoint setNextApiCallTime(DataPoint dp) {
+        if(dp != null) {
+            if (dp.getTime() - currentTime > HOUR * 2) {
+                ForecastMobile.setNextApiCall(dp.getTime() - HOUR);
+            } else {
+                ForecastMobile.setNextApiCall(dp.getTime());
+            }
+
+        }
+
+        return dp;
     }
 }

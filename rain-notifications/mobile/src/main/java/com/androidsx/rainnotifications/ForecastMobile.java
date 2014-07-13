@@ -62,11 +62,11 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         if(observable.getClass().equals(LocationObservable.class)){
             Location location = (Location) o;
 
-            //double latitude = Localization.NEW_YORK_LAT;
-            //double longitude = Localization.NEW_YORK_LON;
-            String address = new AddressHelper().getLocationAddress(this, location);
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
+            double latitude = Localization.NEW_YORK_LAT;
+            double longitude = Localization.NEW_YORK_LON;
+            String address = new AddressHelper().getLocationAddress(this, latitude, longitude);
+            //double latitude = location.getLatitude();
+            //double longitude = location.getLongitude();
             long locationTime = location.getTime() / 1000;
 
             if(lastLocation != null) {
@@ -89,13 +89,13 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
             Response response = (Response) o;
 
             DataPoint currently = response.getForecast().getCurrently();
-            DataPoint dp;
+            DataPoint dpRain;
 
             ForecastAnalyzer fa = new ForecastAnalyzer();
             fa.setResponse(response);
-            dp = fa.analyzeForecastFor(currently.getIcon(), Icon.PARTLY_CLOUDY_DAY);
+            dpRain = fa.analyzeForecastForRain(currently.getIcon());
 
-            writeResult(dp, currently, Icon.PARTLY_CLOUDY_DAY);
+            writeResult(dpRain, currently, Icon.RAIN);
         }
     }
 
@@ -110,14 +110,18 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
                     .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
 
             String forecastTime = new DateHelper()
-                    .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
+                    .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
 
             if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
-                forecast = "Found: " + dp.getIcon() + "\nCurrently: " + currently.getIcon() + " --> " + dp.getIcon() + " expected at " + forecastTime +
-                        "\n" + deltaTime + ".";
+                forecast = "Found: " + dp.getIcon() + "\nCurrently: " + currently.getIcon() +
+                        " --> " + dp.getIcon() + " expected at " + forecastTime +
+                        "\n" + deltaTime + ".\nNext API call at: " + new DateHelper()
+                        .formatTime(nextApiCall, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
             } else {
-                forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() + " --> " + dp.getIcon() + " expected at " + forecastTime +
-                        "\n" + deltaTime + ".";
+                forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() +
+                        " --> " + dp.getIcon() + " expected at " + forecastTime +
+                        "\n" + deltaTime + ".\nNext API call at: " + new DateHelper()
+                        .formatTime(nextApiCall, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
             }
         }
 
