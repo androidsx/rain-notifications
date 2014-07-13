@@ -29,51 +29,51 @@ public class AnalyzerHelper {
 
     //TODO: make methods for determine when weather going to occur
 
-    public DataPoint nextRain() {
-        return getNext(Icon.RAIN);
+    public DataPoint nextRainChange() {
+        return getNextChange(Icon.RAIN);
     }
 
-    public DataPoint nextCloudy() {
-        return getNext(Icon.CLOUDY);
+    public DataPoint nextCloudyChange() {
+        return getNextChange(Icon.CLOUDY);
     }
 
-    public DataPoint nextPartlyCloudy() {
-        return getNext(Icon.PARTLY_CLOUDY_DAY, Icon.PARTLY_CLOUDY_NIGHT);
+    public DataPoint nextPartlyCloudyChange() {
+        return getNextChange(Icon.PARTLY_CLOUDY_DAY, Icon.PARTLY_CLOUDY_NIGHT);
     }
 
-    public DataPoint nextClear() {
-        return getNext(Icon.CLEAR_DAY, Icon.CLEAR_NIGHT);
+    public DataPoint nextClearChange() {
+        return getNextChange(Icon.CLEAR_DAY, Icon.CLEAR_NIGHT);
     }
 
-    public DataPoint nextSnow() {
-        return getNext(Icon.SNOW);
+    public DataPoint nextSnowChange() {
+        return getNextChange(Icon.SNOW);
     }
 
-    public DataPoint nextSleet() {
-        return getNext(Icon.SLEET);
+    public DataPoint nextSleetChange() {
+        return getNextChange(Icon.SLEET);
     }
 
-    public DataPoint nextWind() {
-        return getNext(Icon.WIND);
+    public DataPoint nextWindChange() {
+        return getNextChange(Icon.WIND);
     }
 
-    public DataPoint nextFog() {
-        return getNext(Icon.FOG);
+    public DataPoint nextFogChange() {
+        return getNextChange(Icon.FOG);
     }
 
-    public DataPoint nextHail() {
-        return getNext(Icon.HAIL);
+    public DataPoint nextHailChange() {
+        return getNextChange(Icon.HAIL);
     }
 
-    public DataPoint nextThunderStorm() {
-        return getNext(Icon.THUNDERSTORM);
+    public DataPoint nextThunderStormChange() {
+        return getNextChange(Icon.THUNDERSTORM);
     }
 
-    public DataPoint nextTornado() {
-        return getNext(Icon.TORNADO);
+    public DataPoint nextTornadoChange() {
+        return getNextChange(Icon.TORNADO);
     }
 
-    private DataPoint getNext(String icon) {
+    private DataPoint getNextChange(String icon) {
         if(currentlyForecastIcon.equals(icon)) {
             if(minutely != null) {
                 for(DataPoint dpM : minutely.getData()) {
@@ -108,7 +108,7 @@ public class AnalyzerHelper {
 
         return null;
     }
-    private DataPoint getNext(String icon1, String icon2) {
+    private DataPoint getNextChange(String icon1, String icon2) {
         if(currentlyForecastIcon.equals(icon1) || currentlyForecastIcon.equals(icon2)) {
             if(minutely != null) {
                 for(DataPoint dpM : minutely.getData()) {
@@ -157,11 +157,11 @@ public class AnalyzerHelper {
         DataPoint dp1 = null;
         DataPoint dp2 = null;
 
-        if(nextCloudy() != null) {
-            nexCloudyTime = nextCloudy().getTime();
+        if(nextCloudyChange() != null) {
+            nexCloudyTime = nextCloudyChange().getTime();
         }
-        if(nextPartlyCloudy() != null) {
-            nextPartlyCloudyTime = nextPartlyCloudy().getTime();
+        if(nextPartlyCloudyChange() != null) {
+            nextPartlyCloudyTime = nextPartlyCloudyChange().getTime();
         }
 
         if(minutely != null && nexCloudyTime > -1) {

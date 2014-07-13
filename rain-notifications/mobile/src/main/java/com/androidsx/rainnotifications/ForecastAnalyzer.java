@@ -16,22 +16,22 @@ public class ForecastAnalyzer {
         this.analyzer = new AnalyzerHelper(res);
     }
 
-    public DataPoint analyzeForecastFor(String weatherIcon) {
+    public DataPoint analyzeForecastFor(String currentlyIcon, String expectedIcon) {
         DataPoint dpHelp;
         //TODO: adjust for obtain the correct expected value
-        if(weatherIcon.equals(Icon.RAIN)) {
-            dpHelp = analyzer.nextRain();
+        if(currentlyIcon.equals(Icon.RAIN)) {
+            dpHelp = analyzer.nextRainChange();
             if(dpHelp == null) {
                 return analyzer.highProbabilityRain();
             } else {
                 return dpHelp;
             }
-        } else if (weatherIcon.equals(Icon.CLEAR_DAY) || weatherIcon.equals(Icon.CLEAR_NIGHT)) {
-            return analyzer.nextClear();
-        } else if (weatherIcon.equals(Icon.PARTLY_CLOUDY_DAY) || weatherIcon.equals(Icon.PARTLY_CLOUDY_NIGHT)) {
-            return analyzer.nextPartlyCloudy();
-        } else if (weatherIcon.equals(Icon.CLOUDY)) {
-            return analyzer.nextCloudy();
+        } else if (currentlyIcon.equals(Icon.CLEAR_DAY) || currentlyIcon.equals(Icon.CLEAR_NIGHT)) {
+            return analyzer.nextClearChange();
+        } else if (currentlyIcon.equals(Icon.PARTLY_CLOUDY_DAY) || currentlyIcon.equals(Icon.PARTLY_CLOUDY_NIGHT)) {
+            return analyzer.nextPartlyCloudyChange();
+        } else if (currentlyIcon.equals(Icon.CLOUDY)) {
+            return analyzer.nextCloudyChange();
         }
 
         return null;
