@@ -110,67 +110,19 @@ public class AnalyzerHelper {
     }
 
     public DataPoint highProbabilityRain() {
-        long time1 = -1;
-        long time2 = -1;
-        long nexCloudyTime = -1;
-        long nextPartlyCloudyTime = -1;
+        DataPoint dp1 = nextCloudyChange();
+        DataPoint dp2 = nextPartlyCloudyChange();
 
-        DataPoint dp1 = null;
-        DataPoint dp2 = null;
-
-        if(nextCloudyChange() != null) {
-            nexCloudyTime = nextCloudyChange().getTime();
-        }
-        if(nextPartlyCloudyChange() != null) {
-            nextPartlyCloudyTime = nextPartlyCloudyChange().getTime();
-        }
-
-        if(minutely != null && nexCloudyTime > -1) {
-            for(DataPoint dpM : minutely.getData()) {
-                if(dpM.getTime() == nexCloudyTime && dpM.getTime() > currentTime) {
-                    time1 = dpM.getTime();
-                    dp1 = dpM;
-                }
-                if(dpM.getTime() == nextPartlyCloudyTime && dpM.getTime() > currentTime) {
-                    time2 = dpM.getTime();
-                    dp2 = dpM;
-                }
-            }
-            if(time1 > -1 && time2 > -1) {
-                if(time1 < time2) {
-                    return dp1;
-                } else {
-                    return dp2;
-                }
-            } else if(time1 > -1 && time2 == -1) {
+        if(dp1 != null && dp2 != null) {
+            if(dp1.getTime() < dp2.getTime()) {
                 return dp1;
             } else {
                 return dp2;
             }
-        }
-
-        if(hourly != null && nexCloudyTime > -1) {
-            for(DataPoint dpH : hourly.getData()) {
-                if(dpH.getTime() == nexCloudyTime && dpH.getTime() > currentTime) {
-                    time1 = dpH.getTime();
-                    dp1 = dpH;
-                }
-                if(dpH.getTime() == nextPartlyCloudyTime && dpH.getTime() > currentTime) {
-                    time2 = dpH.getTime();
-                    dp2 = dpH;
-                }
-            }
-            if(time1 > -1 && time2 > -1) {
-                if(time1 < time2) {
-                    return dp1;
-                } else {
-                    return dp2;
-                }
-            } else if(time1 > -1 && time2 == -1) {
-                return dp1;
-            } else {
-                return dp2;
-            }
+        } else if(dp1 != null && dp2 == null) {
+            return dp1;
+        } else if(dp1 == null && dp2 != null) {
+            return dp2;
         }
 
         return null;

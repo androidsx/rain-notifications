@@ -103,6 +103,8 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         String forecast;
         if(dp == null) {
             forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() +
+                    " at "+ new DateHelper()
+                    .formatTime(System.currentTimeMillis() / 1000, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US) +
                     "\nNo changes expected until tomorrow.";
         }
         else {
@@ -114,13 +116,17 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
             if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
                 forecast = "Found: " + dp.getIcon() + "\nCurrently: " + currently.getIcon() +
+                        " at "+ new DateHelper()
+                        .formatTime(System.currentTimeMillis() / 1000, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US) +
                         " --> " + dp.getIcon() + " expected at " + forecastTime +
-                        "\n" + deltaTime + ".\nNext API call at: " + new DateHelper()
+                        " " + deltaTime + ".\nNext API call at: " + new DateHelper()
                         .formatTime(nextApiCall, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
             } else {
                 forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() +
+                        " at "+ new DateHelper()
+                        .formatTime(System.currentTimeMillis() / 1000, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US) +
                         " --> " + dp.getIcon() + " expected at " + forecastTime +
-                        "\n" + deltaTime + ".\nNext API call at: " + new DateHelper()
+                        " " + deltaTime + ".\nNext API call at: " + new DateHelper()
                         .formatTime(nextApiCall, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
             }
         }
