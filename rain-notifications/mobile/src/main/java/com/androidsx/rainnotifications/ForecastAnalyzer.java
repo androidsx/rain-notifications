@@ -44,9 +44,9 @@ public class ForecastAnalyzer {
     private DataPoint setNextApiCallTime(DataPoint dp) {
         if(dp != null) {
             long time = (dp.getTime() - currentTime) * 70 / 100;
-            Log.d(TAG, "Schedule Time in: " + time / 60 + " min.");
-            if(time < (Time.TEN_MINUTES_AGO / 1000)) {
-                if(time < (Time.TWO_MINUTES / 1000)) {
+            //Log.d(TAG, "Schedule Time in: " + time / 60 + " min.");
+            if(time < (Time.TEN_MINUTES_AGO / 1000) && time > (Time.TWO_MINUTES / 1000 / 2)) {
+                if(time > (Time.TWO_MINUTES / 1000 * 2)) {
                     ForecastMobile.setNextApiCallTime(currentTime + time);
                 } else {
                     ForecastMobile.setNextApiCallTime(dp.getTime());
