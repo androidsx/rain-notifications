@@ -47,7 +47,11 @@ public class ForecastAnalyzer {
                 ForecastMobile.setNextApiCallTime(dp.getTime());
             }
         } else {
-            ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 4));
+            if(dp.getTime() - currentTime + (HOUR * 4) > (HOUR / 2)) {
+                ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 4));
+            } else {
+                ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 3));
+            }
         }
 
         return dp;
