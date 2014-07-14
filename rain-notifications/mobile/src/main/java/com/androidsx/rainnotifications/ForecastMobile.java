@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 
 import java.util.Locale;
@@ -48,6 +49,8 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
     public static WeatherObservable weatherObservable;
     private Button btn_call;
     private boolean executeForecastCall = true;
+    double latitude = Localization.NEW_YORK_LAT;
+    double longitude = Localization.NEW_YORK_LON;
 
     //private GoogleApiClient mGoogleApiClient = getGoogleApiClient();
 
@@ -68,6 +71,10 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         weatherObservable = new WeatherObservable();
         weatherObservable.addObserver(this);
 
+        lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
+        lastLocation.setLatitude(latitude);
+        lastLocation.setLongitude(longitude);
+
         setupUI();
     }
 
@@ -76,21 +83,19 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         if(observable.getClass().equals(LocationObservable.class)){
             Location location = (Location) o;
 
-            double latitude = Localization.NEW_YORK_LAT;
-            double longitude = Localization.NEW_YORK_LON;
             //double latitude = location.getLatitude();
             //double longitude = location.getLongitude();
             long locationTime = location.getTime() / 1000;
 
             String address = new AddressHelper().getLocationAddress(this, latitude, longitude);
 
-            lastLocation = location;
+            //lastLocation = location;
 
-            if (lastLocation.distanceTo(location) > Distance.KM || executeForecastCall) {
-                executeForecastCall = false;
+            if (executeForecastCall) {
                 weatherObservable.getWeather(
                         latitude,
                         longitude);
+                executeForecastCall = false;
             }
 
             Log.d(TAG, "Location Observer update...\nLocation: " + address +
@@ -131,7 +136,8 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         if(dp == null) {
             forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() +
                     " at "+ currentTime +
-                    "\nNo changes expected until tomorrow.";
+                    "\nNo changes expected until tomorrow." +
+                    "\nNext API call at: " + nextApiCall;
         }
         else {
             String deltaTime = new DateHelper()

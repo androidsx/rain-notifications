@@ -20,16 +20,14 @@ public class ForecastAnalyzer {
     }
 
     public DataPoint analyzeForecastForRain(String currentlyIcon) {
-        DataPoint dpHelp;
-        //TODO: adjust for obtain the correct expected value
-        if(currentlyIcon.equals(Icon.RAIN)) {
+        if(AnalyzerHelper.compareTo(currentlyIcon, Icon.RAIN)) {
             return setNextApiCallTime(analyzer.nextRainChange());
         } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLEAR_DAY)) {
-            return setNextApiCallTime(analyzer.highProbabilityRain(analyzer.nextClearChange()));
+            return setNextApiCallTime(analyzer.nextClearChange());
         } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.PARTLY_CLOUDY_DAY)) {
-            return setNextApiCallTime(analyzer.highProbabilityRain(analyzer.nextPartlyCloudyChange()));
+            return setNextApiCallTime(analyzer.nextPartlyCloudyChange());
         } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLOUDY)) {
-            return setNextApiCallTime(analyzer.highProbabilityRain(analyzer.nextCloudyChange()));
+            return setNextApiCallTime(analyzer.nextCloudyChange());
         }
 
         return null;

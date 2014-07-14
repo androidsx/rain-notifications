@@ -105,25 +105,6 @@ public class AnalyzerHelper {
         return null;
     }
 
-    public DataPoint highProbabilityRain(DataPoint dpChanged) {
-        DataPoint dp1 = nextCloudyChange();
-        DataPoint dp2 = nextPartlyCloudyChange();
-
-        if(dp1 != null && dp2 != null) {
-            if(dp1.getTime() < dp2.getTime()) {
-                return dp1;
-            } else {
-                return dp2;
-            }
-        } else if(dp1 != null && dp2 == null) {
-                return dp1;
-        } else if(dp1 == null && dp2 != null) {
-                return dp2;
-        } else {
-            return dpChanged;
-        }
-    }
-
     public static boolean compareTo(String icon1, String icon2) {
         if(icon1.equals(icon2)) {
             return true;
