@@ -48,7 +48,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
     private LocationObservable locationObservable;
     public static WeatherObservable weatherObservable;
     private Button btn_call;
-    private boolean executeForecastCall = true;
+
     double latitude = Localization.NEW_YORK_LAT;
     double longitude = Localization.NEW_YORK_LON;
 
@@ -61,7 +61,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         intent = new Intent(this, ScheduleService.class);
-        alarmIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmIntent = PendingIntent.getService(this, 0, intent, 0);
 
         locationObservable =
                 new LocationObservable(this, Localization.LOCATION_GPS_TIMEOUT,
@@ -83,20 +83,14 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         if(observable.getClass().equals(LocationObservable.class)){
             Location location = (Location) o;
 
-            //double latitude = location.getLatitude();
-            //double longitude = location.getLongitude();
-            long locationTime = location.getTime() / 1000;
-
-            String address = new AddressHelper().getLocationAddress(this, latitude, longitude);
-
             //lastLocation = location;
 
-            if (executeForecastCall) {
-                weatherObservable.getWeather(
-                        latitude,
-                        longitude);
-                executeForecastCall = false;
-            }
+            String address = new AddressHelper().getLocationAddress(this,
+                    lastLocation.getLatitude(), lastLocation.getLongitude());
+
+            weatherObservable.getWeather(
+                    lastLocation.getLatitude(),
+                    lastLocation.getLongitude());
 
             Log.d(TAG, "Location Observer update...\nLocation: " + address +
                     " --> lat: " + latitude +
