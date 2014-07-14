@@ -70,9 +70,9 @@ public class LocationObservable extends Observable {
     }
 
     private void notifyLocationChange(Location location) {
+        Log.d(TAG, "Notify New Location: " + location.getProvider());
         setChanged();
         notifyObservers(location);
-        Log.d(TAG, "Notify New Location: " + location.getProvider());
         clearChanged();
     }
 

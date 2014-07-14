@@ -1,12 +1,18 @@
 package com.androidsx.rainnotifications;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+
 import java.util.Locale;
 import java.util.Observer;
 import java.util.Observable;
 
+import android.os.SystemClock;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -26,18 +32,22 @@ import com.androidsx.rainnotifications.Utils.Constants.Time;
 import com.androidsx.rainnotifications.Utils.Constants.Distance;
 import com.androidsx.rainnotifications.Utils.Constants.Localization;
 import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
+import com.androidsx.rainnotifications.Services.ScheduleService;
 
 public class ForecastMobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
     private static long nextApiCallTime = -1;
 
-    private Location lastLocation;
+    public static Location lastLocation;
+    private AlarmManager alarmMgr;
+    private Intent intent;
+    private PendingIntent alarmIntent;
 
     private LocationObservable locationObservable;
-    private WeatherObservable weatherObservable;
+    public static WeatherObservable weatherObservable;
     private Button btn_call;
-
+    private boolean executeForecastCall = true;
 
     //private GoogleApiClient mGoogleApiClient = getGoogleApiClient();
 
@@ -45,6 +55,10 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast_mobile);
+
+        alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        intent = new Intent(this, ScheduleService.class);
+        alarmIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         locationObservable =
                 new LocationObservable(this, Localization.LOCATION_GPS_TIMEOUT,
@@ -70,17 +84,14 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
             String address = new AddressHelper().getLocationAddress(this, latitude, longitude);
 
-            if(lastLocation != null) {
-                lastLocation = location;
-            }
+            lastLocation = location;
 
-            if (locationTime > nextApiCallTime || lastLocation.distanceTo(location) > Distance.KM) {
+            if (lastLocation.distanceTo(location) > Distance.KM || executeForecastCall) {
+                executeForecastCall = false;
                 weatherObservable.getWeather(
                         latitude,
                         longitude);
             }
-
-            lastLocation = location;
 
             Log.d(TAG, "Location Observer update...\nLocation: " + address +
                     " --> lat: " + latitude +
@@ -95,6 +106,14 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
             ForecastAnalyzer fa = new ForecastAnalyzer();
             fa.setResponse(response);
             dpRain = fa.analyzeForecastForRain(currently.getIcon());
+
+            if(alarmMgr != null) {
+                alarmMgr.cancel(alarmIntent);
+                alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        SystemClock.elapsedRealtime() +
+                                (nextApiCallTime * 1000 - System.currentTimeMillis()),
+                        alarmIntent);
+            }
 
             Log.d(TAG, "Weather Observer update..." +
                     "\n");

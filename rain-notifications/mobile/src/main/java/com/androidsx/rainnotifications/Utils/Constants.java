@@ -19,9 +19,9 @@ public class Constants {
         public static final Double NEW_YORK_LAT = 40.72228267283148;
         public static final Double NEW_YORK_LON = -73.9434814453125;
 
-        public static final long LOCATION_GPS_TIMEOUT = 1 * 30 * 1000;
-        public static final long LOCATION_NETWORK_TIMEOUT = 2 * 60 * 1000;
-        public static final long LOCATION_DISTANCE = 0;
+        public static final long LOCATION_GPS_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+        public static final long LOCATION_NETWORK_TIMEOUT = 1 * 60 * 60 * 1000; // 1 hour
+        public static final long LOCATION_DISTANCE = 5000; // 5 km
     }
     public static class ForecastIO {
         public static final String API_KEY = "f1fd27e70564bd6765bf40b3497cbf4f";

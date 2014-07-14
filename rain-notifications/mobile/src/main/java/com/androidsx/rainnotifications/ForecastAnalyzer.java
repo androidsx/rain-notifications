@@ -37,19 +37,7 @@ public class ForecastAnalyzer {
 
     private DataPoint setNextApiCallTime(DataPoint dp) {
         if(dp != null) {
-            if(dp.getTime() - currentTime > HOUR * 4) {
-                if(dp.getTime() - currentTime + (HOUR * 4) > (HOUR / 2)) {
-                    ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 4));
-                } else {
-                    ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 3));
-                }
-            } else if (dp.getTime() - currentTime > HOUR * 2) {
-                ForecastMobile.setNextApiCallTime(dp.getTime() - HOUR);
-            } else if(dp.getTime() - currentTime > HOUR / 2) {
-                ForecastMobile.setNextApiCallTime(dp.getTime() - (HOUR / 2));
-            } else {
-                ForecastMobile.setNextApiCallTime(dp.getTime());
-            }
+            ForecastMobile.setNextApiCallTime(currentTime + ((dp.getTime() - currentTime) / 100 * 70));
         } else {
             ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 4));
         }

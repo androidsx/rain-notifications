@@ -44,7 +44,6 @@ public class WeatherObservable extends Observable {
 
                 Response response = (Response) network;
 
-                //TODO: For notify when weather match in our rules
                 notifyWeatherChange(response);
             }
 
@@ -54,7 +53,7 @@ public class WeatherObservable extends Observable {
     private void notifyWeatherChange(Response response) {
         setChanged();
         notifyObservers(response);
-        Log.d(TAG, "Notify New Weather: ");
+        //Log.d(TAG, "Notify New Weather: ");
         clearChanged();
     }
 }
