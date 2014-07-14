@@ -50,6 +50,8 @@ public class ForecastAnalyzer {
             } else {
                 ForecastMobile.setNextApiCallTime(dp.getTime());
             }
+        } else {
+            ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 4));
         }
 
         return dp;
