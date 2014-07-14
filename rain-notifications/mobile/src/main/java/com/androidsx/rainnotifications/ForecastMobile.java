@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
@@ -48,6 +49,8 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
     private LocationObservable locationObservable;
     public static WeatherObservable weatherObservable;
     private Button btn_call;
+    private TextView txt_response;
+    private TextView txt_city;
 
     double latitude = Localization.NEW_YORK_LAT;
     double longitude = Localization.NEW_YORK_LON;
@@ -91,7 +94,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
             weatherObservable.getWeather(
                     lastLocation.getLatitude(),
                     lastLocation.getLongitude());
-
+            txt_city.setText(address);
             Log.d(TAG, "Location Observer update...\nLocation: " + address +
                     " --> lat: " + latitude +
                     " - long: " + longitude);
@@ -128,10 +131,10 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         String nextApiCall = new DateHelper()
                 .formatTime(nextApiCallTime, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
         if(dp == null) {
-            forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() +
+            forecast = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
                     " at "+ currentTime +
-                    "\nNo changes expected until tomorrow." +
-                    "\nNext API call at: " + nextApiCall;
+                    "\n\nNo changes expected until tomorrow." +
+                    "\n\nNext API call at: " + nextApiCall;
         }
         else {
             String deltaTime = new DateHelper()
@@ -141,18 +144,18 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
                     .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
 
             if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
-                forecast = "Found: " + dp.getIcon() + "\nCurrently: " + currently.getIcon() +
-                        " at "+ currentTime +
-                        " --> " + dp.getIcon() + " expected at " + forecastTime +
-                        " " + deltaTime + ".\nNext API call at: " + nextApiCall;
+                forecast = "\nFound: " + dp.getIcon() + "\n\nCurrently: " + currently.getIcon() +
+                        "\nat "+ currentTime +
+                        "\n\n" + dp.getIcon() + " expected at " + forecastTime +
+                        " \n" + deltaTime + ".\n\nNext API call at: " + nextApiCall;
             } else {
-                forecast = "Searching: " + icon + "\nCurrently: " + currently.getIcon() +
-                        " at "+ currentTime +
-                        " --> " + dp.getIcon() + " expected at " + forecastTime +
-                        " " + deltaTime + ".\nNext API call at: " + nextApiCall;
+                forecast = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
+                        "\nat "+ currentTime +
+                        "\n\n" + dp.getIcon() + " expected at " + forecastTime +
+                        " \n" + deltaTime + ".\n\nNext API call at: " + nextApiCall;
             }
         }
-
+        txt_response.setText(forecast);
         Log.d(TAG, ".\n" + forecast);
     }
 
@@ -160,6 +163,8 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         btn_call = (Button) findViewById(R.id.btn_call);
         btn_call.setOnClickListener(this);
         btn_call.setVisibility(View.GONE);
+        txt_response = (TextView) findViewById(R.id.txt_response);
+        txt_city = (TextView) findViewById(R.id.txt_city);
     }
 
     public static void setNextApiCallTime(long time) {

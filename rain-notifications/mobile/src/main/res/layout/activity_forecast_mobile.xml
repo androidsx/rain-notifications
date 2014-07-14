@@ -23,10 +23,9 @@
         android:layout_centerHorizontal="true"
         android:gravity="left"
         android:textColor="#ff0000"
-        android:textStyle="bold"
+        android:textStyle="bold|italic"
         android:textSize="24dip"
-        android:textAllCaps="true"
-        android:text="Ciudad de prueba"/>
+        android:textAllCaps="true" />
 
     <TextView
         android:id="@+id/txt_response"
@@ -35,7 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:gravity="left"
+        android:textColor="#ff4750ed"
         android:textSize="20dip"
-        android:text="Texto de prueba"/>
+        android:textStyle="bold" />
 
 </RelativeLayout>
