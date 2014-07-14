@@ -36,6 +36,8 @@ import com.androidsx.rainnotifications.Utils.Constants.Localization;
 import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
 import com.androidsx.rainnotifications.Services.ScheduleService;
 
+import org.w3c.dom.Text;
+
 public class ForecastMobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
@@ -51,10 +53,11 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
     private Button btn_call;
     private TextView txt_response;
     private TextView txt_city;
+    private TextView txt_update;
 
     double latitude = Localization.NEW_YORK_LAT;
     double longitude = Localization.NEW_YORK_LON;
-
+    String forecast = "";
     //private GoogleApiClient mGoogleApiClient = getGoogleApiClient();
 
     @Override
@@ -74,9 +77,9 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         weatherObservable = new WeatherObservable();
         weatherObservable.addObserver(this);
 
-        lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
-        lastLocation.setLatitude(latitude);
-        lastLocation.setLongitude(longitude);
+        //lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
+        //lastLocation.setLatitude(latitude);
+        //lastLocation.setLongitude(longitude);
 
         setupUI();
     }
@@ -86,7 +89,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         if(observable.getClass().equals(LocationObservable.class)){
             Location location = (Location) o;
 
-            //lastLocation = location;
+            lastLocation = location;
 
             String address = new AddressHelper().getLocationAddress(this,
                     lastLocation.getLatitude(), lastLocation.getLongitude());
@@ -125,13 +128,13 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
     }
 
     private void writeResult(DataPoint dp, DataPoint currently, String icon) {
-        String forecast;
+        String update = "";
         String currentTime = new DateHelper()
                 .formatTime(System.currentTimeMillis() / 1000, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
         String nextApiCall = new DateHelper()
                 .formatTime(nextApiCallTime, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
         if(dp == null) {
-            forecast = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
+            update = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
                     " at "+ currentTime +
                     "\n\nNo changes expected until tomorrow." +
                     "\n\nNext API call at: " + nextApiCall;
@@ -144,19 +147,21 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
                     .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
 
             if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
-                forecast = "\nFound: " + dp.getIcon() + "\n\nCurrently: " + currently.getIcon() +
+                update = "\nFound: " + dp.getIcon() + "\n\nCurrently: " + currently.getIcon() +
                         "\nat "+ currentTime +
                         "\n\n" + dp.getIcon() + " expected at " + forecastTime +
                         " \n" + deltaTime + ".\n\nNext API call at: " + nextApiCall;
             } else {
-                forecast = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
+                update = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
                         "\nat "+ currentTime +
                         "\n\n" + dp.getIcon() + " expected at " + forecastTime +
                         " \n" + deltaTime + ".\n\nNext API call at: " + nextApiCall;
             }
         }
+        forecast += update + "\n--------------------";
         txt_response.setText(forecast);
-        Log.d(TAG, ".\n" + forecast);
+        txt_update.setText("*****************************" + update + "\n******************************");
+        Log.d(TAG, ".\n" + update);
     }
 
     private void setupUI() {
@@ -165,6 +170,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         btn_call.setVisibility(View.GONE);
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);
+        txt_update = (TextView) findViewById(R.id.txt_update);
     }
 
     public static void setNextApiCallTime(long time) {

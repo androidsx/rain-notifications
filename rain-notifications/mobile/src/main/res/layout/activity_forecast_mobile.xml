@@ -6,36 +6,58 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".forecast_mobile">
+    tools:context=".forecast_mobile" >
 
-    <Button
-        android:id="@+id/btn_call"
-        android:text="@string/btn_forecast"
+
+            <Button
+                android:id="@+id/btn_call"
+                android:text="@string/btn_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/txt_city"
+                android:layout_below="@+id/btn_call"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="left"
+                android:textColor="#ff0000"
+                android:textStyle="bold|italic"
+                android:textSize="24dip"
+                android:textAllCaps="true" />
+
+            <TextView
+                android:id="@+id/txt_update"
+                android:layout_below="@+id/txt_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="left"
+                android:textColor="#ffed7100"
+                android:textSize="20dip"
+                android:textStyle="bold" />
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/txt_update" >
 
-    <TextView
-        android:id="@+id/txt_city"
-        android:layout_below="@+id/btn_call"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:gravity="left"
-        android:textColor="#ff0000"
-        android:textStyle="bold|italic"
-        android:textSize="24dip"
-        android:textAllCaps="true" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/txt_response"
-        android:layout_below="@+id/txt_city"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:gravity="left"
-        android:textColor="#ff4750ed"
-        android:textSize="20dip"
-        android:textStyle="bold" />
+            <TextView
+                        android:id="@+id/txt_response"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="left"
+                        android:textColor="#ff4750ed"
+                        android:textSize="20dip"
+                        android:textStyle="bold" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </RelativeLayout>
