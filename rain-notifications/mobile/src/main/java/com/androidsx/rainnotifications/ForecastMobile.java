@@ -20,6 +20,7 @@ public class ForecastMobile extends Activity implements View.OnClickListener/*, 
     private static final String TAG = ForecastMobile.class.getSimpleName();
 
     private Button btn_call;
+    private Button btn_refresh;
     private TextView txt_response;
     private TextView txt_city;
     private TextView txt_update;
@@ -33,9 +34,6 @@ public class ForecastMobile extends Activity implements View.OnClickListener/*, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast_mobile);
 
-        Intent i = new Intent(this, WeatherService.class);
-        startService(i);
-
         setupUI();
     }
 
@@ -44,7 +42,9 @@ public class ForecastMobile extends Activity implements View.OnClickListener/*, 
 
         btn_call = (Button) findViewById(R.id.btn_call);
         btn_call.setOnClickListener(this);
-        btn_call.setVisibility(View.GONE);
+        btn_refresh = (Button) findViewById(R.id.btn_refresh);
+        btn_refresh.setOnClickListener(this);
+
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);
         txt_update = (TextView) findViewById(R.id.txt_update);
@@ -61,6 +61,15 @@ public class ForecastMobile extends Activity implements View.OnClickListener/*, 
 
     @Override
     public void onClick(View view) {
+        if(view.equals(btn_call)) {
+            Intent i = new Intent(this, WeatherService.class);
+            startService(i);
+            btn_call.setVisibility(View.GONE);
+        } else {
+            txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, ""));
+            txt_update.setText(shared.getString(Constants.SharedPref.CURRENTLY, ""));
+            txt_response.setText(shared.getString(Constants.SharedPref.HISTORY, ""));
+        }
 
     }
 

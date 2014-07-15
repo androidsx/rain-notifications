@@ -170,11 +170,16 @@ public class WeatherService extends Service implements Observer {
         editor.commit();
 
         String deltaTime = "";
-        if(dp != null) {
-            if(dp.getIcon().equals(Constants.ForecastIO.Icon.RAIN)) {
-                deltaTime = new DateHelper()
-                        .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-                new NotificationHelper(this, "Rain expected " + deltaTime);
+        String expectedTime = "";
+        if(dp != null && currently != null) {
+            deltaTime = new DateHelper()
+                    .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
+            expectedTime = new DateHelper()
+                    .formatTime(dp.getTime(), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_NEW_YORK, Locale.US);
+            if(!currently.getIcon().equals(Constants.ForecastIO.Icon.RAIN) && dp.getIcon().equals(Constants.ForecastIO.Icon.RAIN)) {
+                new NotificationHelper(this, "Rain expected " + deltaTime + " at " + expectedTime);
+            } else if(currently.getIcon().equals(Constants.ForecastIO.Icon.RAIN) && !dp.getIcon().equals(Constants.ForecastIO.Icon.RAIN)) {
+                new NotificationHelper(this, "Stop raining expected " + deltaTime + " at " + expectedTime);
             }
         }
     }

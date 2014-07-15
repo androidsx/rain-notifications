@@ -18,6 +18,7 @@ public class ForecastAnalyzer {
     private static final String TAG = ForecastAnalyzer.class.getSimpleName();
     private static final long HOUR = Time.HOUR_AGO / 1000;
     private static final long ONE_MINUTES = Time.TWO_MINUTES / 1000 / 2;
+    private static final long TWO_MINUTES = ONE_MINUTES * 2;
     private static final long FOUR_MINUTES = Time.TWO_MINUTES / 1000 * 4;
     private static final long TEN_MINUTES = Time.TEN_MINUTES_AGO / 1000;
 
@@ -49,12 +50,8 @@ public class ForecastAnalyzer {
         if(dp != null) {
             long time = (dp.getTime() - currentTime) * 70 / 100;
             //Log.d(TAG, "Schedule Time in: " + time / 60 + " min.");
-            if(time > ONE_MINUTES && time < TEN_MINUTES) {
-                if(time > FOUR_MINUTES) {
-                    WeatherService.nextApiCallTime = currentTime + time;
-                } else {
-                    WeatherService.nextApiCallTime = dp.getTime();
-                }
+            if(time < TEN_MINUTES) {
+                WeatherService.nextApiCallTime = dp.getTime();
             } else {
                 WeatherService.nextApiCallTime = currentTime + time;
             }
