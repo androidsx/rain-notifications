@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.Utils.NotificationHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
 
@@ -31,12 +32,9 @@ import com.androidsx.rainnotifications.Utils.AddressHelper;
 import com.androidsx.rainnotifications.Utils.DateHelper;
 import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
 import com.androidsx.rainnotifications.Utils.Constants.Time;
-import com.androidsx.rainnotifications.Utils.Constants.Distance;
 import com.androidsx.rainnotifications.Utils.Constants.Localization;
 import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
 import com.androidsx.rainnotifications.Services.ScheduleService;
-
-import org.w3c.dom.Text;
 
 public class ForecastMobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
 
@@ -77,9 +75,9 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         weatherObservable = new WeatherObservable();
         weatherObservable.addObserver(this);
 
-        //lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
-        //lastLocation.setLatitude(latitude);
-        //lastLocation.setLongitude(longitude);
+        lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
+        lastLocation.setLatitude(latitude);
+        lastLocation.setLongitude(longitude);
 
         setupUI();
     }
@@ -89,7 +87,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         if(observable.getClass().equals(LocationObservable.class)){
             Location location = (Location) o;
 
-            lastLocation = location;
+            //lastLocation = location;
 
             String address = new AddressHelper().getLocationAddress(this,
                     lastLocation.getLatitude(), lastLocation.getLongitude());
@@ -122,6 +120,13 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
             Log.d(TAG, "Weather Observer update..." +
                     "\n");
+
+            String rainTime = new DateHelper()
+                    .formatTime(dpRain.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
+
+            if(dpRain.getIcon().equals(Icon.RAIN)) {
+                new NotificationHelper(this, "Rain expected at " + rainTime);
+            }
 
             writeResult(dpRain, currently, Icon.RAIN);
         }
@@ -160,7 +165,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         }
         forecast += update + "\n--------------------";
         txt_response.setText(forecast);
-        txt_update.setText("*****************************" + update + "\n******************************");
+        txt_update.setText("******************************" + update + "\n******************************");
         Log.d(TAG, ".\n" + update);
     }
 
