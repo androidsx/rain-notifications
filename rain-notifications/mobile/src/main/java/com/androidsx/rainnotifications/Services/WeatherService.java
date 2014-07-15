@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
@@ -14,6 +15,7 @@ import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.androidsx.rainnotifications.ForecastAnalyzer;
+import com.androidsx.rainnotifications.ForecastMobile;
 import com.androidsx.rainnotifications.Models.LocationObservable;
 import com.androidsx.rainnotifications.Models.WeatherObservable;
 import com.androidsx.rainnotifications.Utils.AddressHelper;
@@ -42,7 +44,7 @@ public class WeatherService extends Service implements Observer {
     private LocationObservable locationObservable;
     public static WeatherObservable weatherObservable;
 
-    private SharedPreferences shared;
+    public static SharedPreferences shared;
     private SharedPreferences.Editor editor;
 
     double latitude = Constants.Localization.NEW_YORK_LAT;
@@ -57,8 +59,8 @@ public class WeatherService extends Service implements Observer {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        intent = new Intent(this, ScheduleService.class);
-        alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
+        Intent mIntent = new Intent(this, ScheduleService.class);
+        alarmIntent = PendingIntent.getService(getApplicationContext(), 0, mIntent, 0);
 
         locationObservable =
                 new LocationObservable(this, Constants.Localization.LOCATION_GPS_TIMEOUT,
@@ -121,12 +123,6 @@ public class WeatherService extends Service implements Observer {
             Log.d(TAG, "Weather Observer update..." +
                     "\n");
 
-            String deltaTime = new DateHelper()
-                    .deltaTime(dpRain.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-            if(dpRain.getIcon().equals(Constants.ForecastIO.Icon.RAIN)) {
-                new NotificationHelper(this, "Rain expected " + deltaTime);
-            }
-
             writeResult(dpRain, currently, Constants.ForecastIO.Icon.RAIN);
         }
     }
@@ -172,5 +168,14 @@ public class WeatherService extends Service implements Observer {
         editor.putString(Constants.SharedPref.CURRENTLY, update);
         editor.putString(Constants.SharedPref.HISTORY, forecast);
         editor.commit();
+
+        String deltaTime = "";
+        if(dp != null) {
+            if(dp.getIcon().equals(Constants.ForecastIO.Icon.RAIN)) {
+                deltaTime = new DateHelper()
+                        .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
+                new NotificationHelper(this, "Rain expected " + deltaTime);
+            }
+        }
     }
 }

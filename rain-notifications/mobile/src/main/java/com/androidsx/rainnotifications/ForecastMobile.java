@@ -1,54 +1,30 @@
 package com.androidsx.rainnotifications;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 
-import java.util.Locale;
-import java.util.Observer;
-import java.util.Observable;
-
-import android.os.SystemClock;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.Models.WeatherObservable;
 import com.androidsx.rainnotifications.Services.WeatherService;
 import com.androidsx.rainnotifications.Utils.Constants;
-import com.androidsx.rainnotifications.Utils.NotificationHelper;
-import com.forecast.io.v2.network.services.ForecastService.Response;
-import com.forecast.io.v2.transfer.DataPoint;
 
-import com.androidsx.rainnotifications.Models.LocationObservable;
-import com.androidsx.rainnotifications.Models.WeatherObservable;
-import com.androidsx.rainnotifications.Utils.AddressHelper;
-import com.androidsx.rainnotifications.Utils.DateHelper;
-import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
-import com.androidsx.rainnotifications.Utils.Constants.Time;
-import com.androidsx.rainnotifications.Utils.Constants.Localization;
-import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
-import com.androidsx.rainnotifications.Services.ScheduleService;
-
-public class ForecastMobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
+public class ForecastMobile extends Activity implements View.OnClickListener/*, DataApi.DataListener*/ {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
-
-    private SharedPreferences shared;
 
     private Button btn_call;
     private TextView txt_response;
     private TextView txt_city;
     private TextView txt_update;
+
+    private SharedPreferences shared;
 
     //private GoogleApiClient mGoogleApiClient = getGoogleApiClient();
 
@@ -63,12 +39,9 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         setupUI();
     }
 
-    @Override
-    public void update(Observable observable, Object o) {
-
-    }
-
     private void setupUI() {
+        shared = getSharedPreferences(WeatherService.SHARED_WEATHER, 0);
+
         btn_call = (Button) findViewById(R.id.btn_call);
         btn_call.setOnClickListener(this);
         btn_call.setVisibility(View.GONE);
@@ -76,8 +49,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         txt_city = (TextView) findViewById(R.id.txt_city);
         txt_update = (TextView) findViewById(R.id.txt_update);
 
-        shared = getSharedPreferences(WeatherService.SHARED_WEATHER, 0);
-        txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, "Unknown Location"));
+        txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, ""));
         txt_update.setText(shared.getString(Constants.SharedPref.CURRENTLY, ""));
         txt_response.setText(shared.getString(Constants.SharedPref.HISTORY, ""));
     }
@@ -85,8 +57,6 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //locationObservable.deleteObserver(this);
-        //locationObservable = null;
     }
 
     @Override
