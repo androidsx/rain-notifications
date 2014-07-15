@@ -8,51 +8,111 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".forecast_mobile" >
 
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        android:id="@+id/buttons">
+            <Button
+                android:id="@+id/btn_refresh"
+                android:text="@string/btn_refresh"
+                android:layout_width="0dip"
+                android:layout_weight="50"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true" />
             <Button
                 android:id="@+id/btn_call"
                 android:text="@string/btn_forecast"
-                android:layout_width="match_parent"
+                android:layout_width="0dip"
+                android:layout_weight="50"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true" />
-
-            <Button
-                android:id="@+id/btn_refresh"
-                android:layout_below="@+id/btn_call"
-                android:text="@string/btn_refresh"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/update_info"
+        android:layout_below="@+id/buttons">
 
             <TextView
                 android:id="@+id/txt_city"
-                android:layout_below="@+id/btn_refresh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:gravity="left"
+                android:gravity="center"
                 android:textColor="#ff0000"
                 android:textStyle="bold|italic"
                 android:textSize="20dip"
                 android:textAllCaps="true" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="100">
+
+            <TextView
+                android:id="@+id/update_text"
+                android:layout_width="0dip"
+                android:layout_weight="40"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textColor="#ff258c2e"
+                android:textStyle="bold|italic"
+                android:textSize="20dip"
+                android:layout_marginTop="45dip"
+                android:text="Now"/>
+
+            <ImageView
+                android:layout_width="0dip"
+                android:layout_weight="60"
+                android:layout_height="120dip"
+                android:id="@+id/icon" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/update"
+        android:layout_width="match_parent"
+        android:layout_height="120dip"
+        android:orientation="horizontal"
+        android:layout_below="@+id/update_info"
+        android:weightSum="100"
+        android:paddingBottom="15dip">
+
+            <ImageView
+                android:layout_width="0dip"
+                android:layout_height="fill_parent"
+                android:layout_weight="40"
+                android:id="@+id/update_icon"
+                android:layout_toRightOf="@+id/txt_update"
+                android:gravity="top"
+                android:paddingRight="5dip"/>
+
             <TextView
                 android:id="@+id/txt_update"
-                android:layout_below="@+id/txt_city"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_width="0dip"
+                android:layout_weight="60"
+                android:layout_height="fill_parent"
                 android:gravity="left"
                 android:textColor="#ffed7100"
                 android:textSize="16dip"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:paddingLeft="5dip"
+                android:layout_marginTop="25dip"/>
+
+    </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_update" >
+        android:layout_below="@+id/update"
+        android:layout_centerHorizontal="true">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
             <TextView
@@ -60,12 +120,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:gravity="left"
+                        android:gravity="center"
                         android:textColor="#ff4750ed"
-                        android:textSize="16dip"
+                        android:textSize="13dip"
                         android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>
-
 </RelativeLayout>

@@ -142,6 +142,7 @@ public class WeatherService extends Service implements Observer {
                     " at "+ currentTime +
                     "\n\nNo changes expected until tomorrow." +
                     "\n\nNext API call at: " + nextApiCall;
+            editor.putString(Constants.SharedPref.ICON, currently.getIcon());
         }
         else {
             String deltaTime = new DateHelper()
@@ -161,8 +162,29 @@ public class WeatherService extends Service implements Observer {
                         "\n\n" + dp.getIcon() + " expected at " + forecastTime +
                         " \n" + deltaTime + ".\n\nNext API call at: " + nextApiCall;
             }
+            editor.putString(Constants.SharedPref.ICON, dp.getIcon());
         }
         forecast += update + "\n--------------------";
+        if(dp == null) {
+            update = "No changes expected until tomorrow." +
+                    "\n\nNext API call at: " + nextApiCall + "\n";
+            editor.putString(Constants.SharedPref.ICON, currently.getIcon());
+        }
+        else {
+            String deltaTime = new DateHelper()
+                    .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
+
+            String forecastTime = new DateHelper()
+                    .formatTime(dp.getTime(), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_NEW_YORK, Locale.US);
+
+            if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
+                update = deltaTime + ".\n\nNext API call at: " + nextApiCall + "\n";
+            } else {
+                update = deltaTime + ".\n\nNext API call at: " + nextApiCall + "\n";
+            }
+            editor.putString(Constants.SharedPref.ICON, currently.getIcon());
+            editor.putString(Constants.SharedPref.UPDATE_ICON, dp.getIcon());
+        }
         Log.d(TAG, ".\n" + update);
 
         editor.putString(Constants.SharedPref.CURRENTLY, update);

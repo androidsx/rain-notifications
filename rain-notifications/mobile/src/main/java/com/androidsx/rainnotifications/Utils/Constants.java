@@ -50,5 +50,7 @@ public class Constants {
         public static final String LOCATION = "location";
         public static final String CURRENTLY = "currently";
         public static final String HISTORY = "history";
+        public static final String ICON = "icon";
+        public static final String UPDATE_ICON = "update_icon";
     }
 }

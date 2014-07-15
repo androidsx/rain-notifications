@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Models.WeatherObservable;
@@ -24,6 +25,8 @@ public class ForecastMobile extends Activity implements View.OnClickListener/*, 
     private TextView txt_response;
     private TextView txt_city;
     private TextView txt_update;
+    private ImageView icon;
+    private ImageView update_icon;
 
     private SharedPreferences shared;
 
@@ -48,10 +51,16 @@ public class ForecastMobile extends Activity implements View.OnClickListener/*, 
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);
         txt_update = (TextView) findViewById(R.id.txt_update);
+        icon = (ImageView) findViewById(R.id.icon);
+        update_icon = (ImageView) findViewById(R.id.update_icon);
 
         txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, ""));
         txt_update.setText(shared.getString(Constants.SharedPref.CURRENTLY, ""));
         txt_response.setText(shared.getString(Constants.SharedPref.HISTORY, ""));
+        String ic = shared.getString(Constants.SharedPref.ICON, "");
+        icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
+        ic = shared.getString(Constants.SharedPref.UPDATE_ICON, "");
+        update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
     }
 
     @Override
@@ -66,11 +75,39 @@ public class ForecastMobile extends Activity implements View.OnClickListener/*, 
             startService(i);
             btn_call.setVisibility(View.GONE);
         } else {
+            String ic = shared.getString(Constants.SharedPref.ICON, "");
             txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, ""));
             txt_update.setText(shared.getString(Constants.SharedPref.CURRENTLY, ""));
             txt_response.setText(shared.getString(Constants.SharedPref.HISTORY, ""));
+            icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
+            ic = shared.getString(Constants.SharedPref.UPDATE_ICON, "");
+            update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
         }
 
+    }
+
+    private int getIcon(String icon) {
+        if(icon.equals(Constants.ForecastIO.Icon.RAIN)) {
+            return R.drawable.rain;
+        } else if(icon.equals(Constants.ForecastIO.Icon.CLEAR_DAY)) {
+            return R.drawable.clear_day;
+        } else if(icon.equals(Constants.ForecastIO.Icon.CLEAR_NIGHT)) {
+            return R.drawable.clear_night;
+        } else if(icon.equals(Constants.ForecastIO.Icon.CLOUDY)) {
+            return R.drawable.cloudy;
+        } else if(icon.equals(Constants.ForecastIO.Icon.PARTLY_CLOUDY_DAY)) {
+            return R.drawable.partly_cloudy_day;
+        } else if(icon.equals(Constants.ForecastIO.Icon.PARTLY_CLOUDY_NIGHT)) {
+            return R.drawable.partly_cloudy_night;
+        } else if(icon.equals(Constants.ForecastIO.Icon.SNOW)) {
+            return R.drawable.snow;
+        } else if(icon.equals(Constants.ForecastIO.Icon.THUNDERSTORM)) {
+            return R.drawable.thunderstorm;
+        } else if(icon.equals(Constants.ForecastIO.Icon.HAIL)) {
+            return R.drawable.hail;
+        } else {
+            return R.drawable.unknown;
+        }
     }
 
     /*private void sendToWatch(String summary, String icon, String deltaTime, String forecastTime) {

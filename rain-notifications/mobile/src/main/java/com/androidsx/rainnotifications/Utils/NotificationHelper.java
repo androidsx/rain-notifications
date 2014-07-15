@@ -27,6 +27,8 @@ public class NotificationHelper {
         PendingIntent pi = PendingIntent.getActivity(context, 0, intent, 0);
 
         mBuilder.setContentIntent(pi);
+        mBuilder.setAutoCancel(true);
+
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
