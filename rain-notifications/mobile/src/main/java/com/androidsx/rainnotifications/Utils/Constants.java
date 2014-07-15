@@ -46,4 +46,9 @@ public class Constants {
             public static final String TORNADO = "tornado";
         }
     }
+    public static class SharedPref {
+        public static final String LOCATION = "location";
+        public static final String CURRENTLY = "currently";
+        public static final String HISTORY = "history";
+    }
 }

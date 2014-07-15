@@ -5,14 +5,13 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.androidsx.rainnotifications.ForecastAnalyzer;
 import com.androidsx.rainnotifications.Models.LocationObservable;
@@ -32,6 +31,8 @@ import java.util.Observer;
 public class WeatherService extends Service implements Observer {
 
     private static final String TAG = WeatherService.class.getSimpleName();
+    public static final String SHARED_WEATHER = "weather";
+
     public static long nextApiCallTime = -1;
 
     public static Location lastLocation;
@@ -40,6 +41,9 @@ public class WeatherService extends Service implements Observer {
 
     private LocationObservable locationObservable;
     public static WeatherObservable weatherObservable;
+
+    private SharedPreferences shared;
+    private SharedPreferences.Editor editor;
 
     double latitude = Constants.Localization.NEW_YORK_LAT;
     double longitude = Constants.Localization.NEW_YORK_LON;
@@ -54,7 +58,7 @@ public class WeatherService extends Service implements Observer {
     public int onStartCommand(Intent intent, int flags, int startId) {
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         intent = new Intent(this, ScheduleService.class);
-        alarmIntent = PendingIntent.getService(this, 0, intent, 0);
+        alarmIntent = PendingIntent.getService(getApplicationContext(), 0, intent, 0);
 
         locationObservable =
                 new LocationObservable(this, Constants.Localization.LOCATION_GPS_TIMEOUT,
@@ -85,6 +89,12 @@ public class WeatherService extends Service implements Observer {
             weatherObservable.getWeather(
                     lastLocation.getLatitude(),
                     lastLocation.getLongitude());
+
+            shared = getSharedPreferences(SHARED_WEATHER, 0);
+            editor = shared.edit();
+
+            editor.putString(Constants.SharedPref.LOCATION, address);
+            editor.commit();
 
             Log.d(TAG, "Location Observer update...\nLocation: " + address +
                     " --> lat: " + latitude +
@@ -122,6 +132,10 @@ public class WeatherService extends Service implements Observer {
     }
 
     private void writeResult(DataPoint dp, DataPoint currently, String icon) {
+        shared = getSharedPreferences(SHARED_WEATHER, 0);
+        editor = shared.edit();
+        forecast = shared.getString(Constants.SharedPref.HISTORY, "");
+
         String update = "";
         String currentTime = new DateHelper()
                 .formatTime(System.currentTimeMillis() / 1000, Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_NEW_YORK, Locale.US);
@@ -154,5 +168,9 @@ public class WeatherService extends Service implements Observer {
         }
         forecast += update + "\n--------------------";
         Log.d(TAG, ".\n" + update);
+
+        editor.putString(Constants.SharedPref.CURRENTLY, update);
+        editor.putString(Constants.SharedPref.HISTORY, forecast);
+        editor.commit();
     }
 }

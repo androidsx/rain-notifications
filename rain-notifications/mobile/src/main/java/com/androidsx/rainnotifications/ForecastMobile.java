@@ -5,6 +5,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Services.WeatherService;
+import com.androidsx.rainnotifications.Utils.Constants;
 import com.androidsx.rainnotifications.Utils.NotificationHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
@@ -40,23 +42,14 @@ import com.androidsx.rainnotifications.Services.ScheduleService;
 public class ForecastMobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
-    private static long nextApiCallTime = -1;
 
-    public static Location lastLocation;
-    private AlarmManager alarmMgr;
-    private Intent intent;
-    private PendingIntent alarmIntent;
+    private SharedPreferences shared;
 
-    private LocationObservable locationObservable;
-    public static WeatherObservable weatherObservable;
     private Button btn_call;
     private TextView txt_response;
     private TextView txt_city;
     private TextView txt_update;
 
-    double latitude = Localization.NEW_YORK_LAT;
-    double longitude = Localization.NEW_YORK_LON;
-    String forecast = "";
     //private GoogleApiClient mGoogleApiClient = getGoogleApiClient();
 
     @Override
@@ -67,109 +60,12 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         Intent i = new Intent(this, WeatherService.class);
         startService(i);
 
-        /*alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        intent = new Intent(this, ScheduleService.class);
-        alarmIntent = PendingIntent.getService(this, 0, intent, 0);
-
-        locationObservable =
-                new LocationObservable(this, Localization.LOCATION_GPS_TIMEOUT,
-                        Localization.LOCATION_NETWORK_TIMEOUT, Localization.LOCATION_DISTANCE);
-        locationObservable.addObserver(this);
-
-        weatherObservable = new WeatherObservable();
-        weatherObservable.addObserver(this);
-
-        lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
-        lastLocation.setLatitude(latitude);
-        lastLocation.setLongitude(longitude);*/
-
         setupUI();
     }
 
     @Override
     public void update(Observable observable, Object o) {
-        if(observable.getClass().equals(LocationObservable.class)){
-            Location location = (Location) o;
 
-            //lastLocation = location;
-
-            String address = new AddressHelper().getLocationAddress(this,
-                    lastLocation.getLatitude(), lastLocation.getLongitude());
-
-            weatherObservable.getWeather(
-                    lastLocation.getLatitude(),
-                    lastLocation.getLongitude());
-            txt_city.setText(address);
-            Log.d(TAG, "Location Observer update...\nLocation: " + address +
-                    " --> lat: " + latitude +
-                    " - long: " + longitude);
-
-        } else if(observable.getClass().equals(WeatherObservable.class)) {
-            Response response = (Response) o;
-
-            DataPoint currently = response.getForecast().getCurrently();
-            DataPoint dpRain;
-
-            ForecastAnalyzer fa = new ForecastAnalyzer();
-            fa.setResponse(response);
-            dpRain = fa.analyzeForecastForRain(currently.getIcon());
-
-            if(alarmMgr != null) {
-                alarmMgr.cancel(alarmIntent);
-                alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        SystemClock.elapsedRealtime() +
-                                (nextApiCallTime * 1000 - System.currentTimeMillis()),
-                        alarmIntent);
-            }
-
-            Log.d(TAG, "Weather Observer update..." +
-                    "\n");
-
-            String deltaTime = new DateHelper()
-                    .deltaTime(dpRain.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-            if(dpRain.getIcon().equals(Icon.RAIN)) {
-                new NotificationHelper(this, "Rain expected " + deltaTime);
-            }
-
-            writeResult(dpRain, currently, Icon.RAIN);
-        }
-    }
-
-    private void writeResult(DataPoint dp, DataPoint currently, String icon) {
-        String update = "";
-        String currentTime = new DateHelper()
-                .formatTime(System.currentTimeMillis() / 1000, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
-        String nextApiCall = new DateHelper()
-                .formatTime(nextApiCallTime, Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
-        if(dp == null) {
-            update = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
-                    " at "+ currentTime +
-                    "\n\nNo changes expected until tomorrow." +
-                    "\n\nNext API call at: " + nextApiCall;
-        }
-        else {
-            String deltaTime = new DateHelper()
-                    .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-
-            String forecastTime = new DateHelper()
-                    .formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
-
-            if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
-                update = "\nFound: " + dp.getIcon() + "\n\nCurrently: " + currently.getIcon() +
-                        "\nat "+ currentTime +
-                        "\n\n" + dp.getIcon() + " expected at " + forecastTime +
-                        " \n" + deltaTime + ".\n\nNext API call at: " + nextApiCall;
-            } else {
-                update = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
-                        "\nat "+ currentTime +
-                        "\n\n" + dp.getIcon() + " expected at " + forecastTime +
-                        " \n" + deltaTime + ".\n\nNext API call at: " + nextApiCall;
-            }
-        }
-        forecast += update + "\n--------------------";
-        txt_response.setText(forecast);
-        txt_update.setText("******************************" + update + "\n******************************");
-        Log.d(TAG, ".\n" + update);
     }
 
     private void setupUI() {
@@ -179,10 +75,11 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);
         txt_update = (TextView) findViewById(R.id.txt_update);
-    }
 
-    public static void setNextApiCallTime(long time) {
-        nextApiCallTime = time;
+        shared = getSharedPreferences(WeatherService.SHARED_WEATHER, 0);
+        txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, "Unknown Location"));
+        txt_update.setText(shared.getString(Constants.SharedPref.CURRENTLY, ""));
+        txt_response.setText(shared.getString(Constants.SharedPref.HISTORY, ""));
     }
 
     @Override

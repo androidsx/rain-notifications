@@ -24,9 +24,9 @@ public class ScheduleService extends Service {
     }
 
     private void callForecastIO() {
-        ForecastMobile.weatherObservable.getWeather(
-                ForecastMobile.lastLocation.getLatitude(),
-                ForecastMobile.lastLocation.getLongitude());
+        WeatherService.weatherObservable.getWeather(
+                WeatherService.lastLocation.getLatitude(),
+                WeatherService.lastLocation.getLongitude());
 
         Log.d(TAG, "Scheduled Forecast.io ...");
     }
