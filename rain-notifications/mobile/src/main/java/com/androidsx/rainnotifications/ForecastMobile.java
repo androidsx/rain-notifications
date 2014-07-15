@@ -123,9 +123,10 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
             String rainTime = new DateHelper()
                     .formatTime(dpRain.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
-
+            String deltaTime = new DateHelper()
+                    .deltaTime(dpRain.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
             if(dpRain.getIcon().equals(Icon.RAIN)) {
-                new NotificationHelper(this, "Rain expected at " + rainTime);
+                new NotificationHelper(this, "Rain expected " + deltaTime);
             }
 
             writeResult(dpRain, currently, Icon.RAIN);
