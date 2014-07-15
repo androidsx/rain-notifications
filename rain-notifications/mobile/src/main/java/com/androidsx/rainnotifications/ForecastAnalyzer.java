@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications;
 
 import android.util.Log;
 
+import com.androidsx.rainnotifications.Services.WeatherService;
 import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
 import com.androidsx.rainnotifications.Utils.Constants.Time;
 import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
@@ -50,15 +51,15 @@ public class ForecastAnalyzer {
             //Log.d(TAG, "Schedule Time in: " + time / 60 + " min.");
             if(time > ONE_MINUTES && time < TEN_MINUTES) {
                 if(time > FOUR_MINUTES) {
-                    ForecastMobile.setNextApiCallTime(currentTime + time);
+                    WeatherService.nextApiCallTime = currentTime + time;
                 } else {
-                    ForecastMobile.setNextApiCallTime(dp.getTime());
+                    WeatherService.nextApiCallTime = dp.getTime();
                 }
             } else {
-                ForecastMobile.setNextApiCallTime(currentTime + time);
+                WeatherService.nextApiCallTime = currentTime + time;
             }
         } else {
-            ForecastMobile.setNextApiCallTime(currentTime + (HOUR * 4));
+            WeatherService.nextApiCallTime = currentTime + (HOUR * 4);
         }
 
         return dp;

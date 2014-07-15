@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.Services.WeatherService;
 import com.androidsx.rainnotifications.Utils.NotificationHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
@@ -63,7 +64,10 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast_mobile);
 
-        alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(this, WeatherService.class);
+        startService(i);
+
+        /*alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         intent = new Intent(this, ScheduleService.class);
         alarmIntent = PendingIntent.getService(this, 0, intent, 0);
 
@@ -77,7 +81,7 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
 
         lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
         lastLocation.setLatitude(latitude);
-        lastLocation.setLongitude(longitude);
+        lastLocation.setLongitude(longitude);*/
 
         setupUI();
     }
@@ -121,8 +125,6 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
             Log.d(TAG, "Weather Observer update..." +
                     "\n");
 
-            String rainTime = new DateHelper()
-                    .formatTime(dpRain.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
             String deltaTime = new DateHelper()
                     .deltaTime(dpRain.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
             if(dpRain.getIcon().equals(Icon.RAIN)) {
@@ -186,8 +188,8 @@ public class ForecastMobile extends Activity implements Observer, View.OnClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        locationObservable.deleteObserver(this);
-        locationObservable = null;
+        //locationObservable.deleteObserver(this);
+        //locationObservable = null;
     }
 
     @Override
