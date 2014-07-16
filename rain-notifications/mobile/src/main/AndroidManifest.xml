@@ -23,14 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service
-            android:name="com.androidsx.rainnotifications.Services.ScheduleService"
-            android:enabled="true">
-        </service>
-        <service
-            android:name="com.androidsx.rainnotifications.Services.WeatherService"
-            android:enabled="true">
-        </service>
+        <service android:name="com.androidsx.rainnotifications.Services.ScheduleService" />
+        <service android:name="com.androidsx.rainnotifications.Services.WeatherService" />
         <receiver android:name=".Services.OnBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
