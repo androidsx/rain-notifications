@@ -1,6 +1,5 @@
-package com.androidsx.rainnotifications.Models;
+package com.androidsx.rainnotifications.model;
 
-import android.util.Log;
 import java.util.Observable;
 
 import com.forecast.io.network.responses.INetworkResponse;
@@ -11,7 +10,7 @@ import com.forecast.io.v2.network.services.ForecastService.Request;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.LatLng;
 
-import com.androidsx.rainnotifications.Utils.Constants.ForecastIO;
+import com.androidsx.rainnotifications.util.Constants.ForecastIO;
 
 public class WeatherObservable extends Observable {
 

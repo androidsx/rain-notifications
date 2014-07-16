@@ -1,11 +1,9 @@
-package com.androidsx.rainnotifications.Services;
+package com.androidsx.rainnotifications.service;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
-
-import com.androidsx.rainnotifications.ForecastMobile;
 
 public class ScheduleService extends Service {
 

@@ -2,12 +2,12 @@ package com.androidsx.rainnotifications;
 
 import android.util.Log;
 
-import com.androidsx.rainnotifications.Services.WeatherService;
-import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
-import com.androidsx.rainnotifications.Utils.Constants.Time;
-import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
+import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.util.AnalyzerHelper;
+import com.androidsx.rainnotifications.util.Constants.Time;
+import com.androidsx.rainnotifications.util.Constants.ForecastIO.Icon;
 
-import com.androidsx.rainnotifications.Utils.DateHelper;
+import com.androidsx.rainnotifications.util.DateHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
 

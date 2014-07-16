@@ -12,16 +12,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidsx.rainnotifications.Models.WeatherObservable;
-import com.androidsx.rainnotifications.Services.WeatherService;
-import com.androidsx.rainnotifications.Utils.Constants;
+import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.util.Constants;
 
-public class ForecastMobile extends Activity implements View.OnClickListener/*, DataApi.DataListener*/ {
+public class ForecastMobile extends Activity /* implements DataApi.DataListener*/ {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
 
-    private Button btn_call;
-    private Button btn_refresh;
     private TextView txt_response;
     private TextView txt_city;
     private TextView txt_update;
@@ -43,11 +40,6 @@ public class ForecastMobile extends Activity implements View.OnClickListener/*, 
     private void setupUI() {
         shared = getSharedPreferences(WeatherService.SHARED_WEATHER, 0);
 
-        btn_call = (Button) findViewById(R.id.btn_call);
-        btn_call.setOnClickListener(this);
-        btn_refresh = (Button) findViewById(R.id.btn_refresh);
-        btn_refresh.setOnClickListener(this);
-
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);
         txt_update = (TextView) findViewById(R.id.txt_update);
@@ -63,27 +55,21 @@ public class ForecastMobile extends Activity implements View.OnClickListener/*, 
         update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    /** Linked to the button in the XML layout. */
+    public void callApi(View view) {
+        startService(new Intent(this, WeatherService.class));
+        view.setEnabled(false);
     }
 
-    @Override
-    public void onClick(View view) {
-        if(view.equals(btn_call)) {
-            Intent i = new Intent(this, WeatherService.class);
-            startService(i);
-            btn_call.setVisibility(View.GONE);
-        } else {
-            String ic = shared.getString(Constants.SharedPref.ICON, "");
-            txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, ""));
-            txt_update.setText(shared.getString(Constants.SharedPref.CURRENTLY, ""));
-            txt_response.setText(shared.getString(Constants.SharedPref.HISTORY, ""));
-            icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
-            ic = shared.getString(Constants.SharedPref.UPDATE_ICON, "");
-            update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
-        }
-
+    /** Linked to the button in the XML layout. */
+    public void refresh(View view) {
+        String ic = shared.getString(Constants.SharedPref.ICON, "");
+        txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, ""));
+        txt_update.setText(shared.getString(Constants.SharedPref.CURRENTLY, ""));
+        txt_response.setText(shared.getString(Constants.SharedPref.HISTORY, ""));
+        icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
+        ic = shared.getString(Constants.SharedPref.UPDATE_ICON, "");
+        update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
     }
 
     private int getIcon(String icon) {

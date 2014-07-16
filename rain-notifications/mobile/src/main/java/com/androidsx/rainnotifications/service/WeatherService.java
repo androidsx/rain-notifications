@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.Services;
+package com.androidsx.rainnotifications.service;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -6,7 +6,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.IBinder;
@@ -15,14 +14,13 @@ import android.text.format.DateUtils;
 import android.util.Log;
 
 import com.androidsx.rainnotifications.ForecastAnalyzer;
-import com.androidsx.rainnotifications.ForecastMobile;
-import com.androidsx.rainnotifications.Models.LocationObservable;
-import com.androidsx.rainnotifications.Models.WeatherObservable;
-import com.androidsx.rainnotifications.Utils.AddressHelper;
-import com.androidsx.rainnotifications.Utils.AnalyzerHelper;
-import com.androidsx.rainnotifications.Utils.Constants;
-import com.androidsx.rainnotifications.Utils.DateHelper;
-import com.androidsx.rainnotifications.Utils.NotificationHelper;
+import com.androidsx.rainnotifications.model.LocationObservable;
+import com.androidsx.rainnotifications.model.WeatherObservable;
+import com.androidsx.rainnotifications.util.AddressHelper;
+import com.androidsx.rainnotifications.util.AnalyzerHelper;
+import com.androidsx.rainnotifications.util.Constants;
+import com.androidsx.rainnotifications.util.DateHelper;
+import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.forecast.io.v2.network.services.ForecastService;
 import com.forecast.io.v2.transfer.DataPoint;
 

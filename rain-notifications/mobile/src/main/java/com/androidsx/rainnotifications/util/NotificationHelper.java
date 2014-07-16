@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.Utils;
+package com.androidsx.rainnotifications.util;
 
 import android.app.Notification;
 import android.app.NotificationManager;
