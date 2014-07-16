@@ -25,7 +25,7 @@ public class Constants {
 
         public static final long LOCATION_GPS_TIMEOUT = 30 * 60 * 1000; // 30 minutes
         public static final long LOCATION_NETWORK_TIMEOUT = 1 * 60 * 60 * 1000; // 1 hour
-        public static final long LOCATION_DISTANCE = 5000; // 5 km
+        public static final long LOCATION_DISTANCE = 0; // 0 km
     }
     public static class ForecastIO {
         public static final String API_KEY = "f1fd27e70564bd6765bf40b3497cbf4f";
@@ -47,10 +47,15 @@ public class Constants {
         }
     }
     public static class SharedPref {
-        public static final String LOCATION = "location";
+        public static final String SHARED_RAIN = "shared_rain";
+
+        public static final String ADDRESS = "address";
         public static final String CURRENTLY = "currently";
         public static final String HISTORY = "history";
-        public static final String ICON = "icon";
-        public static final String UPDATE_ICON = "update_icon";
+        public static final String CURRENTLY_ICON = "currently_icon";
+        public static final String NEXT_FORECAST_ICON = "next_forecast_icon";
+        public static final String NEXT_ALARM_TIME = "next_alarm_time";
+        public static final String LAST_LOCATION_LAT = "last_location_lat";
+        public static final String LAST_LOCATION_LON = "last_location_lon";
     }
 }

@@ -35,11 +35,6 @@ public class LocationObservable extends Observable {
         this.minTimeGPS = minTimeGPS;
         this.minTimeNetwork = minTimeNetwork;
         this.minDist = minDist;
-
-        mLocationListenerGPS = getNewLocationListener();
-        mLocationListenerNetwork = getNewLocationListener();
-        locationHelper.registerProvider(GPS_PROVIDER, minTimeGPS, minDist, mLocationListenerGPS);
-        locationHelper.registerProvider(NETWORK_PROVIDER, minTimeNetwork, minDist, mLocationListenerNetwork);
     }
 
     private LocationListener getNewLocationListener() {
@@ -76,6 +71,18 @@ public class LocationObservable extends Observable {
         clearChanged();
     }
 
+    public void startLocationListeners() {
+        mLocationListenerGPS = getNewLocationListener();
+        mLocationListenerNetwork = getNewLocationListener();
+        enableLocationUpdates(NETWORK_PROVIDER);
+        enableLocationUpdates(GPS_PROVIDER);
+    }
+
+    public void stopLocationListeners() {
+        locationHelper.unRegisterProvider(mLocationListenerGPS);
+        locationHelper.unRegisterProvider(mLocationListenerNetwork);
+    }
+
     private void enableLocationUpdates(String provider) {
         if(provider.equals(GPS_PROVIDER) && locationHelper.isProviderEnabled(NETWORK_PROVIDER)) {
             locationHelper.registerProvider(NETWORK_PROVIDER, minTimeNetwork, minDist, mLocationListenerNetwork);
@@ -99,7 +106,7 @@ public class LocationObservable extends Observable {
         Log.d(TAG, "statusChanged - Status: " + provider + " : " + state);
     }
 
-    public void updateProviderState(String provider, int state) {
+    private void updateProviderState(String provider, int state) {
         if(provider.equals(GPS_PROVIDER)) {
 
             if(state == AVAILABLE && !locationHelper.isProviderEnabled(NETWORK_PROVIDER)) {

@@ -8,14 +8,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.service.WeatherService;
-import com.androidsx.rainnotifications.util.Constants;
+import com.androidsx.rainnotifications.util.Constants.SharedPref;
+import com.androidsx.rainnotifications.util.Constants.ForecastIO;
 
-public class ForecastMobile extends Activity /* implements DataApi.DataListener*/ {
+public class ForecastMobile extends Activity {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
 
@@ -27,8 +27,6 @@ public class ForecastMobile extends Activity /* implements DataApi.DataListener*
 
     private SharedPreferences shared;
 
-    //private GoogleApiClient mGoogleApiClient = getGoogleApiClient();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +36,7 @@ public class ForecastMobile extends Activity /* implements DataApi.DataListener*
     }
 
     private void setupUI() {
-        shared = getSharedPreferences(WeatherService.SHARED_WEATHER, 0);
+        shared = getSharedPreferences(SharedPref.SHARED_RAIN, 0);
 
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);
@@ -46,12 +44,12 @@ public class ForecastMobile extends Activity /* implements DataApi.DataListener*
         icon = (ImageView) findViewById(R.id.icon);
         update_icon = (ImageView) findViewById(R.id.update_icon);
 
-        txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, ""));
-        txt_update.setText(shared.getString(Constants.SharedPref.CURRENTLY, ""));
-        txt_response.setText(shared.getString(Constants.SharedPref.HISTORY, ""));
-        String ic = shared.getString(Constants.SharedPref.ICON, "");
+        txt_city.setText(shared.getString(SharedPref.ADDRESS, ""));
+        txt_update.setText(shared.getString(SharedPref.CURRENTLY, ""));
+        txt_response.setText(shared.getString(SharedPref.HISTORY, ""));
+        String ic = shared.getString(SharedPref.CURRENTLY_ICON, "");
         icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
-        ic = shared.getString(Constants.SharedPref.UPDATE_ICON, "");
+        ic = shared.getString(SharedPref.NEXT_FORECAST_ICON, "");
         update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
     }
 
@@ -63,67 +61,38 @@ public class ForecastMobile extends Activity /* implements DataApi.DataListener*
 
     /** Linked to the button in the XML layout. */
     public void refresh(View view) {
-        String ic = shared.getString(Constants.SharedPref.ICON, "");
-        txt_city.setText(shared.getString(Constants.SharedPref.LOCATION, ""));
-        txt_update.setText(shared.getString(Constants.SharedPref.CURRENTLY, ""));
-        txt_response.setText(shared.getString(Constants.SharedPref.HISTORY, ""));
+        String ic = shared.getString(SharedPref.CURRENTLY_ICON, "");
+        txt_city.setText(shared.getString(SharedPref.ADDRESS, ""));
+        txt_update.setText(shared.getString(SharedPref.CURRENTLY, ""));
+        txt_response.setText(shared.getString(SharedPref.HISTORY, ""));
         icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
-        ic = shared.getString(Constants.SharedPref.UPDATE_ICON, "");
+        ic = shared.getString(SharedPref.NEXT_FORECAST_ICON, "");
         update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
     }
 
     private int getIcon(String icon) {
-        if(icon.equals(Constants.ForecastIO.Icon.RAIN)) {
+        if(icon.equals(ForecastIO.Icon.RAIN)) {
             return R.drawable.rain;
-        } else if(icon.equals(Constants.ForecastIO.Icon.CLEAR_DAY)) {
+        } else if(icon.equals(ForecastIO.Icon.CLEAR_DAY)) {
             return R.drawable.clear_day;
-        } else if(icon.equals(Constants.ForecastIO.Icon.CLEAR_NIGHT)) {
+        } else if(icon.equals(ForecastIO.Icon.CLEAR_NIGHT)) {
             return R.drawable.clear_night;
-        } else if(icon.equals(Constants.ForecastIO.Icon.CLOUDY)) {
+        } else if(icon.equals(ForecastIO.Icon.CLOUDY)) {
             return R.drawable.cloudy;
-        } else if(icon.equals(Constants.ForecastIO.Icon.PARTLY_CLOUDY_DAY)) {
+        } else if(icon.equals(ForecastIO.Icon.PARTLY_CLOUDY_DAY)) {
             return R.drawable.partly_cloudy_day;
-        } else if(icon.equals(Constants.ForecastIO.Icon.PARTLY_CLOUDY_NIGHT)) {
+        } else if(icon.equals(ForecastIO.Icon.PARTLY_CLOUDY_NIGHT)) {
             return R.drawable.partly_cloudy_night;
-        } else if(icon.equals(Constants.ForecastIO.Icon.SNOW)) {
+        } else if(icon.equals(ForecastIO.Icon.SNOW)) {
             return R.drawable.snow;
-        } else if(icon.equals(Constants.ForecastIO.Icon.THUNDERSTORM)) {
+        } else if(icon.equals(ForecastIO.Icon.THUNDERSTORM)) {
             return R.drawable.thunderstorm;
-        } else if(icon.equals(Constants.ForecastIO.Icon.HAIL)) {
+        } else if(icon.equals(ForecastIO.Icon.HAIL)) {
             return R.drawable.hail;
         } else {
             return R.drawable.unknown;
         }
     }
-
-    /*private void sendToWatch(String summary, String icon, String deltaTime, String forecastTime) {
-        PutDataMapRequest dataMap = PutDataMapRequest.create("/forecast");
-        dataMap.getDataMap().putString(EXTRA_FORECAST, summary);
-
-        PutDataRequest request = dataMap.asPutDataRequest();
-        PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
-                .putDataItem(mGoogleApiClient, request);
-
-        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-            @Override
-            public void onResult(DataApi.DataItemResult dataItemResult) {
-                if(dataItemResult.getStatus().isSuccess()) {
-                    Log.d(TAG, "Data item set: " + dataItemResult.getDataItem().getUri());
-                }
-            }
-        });
-    }*/
-
-    /*@Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        for (DataEvent event : dataEvents) {
-            if (event.getType() == DataEvent.TYPE_DELETED) {
-                Log.d(TAG, "DataItem deleted: " + event.getDataItem().getUri());
-            } else if (event.getType() == DataEvent.TYPE_CHANGED) {
-                Log.d(TAG, "DataItem changed: " + event.getDataItem().getUri());
-            }
-        }
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,27 +112,5 @@ public class ForecastMobile extends Activity /* implements DataApi.DataListener*
         }
         return super.onOptionsItemSelected(item);
     }
-
-    /*private GoogleApiClient getGoogleApiClient() {
-        return new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle connectionHint) {
-                        Log.d(TAG, "onConnected: " + connectionHint);
-                    }
-                    @Override
-                    public void onConnectionSuspended(int cause) {
-                        Log.d(TAG, "onConnectionSuspended: " + cause);
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult result) {
-                        Log.d(TAG, "onConnectionFailed: " + result);
-                    }
-                })
-                .addApi(Wearable.API)
-                .build();
-    }*/
 }
 

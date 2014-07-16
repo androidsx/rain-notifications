@@ -1,73 +1,32 @@
 package com.androidsx.rainnotifications;
 
-import android.util.Log;
-
-import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.AnalyzerHelper;
-import com.androidsx.rainnotifications.util.Constants.Time;
 import com.androidsx.rainnotifications.util.Constants.ForecastIO.Icon;
 
-import com.androidsx.rainnotifications.util.DateHelper;
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;
-
-import java.util.Locale;
 
 public class ForecastAnalyzer {
 
     private static final String TAG = ForecastAnalyzer.class.getSimpleName();
-    private static final long HOUR = Time.HOUR_AGO / 1000;
-    private static final long ONE_MINUTES = Time.TWO_MINUTES / 1000 / 2;
-    private static final long TWO_MINUTES = ONE_MINUTES * 2;
-    private static final long FOUR_MINUTES = Time.TWO_MINUTES / 1000 * 4;
-    private static final long TEN_MINUTES = Time.TEN_MINUTES_AGO / 1000;
 
     private AnalyzerHelper analyzer;
-    private long currentTime = System.currentTimeMillis() / 1000;
-    private Response response;
 
     public void setResponse(Response res) {
         this.analyzer = new AnalyzerHelper(res);
-        this.response = res;
     }
 
     public DataPoint analyzeForecastForRain(String currentlyIcon) {
-        //showMinutely();
         if(AnalyzerHelper.compareTo(currentlyIcon, Icon.RAIN)) {
-            return setNextApiCallTime(analyzer.nextRainChange());
+            return analyzer.nextRainChange();
         } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLEAR_DAY)) {
-            return setNextApiCallTime(analyzer.nextClearChange());
+            return analyzer.nextClearChange();
         } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.PARTLY_CLOUDY_DAY)) {
-            return setNextApiCallTime(analyzer.nextPartlyCloudyChange());
+            return analyzer.nextPartlyCloudyChange();
         } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLOUDY)) {
-            return setNextApiCallTime(analyzer.nextCloudyChange());
+            return analyzer.nextCloudyChange();
         }
 
         return null;
-    }
-
-    private DataPoint setNextApiCallTime(DataPoint dp) {
-        if(dp != null) {
-            long time = (dp.getTime() - currentTime) * 70 / 100;
-            //Log.d(TAG, "Schedule Time in: " + time / 60 + " min.");
-            if(time < TEN_MINUTES) {
-                WeatherService.nextApiCallTime = dp.getTime();
-            } else {
-                WeatherService.nextApiCallTime = currentTime + time;
-            }
-        } else {
-            WeatherService.nextApiCallTime = currentTime + (HOUR * 4);
-        }
-
-        return dp;
-    }
-
-    private void showMinutely() {
-        if (response.getForecast().getMinutely() != null) {
-            for (DataPoint dp : response.getForecast().getMinutely().getData()) {
-                String time = new DateHelper().formatTime(dp.getTime(), Time.TIME_FORMAT, Time.TIME_ZONE_NEW_YORK, Locale.US);
-                Log.d(TAG, time + " - Icon: " + dp.getIcon());
-            }
-        }
     }
 }

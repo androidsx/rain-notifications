@@ -16,18 +16,25 @@ public class WeatherObservable extends Observable {
 
     private static final String TAG = WeatherObservable.class.getSimpleName();
 
-    public void getWeather(Double latitude, Double longitude) {
+    private Request request;
+
+    public Request getRequest() {
+        return request;
+    }
+
+    public void setRequest(Double latitude, Double longitude) {
         LatLng.Builder builderL = LatLng.newBuilder();
         builderL.setLatitude(latitude)
                 .setLongitude(longitude)
-                //.setTime(System.currentTimeMillis() / 1000 + (timeAgo / 1000) + 60) //Time in seconds
                 .build();
         LatLng latlng = new LatLng(builderL);
 
         Builder builderF = Request.newBuilder( ForecastIO.API_KEY );
         builderF.setLatLng(latlng).build();
-        Request request = new Request(builderF);
+        request = new Request(builderF);
+    }
 
+    public void getForecast(Request request) {
         new NetworkServiceTask() {
 
             @Override
@@ -42,17 +49,14 @@ public class WeatherObservable extends Observable {
                 }
 
                 Response response = (Response) network;
-
                 notifyWeatherChange(response);
             }
-
         }.execute( request );
     }
 
     private void notifyWeatherChange(Response response) {
         setChanged();
         notifyObservers(response);
-        //Log.d(TAG, "Notify New Weather: ");
         clearChanged();
     }
 }

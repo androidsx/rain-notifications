@@ -23,8 +23,6 @@ public class AnalyzerHelper {
         this.currentlyForecastIcon = res.getForecast().getCurrently().getIcon();
     }
 
-    //TODO: make methods for determine when weather going to occur
-
     public DataPoint nextRainChange() {
         return getNextChange(Icon.RAIN);
     }
