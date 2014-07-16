@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.Utils;
+package com.androidsx.rainnotifications.util;
 
 public class Constants {
     public static class Time{

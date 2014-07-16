@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.Models;
+package com.androidsx.rainnotifications.model;
 
 import android.content.Context;
 import android.location.Location;
@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import java.util.Observable;
 
-import com.androidsx.rainnotifications.Utils.LocationHelper;
+import com.androidsx.rainnotifications.util.LocationHelper;
 
 import static android.location.LocationManager.GPS_PROVIDER;
 import static android.location.LocationManager.NETWORK_PROVIDER;

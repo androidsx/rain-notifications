@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.Services;
+package com.androidsx.rainnotifications.service;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

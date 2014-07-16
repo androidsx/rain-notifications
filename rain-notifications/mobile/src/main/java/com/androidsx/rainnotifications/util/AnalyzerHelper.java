@@ -1,10 +1,10 @@
-package com.androidsx.rainnotifications.Utils;
+package com.androidsx.rainnotifications.util;
 
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataBlock;
 import com.forecast.io.v2.transfer.DataPoint;
 
-import com.androidsx.rainnotifications.Utils.Constants.ForecastIO.Icon;
+import com.androidsx.rainnotifications.util.Constants.ForecastIO.Icon;
 
 public class AnalyzerHelper {
 

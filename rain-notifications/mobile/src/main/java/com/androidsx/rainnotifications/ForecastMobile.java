@@ -12,9 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidsx.rainnotifications.Models.WeatherObservable;
-import com.androidsx.rainnotifications.Services.WeatherService;
-import com.androidsx.rainnotifications.Utils.Constants;
+import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.util.Constants;
 
 public class ForecastMobile extends Activity implements View.OnClickListener/*, DataApi.DataListener*/ {
 
