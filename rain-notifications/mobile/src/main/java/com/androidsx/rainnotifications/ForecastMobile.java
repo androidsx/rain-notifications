@@ -36,7 +36,7 @@ public class ForecastMobile extends Activity {
     }
 
     private void setupUI() {
-        sharedHelper = new SharedPrefsHelper(this);
+        sharedHelper = new SharedPrefsHelper(getApplicationContext());
 
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);

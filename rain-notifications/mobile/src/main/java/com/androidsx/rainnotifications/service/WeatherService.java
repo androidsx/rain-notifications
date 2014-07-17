@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.text.format.DateUtils;
+import android.text.format.Time;
 import android.util.Log;
 
 import com.androidsx.rainnotifications.ForecastAnalyzer;
@@ -32,8 +33,12 @@ public class WeatherService extends Service implements Observer {
 
     private static final String TAG = WeatherService.class.getSimpleName();
 
+    public static final String EXTRA_LAT = "extra_lat";
+    public static final String EXTRA_LON = "extra_lon";
+
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
+    private PendingIntent locationAlarmIntent;
     private Location lastLocation;
 
     private LocationObservable locationObservable;
@@ -50,20 +55,26 @@ public class WeatherService extends Service implements Observer {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
+        super.onCreate();
+
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         sharedHelper = new SharedPrefsHelper(getApplicationContext());
 
-        locationObservable =
-                new LocationObservable(this, Constants.Localization.LOCATION_GPS_TIMEOUT,
-                        Constants.Localization.LOCATION_NETWORK_TIMEOUT, Constants.Localization.LOCATION_DISTANCE);
+        locationObservable = new LocationObservable(this,
+                Constants.Localization.LOCATION_GPS_TIMEOUT,
+                Constants.Localization.LOCATION_NETWORK_TIMEOUT,
+                Constants.Localization.LOCATION_DISTANCE);
         locationObservable.addObserver(this);
 
         weatherObservable = new WeatherObservable();
         weatherObservable.addObserver(this);
 
         scheduler = new ScheduleService();
+    }
 
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
         if(intent != null) {
             locationObservable.startLocationListeners();
 
@@ -73,6 +84,7 @@ public class WeatherService extends Service implements Observer {
             alarmIntent = PendingIntent.getService(getApplicationContext(), 0, new Intent(this, ScheduleService.class), 0);
             scheduler.setNextApiCallAlarm(alarmMgr, alarmIntent, nextAlarmTime);
         }
+
         return START_STICKY;
     }
 
@@ -93,6 +105,18 @@ public class WeatherService extends Service implements Observer {
                 weatherObservable.getForecast(weatherObservable.getRequest());
 
                 sharedHelper.setForecastAddress(address);
+            }
+
+            Intent mIntent = new Intent(this, ScheduleService.class);
+            Bundle mBundle = new Bundle();
+            mBundle.putDouble(EXTRA_LAT, location.getLatitude());
+            mBundle.putDouble(EXTRA_LON, location.getLongitude());
+            mIntent.putExtras(mBundle);
+            locationAlarmIntent = PendingIntent.getService(getApplicationContext(), 0, mIntent, 0);
+
+            long nextAlarmTime = System.currentTimeMillis() + Time.HOUR;
+            if(alarmMgr != null) {
+                scheduler.setNextLocationAlarm(alarmMgr, locationAlarmIntent, nextAlarmTime);
             }
 
             Log.d(TAG, "Location Observer update...\nLocation: " + address +
