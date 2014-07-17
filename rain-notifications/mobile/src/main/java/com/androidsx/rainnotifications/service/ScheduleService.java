@@ -38,14 +38,18 @@ public class ScheduleService extends Service {
 
     public void setNextApiCallAlarm(AlarmManager am, PendingIntent pi, DataPoint dp) {
         am.cancel(pi);
-        am.set(AlarmManager.RTC_WAKEUP, nextApiCallTime(dp) * 1000, pi
+        am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            SystemClock.elapsedRealtime() +
+                    (nextApiCallTime(dp) * 1000 - System.currentTimeMillis()), pi
         );
         WeatherService.sharedHelper.setNextAlarmTime(nextApiCallTime(dp));
     }
 
     public void setNextApiCallAlarm(AlarmManager am, PendingIntent pi, long time) {
         am.cancel(pi);
-        am.set(AlarmManager.RTC_WAKEUP, time * 1000, pi);
+        am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                SystemClock.elapsedRealtime() +
+                        (time * 1000 - System.currentTimeMillis()), pi);
     }
 
     public long nextApiCallTime(DataPoint dp) {
