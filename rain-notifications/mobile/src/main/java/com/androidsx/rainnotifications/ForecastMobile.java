@@ -2,7 +2,6 @@ package com.androidsx.rainnotifications;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.view.Menu;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.Constants.SharedPref;
 import com.androidsx.rainnotifications.util.Constants.ForecastIO;
+import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 public class ForecastMobile extends Activity {
 
@@ -25,7 +25,7 @@ public class ForecastMobile extends Activity {
     private ImageView icon;
     private ImageView update_icon;
 
-    private SharedPreferences shared;
+    private SharedPrefsHelper sharedHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class ForecastMobile extends Activity {
     }
 
     private void setupUI() {
-        shared = getSharedPreferences(SharedPref.SHARED_RAIN, 0);
+        sharedHelper = new SharedPrefsHelper(this);
 
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);
@@ -44,12 +44,12 @@ public class ForecastMobile extends Activity {
         icon = (ImageView) findViewById(R.id.icon);
         update_icon = (ImageView) findViewById(R.id.update_icon);
 
-        txt_city.setText(shared.getString(SharedPref.ADDRESS, ""));
-        txt_update.setText(shared.getString(SharedPref.CURRENTLY, ""));
-        txt_response.setText(shared.getString(SharedPref.HISTORY, ""));
-        String ic = shared.getString(SharedPref.CURRENTLY_ICON, "");
+        txt_city.setText(sharedHelper.getForecastAddress());
+        txt_update.setText(sharedHelper.getNextForecast());
+        txt_response.setText(sharedHelper.getForecastHistory());
+        String ic = sharedHelper.getCurrentForecastIcon();
         icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
-        ic = shared.getString(SharedPref.NEXT_FORECAST_ICON, "");
+        ic = sharedHelper.getNextForecastIcon();
         update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
     }
 
@@ -61,12 +61,12 @@ public class ForecastMobile extends Activity {
 
     /** Linked to the button in the XML layout. */
     public void refresh(View view) {
-        String ic = shared.getString(SharedPref.CURRENTLY_ICON, "");
-        txt_city.setText(shared.getString(SharedPref.ADDRESS, ""));
-        txt_update.setText(shared.getString(SharedPref.CURRENTLY, ""));
-        txt_response.setText(shared.getString(SharedPref.HISTORY, ""));
+        String ic = sharedHelper.getCurrentForecastIcon();
+        txt_city.setText(sharedHelper.getForecastAddress());
+        txt_update.setText(sharedHelper.getNextForecast());
+        txt_response.setText(sharedHelper.getForecastHistory());
         icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
-        ic = shared.getString(SharedPref.NEXT_FORECAST_ICON, "");
+        ic = sharedHelper.getNextForecastIcon();
         update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
     }
 

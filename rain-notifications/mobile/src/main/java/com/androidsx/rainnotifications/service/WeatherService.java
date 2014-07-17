@@ -176,7 +176,7 @@ public class WeatherService extends Service implements Observer {
         }
         Log.d(TAG, ".\n" + update);
 
-        sharedHelper.setCurrentForecast(update);
+        sharedHelper.setNextForecast(update);
         sharedHelper.setForecastHistory(forecast);
 
         String deltaTime = "";

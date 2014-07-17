@@ -22,11 +22,11 @@ public class SharedPrefsHelper {
         return shared.getLong(SharedPref.NEXT_ALARM_TIME, 0);
     }
 
-    public void setCurrentForecast(String current) {
+    public void setNextForecast(String current) {
         editor.putString(SharedPref.CURRENTLY, current).commit();
     }
 
-    public String getCurrentForecast() {
+    public String getNextForecast() {
         return shared.getString(SharedPref.CURRENTLY, "");
     }
 
