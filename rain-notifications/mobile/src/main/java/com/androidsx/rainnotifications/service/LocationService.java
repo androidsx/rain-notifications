@@ -24,14 +24,12 @@ public class LocationService extends Service implements Observer {
 
     private static final String TAG = LocationService.class.getSimpleName();
 
-    private static final long HOUR = Constants.Time.HOUR_AGO / 1000;
-
     private LocationObservable locationObservable;
     private Location lastLocation;
     private AlarmManager alarmMgr;
 
     private int locationID = 1;
-    private SharedPrefsHelper sharedHelper;
+    private SharedPrefsHelper shared;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -46,7 +44,7 @@ public class LocationService extends Service implements Observer {
         locationObservable.addObserver(this);
 
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        sharedHelper = new SharedPrefsHelper(getApplicationContext());
+        shared = new SharedPrefsHelper(getApplicationContext());
     }
 
     @Override
@@ -54,8 +52,8 @@ public class LocationService extends Service implements Observer {
         if(intent != null) {
             Bundle mBundle = intent.getExtras();
             if(mBundle != null) {
-                double latitude = mBundle.getDouble(WeatherService.EXTRA_LAT);
-                double longitude = mBundle.getDouble(WeatherService.EXTRA_LON);
+                double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT);
+                double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON);
 
                 lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
                 lastLocation.setLatitude(latitude);
@@ -72,25 +70,12 @@ public class LocationService extends Service implements Observer {
             Location location = (Location) o;
 
             if(lastLocation == null) {
-                lastLocation = location;
                 callWeatherService(location);
             } else {
                 if (location.distanceTo(lastLocation) > 5) {
                     callWeatherService(location);
                 }
             }
-
-            String address = new AddressHelper().getLocationAddress(this,
-                    location.getLatitude(), location.getLongitude());
-
-            sharedHelper.setForecastAddress(address);
-
-            Log.d(TAG, "Location Observer update...\nLocation: " + address +
-                    " --> lat: " + location.getLatitude() +
-                    " - long: " + location.getLongitude() +
-                    "\nDistance: " + lastLocation.distanceTo(location));
-
-            lastLocation = location;
         }
         stopSelf();
     }
@@ -98,15 +83,33 @@ public class LocationService extends Service implements Observer {
     private void callWeatherService(Location location) {
         Intent mIntent = new Intent(this, LocationService.class);
         Bundle mBundle = new Bundle();
-        mBundle.putDouble(WeatherService.EXTRA_LAT, location.getLatitude());
-        mBundle.putDouble(WeatherService.EXTRA_LON, location.getLongitude());
+        mBundle.putDouble(Constants.Extras.EXTRA_LAT, location.getLatitude());
+        mBundle.putDouble(Constants.Extras.EXTRA_LON, location.getLongitude());
         mIntent.putExtras(mBundle);
 
         PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), locationID, mIntent, 0);
         if (alarmMgr != null) {
-            Scheduler.setNextLocationAlarm(alarmMgr, alarmIntent, HOUR);
+            Scheduler.setNextLocationAlarm(alarmMgr, alarmIntent, Constants.Time.HOUR_MILLIS);
         }
 
         startService(new Intent(this, WeatherService.class).putExtras(mBundle));
+
+        String address = new AddressHelper().getLocationAddress(this,
+                location.getLatitude(), location.getLongitude());
+
+        shared.setForecastAddress(address);
+
+        // Only for debug
+        float distance = (float) 0.0;
+        if(lastLocation != null) {
+            distance = lastLocation.distanceTo(location);
+        }
+
+        lastLocation = location;
+
+        Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                " --> lat: " + location.getLatitude() +
+                " - long: " + location.getLongitude() +
+                "\nDistance: " + distance);
     }
 }

@@ -29,18 +29,13 @@ public class WeatherService extends Service implements Observer {
 
     private static final String TAG = WeatherService.class.getSimpleName();
 
-    public static final String EXTRA_LAT = "extra_lat";
-    public static final String EXTRA_LON = "extra_lon";
-
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
     private int apiID = 0;
 
     public WeatherObservable weatherObservable;
 
-    public SharedPrefsHelper sharedHelper;
-
-    String forecast = "";
+    public SharedPrefsHelper shared;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -52,7 +47,7 @@ public class WeatherService extends Service implements Observer {
         super.onCreate();
 
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        sharedHelper = new SharedPrefsHelper(getApplicationContext());
+        shared = new SharedPrefsHelper(getApplicationContext());
 
         weatherObservable = new WeatherObservable();
         weatherObservable.addObserver(this);
@@ -63,8 +58,8 @@ public class WeatherService extends Service implements Observer {
         if(intent != null) {
             Bundle mBundle = intent.getExtras();
             if(mBundle != null) {
-                double latitude = mBundle.getDouble(WeatherService.EXTRA_LAT, 1000);
-                double longitude = mBundle.getDouble(WeatherService.EXTRA_LON, 1000);
+                double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
+                double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
 
                 if (latitude != 1000 && longitude != 1000) {
                     weatherObservable.checkForecast(latitude, longitude);
@@ -86,7 +81,7 @@ public class WeatherService extends Service implements Observer {
             String address = new AddressHelper().getLocationAddress(this,
                     response.getForecast().getLatitude(), response.getForecast().getLongitude());
 
-            sharedHelper.setForecastAddress(address);
+            shared.setForecastAddress(address);
 
             ForecastAnalyzer fa = new ForecastAnalyzer();
             fa.setResponse(response);
@@ -94,91 +89,91 @@ public class WeatherService extends Service implements Observer {
 
             Intent mIntent = new Intent(this, WeatherService.class);
             Bundle mBundle = new Bundle();
-            mBundle.putDouble(EXTRA_LAT, response.getForecast().getLatitude());
-            mBundle.putDouble(EXTRA_LON, response.getForecast().getLongitude());
+            mBundle.putDouble(Constants.Extras.EXTRA_LAT, response.getForecast().getLatitude());
+            mBundle.putDouble(Constants.Extras.EXTRA_LON, response.getForecast().getLongitude());
             mIntent.putExtras(mBundle);
             alarmIntent = PendingIntent.getService(getApplicationContext(), apiID, mIntent, 0);
 
             if(alarmMgr != null) {
-                Scheduler.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain);
+                Scheduler.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
             }
 
             Log.d(TAG, "Weather Observer update...");
 
-            displayDebugResults(dpRain, currently, Constants.ForecastIO.Icon.RAIN);
+            if(dpRain != null && currently != null) {
+                displayDebugResults(dpRain.getTime() * 1000, dpRain.getIcon(), currently.getIcon(), Constants.ForecastIO.Icon.RAIN);
+            } else if(dpRain == null && currently != null) {
+                displayDebugResults(0, "", currently.getIcon(), Constants.ForecastIO.Icon.RAIN);
+            }
         }
         stopSelf();
     }
 
-    private void displayDebugResults(DataPoint dp, DataPoint currently, String icon) {
+    private void displayDebugResults(long nextIconTime, String nextForecastIcon, String currentlyIcon, String searchingIcon) {
 
-        forecast = sharedHelper.getForecastHistory();
+        String history = shared.getForecastHistory();
 
         String update = "";
         String currentTime = new DateHelper()
-                .formatTime(System.currentTimeMillis() / 1000, Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID, Locale.US);
+                .formatTime(System.currentTimeMillis(), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
         String nextApiCall = new DateHelper()
-                .formatTime(Scheduler.nextApiCallTime(dp), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID, Locale.US);
-        if(dp == null) {
-            update = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
+                .formatTime(Scheduler.nextApiCallTime(nextIconTime), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
+        if(nextIconTime == 0) {
+            update = "\nSearching: " + searchingIcon + "\n\nCurrently: " + currentlyIcon +
                     " at "+ currentTime +
                     "\n\nNo changes expected until tomorrow." +
                     "\n\nNext API call at: " + nextApiCall;
         }
         else {
             String deltaTime = new DateHelper()
-                    .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
+                    .deltaTime(nextIconTime, System.currentTimeMillis());
 
             String forecastTime = new DateHelper()
-                    .formatTime(dp.getTime(), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID, Locale.US);
+                    .formatTime(nextIconTime, Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
 
-            if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
-                update = "\nFound: " + dp.getIcon() + "\n\nCurrently: " + currently.getIcon() +
+            if(AnalyzerHelper.compareTo(nextForecastIcon, searchingIcon)) {
+                update = "\nFound: " + nextForecastIcon + "\n\nCurrently: " + currentlyIcon +
                         "\nat "+ currentTime +
-                        "\n\n" + dp.getIcon() + " expected at " + forecastTime +
+                        "\n\n" + nextForecastIcon + " expected at " + forecastTime +
                         " \n" + deltaTime + ".\n\nNext API call at: " + nextApiCall;
             } else {
-                update = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
+                update = "\nSearching: " + searchingIcon + "\n\nCurrently: " + currentlyIcon +
                         "\nat "+ currentTime +
-                        "\n\n" + dp.getIcon() + " expected at " + forecastTime +
+                        "\n\n" + nextForecastIcon + " expected at " + forecastTime +
                         " \n" + deltaTime + ".\n\nNext API call at: " + nextApiCall;
             }
         }
-        forecast += update + "\n--------------------";
-        if(dp == null) {
+        history += update + "\n--------------------";
+        if(nextIconTime == 0) {
             update = "No changes expected until tomorrow." +
                     "\n\nNext API call at: " + nextApiCall + "\n";
-            sharedHelper.setCurrentForecastIcon(currently.getIcon());
-            sharedHelper.setNextForecastIcon(currently.getIcon());
+            shared.setCurrentForecastIcon(currentlyIcon);
+            shared.setNextForecastIcon(currentlyIcon);
         }
         else {
             String deltaTime = new DateHelper()
-                    .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-            if(AnalyzerHelper.compareTo(dp.getIcon(), icon)) {
+                    .deltaTime(nextIconTime, System.currentTimeMillis());
+            if(AnalyzerHelper.compareTo(nextForecastIcon, searchingIcon)) {
                 update = deltaTime + ".\n\nNext API call at: " + nextApiCall + "\n";
             } else {
                 update = deltaTime + ".\n\nNext API call at: " + nextApiCall + "\n";
             }
-            sharedHelper.setCurrentForecastIcon(currently.getIcon());
-            sharedHelper.setNextForecastIcon(dp.getIcon());
+            shared.setCurrentForecastIcon(currentlyIcon);
+            shared.setNextForecastIcon(nextForecastIcon);
         }
         Log.d(TAG, ".\n" + update);
 
-        sharedHelper.setNextForecast(update);
-        sharedHelper.setForecastHistory(forecast);
+        shared.setCurrentForecast(update);
+        shared.setForecastHistory(history);
 
-        String deltaTime = "";
-        String expectedTime = "";
-        if(dp != null && currently != null) {
-            deltaTime = new DateHelper()
-                    .deltaTime(dp.getTime(), System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-            expectedTime = new DateHelper()
-                    .formatTime(dp.getTime(), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID, Locale.US);
-            if(!currently.getIcon().equals(Constants.ForecastIO.Icon.RAIN) && dp.getIcon().equals(Constants.ForecastIO.Icon.RAIN)) {
-                new NotificationHelper(this, "Rain expected " + deltaTime + " at " + expectedTime);
-            } else if(currently.getIcon().equals(Constants.ForecastIO.Icon.RAIN) && !dp.getIcon().equals(Constants.ForecastIO.Icon.RAIN)) {
-                new NotificationHelper(this, "Stop raining expected " + deltaTime + " at " + expectedTime);
-            }
+        String deltaTime = new DateHelper()
+                .deltaTime(nextIconTime, System.currentTimeMillis());
+        String expectedTime = new DateHelper()
+                .formatTime(nextIconTime, Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
+        if(!currentlyIcon.equals(Constants.ForecastIO.Icon.RAIN) && nextForecastIcon.equals(Constants.ForecastIO.Icon.RAIN)) {
+            new NotificationHelper(this, "Rain expected " + deltaTime + " at " + expectedTime);
+        } else if(currentlyIcon.equals(Constants.ForecastIO.Icon.RAIN) && !nextForecastIcon.equals(Constants.ForecastIO.Icon.RAIN)) {
+            new NotificationHelper(this, "Stop raining expected " + deltaTime + " at " + expectedTime);
         }
     }
 }

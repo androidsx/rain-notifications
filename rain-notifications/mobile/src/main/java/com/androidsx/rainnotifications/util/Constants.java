@@ -6,14 +6,13 @@ public class Constants {
         public static final String TIME_ZONE_NEW_YORK = "America/New_York";
         public static final String TIME_FORMAT = "HH:mm";
 
-        public static final int TWO_MINUTES = 1000 * 60 * 2;
-        public static final int TEN_MINUTES_AGO = 1000 * 60 * 10;
-        public static final int HALF_HOUR_AGO = 1000 * 60 * 30;
-        public static final int HOUR_AGO = 1000 * 60 * 60 * 1;
-        public static final int TWO_HOURS_AGO = 1000 * 60 * 60 * 2;
+        public static final int ONE_MINUTE_MILLIS = 1000 * 60 * 1;
+        public static final int TEN_MINUTES_MILLIS = 1000 * 60 * 10;
+        public static final int HALF_HOUR_MILLIS = 1000 * 60 * 30;
+        public static final int HOUR_MILLIS = 1000 * 60 * 60 * 1;
     }
     public static class Distance{
-        public static final float KM = 1000;
+        public static final float KM = (float) 1.0;
     }
     public static class Localization {
         public static final Double NEW_YORK_LAT = 40.71310899271792;
@@ -26,6 +25,10 @@ public class Constants {
         public static final long LOCATION_GPS_TIMEOUT = 30 * 60 * 1000; // 30 minutes
         public static final long LOCATION_NETWORK_TIMEOUT = 1 * 60 * 60 * 1000; // 1 hour
         public static final long LOCATION_DISTANCE = 0; // 0 km
+    }
+    public static class Extras {
+        public static final String EXTRA_LAT = "extra_lat";
+        public static final String EXTRA_LON = "extra_lon";
     }
     public static class ForecastIO {
         public static final String API_KEY = "f1fd27e70564bd6765bf40b3497cbf4f";

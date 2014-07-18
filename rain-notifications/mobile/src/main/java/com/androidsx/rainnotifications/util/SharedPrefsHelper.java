@@ -14,11 +14,11 @@ public class SharedPrefsHelper {
         editor = shared.edit();
     }
 
-    public void setNextForecast(String current) {
+    public void setCurrentForecast(String current) {
         editor.putString(SharedPref.CURRENTLY, current).commit();
     }
 
-    public String getNextForecast() {
+    public String getCurrentForecast() {
         return shared.getString(SharedPref.CURRENTLY, "");
     }
 

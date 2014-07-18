@@ -65,7 +65,7 @@ public class ForecastMobile extends Activity {
      */
     private void updateUiFromPrefs() {
         txt_city.setText(sharedHelper.getForecastAddress());
-        txt_update.setText(sharedHelper.getNextForecast());
+        txt_update.setText(sharedHelper.getCurrentForecast());
         txt_response.setText(sharedHelper.getForecastHistory());
 
         final String currentWeatherIcon = sharedHelper.getCurrentForecastIcon();

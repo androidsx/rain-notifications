@@ -9,20 +9,20 @@ import java.util.TimeZone;
 
 public class DateHelper {
 
-    public String deltaTime(long time, long currentTime, long type) {
+    public String deltaTime(long time, long currentTime) {
         CharSequence deltaTime = DateUtils.getRelativeTimeSpanString(
-                time * 1000,
+                time,
                 currentTime,
-                type);
+                DateUtils.MINUTE_IN_MILLIS);
 
         return deltaTime.toString();
     }
 
-    public String formatTime(long forecastTime, String time_format, String time_zone, Locale locale) {
-        SimpleDateFormat sdf = new SimpleDateFormat(time_format, locale);
+    public String formatTime(long forecastTime, String time_format, String time_zone) {
+        SimpleDateFormat sdf = new SimpleDateFormat(time_format, Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone(time_zone));
 
-        String time =  sdf.format(new Date(forecastTime * 1000));
+        String time =  sdf.format(new Date(forecastTime));
 
         return time;
     }

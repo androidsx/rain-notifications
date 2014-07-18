@@ -34,8 +34,8 @@ public class LocationHelper {
 
         // Check whether the new location fix is newer or older
         long timeDelta = location.getTime() - currentBestLocation.getTime();
-        boolean isSignificantlyNewer = timeDelta > Time.TWO_MINUTES;
-        boolean isSignificantlyOlder = timeDelta < -Time.TWO_MINUTES;
+        boolean isSignificantlyNewer = timeDelta > Time.ONE_MINUTE_MILLIS * 2;
+        boolean isSignificantlyOlder = timeDelta < -Time.ONE_MINUTE_MILLIS * 2;
         boolean isNewer = timeDelta > 0;
 
         // If it's been more than two minutes since the current location, use the new location

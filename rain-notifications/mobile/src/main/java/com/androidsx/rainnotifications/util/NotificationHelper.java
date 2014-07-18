@@ -16,10 +16,9 @@ public class NotificationHelper {
     private static final int ID = 1;
 
     public NotificationHelper(Context context, String notification) {
-        //Log.d(TAG, "Notification...");
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(R.drawable.ic_launcher);
-        mBuilder.setContentTitle("Rain-Notifications");
+        mBuilder.setContentTitle("Rain Notifications");
         mBuilder.setContentText(notification);
         mBuilder.setDefaults(Notification.DEFAULT_ALL);
 
