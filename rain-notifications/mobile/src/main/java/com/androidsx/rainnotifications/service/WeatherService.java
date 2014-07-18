@@ -39,7 +39,6 @@ public class WeatherService extends Service implements Observer {
     public WeatherObservable weatherObservable;
 
     public SharedPrefsHelper sharedHelper;
-    private Scheduler scheduler;
 
     String forecast = "";
 
@@ -57,8 +56,6 @@ public class WeatherService extends Service implements Observer {
 
         weatherObservable = new WeatherObservable();
         weatherObservable.addObserver(this);
-
-        scheduler = new Scheduler();
     }
 
     @Override
@@ -103,7 +100,7 @@ public class WeatherService extends Service implements Observer {
             alarmIntent = PendingIntent.getService(getApplicationContext(), apiID, mIntent, 0);
 
             if(alarmMgr != null) {
-                scheduler.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain);
+                Scheduler.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain);
             }
 
             Log.d(TAG, "Weather Observer update...");
@@ -121,7 +118,7 @@ public class WeatherService extends Service implements Observer {
         String currentTime = new DateHelper()
                 .formatTime(System.currentTimeMillis() / 1000, Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID, Locale.US);
         String nextApiCall = new DateHelper()
-                .formatTime(scheduler.nextApiCallTime(dp), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID, Locale.US);
+                .formatTime(Scheduler.nextApiCallTime(dp), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID, Locale.US);
         if(dp == null) {
             update = "\nSearching: " + icon + "\n\nCurrently: " + currently.getIcon() +
                     " at "+ currentTime +

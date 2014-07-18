@@ -31,7 +31,6 @@ public class LocationService extends Service implements Observer {
     private AlarmManager alarmMgr;
 
     private int locationID = 1;
-    private Scheduler scheduler;
     private SharedPrefsHelper sharedHelper;
 
     @Override
@@ -47,7 +46,6 @@ public class LocationService extends Service implements Observer {
         locationObservable.addObserver(this);
 
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        scheduler = new Scheduler();
         sharedHelper = new SharedPrefsHelper(getApplicationContext());
     }
 
@@ -106,7 +104,7 @@ public class LocationService extends Service implements Observer {
 
         PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), locationID, mIntent, 0);
         if (alarmMgr != null) {
-            scheduler.setNextLocationAlarm(alarmMgr, alarmIntent, HOUR);
+            Scheduler.setNextLocationAlarm(alarmMgr, alarmIntent, HOUR);
         }
 
         startService(new Intent(this, WeatherService.class).putExtras(mBundle));
