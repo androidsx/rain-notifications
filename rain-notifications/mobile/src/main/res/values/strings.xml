@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Rain-notifications</string>
+    <string name="app_name">Rain Notifications</string>
     <string name="btn_forecast">Call the Forecast API</string>
     <string name="btn_refresh_ui">Refresh UI</string>
 
