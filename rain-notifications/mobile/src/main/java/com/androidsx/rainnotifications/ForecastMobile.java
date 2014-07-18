@@ -46,15 +46,7 @@ public class ForecastMobile extends Activity {
     protected void onResume() {
         super.onResume();
 
-        txt_city.setText(sharedHelper.getForecastAddress());
-        txt_update.setText(sharedHelper.getNextForecast());
-        txt_response.setText(sharedHelper.getForecastHistory());
-
-        final String currentWeatherIcon = sharedHelper.getCurrentForecastIcon();
-        currentWeatherImageView.setImageDrawable(getResources().getDrawable(getIcon(currentWeatherIcon)));
-
-        final String nextWeatherIcon = sharedHelper.getNextForecastIcon();
-        nextWeatherImageView.setImageDrawable(getResources().getDrawable(getIcon(nextWeatherIcon)));
+        updateUiFromPrefs();
     }
 
     /** Linked to the button in the XML layout. */
@@ -65,6 +57,13 @@ public class ForecastMobile extends Activity {
 
     /** Linked to the button in the XML layout. */
     public void refreshUi(View view) {
+        updateUiFromPrefs();
+    }
+
+    /**
+     * Updates the UI with the information stored in the shared preferences.
+     */
+    private void updateUiFromPrefs() {
         txt_city.setText(sharedHelper.getForecastAddress());
         txt_update.setText(sharedHelper.getNextForecast());
         txt_response.setText(sharedHelper.getForecastHistory());
