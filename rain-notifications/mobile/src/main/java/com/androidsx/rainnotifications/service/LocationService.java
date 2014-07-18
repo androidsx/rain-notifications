@@ -28,7 +28,7 @@ public class LocationService extends Service implements Observer {
     private Location lastLocation;
     private AlarmManager alarmMgr;
 
-    private int locationID = 1;
+    private int alarmID = 1;
     private SharedPrefsHelper shared;
 
     @Override
@@ -87,7 +87,7 @@ public class LocationService extends Service implements Observer {
         mBundle.putDouble(Constants.Extras.EXTRA_LON, location.getLongitude());
         mIntent.putExtras(mBundle);
 
-        PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), locationID, mIntent, 0);
+        PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), alarmID, mIntent, 0);
         if (alarmMgr != null) {
             Scheduler.setNextLocationAlarm(alarmMgr, alarmIntent, Constants.Time.HOUR_MILLIS);
         }
