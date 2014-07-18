@@ -64,7 +64,7 @@ public class ForecastMobile extends Activity {
     }
 
     /** Linked to the button in the XML layout. */
-    public void refresh(View view) {
+    public void refreshUi(View view) {
         txt_city.setText(sharedHelper.getForecastAddress());
         txt_update.setText(sharedHelper.getNextForecast());
         txt_response.setText(sharedHelper.getForecastHistory());

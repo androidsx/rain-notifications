@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Rain-notifications</string>
-    <string name="btn_forecast">Call</string>
-    <string name="btn_refresh">Refresh Data</string>
+    <string name="btn_forecast">Call the Forecast API</string>
+    <string name="btn_refresh_ui">Refresh UI</string>
 
 </resources>
