@@ -22,14 +22,6 @@ public class Scheduler {
                 pi);
     }
 
-    public void setNextApiCallAlarm(AlarmManager am, PendingIntent pi, long time) {
-        am.cancel(pi);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + time * 1000,
-                time * 1000,
-                pi);
-    }
-
     public void setNextLocationAlarm(AlarmManager am, PendingIntent pi, long time) {
         am.cancel(pi);
         am.setInexactRepeating(
