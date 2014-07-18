@@ -19,8 +19,8 @@ public class ForecastMobile extends Activity {
     private TextView txt_response;
     private TextView txt_city;
     private TextView txt_update;
-    private ImageView icon;
-    private ImageView update_icon;
+    private ImageView currentWeatherImageView;
+    private ImageView nextWeatherImageView;
 
     private SharedPrefsHelper sharedHelper;
 
@@ -38,8 +38,8 @@ public class ForecastMobile extends Activity {
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);
         txt_update = (TextView) findViewById(R.id.txt_update);
-        icon = (ImageView) findViewById(R.id.icon);
-        update_icon = (ImageView) findViewById(R.id.update_icon);
+        currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
+        nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
     }
 
     @Override
@@ -49,10 +49,12 @@ public class ForecastMobile extends Activity {
         txt_city.setText(sharedHelper.getForecastAddress());
         txt_update.setText(sharedHelper.getNextForecast());
         txt_response.setText(sharedHelper.getForecastHistory());
-        String ic = sharedHelper.getCurrentForecastIcon();
-        icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
-        ic = sharedHelper.getNextForecastIcon();
-        update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
+
+        final String currentWeatherIcon = sharedHelper.getCurrentForecastIcon();
+        currentWeatherImageView.setImageDrawable(getResources().getDrawable(getIcon(currentWeatherIcon)));
+
+        final String nextWeatherIcon = sharedHelper.getNextForecastIcon();
+        nextWeatherImageView.setImageDrawable(getResources().getDrawable(getIcon(nextWeatherIcon)));
     }
 
     /** Linked to the button in the XML layout. */
@@ -63,13 +65,15 @@ public class ForecastMobile extends Activity {
 
     /** Linked to the button in the XML layout. */
     public void refresh(View view) {
-        String ic = sharedHelper.getCurrentForecastIcon();
         txt_city.setText(sharedHelper.getForecastAddress());
         txt_update.setText(sharedHelper.getNextForecast());
         txt_response.setText(sharedHelper.getForecastHistory());
-        icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
-        ic = sharedHelper.getNextForecastIcon();
-        update_icon.setImageDrawable(getResources().getDrawable(getIcon(ic)));
+
+        final String currentWeatherIcon = sharedHelper.getCurrentForecastIcon();
+        currentWeatherImageView.setImageDrawable(getResources().getDrawable(getIcon(currentWeatherIcon)));
+
+        final String nextIcon = sharedHelper.getNextForecastIcon();
+        nextWeatherImageView.setImageDrawable(getResources().getDrawable(getIcon(nextIcon)));
     }
 
     private int getIcon(String icon) {
