@@ -16,25 +16,7 @@ public class WeatherObservable extends Observable {
 
     private static final String TAG = WeatherObservable.class.getSimpleName();
 
-    private Request request;
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public void setRequest(Double latitude, Double longitude) {
-        LatLng.Builder builderL = LatLng.newBuilder();
-        builderL.setLatitude(latitude)
-                .setLongitude(longitude)
-                .build();
-        LatLng latlng = new LatLng(builderL);
-
-        Builder builderF = Request.newBuilder( ForecastIO.API_KEY );
-        builderF.setLatLng(latlng).build();
-        request = new Request(builderF);
-    }
-
-    public void getForecast(Request request) {
+    public void checkForecast(Double latitude, Double longitude) {
         new NetworkServiceTask() {
 
             @Override
@@ -51,7 +33,19 @@ public class WeatherObservable extends Observable {
                 Response response = (Response) network;
                 notifyWeatherChange(response);
             }
-        }.execute( request );
+        }.execute( getRequest(latitude, longitude) );
+    }
+
+    private Request getRequest(Double latitude, Double longitude) {
+        LatLng.Builder builderL = LatLng.newBuilder();
+        builderL.setLatitude(latitude)
+                .setLongitude(longitude)
+                .build();
+        LatLng latlng = new LatLng(builderL);
+        Builder builderF = Request.newBuilder( ForecastIO.API_KEY );
+        builderF.setLatLng(latlng).build();
+
+        return new Request(builderF);
     }
 
     private void notifyWeatherChange(Response response) {

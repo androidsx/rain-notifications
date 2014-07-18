@@ -10,8 +10,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidsx.rainnotifications.service.WeatherService;
-import com.androidsx.rainnotifications.util.Constants.SharedPref;
+import com.androidsx.rainnotifications.service.ForecastService;
+import com.androidsx.rainnotifications.service.LocationService;
 import com.androidsx.rainnotifications.util.Constants.ForecastIO;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
@@ -43,6 +43,11 @@ public class ForecastMobile extends Activity {
         txt_update = (TextView) findViewById(R.id.txt_update);
         icon = (ImageView) findViewById(R.id.icon);
         update_icon = (ImageView) findViewById(R.id.update_icon);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         txt_city.setText(sharedHelper.getForecastAddress());
         txt_update.setText(sharedHelper.getNextForecast());
@@ -55,7 +60,8 @@ public class ForecastMobile extends Activity {
 
     /** Linked to the button in the XML layout. */
     public void callApi(View view) {
-        startService(new Intent(this, WeatherService.class));
+        startService(new Intent(this, ForecastService.class));
+        startService(new Intent(this, LocationService.class));
         view.setEnabled(false);
     }
 

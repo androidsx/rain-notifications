@@ -14,14 +14,6 @@ public class SharedPrefsHelper {
         editor = shared.edit();
     }
 
-    public void setNextAlarmTime(long time) {
-        editor.putLong(SharedPref.NEXT_ALARM_TIME, time).commit();
-    }
-
-    public long getNextAlarmTime() {
-        return shared.getLong(SharedPref.NEXT_ALARM_TIME, 0);
-    }
-
     public void setNextForecast(String current) {
         editor.putString(SharedPref.CURRENTLY, current).commit();
     }

@@ -1,0 +1,114 @@
+package com.androidsx.rainnotifications.service;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
+
+import com.androidsx.rainnotifications.Scheduler;
+import com.androidsx.rainnotifications.model.LocationObservable;
+import com.androidsx.rainnotifications.util.AddressHelper;
+import com.androidsx.rainnotifications.util.Constants;
+import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+
+import java.util.Observable;
+import java.util.Observer;
+
+public class LocationService extends Service implements Observer {
+
+    private static final String TAG = LocationService.class.getSimpleName();
+
+    private static final long HOUR = Constants.Time.HOUR_AGO / 1000;
+
+    private LocationObservable locationObservable;
+    private Location lastLocation;
+    private AlarmManager alarmMgr;
+
+    private int locationID = 1;
+    private Scheduler scheduler;
+    private SharedPrefsHelper sharedHelper;
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        locationObservable = new LocationObservable(getApplicationContext());
+        locationObservable.addObserver(this);
+
+        alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        scheduler = new Scheduler();
+        sharedHelper = new SharedPrefsHelper(getApplicationContext());
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if(intent != null) {
+            Bundle mBundle = intent.getExtras();
+            if(mBundle != null) {
+                double latitude = mBundle.getDouble(ForecastService.EXTRA_LAT);
+                double longitude = mBundle.getDouble(ForecastService.EXTRA_LON);
+
+                lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
+                lastLocation.setLatitude(latitude);
+                lastLocation.setLongitude(longitude);
+            }
+        }
+        locationObservable.getLastLocation();
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void update(Observable observable, Object o) {
+        if(observable.getClass().equals(LocationObservable.class)) {
+            Location location = (Location) o;
+
+            if(lastLocation == null) {
+                lastLocation = location;
+                callWeatherService(location);
+            } else {
+                if (location.distanceTo(lastLocation) > 5) {
+                    callWeatherService(location);
+                }
+            }
+
+            String address = new AddressHelper().getLocationAddress(this,
+                    location.getLatitude(), location.getLongitude());
+
+            sharedHelper.setForecastAddress(address);
+
+            Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                    " --> lat: " + location.getLatitude() +
+                    " - long: " + location.getLongitude() +
+                    "\nDistance: " + lastLocation.distanceTo(location));
+
+            lastLocation = location;
+        }
+        stopSelf();
+    }
+
+    private void callWeatherService(Location location) {
+        Intent mIntent = new Intent(this, LocationService.class);
+        Bundle mBundle = new Bundle();
+        mBundle.putDouble(ForecastService.EXTRA_LAT, location.getLatitude());
+        mBundle.putDouble(ForecastService.EXTRA_LON, location.getLongitude());
+        mIntent.putExtras(mBundle);
+
+        PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), locationID, mIntent, 0);
+        if (alarmMgr != null) {
+            scheduler.setNextLocationAlarm(alarmMgr, alarmIntent, HOUR);
+        }
+
+        startService(new Intent(this, WeatherService.class).putExtras(mBundle));
+    }
+}
