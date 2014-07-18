@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidsx.rainnotifications.service.ForecastService;
 import com.androidsx.rainnotifications.service.LocationService;
 import com.androidsx.rainnotifications.util.Constants.ForecastIO;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
@@ -60,7 +59,6 @@ public class ForecastMobile extends Activity {
 
     /** Linked to the button in the XML layout. */
     public void callApi(View view) {
-        startService(new Intent(this, ForecastService.class));
         startService(new Intent(this, LocationService.class));
         view.setEnabled(false);
     }

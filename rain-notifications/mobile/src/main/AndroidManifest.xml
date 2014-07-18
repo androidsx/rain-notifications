@@ -24,7 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.ForecastService" />
+
         <service android:name=".service.WeatherService" />
         <service android:name=".service.LocationService" />
         <receiver android:name=".service.OnBootReceiver">

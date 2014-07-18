@@ -56,8 +56,8 @@ public class LocationService extends Service implements Observer {
         if(intent != null) {
             Bundle mBundle = intent.getExtras();
             if(mBundle != null) {
-                double latitude = mBundle.getDouble(ForecastService.EXTRA_LAT);
-                double longitude = mBundle.getDouble(ForecastService.EXTRA_LON);
+                double latitude = mBundle.getDouble(WeatherService.EXTRA_LAT);
+                double longitude = mBundle.getDouble(WeatherService.EXTRA_LON);
 
                 lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
                 lastLocation.setLatitude(latitude);
@@ -100,8 +100,8 @@ public class LocationService extends Service implements Observer {
     private void callWeatherService(Location location) {
         Intent mIntent = new Intent(this, LocationService.class);
         Bundle mBundle = new Bundle();
-        mBundle.putDouble(ForecastService.EXTRA_LAT, location.getLatitude());
-        mBundle.putDouble(ForecastService.EXTRA_LON, location.getLongitude());
+        mBundle.putDouble(WeatherService.EXTRA_LAT, location.getLatitude());
+        mBundle.putDouble(WeatherService.EXTRA_LON, location.getLongitude());
         mIntent.putExtras(mBundle);
 
         PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), locationID, mIntent, 0);
