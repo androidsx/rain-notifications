@@ -94,7 +94,7 @@ public class LocationService extends Service implements Observer {
 
         startService(new Intent(this, WeatherService.class).putExtras(mBundle));
 
-        String address = new AddressHelper().getLocationAddress(this,
+        String address = AddressHelper.getLocationAddress(this,
                 location.getLatitude(), location.getLongitude());
 
         shared.setForecastAddress(address);

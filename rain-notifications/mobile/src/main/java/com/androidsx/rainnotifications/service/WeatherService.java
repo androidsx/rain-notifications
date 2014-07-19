@@ -78,7 +78,7 @@ public class WeatherService extends Service implements Observer {
 
             DataPoint currently = response.getForecast().getCurrently();
 
-            String address = new AddressHelper().getLocationAddress(this,
+            String address = AddressHelper.getLocationAddress(this,
                     response.getForecast().getLatitude(), response.getForecast().getLongitude());
 
             shared.setForecastAddress(address);

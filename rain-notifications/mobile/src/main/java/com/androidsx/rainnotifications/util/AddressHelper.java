@@ -10,7 +10,11 @@ import java.util.Locale;
 
 public class AddressHelper {
 
-    public String getLocationAddress(Context context, double latitude, double longitude) {
+    private AddressHelper() {
+        //No-instantiate
+    }
+
+    public static String getLocationAddress(Context context, double latitude, double longitude) {
         String address = "Unknown location";
 
         Geocoder gcd = new Geocoder(context, Locale.getDefault());
