@@ -10,14 +10,12 @@ public class AnalyzerHelper {
 
     private static final String TAG = AnalyzerHelper.class.getSimpleName();
 
-    Response response;
     DataBlock hourly;
     DataBlock minutely;
     String currentlyForecastIcon;
     long currentTime = System.currentTimeMillis() / 1000;
 
     public AnalyzerHelper(Response res) {
-        this.response = res;
         this.hourly = res.getForecast().getHourly();
         this.minutely = res.getForecast().getMinutely();
         this.currentlyForecastIcon = res.getForecast().getCurrently().getIcon();
