@@ -43,8 +43,9 @@ public class LocationService extends Service implements Observer {
     private LocationObservable locationObservable;
     private Location lastLocation;
     private AlarmManager alarmMgr;
+    private PendingIntent alarmIntent;
 
-    private int alarmID = 1;
+    private int locationAlarmID = 1;
     private SharedPrefsHelper shared;
 
     @Override
@@ -85,13 +86,37 @@ public class LocationService extends Service implements Observer {
         if(observable.getClass().equals(LocationObservable.class)) {
             Location location = (Location) o;
 
+            String address = AddressHelper.getLocationAddress(this,
+                    location.getLatitude(), location.getLongitude());
+
             // Solo para la primera llamada, para iniciar el proceso de alarmas.
             if(lastLocation == null) {
                 callWeatherService(location);
+
+                Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                        " --> lat: " + location.getLatitude() +
+                        " - long: " + location.getLongitude());
             } else {
                 if (location.distanceTo(lastLocation) > 5) {
                     callWeatherService(location);
+
+                    // Only for debug
+                    float distance = (float) 0.0;
+                    if(lastLocation != null) {
+                        distance = lastLocation.distanceTo(location);
+                    }
+
+                    Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                            " --> lat: " + location.getLatitude() +
+                            " - long: " + location.getLongitude() +
+                            "\nDistance: " + distance);
+                } else {
+                    Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                            " --> lat: " + location.getLatitude() +
+                            " - long: " + location.getLongitude() +
+                            "\nSame location");
                 }
+
             }
         }
         stopSelf();
@@ -104,7 +129,7 @@ public class LocationService extends Service implements Observer {
         mBundle.putDouble(Constants.Extras.EXTRA_LON, location.getLongitude());
         mIntent.putExtras(mBundle);
 
-        PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), alarmID, mIntent, 0);
+        alarmIntent = PendingIntent.getService(getApplicationContext(), locationAlarmID, mIntent, 0);
         if (alarmMgr != null) {
             SchedulerHelper.setNextLocationAlarm(alarmMgr, alarmIntent, Constants.Time.HOUR_MILLIS);
         }
@@ -116,17 +141,6 @@ public class LocationService extends Service implements Observer {
 
         shared.setForecastAddress(address);
 
-        // Only for debug
-        float distance = (float) 0.0;
-        if(lastLocation != null) {
-            distance = lastLocation.distanceTo(location);
-        }
-
         lastLocation = location;
-
-        Log.d(TAG, "Location Observer update...\nLocation: " + address +
-                " --> lat: " + location.getLatitude() +
-                " - long: " + location.getLongitude() +
-                "\nDistance: " + distance);
     }
 }

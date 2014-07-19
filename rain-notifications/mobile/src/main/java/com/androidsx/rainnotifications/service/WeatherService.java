@@ -43,7 +43,7 @@ public class WeatherService extends Service implements Observer {
 
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
-    private int alarmID = 0;
+    private int weatherAlarmID = 0;
 
     public WeatherObservable weatherObservable;
 
@@ -105,7 +105,7 @@ public class WeatherService extends Service implements Observer {
             mBundle.putDouble(Constants.Extras.EXTRA_LAT, response.getForecast().getLatitude());
             mBundle.putDouble(Constants.Extras.EXTRA_LON, response.getForecast().getLongitude());
             mIntent.putExtras(mBundle);
-            alarmIntent = PendingIntent.getService(getApplicationContext(), alarmID, mIntent, 0);
+            alarmIntent = PendingIntent.getService(getApplicationContext(), weatherAlarmID, mIntent, 0);
 
             if(alarmMgr != null) {
                 SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);

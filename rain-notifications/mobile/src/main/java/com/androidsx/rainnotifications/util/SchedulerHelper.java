@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications.util;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.util.Log;
 
 import com.androidsx.rainnotifications.util.Constants;
 
@@ -17,7 +18,8 @@ public class SchedulerHelper {
 
     public static void setNextApiCallAlarm(AlarmManager am, PendingIntent pi, long time) {
         am.cancel(pi);
-        am.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+        am.setInexactRepeating(
+                AlarmManager.RTC_WAKEUP,
                 nextApiCallTime(time),
                 nextApiCallTime(time),
                 pi);
