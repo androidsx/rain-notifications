@@ -7,7 +7,7 @@ import android.content.Intent;
 public class OnBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent i = new Intent(context, WeatherService.class);
+        Intent i = new Intent(context, LocationService.class);
         context.startService(i);
     }
 }
