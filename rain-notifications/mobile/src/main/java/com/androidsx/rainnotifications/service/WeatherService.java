@@ -115,9 +115,9 @@ public class WeatherService extends Service implements Observer {
 
         String update = "";
         String currentTime = DateHelper
-                .formatTime(System.currentTimeMillis(), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
+                .formatTimeMadrid(System.currentTimeMillis());
         String nextApiCall = DateHelper
-                .formatTime(Scheduler.nextApiCallTime(nextIconTime), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
+                .formatTimeMadrid(Scheduler.nextApiCallTime(nextIconTime));
         if(nextIconTime == 0) {
             update = "\nSearching: " + searchingIcon + "\n\nCurrently: " + currentlyIcon +
                     " at "+ currentTime +
@@ -129,7 +129,7 @@ public class WeatherService extends Service implements Observer {
                     .deltaTime(nextIconTime, System.currentTimeMillis());
 
             String forecastTime = DateHelper
-                    .formatTime(nextIconTime, Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
+                    .formatTimeMadrid(nextIconTime);
 
             if(AnalyzerHelper.compareTo(nextForecastIcon, searchingIcon)) {
                 update = "\nFound: " + nextForecastIcon + "\n\nCurrently: " + currentlyIcon +
@@ -169,7 +169,7 @@ public class WeatherService extends Service implements Observer {
         String deltaTime = DateHelper
                 .deltaTime(nextIconTime, System.currentTimeMillis());
         String expectedTime = DateHelper
-                .formatTime(nextIconTime, Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
+                .formatTimeMadrid(nextIconTime);
         if(!currentlyIcon.equals(Constants.ForecastIO.Icon.RAIN) && nextForecastIcon.equals(Constants.ForecastIO.Icon.RAIN)) {
             new NotificationHelper(this, "Rain expected " + deltaTime + " at " + expectedTime);
         } else if(currentlyIcon.equals(Constants.ForecastIO.Icon.RAIN) && !nextForecastIcon.equals(Constants.ForecastIO.Icon.RAIN)) {

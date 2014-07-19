@@ -22,9 +22,27 @@ public class DateHelper {
         return deltaTime.toString();
     }
 
-    public static String formatTime(long forecastTime, String time_format, String time_zone) {
-        SimpleDateFormat sdf = new SimpleDateFormat(time_format, Locale.getDefault());
+    public static String formatTime(long forecastTime, String time_zone) {
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.Time.TIME_FORMAT, Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone(time_zone));
+
+        String time =  sdf.format(new Date(forecastTime));
+
+        return time;
+    }
+
+    public static String formatTimeMadrid(long forecastTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.Time.TIME_FORMAT, Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone(Constants.Time.TIME_ZONE_MADRID));
+
+        String time =  sdf.format(new Date(forecastTime));
+
+        return time;
+    }
+
+    public static String formatTimeNewYork(long forecastTime) {
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.Time.TIME_FORMAT, Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone(Constants.Time.TIME_ZONE_NEW_YORK));
 
         String time =  sdf.format(new Date(forecastTime));
 
