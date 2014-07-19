@@ -9,7 +9,11 @@ import java.util.TimeZone;
 
 public class DateHelper {
 
-    public String deltaTime(long time, long currentTime) {
+    private DateHelper() {
+        //No-instantiate
+    }
+
+    public static String deltaTime(long time, long currentTime) {
         CharSequence deltaTime = DateUtils.getRelativeTimeSpanString(
                 time,
                 currentTime,
@@ -18,7 +22,7 @@ public class DateHelper {
         return deltaTime.toString();
     }
 
-    public String formatTime(long forecastTime, String time_format, String time_zone) {
+    public static String formatTime(long forecastTime, String time_format, String time_zone) {
         SimpleDateFormat sdf = new SimpleDateFormat(time_format, Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone(time_zone));
 

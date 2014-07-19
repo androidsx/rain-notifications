@@ -114,9 +114,9 @@ public class WeatherService extends Service implements Observer {
         String history = shared.getForecastHistory();
 
         String update = "";
-        String currentTime = new DateHelper()
+        String currentTime = DateHelper
                 .formatTime(System.currentTimeMillis(), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
-        String nextApiCall = new DateHelper()
+        String nextApiCall = DateHelper
                 .formatTime(Scheduler.nextApiCallTime(nextIconTime), Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
         if(nextIconTime == 0) {
             update = "\nSearching: " + searchingIcon + "\n\nCurrently: " + currentlyIcon +
@@ -125,10 +125,10 @@ public class WeatherService extends Service implements Observer {
                     "\n\nNext API call at: " + nextApiCall;
         }
         else {
-            String deltaTime = new DateHelper()
+            String deltaTime = DateHelper
                     .deltaTime(nextIconTime, System.currentTimeMillis());
 
-            String forecastTime = new DateHelper()
+            String forecastTime = DateHelper
                     .formatTime(nextIconTime, Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
 
             if(AnalyzerHelper.compareTo(nextForecastIcon, searchingIcon)) {
@@ -151,7 +151,7 @@ public class WeatherService extends Service implements Observer {
             shared.setNextForecastIcon(currentlyIcon);
         }
         else {
-            String deltaTime = new DateHelper()
+            String deltaTime = DateHelper
                     .deltaTime(nextIconTime, System.currentTimeMillis());
             if(AnalyzerHelper.compareTo(nextForecastIcon, searchingIcon)) {
                 update = deltaTime + ".\n\nNext API call at: " + nextApiCall + "\n";
@@ -166,9 +166,9 @@ public class WeatherService extends Service implements Observer {
         shared.setCurrentForecast(update);
         shared.setForecastHistory(history);
 
-        String deltaTime = new DateHelper()
+        String deltaTime = DateHelper
                 .deltaTime(nextIconTime, System.currentTimeMillis());
-        String expectedTime = new DateHelper()
+        String expectedTime = DateHelper
                 .formatTime(nextIconTime, Constants.Time.TIME_FORMAT, Constants.Time.TIME_ZONE_MADRID);
         if(!currentlyIcon.equals(Constants.ForecastIO.Icon.RAIN) && nextForecastIcon.equals(Constants.ForecastIO.Icon.RAIN)) {
             new NotificationHelper(this, "Rain expected " + deltaTime + " at " + expectedTime);
