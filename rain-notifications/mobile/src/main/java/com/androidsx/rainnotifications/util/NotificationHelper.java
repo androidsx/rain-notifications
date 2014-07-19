@@ -10,6 +10,10 @@ import android.support.v4.app.NotificationCompat;
 import com.androidsx.rainnotifications.ForecastMobile;
 import com.androidsx.rainnotifications.R;
 
+/*
+ * Clase auxiliar para realizar notificaciones al usuario.
+ */
+
 public class NotificationHelper {
 
     private static final String TAG = NotificationHelper.class.getSimpleName();

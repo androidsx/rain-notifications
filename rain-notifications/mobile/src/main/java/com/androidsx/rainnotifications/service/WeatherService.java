@@ -7,8 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.format.DateUtils;
 import android.util.Log;
+import java.util.Observable;
+import java.util.Observer;
 
 import com.androidsx.rainnotifications.ForecastAnalyzer;
 import com.androidsx.rainnotifications.Scheduler;
@@ -19,11 +20,22 @@ import com.androidsx.rainnotifications.util.Constants;
 import com.androidsx.rainnotifications.util.DateHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
-import com.forecast.io.v2.transfer.DataPoint;
 
-import java.util.Locale;
-import java.util.Observable;
-import java.util.Observer;
+import com.forecast.io.v2.transfer.DataPoint;
+import com.forecast.io.v2.network.services.ForecastService.Response;
+
+/*
+ * Este servicio es el encargado de realizar las llamdas a forecast.io.
+ * Cada vez que se inicia, realiza una llamada a la API de forecast.io con las coordenadas recibidas
+ * por extras desde LocationService o desde la propia alarma iniciada después de la primera ejecución.
+ *
+ * Analizamos la respuesta con las diferentes clases auxiliares, y se determina la hora de la siguiente
+ * ejecución, con la que se registrará una alarma, para volver a realizar una llamada a WeatherService.
+ *
+ * De esta manera, si la posición no sufriera ninguna modificación considerable, esta alarma, será la
+ * encargada de ir llamando a WeatherService, cada periodo de tiempo que se irá recalculando, con cada
+ * respuesta de la API forecast.io.
+ */
 
 public class WeatherService extends Service implements Observer {
 
@@ -61,6 +73,7 @@ public class WeatherService extends Service implements Observer {
                 double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
                 double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
 
+                // Para comprobar que se han recibido coordenadas.
                 if (latitude != 1000 && longitude != 1000) {
                     weatherObservable.checkForecast(latitude, longitude);
                 }
@@ -74,7 +87,7 @@ public class WeatherService extends Service implements Observer {
     @Override
     public void update(Observable observable, Object o) {
         if(observable.getClass().equals(WeatherObservable.class)) {
-            com.forecast.io.v2.network.services.ForecastService.Response response = (com.forecast.io.v2.network.services.ForecastService.Response) o;
+            Response response = (Response) o;
 
             DataPoint currently = response.getForecast().getCurrently();
 

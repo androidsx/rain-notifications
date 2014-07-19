@@ -5,7 +5,9 @@ import android.app.PendingIntent;
 
 import com.androidsx.rainnotifications.util.Constants;
 
-import com.forecast.io.v2.transfer.DataPoint;
+/*
+ * Clase auxiliar, para registrar las alarmas de los servicios WeatherService y LocationService.
+ */
 
 public class Scheduler {
 

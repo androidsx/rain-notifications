@@ -12,6 +12,11 @@ import com.forecast.io.v2.transfer.LatLng;
 
 import com.androidsx.rainnotifications.util.Constants.ForecastIO;
 
+/*
+ * Clase 'Observable' encargada de realizar la llamada a la API forecast.io, y de notificar dicha
+ * respuesta al 'Observer' (WeatherService) de una manera asíncrona.
+ */
+
 public class WeatherObservable extends Observable {
 
     private static final String TAG = WeatherObservable.class.getSimpleName();

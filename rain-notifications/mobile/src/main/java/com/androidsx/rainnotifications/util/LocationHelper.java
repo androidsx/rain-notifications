@@ -6,6 +6,10 @@ import android.location.LocationManager;
 
 import com.androidsx.rainnotifications.util.Constants.Time;
 
+/*
+ * No utilizada con la actual lógica de la app.
+ */
+
 public class LocationHelper {
 
     private LocationManager mLocationManager;

@@ -11,6 +11,12 @@ import com.google.android.gms.location.LocationClient;
 
 import java.util.Observable;
 
+/*
+ * Clase 'Observable', que se encarga de realizar una conexión con los servicios de google, y de
+ * obtener la última localización registrada por el terminal; y una vez obtenida se le notificará
+ * al 'Observer' (LocationService) de la nueva posición de una manera asíncrona.
+ */
+
 public class LocationObservable extends Observable implements GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener {
 

@@ -7,6 +7,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+/*
+ * Clase auxiliar para convertir la hora UTC, en formato legible.
+ */
+
 public class DateHelper {
 
     private DateHelper() {

@@ -16,6 +16,10 @@ import static android.location.LocationProvider.AVAILABLE;
 import static android.location.LocationProvider.OUT_OF_SERVICE;
 import static android.location.LocationProvider.TEMPORARILY_UNAVAILABLE;
 
+/*
+ * No utilizada con la actual lógica de la app.
+ */
+
 public class LocationObservableOld extends Observable {
 
     private static final String TAG = LocationObservableOld.class.getSimpleName();

@@ -12,6 +12,15 @@ import com.androidsx.rainnotifications.service.LocationService;
 import com.androidsx.rainnotifications.util.Constants.ForecastIO;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
+/*
+ * Activity principal para mostrar los datos de las diferentes llamadas realizadas por el
+ * servicio WeatherService a la API forecast.io
+ *
+ * Se hace especial énfasis en el estado actual del pronóstico del tiempo, y cuándo se prevé
+ * el siguiente cambio de tiempo, indicando el tiempo restante, y la siguiente hora a la que
+ * se realizará la llamada a forecast.io para actualizar los datos del pronóstico.
+ */
+
 public class ForecastMobile extends Activity {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();

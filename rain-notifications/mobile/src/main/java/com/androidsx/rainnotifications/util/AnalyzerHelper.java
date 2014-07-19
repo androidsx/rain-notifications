@@ -6,6 +6,11 @@ import com.forecast.io.v2.transfer.DataPoint;
 
 import com.androidsx.rainnotifications.util.Constants.ForecastIO.Icon;
 
+/*
+ * Clase auxiliar de ForecastAnalyzer desde la que se realiza el análisis de la respuesta,
+ * dependiendo de los requerimientos solicitados (aun por implementar).
+ */
+
 public class AnalyzerHelper {
 
     private static final String TAG = AnalyzerHelper.class.getSimpleName();

@@ -20,6 +20,22 @@ import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import java.util.Observable;
 import java.util.Observer;
 
+/*
+ * Este servicio es el encargado de obtener la posición gps del usuario.
+ *
+ * Se inicia por primera vez al ser llamada por la activity (botón Call the Forecast API).
+ * (En su defecto, también está registrado en el OnBootReceiver, para inicar el proceso una vez se inicia el sistema).
+ *
+ * Una vez iniciado, calcula la posición actual, e inicia el servicio WeatherService con dicha posición y se
+ * registra una alarma para que vuelva a llamar a LocationService (actualmente 1 hora) con las coordenadas de
+ * la posición obtenida.
+ *
+ * Cuando la alarma llama de nuevo de LocationService, este recibe las última coordenadas por extras, y las compara
+ * con la nueva posición obtenida, para determinar si se va a llamar a WeatherService con las nuevas coordenadas;
+ * debido a que si la posición ha sufrido un cambio considerable, la respuesta de WeatherService podría variar.
+ * (Actualmente 5 km de distancia entre posiciones)
+ */
+
 public class LocationService extends Service implements Observer {
 
     private static final String TAG = LocationService.class.getSimpleName();
@@ -69,6 +85,7 @@ public class LocationService extends Service implements Observer {
         if(observable.getClass().equals(LocationObservable.class)) {
             Location location = (Location) o;
 
+            // Solo para la primera llamada, para iniciar el proceso de alarmas.
             if(lastLocation == null) {
                 callWeatherService(location);
             } else {
