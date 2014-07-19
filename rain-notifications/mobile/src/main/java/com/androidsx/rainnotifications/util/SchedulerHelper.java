@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications;
+package com.androidsx.rainnotifications.util;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -9,9 +9,9 @@ import com.androidsx.rainnotifications.util.Constants;
  * Clase auxiliar, para registrar las alarmas de los servicios WeatherService y LocationService.
  */
 
-public class Scheduler {
+public class SchedulerHelper {
 
-    private Scheduler() {
+    private SchedulerHelper() {
         // Non-instantiable
     }
 

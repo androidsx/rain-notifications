@@ -12,7 +12,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import com.androidsx.rainnotifications.ForecastAnalyzer;
-import com.androidsx.rainnotifications.Scheduler;
+import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.model.WeatherObservable;
 import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.util.AnalyzerHelper;
@@ -108,7 +108,7 @@ public class WeatherService extends Service implements Observer {
             alarmIntent = PendingIntent.getService(getApplicationContext(), alarmID, mIntent, 0);
 
             if(alarmMgr != null) {
-                Scheduler.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
+                SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
             }
 
             Log.d(TAG, "Weather Observer update...");
@@ -130,7 +130,7 @@ public class WeatherService extends Service implements Observer {
         String currentTime = DateHelper
                 .formatTimeMadrid(System.currentTimeMillis());
         String nextApiCall = DateHelper
-                .formatTimeMadrid(Scheduler.nextApiCallTime(nextIconTime));
+                .formatTimeMadrid(SchedulerHelper.nextApiCallTime(nextIconTime));
         if(nextIconTime == 0) {
             update = "\nSearching: " + searchingIcon + "\n\nCurrently: " + currentlyIcon +
                     " at "+ currentTime +

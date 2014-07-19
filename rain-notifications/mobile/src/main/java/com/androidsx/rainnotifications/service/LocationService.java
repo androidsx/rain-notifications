@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.androidsx.rainnotifications.Scheduler;
+import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.model.LocationObservable;
 import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.util.Constants;
@@ -106,7 +106,7 @@ public class LocationService extends Service implements Observer {
 
         PendingIntent alarmIntent = PendingIntent.getService(getApplicationContext(), alarmID, mIntent, 0);
         if (alarmMgr != null) {
-            Scheduler.setNextLocationAlarm(alarmMgr, alarmIntent, Constants.Time.HOUR_MILLIS);
+            SchedulerHelper.setNextLocationAlarm(alarmMgr, alarmIntent, Constants.Time.HOUR_MILLIS);
         }
 
         startService(new Intent(this, WeatherService.class).putExtras(mBundle));
