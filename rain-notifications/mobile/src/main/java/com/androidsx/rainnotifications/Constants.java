@@ -75,8 +75,5 @@ public class Constants {
         public static final String HISTORY = "history";
         public static final String CURRENTLY_ICON = "currently_icon";
         public static final String NEXT_FORECAST_ICON = "next_forecast_icon";
-        public static final String NEXT_ALARM_TIME = "next_alarm_time";
-        public static final String LAST_LOCATION_LAT = "last_location_lat";
-        public static final String LAST_LOCATION_LON = "last_location_lon";
     }
 }
