@@ -7,30 +7,16 @@ import android.location.LocationManager;
 import com.androidsx.rainnotifications.Constants.Time;
 
 /*
- * No utilizada con la actual lógica de la app.
+ * Used for determine if the newest location is better than last.
  */
 
 public class LocationHelper {
 
-    private LocationManager mLocationManager;
-
-    public LocationHelper(LocationManager locationManager) {
-        mLocationManager = locationManager;
+    private LocationHelper() {
+        //No-instantiate
     }
 
-    public void registerProvider(String provider, long time, float minDist, LocationListener listener) {
-        mLocationManager.requestLocationUpdates(provider, time, minDist, listener);
-    }
-
-    public void unRegisterProvider(LocationListener listener) {
-        if(listener != null) mLocationManager.removeUpdates(listener);
-    }
-
-    public boolean isProviderEnabled(String provider){
-        return mLocationManager.isProviderEnabled(provider);
-    }
-
-    public boolean isBetterLocation(Location location, Location currentBestLocation) {
+    public static boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             // A new location is always better than no location
             return true;
@@ -73,7 +59,7 @@ public class LocationHelper {
     }
 
     /** Checks whether two providers are the same */
-    private boolean isSameProvider(String provider1, String provider2) {
+    private static boolean isSameProvider(String provider1, String provider2) {
         if (provider1 == null) {
             return provider2 == null;
         }

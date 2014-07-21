@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.androidsx.rainnotifications.util.LocationHelper;
 import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.Constants;
@@ -141,7 +142,10 @@ public class LocationService extends Service implements GooglePlayServicesClient
     @Override
     public void onConnected(Bundle bundle) {
         if(mLocationClient.isConnected()) {
-            updateLocation(mLocationClient.getLastLocation());
+            Location loc = mLocationClient.getLastLocation();
+            if(LocationHelper.isBetterLocation(loc, lastLocation)) {
+                updateLocation(loc);
+            }
         }
     }
 
