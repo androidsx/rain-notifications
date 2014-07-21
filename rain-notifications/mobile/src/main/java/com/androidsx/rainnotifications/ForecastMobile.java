@@ -77,11 +77,19 @@ public class ForecastMobile extends Activity {
         txt_update.setText(SharedPrefsHelper.getCurrentForecast(sharedPrefs));
         txt_response.setText(SharedPrefsHelper.getForecastHistory(sharedPrefs));
 
-        final String currentWeatherIcon = SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs);
-        currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(currentWeatherIcon)));
+        String currentWeatherIcon = SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs);
+        if(Constants.ForecastIO.FORECAST_ICON.containsKey(currentWeatherIcon)) {
+            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(currentWeatherIcon)));
+        } else {
+            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(Constants.ForecastIO.Icon.UNKNOWN)));
+        }
 
-        final String nextIcon = SharedPrefsHelper.getNextForecastIcon(sharedPrefs);
-        nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(nextIcon)));
+        String nextIcon = SharedPrefsHelper.getNextForecastIcon(sharedPrefs);
+        if(Constants.ForecastIO.FORECAST_ICON.containsKey(nextIcon)) {
+            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(nextIcon)));
+        } else {
+            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(Constants.ForecastIO.Icon.UNKNOWN)));
+        }
     }
 }
 
