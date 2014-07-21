@@ -4,7 +4,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
-import com.androidsx.rainnotifications.util.Constants.Time;
+import com.androidsx.rainnotifications.Constants.Time;
 
 /*
  * No utilizada con la actual lógica de la app.

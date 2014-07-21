@@ -2,9 +2,8 @@ package com.androidsx.rainnotifications.util;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.util.Log;
 
-import com.androidsx.rainnotifications.util.Constants;
+import com.androidsx.rainnotifications.Constants;
 
 /*
  * Clase auxiliar, para registrar las alarmas de los servicios WeatherService y LocationService.

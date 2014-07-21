@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -13,7 +14,7 @@ import android.util.Log;
 
 import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.util.AddressHelper;
-import com.androidsx.rainnotifications.util.Constants;
+import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -46,7 +47,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
     private LocationClient mLocationClient;
 
     private int locationAlarmID = 1;
-    private SharedPrefsHelper shared;
+    private SharedPreferences sharedPrefs;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -58,7 +59,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
         super.onCreate();
 
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        shared = new SharedPrefsHelper(getApplicationContext());
+        sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
     }
 
     @Override
@@ -132,7 +133,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
         String address = AddressHelper.getLocationAddress(this,
                 location.getLatitude(), location.getLongitude());
 
-        shared.setForecastAddress(address);
+        SharedPrefsHelper.setForecastAddress(address, sharedPrefs.edit());
 
         lastLocation = location;
     }

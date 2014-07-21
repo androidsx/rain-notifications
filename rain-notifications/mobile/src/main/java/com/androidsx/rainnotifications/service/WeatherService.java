@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -13,13 +14,9 @@ import com.androidsx.rainnotifications.ForecastAnalyzer;
 import com.androidsx.rainnotifications.util.DebugHelper;
 import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.util.AddressHelper;
-import com.androidsx.rainnotifications.util.AnalyzerHelper;
-import com.androidsx.rainnotifications.util.Constants;
-import com.androidsx.rainnotifications.util.DateHelper;
-import com.androidsx.rainnotifications.util.NotificationHelper;
+import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
-import com.androidsx.rainnotifications.util.WeatherIconHelper;
 import com.forecast.io.network.responses.INetworkResponse;
 import com.forecast.io.network.responses.NetworkResponse;
 import com.forecast.io.toolbox.NetworkServiceTask;
@@ -48,7 +45,7 @@ public class WeatherService extends Service {
     private PendingIntent alarmIntent;
     private int weatherAlarmID = 0;
 
-    public SharedPrefsHelper shared;
+    public SharedPreferences sharedPrefs;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -60,7 +57,7 @@ public class WeatherService extends Service {
         super.onCreate();
 
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        shared = new SharedPrefsHelper(getApplicationContext());
+        sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
     }
 
     @Override
@@ -108,7 +105,7 @@ public class WeatherService extends Service {
         String address = AddressHelper.getLocationAddress(this,
                 response.getForecast().getLatitude(), response.getForecast().getLongitude());
 
-        shared.setForecastAddress(address);
+        SharedPrefsHelper.setForecastAddress(address, sharedPrefs.edit());
 
         //Icon that the user wants to determine when going to occur, maybe received in a Extra
         String searchingIcon = Constants.ForecastIO.Icon.RAIN;
@@ -135,9 +132,9 @@ public class WeatherService extends Service {
         Log.d(TAG, "Weather Observer update...");
 
         if(dpRain != null && currently != null) {
-            DebugHelper.displayDebugResults(this, shared, dpRain.getTime() * 1000, dpRain.getIcon(), currently.getIcon(), searchingIcon);
+            DebugHelper.displayDebugResults(this, sharedPrefs, dpRain.getTime() * 1000, dpRain.getIcon(), currently.getIcon(), searchingIcon);
         } else if(dpRain == null && currently != null) {
-            DebugHelper.displayDebugResults(this, shared, 0, "", currently.getIcon(), searchingIcon);
+            DebugHelper.displayDebugResults(this, sharedPrefs, 0, "", currently.getIcon(), searchingIcon);
         }
 
         stopSelf();

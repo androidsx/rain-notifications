@@ -1,7 +1,6 @@
 package com.androidsx.rainnotifications;
 
 import com.androidsx.rainnotifications.util.AnalyzerHelper;
-import com.androidsx.rainnotifications.util.Constants.ForecastIO.Icon;
 
 import com.forecast.io.v2.network.services.ForecastService.Response;
 import com.forecast.io.v2.transfer.DataPoint;

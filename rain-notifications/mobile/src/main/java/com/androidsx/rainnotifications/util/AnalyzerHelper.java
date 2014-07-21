@@ -1,10 +1,9 @@
 package com.androidsx.rainnotifications.util;
 
 import com.forecast.io.v2.network.services.ForecastService.Response;
-import com.forecast.io.v2.transfer.DataBlock;
 import com.forecast.io.v2.transfer.DataPoint;
 
-import com.androidsx.rainnotifications.util.Constants.ForecastIO.Icon;
+import com.androidsx.rainnotifications.Constants.ForecastIO.Icon;
 
 /*
  * Clase auxiliar de ForecastAnalyzer desde la que se realiza el análisis de la respuesta,

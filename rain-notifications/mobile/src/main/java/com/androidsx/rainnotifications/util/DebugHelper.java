@@ -1,7 +1,10 @@
 package com.androidsx.rainnotifications.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+
+import com.androidsx.rainnotifications.Constants;
 
 public class DebugHelper {
 
@@ -11,8 +14,8 @@ public class DebugHelper {
         //No-instantiate
     }
 
-    public static void displayDebugResults(Context context, SharedPrefsHelper shared, long nextIconTime, String nextForecastIcon, String currentlyIcon, String searchingIcon) {
-        String history = shared.getForecastHistory();
+    public static void displayDebugResults(Context context, SharedPreferences sharedPref, long nextIconTime, String nextForecastIcon, String currentlyIcon, String searchingIcon) {
+        String history = SharedPrefsHelper.getForecastHistory(sharedPref);
 
         String update = "";
         String currentTime = DateHelper
@@ -48,8 +51,8 @@ public class DebugHelper {
         if(nextIconTime == 0) {
             update = "No changes expected until tomorrow." +
                     "\n\nNext API call at: " + nextApiCall + "\n";
-            shared.setCurrentForecastIcon(currentlyIcon);
-            shared.setNextForecastIcon(currentlyIcon);
+            SharedPrefsHelper.setCurrentForecastIcon(currentlyIcon, sharedPref.edit());
+            SharedPrefsHelper.setNextForecastIcon(currentlyIcon, sharedPref.edit());
         }
         else {
             String deltaTime = DateHelper
@@ -59,13 +62,13 @@ public class DebugHelper {
             } else {
                 update = deltaTime + ".\n\nNext API call at: " + nextApiCall + "\n";
             }
-            shared.setCurrentForecastIcon(currentlyIcon);
-            shared.setNextForecastIcon(nextForecastIcon);
+            SharedPrefsHelper.setCurrentForecastIcon(currentlyIcon, sharedPref.edit());
+            SharedPrefsHelper.setNextForecastIcon(nextForecastIcon, sharedPref.edit());
         }
         Log.d(TAG, ".\n" + update);
 
-        shared.setCurrentForecast(update);
-        shared.setForecastHistory(history);
+        SharedPrefsHelper.setCurrentForecast(update, sharedPref.edit());
+        SharedPrefsHelper.setForecastHistory(history, sharedPref.edit());
 
         String deltaTime = DateHelper
                 .deltaTime(nextIconTime, System.currentTimeMillis());

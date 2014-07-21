@@ -2,6 +2,8 @@ package com.androidsx.rainnotifications.util;
 
 import android.text.format.DateUtils;
 
+import com.androidsx.rainnotifications.Constants;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;

@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.view.View;
@@ -9,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.service.LocationService;
-import com.androidsx.rainnotifications.util.Constants.ForecastIO;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import com.androidsx.rainnotifications.util.WeatherIconHelper;
 
@@ -32,7 +32,7 @@ public class ForecastMobile extends Activity {
     private ImageView currentWeatherImageView;
     private ImageView nextWeatherImageView;
 
-    private SharedPrefsHelper sharedHelper;
+    private SharedPreferences sharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,7 @@ public class ForecastMobile extends Activity {
     }
 
     private void setupUI() {
-        sharedHelper = new SharedPrefsHelper(getApplicationContext());
+        sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
 
         txt_response = (TextView) findViewById(R.id.txt_response);
         txt_city = (TextView) findViewById(R.id.txt_city);
@@ -74,14 +74,14 @@ public class ForecastMobile extends Activity {
      * Updates the UI with the information stored in the shared preferences.
      */
     private void updateUiFromPrefs() {
-        txt_city.setText(sharedHelper.getForecastAddress());
-        txt_update.setText(sharedHelper.getCurrentForecast());
-        txt_response.setText(sharedHelper.getForecastHistory());
+        txt_city.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
+        txt_update.setText(SharedPrefsHelper.getCurrentForecast(sharedPrefs));
+        txt_response.setText(SharedPrefsHelper.getForecastHistory(sharedPrefs));
 
-        final String currentWeatherIcon = sharedHelper.getCurrentForecastIcon();
+        final String currentWeatherIcon = SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs);
         currentWeatherImageView.setImageDrawable(getResources().getDrawable(WeatherIconHelper.getWeatherIcon(currentWeatherIcon)));
 
-        final String nextIcon = sharedHelper.getNextForecastIcon();
+        final String nextIcon = SharedPrefsHelper.getNextForecastIcon(sharedPrefs);
         nextWeatherImageView.setImageDrawable(getResources().getDrawable(WeatherIconHelper.getWeatherIcon(nextIcon)));
     }
 }
