@@ -74,12 +74,6 @@ public class WeatherService extends Service {
                 // Para comprobar que se han recibido coordenadas.
                 if (latitude != 1000 && longitude != 1000) {
                     new NetworkServiceTask() {
-
-                        @Override
-                        protected void onPreExecute() {
-                            super.onPreExecute();
-                        }
-
                         @Override
                         protected void onPostExecute( INetworkResponse network ) {
                             if ( network == null || network.getStatus() == NetworkResponse.Status.FAIL ) {
