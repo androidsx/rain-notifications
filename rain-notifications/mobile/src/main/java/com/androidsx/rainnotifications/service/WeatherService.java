@@ -124,11 +124,11 @@ public class WeatherService extends Service {
 
         if(alarmMgr != null) {
             if(dpRain != null){
-                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, SchedulerHelper.nextApiCallTime(dpRain.getTime() * 1000));
-                Log.d(TAG, "Next weather call at calculated time: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextApiCallTime(dpRain.getTime() * 1000)));
+                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, SchedulerHelper.nextWeatherCallAlarm(dpRain.getTime() * 1000));
+                Log.d(TAG, "Next weather call at calculated time: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(dpRain.getTime() * 1000)));
             } else {
-                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, SchedulerHelper.nextApiCallTime(0));
-                Log.d(TAG, "Next weather call by default 2 hours later: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextApiCallTime(0)));
+                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, SchedulerHelper.nextWeatherCallAlarm(0));
+                Log.d(TAG, "Next weather call by default 2 hours later: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(0)));
             }
         }
 

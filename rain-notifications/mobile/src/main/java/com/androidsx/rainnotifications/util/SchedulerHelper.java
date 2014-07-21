@@ -33,7 +33,7 @@ public class SchedulerHelper {
                 pi);
     }
 
-    public static long nextApiCallTime(long time) {
+    public static long nextWeatherCallAlarm(long time) {
         final long currentTime = System.currentTimeMillis();
         if (time != 0) {
             if ((time - currentTime) < Constants.Time.TEN_MINUTES_MILLIS) {

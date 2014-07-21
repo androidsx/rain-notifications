@@ -21,7 +21,7 @@ public class DebugHelper {
         String currentTime = DateHelper
                 .formatTimeMadrid(System.currentTimeMillis());
         String nextApiCall = DateHelper
-                .formatTimeMadrid(SchedulerHelper.nextApiCallTime(nextIconTime));
+                .formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(nextIconTime));
         if(nextIconTime == 0) {
             update = "\nSearching: " + searchingIcon + "\n\nCurrently: " + currentlyIcon +
                     " at "+ currentTime +
