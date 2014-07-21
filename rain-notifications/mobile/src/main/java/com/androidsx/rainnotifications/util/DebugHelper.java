@@ -32,7 +32,7 @@ public class DebugHelper {
             String forecastTime = DateHelper
                     .formatTimeMadrid(nextIconTime);
 
-            if(AnalyzerHelper.compareTo(nextForecastIcon, searchingIcon)) {
+            if(AnalyzerHelper.compareIconToIcon(nextForecastIcon, searchingIcon)) {
                 update = "\nFound: " + nextForecastIcon + "\n\nCurrently: " + currentlyIcon +
                         "\nat "+ currentTime +
                         "\n\n" + nextForecastIcon + " expected at " + forecastTime +
@@ -54,7 +54,7 @@ public class DebugHelper {
         else {
             String deltaTime = DateHelper
                     .deltaTime(nextIconTime, System.currentTimeMillis());
-            if(AnalyzerHelper.compareTo(nextForecastIcon, searchingIcon)) {
+            if(AnalyzerHelper.compareIconToIcon(nextForecastIcon, searchingIcon)) {
                 update = deltaTime + ".\n\nNext API call at: " + nextApiCall + "\n";
             } else {
                 update = deltaTime + ".\n\nNext API call at: " + nextApiCall + "\n";

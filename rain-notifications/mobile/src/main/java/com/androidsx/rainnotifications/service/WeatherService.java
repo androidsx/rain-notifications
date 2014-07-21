@@ -110,9 +110,12 @@ public class WeatherService extends Service {
 
         shared.setForecastAddress(address);
 
+        //Icon that the user wants to determine when going to occur, maybe received in a Extra
+        String searchingIcon = Constants.ForecastIO.Icon.RAIN;
+
         ForecastAnalyzer fa = new ForecastAnalyzer();
         fa.setResponse(response);
-        DataPoint dpRain = fa.analyzeForecastForRain(currently.getIcon());
+        DataPoint dpRain = fa.analyzeForecastFor(searchingIcon, currently.getIcon());
 
         Intent mIntent = new Intent(this, WeatherService.class);
         Bundle mBundle = new Bundle();
@@ -132,9 +135,9 @@ public class WeatherService extends Service {
         Log.d(TAG, "Weather Observer update...");
 
         if(dpRain != null && currently != null) {
-            DebugHelper.displayDebugResults(this, shared, dpRain.getTime() * 1000, dpRain.getIcon(), currently.getIcon(), Constants.ForecastIO.Icon.RAIN);
+            DebugHelper.displayDebugResults(this, shared, dpRain.getTime() * 1000, dpRain.getIcon(), currently.getIcon(), searchingIcon);
         } else if(dpRain == null && currently != null) {
-            DebugHelper.displayDebugResults(this, shared, 0, "", currently.getIcon(), Constants.ForecastIO.Icon.RAIN);
+            DebugHelper.displayDebugResults(this, shared, 0, "", currently.getIcon(), searchingIcon);
         }
 
         stopSelf();

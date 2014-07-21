@@ -30,11 +30,7 @@ public class ForecastAnalyzer {
 
     //TODO: make algorithms to determine the weather the user wants
 
-    public DataPoint analyzeForecastForRain(String currentlyIcon) {
-        return AnalyzerHelper.getNextChange(currentlyIcon, Icon.RAIN, response, currentTime);
-    }
-
-    public DataPoint analyzeForecastForSunny(String currentlyIcon) {
-        return AnalyzerHelper.getNextChange(currentlyIcon, Icon.CLEAR_DAY, response, currentTime);
+    public DataPoint analyzeForecastFor(String searchingIcon, String currentlyIcon) {
+        return AnalyzerHelper.getNextChange(currentlyIcon, searchingIcon, response, currentTime);
     }
 }
