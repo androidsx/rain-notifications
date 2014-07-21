@@ -16,7 +16,7 @@ public class SchedulerHelper {
         // Non-instantiable
     }
 
-    public static void setNextApiCallAlarm(AlarmManager am, PendingIntent pi, long time) {
+    public static void setNextWeatherCallAlarm(AlarmManager am, PendingIntent pi, long time) {
         am.cancel(pi);
         am.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,

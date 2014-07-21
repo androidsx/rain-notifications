@@ -123,9 +123,9 @@ public class WeatherService extends Service {
 
         if(alarmMgr != null) {
             if(dpRain != null){
-                SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
+                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
             } else {
-                SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, 0);
+                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, 0);
             }
         }
 
