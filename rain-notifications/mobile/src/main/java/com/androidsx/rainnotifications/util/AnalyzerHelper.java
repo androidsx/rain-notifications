@@ -15,88 +15,33 @@ public class AnalyzerHelper {
 
     private static final String TAG = AnalyzerHelper.class.getSimpleName();
 
-    DataBlock hourly;
-    DataBlock minutely;
-    String currentlyForecastIcon;
-    long currentTime = System.currentTimeMillis() / 1000;
-
-    public AnalyzerHelper(Response res) {
-        this.hourly = res.getForecast().getHourly();
-        this.minutely = res.getForecast().getMinutely();
-        this.currentlyForecastIcon = res.getForecast().getCurrently().getIcon();
-    }
-
-    public DataPoint nextRainChange() {
-        return getNextChange(Icon.RAIN);
-    }
-
-    public DataPoint nextCloudyChange() {
-        return getNextChange(Icon.CLOUDY);
-    }
-
-    public DataPoint nextPartlyCloudyChange() {
-        return getNextChange(Icon.PARTLY_CLOUDY_DAY);
-    }
-
-    public DataPoint nextClearChange() {
-        return getNextChange(Icon.CLEAR_DAY);
-    }
-
-    public DataPoint nextSnowChange() {
-        return getNextChange(Icon.SNOW);
-    }
-
-    public DataPoint nextSleetChange() {
-        return getNextChange(Icon.SLEET);
-    }
-
-    public DataPoint nextWindChange() {
-        return getNextChange(Icon.WIND);
-    }
-
-    public DataPoint nextFogChange() {
-        return getNextChange(Icon.FOG);
-    }
-
-    public DataPoint nextHailChange() {
-        return getNextChange(Icon.HAIL);
-    }
-
-    public DataPoint nextThunderStormChange() {
-        return getNextChange(Icon.THUNDERSTORM);
-    }
-
-    public DataPoint nextTornadoChange() {
-        return getNextChange(Icon.TORNADO);
-    }
-
-    private DataPoint getNextChange(String icon) {
-        if(compareTo(currentlyForecastIcon, icon)) {
-            if(minutely != null) {
-                for(DataPoint dpM : minutely.getData()) {
-                    if(!compareTo(dpM.getIcon(), icon) && !dpM.getIcon().equals("") && dpM.getTime() > currentTime) {
+    public static DataPoint getNextChange(String currentlyForecastIcon, String icon, Response response, long currentTime) {
+        if(compareIconToIcon(currentlyForecastIcon, icon)) {
+            if(response.getForecast().getMinutely() != null) {
+                for(DataPoint dpM : response.getForecast().getMinutely().getData()) {
+                    if(!compareIconToIcon(dpM.getIcon(), icon) && !dpM.getIcon().equals("") && dpM.getTime() * 1000 > currentTime) {
                         return dpM;
                     }
                 }
             }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (!compareTo(dpH.getIcon(), icon) && !dpH.getIcon().equals("") && dpH.getTime() > currentTime) {
+            if(response.getForecast().getHourly() != null) {
+                for (DataPoint dpH : response.getForecast().getHourly().getData()) {
+                    if (!compareIconToIcon(dpH.getIcon(), icon) && !dpH.getIcon().equals("") && dpH.getTime() * 1000 > currentTime) {
                         return dpH;
                     }
                 }
             }
         } else {
-            if (minutely != null) {
-                for (DataPoint dpM : minutely.getData()) {
-                    if (compareTo(dpM.getIcon(), icon)  && !dpM.getIcon().equals("") && dpM.getTime() > currentTime) {
+            if (response.getForecast().getMinutely() != null) {
+                for (DataPoint dpM : response.getForecast().getMinutely().getData()) {
+                    if (compareIconToIcon(dpM.getIcon(), icon)  && !dpM.getIcon().equals("") && dpM.getTime() * 1000 > currentTime) {
                         return dpM;
                     }
                 }
             }
-            if(hourly != null) {
-                for (DataPoint dpH : hourly.getData()) {
-                    if (compareTo(dpH.getIcon(), icon)  && !dpH.getIcon().equals("") && dpH.getTime() > currentTime) {
+            if(response.getForecast().getHourly() != null) {
+                for (DataPoint dpH : response.getForecast().getHourly().getData()) {
+                    if (compareIconToIcon(dpH.getIcon(), icon)  && !dpH.getIcon().equals("") && dpH.getTime() * 1000 > currentTime) {
                         return dpH;
                     }
                 }
@@ -106,10 +51,8 @@ public class AnalyzerHelper {
         return null;
     }
 
-    public static boolean compareTo(String icon1, String icon2) {
-        if(icon1.equals(icon2)) {
-            return true;
-        } else if (icon2.equals(Icon.CLEAR_NIGHT) || icon2.equals(Icon.CLEAR_DAY)) {
+    public static boolean compareIconToIcon(String icon1, String icon2) {
+        if (icon2.equals(Icon.CLEAR_NIGHT) || icon2.equals(Icon.CLEAR_DAY)) {
             if (icon1.equals(Icon.CLEAR_NIGHT) || icon1.equals(Icon.CLEAR_DAY)) {
                 return true;
             }
@@ -117,6 +60,8 @@ public class AnalyzerHelper {
             if (icon1.equals(Icon.PARTLY_CLOUDY_NIGHT) || icon1.equals(Icon.PARTLY_CLOUDY_DAY)) {
                 return true;
             }
+        } else if(icon1.equals(icon2)) {
+            return true;
         }
 
         return false;

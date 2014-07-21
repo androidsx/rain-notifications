@@ -20,23 +20,21 @@ public class ForecastAnalyzer {
 
     private static final String TAG = ForecastAnalyzer.class.getSimpleName();
 
-    private AnalyzerHelper analyzer;
+    private Response response;
+    private long currentTime;
 
     public void setResponse(Response res) {
-        this.analyzer = new AnalyzerHelper(res);
+        this.response = res;
+        this.currentTime = System.currentTimeMillis();
     }
 
-    public DataPoint analyzeForecastForRain(String currentlyIcon) {
-        if(AnalyzerHelper.compareTo(currentlyIcon, Icon.RAIN)) {
-            return analyzer.nextRainChange();
-        } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLEAR_DAY)) {
-            return analyzer.nextClearChange();
-        } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.PARTLY_CLOUDY_DAY)) {
-            return analyzer.nextPartlyCloudyChange();
-        } else if (AnalyzerHelper.compareTo(currentlyIcon, Icon.CLOUDY)) {
-            return analyzer.nextCloudyChange();
-        }
+    //TODO: make algorithms to determine the weather the user wants
 
-        return null;
+    public DataPoint analyzeForecastForRain(String currentlyIcon) {
+        return AnalyzerHelper.getNextChange(currentlyIcon, Icon.RAIN, response, currentTime);
+    }
+
+    public DataPoint analyzeForecastForSunny(String currentlyIcon) {
+        return AnalyzerHelper.getNextChange(currentlyIcon, Icon.CLEAR_DAY, response, currentTime);
     }
 }
