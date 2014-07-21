@@ -125,14 +125,14 @@ public class WeatherService extends Service {
         if(alarmMgr != null) {
             if(dpRain != null){
                 SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, SchedulerHelper.nextWeatherCallAlarm(dpRain.getTime() * 1000));
-                Log.d(TAG, "Next weather call at calculated time: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(dpRain.getTime() * 1000)));
+                Log.d(TAG, ".\nNext weather call at calculated time: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(dpRain.getTime() * 1000)));
             } else {
                 SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, SchedulerHelper.nextWeatherCallAlarm(0));
-                Log.d(TAG, "Next weather call by default 2 hours later: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(0)));
+                Log.d(TAG, ".\nNext weather call by default 2 hours later: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(0)));
             }
         }
 
-        Log.d(TAG, "Weather Observer update...");
+        Log.d(TAG, ".\nWeather Observer update...");
 
         if(dpRain != null && currently != null) {
             DebugHelper.displayDebugResults(this, sharedPrefs, dpRain.getTime() * 1000, dpRain.getIcon(), currently.getIcon(), searchingIcon);

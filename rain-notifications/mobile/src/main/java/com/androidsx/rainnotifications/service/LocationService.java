@@ -89,7 +89,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
         if(lastLocation == null) {
             callWeatherService(loc);
 
-            Log.d(TAG, "Location Observer update...\nLocation: " + address +
+            Log.d(TAG, ".\nLocation Observer update...\nLocation: " + address +
                     " --> lat: " + loc.getLatitude() +
                     " - long: " + loc.getLongitude());
         } else {
@@ -102,12 +102,12 @@ public class LocationService extends Service implements GooglePlayServicesClient
                     distance = lastLocation.distanceTo(loc);
                 }
 
-                Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                Log.d(TAG, ".\nLocation Observer update...\nLocation: " + address +
                         " --> lat: " + loc.getLatitude() +
                         " - long: " + loc.getLongitude() +
                         "\nDistance: " + distance);
             } else {
-                Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                Log.d(TAG, ".\nLocation Observer update...\nLocation: " + address +
                         " --> lat: " + loc.getLatitude() +
                         " - long: " + loc.getLongitude() +
                         "\nSame location");
