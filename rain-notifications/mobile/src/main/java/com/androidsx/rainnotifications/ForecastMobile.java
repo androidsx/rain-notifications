@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.service.LocationService;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
-import com.androidsx.rainnotifications.util.WeatherIconHelper;
 
 /*
  * Activity principal para mostrar los datos de las diferentes llamadas realizadas por el
@@ -79,10 +78,10 @@ public class ForecastMobile extends Activity {
         txt_response.setText(SharedPrefsHelper.getForecastHistory(sharedPrefs));
 
         final String currentWeatherIcon = SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs);
-        currentWeatherImageView.setImageDrawable(getResources().getDrawable(WeatherIconHelper.getWeatherIcon(currentWeatherIcon)));
+        currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(currentWeatherIcon)));
 
         final String nextIcon = SharedPrefsHelper.getNextForecastIcon(sharedPrefs);
-        nextWeatherImageView.setImageDrawable(getResources().getDrawable(WeatherIconHelper.getWeatherIcon(nextIcon)));
+        nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(nextIcon)));
     }
 }
 

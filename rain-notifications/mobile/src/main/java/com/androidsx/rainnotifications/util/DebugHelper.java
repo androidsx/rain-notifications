@@ -76,11 +76,11 @@ public class DebugHelper {
                 .formatTimeMadrid(nextIconTime);
         if(!currentlyIcon.equals(Constants.ForecastIO.Icon.RAIN) && nextForecastIcon.equals(Constants.ForecastIO.Icon.RAIN)) {
             NotificationHelper.sendNotification(context, 0,
-                    WeatherIconHelper.getWeatherIcon(nextForecastIcon),
+                    Constants.ForecastIO.FORECAST_ICON.get(nextForecastIcon),
                     "Rain expected " + deltaTime + " at " + expectedTime);
         } else if(currentlyIcon.equals(Constants.ForecastIO.Icon.RAIN) && !nextForecastIcon.equals(Constants.ForecastIO.Icon.RAIN)) {
             NotificationHelper.sendNotification(context, 0,
-                    WeatherIconHelper.getWeatherIcon(nextForecastIcon),
+                    Constants.ForecastIO.FORECAST_ICON.get(nextForecastIcon),
                     "Stop raining expected " + deltaTime + " at " + expectedTime);
         }
     }

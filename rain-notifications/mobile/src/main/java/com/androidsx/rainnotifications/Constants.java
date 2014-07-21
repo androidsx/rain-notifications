@@ -1,5 +1,8 @@
 package com.androidsx.rainnotifications;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Constants {
     public static class Time{
         public static final String TIME_ZONE_MADRID = "Europe/Madrid";
@@ -32,6 +35,18 @@ public class Constants {
     }
     public static class ForecastIO {
         public static final String API_KEY = "f1fd27e70564bd6765bf40b3497cbf4f";
+        public static final Map<String, Integer> FORECAST_ICON = new HashMap<String, Integer>();
+        static {
+            FORECAST_ICON.put(Icon.CLEAR_DAY, R.drawable.rain);
+            FORECAST_ICON.put(Icon.CLEAR_NIGHT, R.drawable.clear_day);
+            FORECAST_ICON.put(Icon.RAIN, R.drawable.rain);
+            FORECAST_ICON.put(Icon.SNOW, R.drawable.snow);
+            FORECAST_ICON.put(Icon.CLOUDY, R.drawable.cloudy);
+            FORECAST_ICON.put(Icon.PARTLY_CLOUDY_DAY, R.drawable.partly_cloudy_day);
+            FORECAST_ICON.put(Icon.PARTLY_CLOUDY_NIGHT, R.drawable.partly_cloudy_night);
+            FORECAST_ICON.put(Icon.HAIL, R.drawable.hail);
+            FORECAST_ICON.put(Icon.THUNDERSTORM, R.drawable.thunderstorm);
+        }
 
         public static class Icon {
             public static final String CLEAR_DAY = "clear-day";
