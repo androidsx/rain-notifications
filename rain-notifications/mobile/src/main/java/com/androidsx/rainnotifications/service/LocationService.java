@@ -12,13 +12,12 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.androidsx.rainnotifications.util.SchedulerHelper;
-import com.androidsx.rainnotifications.model.LocationObservable;
 import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.util.Constants;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
-
-import java.util.Observable;
-import java.util.Observer;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
 
 /*
  * Este servicio es el encargado de obtener la posición gps del usuario.
@@ -36,14 +35,15 @@ import java.util.Observer;
  * (Actualmente 5 km de distancia entre posiciones)
  */
 
-public class LocationService extends Service implements Observer {
+public class LocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener {
 
     private static final String TAG = LocationService.class.getSimpleName();
 
-    private LocationObservable locationObservable;
     private Location lastLocation;
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
+    private LocationClient mLocationClient;
 
     private int locationAlarmID = 1;
     private SharedPrefsHelper shared;
@@ -56,9 +56,6 @@ public class LocationService extends Service implements Observer {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        locationObservable = new LocationObservable(getApplicationContext());
-        locationObservable.addObserver(this);
 
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         shared = new SharedPrefsHelper(getApplicationContext());
@@ -77,47 +74,43 @@ public class LocationService extends Service implements Observer {
                 lastLocation.setLongitude(longitude);
             }
         }
-        locationObservable.getLastLocation();
+        mLocationClient = new LocationClient(this, this, this);
+        mLocationClient.connect();
         return super.onStartCommand(intent, flags, startId);
     }
 
-    @Override
-    public void update(Observable observable, Object o) {
-        if(observable.getClass().equals(LocationObservable.class)) {
-            Location location = (Location) o;
+    private void updateLocation(Location loc) {
+        String address = AddressHelper.getLocationAddress(this,
+                loc.getLatitude(), loc.getLongitude());
 
-            String address = AddressHelper.getLocationAddress(this,
-                    location.getLatitude(), location.getLongitude());
+        // Solo para la primera llamada, para iniciar el proceso de alarmas.
+        if(lastLocation == null) {
+            callWeatherService(loc);
 
-            // Solo para la primera llamada, para iniciar el proceso de alarmas.
-            if(lastLocation == null) {
-                callWeatherService(location);
+            Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                    " --> lat: " + loc.getLatitude() +
+                    " - long: " + loc.getLongitude());
+        } else {
+            if (loc.distanceTo(lastLocation) > 5) {
+                callWeatherService(loc);
 
-                Log.d(TAG, "Location Observer update...\nLocation: " + address +
-                        " --> lat: " + location.getLatitude() +
-                        " - long: " + location.getLongitude());
-            } else {
-                if (location.distanceTo(lastLocation) > 5) {
-                    callWeatherService(location);
-
-                    // Only for debug
-                    float distance = (float) 0.0;
-                    if(lastLocation != null) {
-                        distance = lastLocation.distanceTo(location);
-                    }
-
-                    Log.d(TAG, "Location Observer update...\nLocation: " + address +
-                            " --> lat: " + location.getLatitude() +
-                            " - long: " + location.getLongitude() +
-                            "\nDistance: " + distance);
-                } else {
-                    Log.d(TAG, "Location Observer update...\nLocation: " + address +
-                            " --> lat: " + location.getLatitude() +
-                            " - long: " + location.getLongitude() +
-                            "\nSame location");
+                // Only for debug
+                float distance = (float) 0.0;
+                if(lastLocation != null) {
+                    distance = lastLocation.distanceTo(loc);
                 }
 
+                Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                        " --> lat: " + loc.getLatitude() +
+                        " - long: " + loc.getLongitude() +
+                        "\nDistance: " + distance);
+            } else {
+                Log.d(TAG, "Location Observer update...\nLocation: " + address +
+                        " --> lat: " + loc.getLatitude() +
+                        " - long: " + loc.getLongitude() +
+                        "\nSame location");
             }
+
         }
         stopSelf();
     }
@@ -142,5 +135,22 @@ public class LocationService extends Service implements Observer {
         shared.setForecastAddress(address);
 
         lastLocation = location;
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        if(mLocationClient.isConnected()) {
+            updateLocation(mLocationClient.getLastLocation());
+        }
+    }
+
+    @Override
+    public void onDisconnected() {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

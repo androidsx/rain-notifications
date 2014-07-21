@@ -108,7 +108,11 @@ public class WeatherService extends Service implements Observer {
             alarmIntent = PendingIntent.getService(getApplicationContext(), weatherAlarmID, mIntent, 0);
 
             if(alarmMgr != null) {
-                SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
+                if(dpRain != null){
+                    SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
+                } else {
+                    SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, 0);
+                }
             }
 
             Log.d(TAG, "Weather Observer update...");
