@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.androidsx.rainnotifications.ForecastAnalyzer;
+import com.androidsx.rainnotifications.util.DateHelper;
 import com.androidsx.rainnotifications.util.DebugHelper;
 import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.util.AddressHelper;
@@ -123,9 +124,11 @@ public class WeatherService extends Service {
 
         if(alarmMgr != null) {
             if(dpRain != null){
-                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
+                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, SchedulerHelper.nextApiCallTime(dpRain.getTime() * 1000));
+                Log.d(TAG, "Next weather call at calculated time: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextApiCallTime(dpRain.getTime() * 1000)));
             } else {
-                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, 0);
+                SchedulerHelper.setNextWeatherCallAlarm(alarmMgr, alarmIntent, SchedulerHelper.nextApiCallTime(0));
+                Log.d(TAG, "Next weather call by default 2 hours later: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextApiCallTime(0)));
             }
         }
 

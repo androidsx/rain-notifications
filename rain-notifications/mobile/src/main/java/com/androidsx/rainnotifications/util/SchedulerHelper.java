@@ -19,7 +19,7 @@ public class SchedulerHelper {
         am.cancel(pi);
         am.setInexactRepeating(
                 AlarmManager.RTC_WAKEUP,
-                nextApiCallTime(time),
+                time,
                 Constants.Time.TEN_MINUTES_MILLIS,
                 pi);
     }
