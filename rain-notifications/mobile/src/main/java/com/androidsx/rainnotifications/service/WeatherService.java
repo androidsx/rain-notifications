@@ -18,6 +18,7 @@ import com.androidsx.rainnotifications.util.DateHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
+import com.androidsx.rainnotifications.util.WeatherIconHelper;
 import com.forecast.io.network.responses.INetworkResponse;
 import com.forecast.io.network.responses.NetworkResponse;
 import com.forecast.io.toolbox.NetworkServiceTask;
@@ -206,9 +207,13 @@ public class WeatherService extends Service {
         String expectedTime = DateHelper
                 .formatTimeMadrid(nextIconTime);
         if(!currentlyIcon.equals(Constants.ForecastIO.Icon.RAIN) && nextForecastIcon.equals(Constants.ForecastIO.Icon.RAIN)) {
-            new NotificationHelper(this, "Rain expected " + deltaTime + " at " + expectedTime);
+            NotificationHelper.sendNotification(this, 0,
+                    WeatherIconHelper.getWeatherIcon(nextForecastIcon),
+                    "Rain expected " + deltaTime + " at " + expectedTime);
         } else if(currentlyIcon.equals(Constants.ForecastIO.Icon.RAIN) && !nextForecastIcon.equals(Constants.ForecastIO.Icon.RAIN)) {
-            new NotificationHelper(this, "Stop raining expected " + deltaTime + " at " + expectedTime);
+            NotificationHelper.sendNotification(this, 0,
+                    WeatherIconHelper.getWeatherIcon(nextForecastIcon),
+                    "Stop raining expected " + deltaTime + " at " + expectedTime);
         }
     }
 }

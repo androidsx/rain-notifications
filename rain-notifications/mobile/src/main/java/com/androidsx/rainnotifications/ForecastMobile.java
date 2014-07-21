@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.androidsx.rainnotifications.service.LocationService;
 import com.androidsx.rainnotifications.util.Constants.ForecastIO;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+import com.androidsx.rainnotifications.util.WeatherIconHelper;
 
 /*
  * Activity principal para mostrar los datos de las diferentes llamadas realizadas por el
@@ -78,34 +79,10 @@ public class ForecastMobile extends Activity {
         txt_response.setText(sharedHelper.getForecastHistory());
 
         final String currentWeatherIcon = sharedHelper.getCurrentForecastIcon();
-        currentWeatherImageView.setImageDrawable(getResources().getDrawable(getIcon(currentWeatherIcon)));
+        currentWeatherImageView.setImageDrawable(getResources().getDrawable(WeatherIconHelper.getWeatherIcon(currentWeatherIcon)));
 
         final String nextIcon = sharedHelper.getNextForecastIcon();
-        nextWeatherImageView.setImageDrawable(getResources().getDrawable(getIcon(nextIcon)));
-    }
-
-    private int getIcon(String icon) {
-        if(icon.equals(ForecastIO.Icon.RAIN)) {
-            return R.drawable.rain;
-        } else if(icon.equals(ForecastIO.Icon.CLEAR_DAY)) {
-            return R.drawable.clear_day;
-        } else if(icon.equals(ForecastIO.Icon.CLEAR_NIGHT)) {
-            return R.drawable.clear_night;
-        } else if(icon.equals(ForecastIO.Icon.CLOUDY)) {
-            return R.drawable.cloudy;
-        } else if(icon.equals(ForecastIO.Icon.PARTLY_CLOUDY_DAY)) {
-            return R.drawable.partly_cloudy_day;
-        } else if(icon.equals(ForecastIO.Icon.PARTLY_CLOUDY_NIGHT)) {
-            return R.drawable.partly_cloudy_night;
-        } else if(icon.equals(ForecastIO.Icon.SNOW)) {
-            return R.drawable.snow;
-        } else if(icon.equals(ForecastIO.Icon.THUNDERSTORM)) {
-            return R.drawable.thunderstorm;
-        } else if(icon.equals(ForecastIO.Icon.HAIL)) {
-            return R.drawable.hail;
-        } else {
-            return R.drawable.unknown;
-        }
+        nextWeatherImageView.setImageDrawable(getResources().getDrawable(WeatherIconHelper.getWeatherIcon(nextIcon)));
     }
 }
 

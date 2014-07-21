@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.NotificationCompat;
 
 import com.androidsx.rainnotifications.ForecastMobile;
@@ -17,12 +18,15 @@ import com.androidsx.rainnotifications.R;
 public class NotificationHelper {
 
     private static final String TAG = NotificationHelper.class.getSimpleName();
-    private static final int ID = 1;
 
-    public NotificationHelper(Context context, String notification) {
+    private NotificationHelper() {
+        //No-instantiate
+    }
+
+    public static void sendNotification(Context context, int id, int icon, String notification) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setSmallIcon(R.drawable.ic_launcher);
-        mBuilder.setContentTitle("Rain Notifications");
+        mBuilder.setSmallIcon(icon);
+        mBuilder.setContentTitle(context.getString(R.string.app_name));
         mBuilder.setContentText(notification);
         mBuilder.setDefaults(Notification.DEFAULT_ALL);
 
@@ -35,6 +39,6 @@ public class NotificationHelper {
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        mNotificationManager.notify(ID, mBuilder.build());
+        mNotificationManager.notify(id, mBuilder.build());
     }
 }
