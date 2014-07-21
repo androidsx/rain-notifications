@@ -24,10 +24,6 @@ public class Constants {
         public static final Double WASHINGTON_LON = -77.03653810608216;
         public static final Double HOUSTON_LAT = 29.75974563585816;
         public static final Double HOUSTON_LON = -95.36844546242673;
-
-        public static final long LOCATION_GPS_TIMEOUT = 30 * 60 * 1000; // 30 minutes
-        public static final long LOCATION_NETWORK_TIMEOUT = 1 * 60 * 60 * 1000; // 1 hour
-        public static final long LOCATION_DISTANCE = 0; // 0 km
     }
     public static class Extras {
         public static final String EXTRA_LAT = "extra_lat";
