@@ -8,12 +8,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import java.util.Observable;
-import java.util.Observer;
 
 import com.androidsx.rainnotifications.ForecastAnalyzer;
 import com.androidsx.rainnotifications.util.SchedulerHelper;
-import com.androidsx.rainnotifications.model.WeatherObservable;
 import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.util.AnalyzerHelper;
 import com.androidsx.rainnotifications.util.Constants;
@@ -21,8 +18,12 @@ import com.androidsx.rainnotifications.util.DateHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
+import com.forecast.io.network.responses.INetworkResponse;
+import com.forecast.io.network.responses.NetworkResponse;
+import com.forecast.io.toolbox.NetworkServiceTask;
+import com.forecast.io.v2.network.services.ForecastService;
 import com.forecast.io.v2.transfer.DataPoint;
-import com.forecast.io.v2.network.services.ForecastService.Response;
+import com.forecast.io.v2.transfer.LatLng;
 
 /*
  * Este servicio es el encargado de realizar las llamdas a forecast.io.
@@ -37,15 +38,13 @@ import com.forecast.io.v2.network.services.ForecastService.Response;
  * respuesta de la API forecast.io.
  */
 
-public class WeatherService extends Service implements Observer {
+public class WeatherService extends Service {
 
     private static final String TAG = WeatherService.class.getSimpleName();
 
     private AlarmManager alarmMgr;
     private PendingIntent alarmIntent;
     private int weatherAlarmID = 0;
-
-    public WeatherObservable weatherObservable;
 
     public SharedPrefsHelper shared;
 
@@ -60,9 +59,6 @@ public class WeatherService extends Service implements Observer {
 
         alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         shared = new SharedPrefsHelper(getApplicationContext());
-
-        weatherObservable = new WeatherObservable();
-        weatherObservable.addObserver(this);
     }
 
     @Override
@@ -75,54 +71,76 @@ public class WeatherService extends Service implements Observer {
 
                 // Para comprobar que se han recibido coordenadas.
                 if (latitude != 1000 && longitude != 1000) {
-                    weatherObservable.checkForecast(latitude, longitude);
+                    new NetworkServiceTask() {
+
+                        @Override
+                        protected void onPreExecute() {
+                            super.onPreExecute();
+                        }
+
+                        @Override
+                        protected void onPostExecute( INetworkResponse network ) {
+                            if ( network == null || network.getStatus() == NetworkResponse.Status.FAIL ) {
+                                return;
+                            }
+
+                            ForecastService.Response response = (ForecastService.Response) network;
+                            updateWeather(response);
+                        }
+                    }.execute( getRequest(latitude, longitude) );
                 }
             }
         }
-        stopSelf();
-
         return super.onStartCommand(intent, flags, startId);
     }
 
-    @Override
-    public void update(Observable observable, Object o) {
-        if(observable.getClass().equals(WeatherObservable.class)) {
-            Response response = (Response) o;
+    private ForecastService.Request getRequest(Double latitude, Double longitude) {
+        LatLng.Builder builderL = LatLng.newBuilder();
+        builderL.setLatitude(latitude)
+                .setLongitude(longitude)
+                .build();
+        LatLng latlng = new LatLng(builderL);
+        ForecastService.Builder builderF = ForecastService.Request.newBuilder(Constants.ForecastIO.API_KEY);
+        builderF.setLatLng(latlng).build();
 
-            DataPoint currently = response.getForecast().getCurrently();
+        return new ForecastService.Request(builderF);
+    }
 
-            String address = AddressHelper.getLocationAddress(this,
-                    response.getForecast().getLatitude(), response.getForecast().getLongitude());
+    private void updateWeather(ForecastService.Response response) {
+        DataPoint currently = response.getForecast().getCurrently();
 
-            shared.setForecastAddress(address);
+        String address = AddressHelper.getLocationAddress(this,
+                response.getForecast().getLatitude(), response.getForecast().getLongitude());
 
-            ForecastAnalyzer fa = new ForecastAnalyzer();
-            fa.setResponse(response);
-            DataPoint dpRain = fa.analyzeForecastForRain(currently.getIcon());
+        shared.setForecastAddress(address);
 
-            Intent mIntent = new Intent(this, WeatherService.class);
-            Bundle mBundle = new Bundle();
-            mBundle.putDouble(Constants.Extras.EXTRA_LAT, response.getForecast().getLatitude());
-            mBundle.putDouble(Constants.Extras.EXTRA_LON, response.getForecast().getLongitude());
-            mIntent.putExtras(mBundle);
-            alarmIntent = PendingIntent.getService(getApplicationContext(), weatherAlarmID, mIntent, 0);
+        ForecastAnalyzer fa = new ForecastAnalyzer();
+        fa.setResponse(response);
+        DataPoint dpRain = fa.analyzeForecastForRain(currently.getIcon());
 
-            if(alarmMgr != null) {
-                if(dpRain != null){
-                    SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
-                } else {
-                    SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, 0);
-                }
-            }
+        Intent mIntent = new Intent(this, WeatherService.class);
+        Bundle mBundle = new Bundle();
+        mBundle.putDouble(Constants.Extras.EXTRA_LAT, response.getForecast().getLatitude());
+        mBundle.putDouble(Constants.Extras.EXTRA_LON, response.getForecast().getLongitude());
+        mIntent.putExtras(mBundle);
+        alarmIntent = PendingIntent.getService(getApplicationContext(), weatherAlarmID, mIntent, 0);
 
-            Log.d(TAG, "Weather Observer update...");
-
-            if(dpRain != null && currently != null) {
-                displayDebugResults(dpRain.getTime() * 1000, dpRain.getIcon(), currently.getIcon(), Constants.ForecastIO.Icon.RAIN);
-            } else if(dpRain == null && currently != null) {
-                displayDebugResults(0, "", currently.getIcon(), Constants.ForecastIO.Icon.RAIN);
+        if(alarmMgr != null) {
+            if(dpRain != null){
+                SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, dpRain.getTime() * 1000);
+            } else {
+                SchedulerHelper.setNextApiCallAlarm(alarmMgr, alarmIntent, 0);
             }
         }
+
+        Log.d(TAG, "Weather Observer update...");
+
+        if(dpRain != null && currently != null) {
+            displayDebugResults(dpRain.getTime() * 1000, dpRain.getIcon(), currently.getIcon(), Constants.ForecastIO.Icon.RAIN);
+        } else if(dpRain == null && currently != null) {
+            displayDebugResults(0, "", currently.getIcon(), Constants.ForecastIO.Icon.RAIN);
+        }
+
         stopSelf();
     }
 
