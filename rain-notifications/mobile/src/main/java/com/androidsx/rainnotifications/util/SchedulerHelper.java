@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications.util;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -20,9 +21,9 @@ public class SchedulerHelper {
         // Non-instantiable
     }
 
-    public static void setAlarm(Context context, int id, double latitude, double longitude, long initTime, long repeatTime) {
+    public static void setAlarm(Context context, int id, Class<? extends Service> service, double latitude, double longitude, long initTime, long repeatTime) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent mIntent = new Intent(context, context.getClass());
+        Intent mIntent = new Intent(context, service);
         Bundle mBundle = new Bundle();
         mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
         mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);

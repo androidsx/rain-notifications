@@ -115,7 +115,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
 
     private void callWeatherService(Location location) {
         SchedulerHelper.setAlarm(
-                LocationService.this, Constants.AlarmId.LOCATION_ID,
+                LocationService.this, Constants.AlarmId.LOCATION_ID, LocationService.class,
                 location.getLatitude(), location.getLongitude(),
                 System.currentTimeMillis() + Constants.Time.HOUR_MILLIS, Constants.Time.HOUR_MILLIS);
 
