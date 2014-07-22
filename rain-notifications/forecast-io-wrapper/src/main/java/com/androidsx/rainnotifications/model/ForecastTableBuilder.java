@@ -40,10 +40,12 @@ public class ForecastTableBuilder {
                                                           DataBlock dataBlock,
                                                           Forecast.Granularity granularity) {
         final List<Forecast> forecasts = new ArrayList<Forecast>();
-        for (DataPoint dataPoint : dataBlock.getData()) {
-            final Forecast forecast = extractForecastIfValid(fromTime, dataPoint, granularity);
-            if (forecast != null) {
-                forecasts.add(forecast);
+        if(dataBlock != null) {
+            for (DataPoint dataPoint : dataBlock.getData()) {
+                final Forecast forecast = extractForecastIfValid(fromTime, dataPoint, granularity);
+                if (forecast != null) {
+                    forecasts.add(forecast);
+                }
             }
         }
         return forecasts;
