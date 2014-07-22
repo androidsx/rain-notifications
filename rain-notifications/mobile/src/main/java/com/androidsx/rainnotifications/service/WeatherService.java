@@ -17,8 +17,9 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.util.DateHelper;
 import com.androidsx.rainnotifications.util.SchedulerHelper;
+
+import org.joda.time.LocalTime;
 
 /*
  * Este servicio es el encargado de realizar las llamdas a forecast.io.
@@ -70,7 +71,7 @@ public class WeatherService extends Service {
                             // TODO: Here is where we should apply our logic
                             Log.d(TAG, "Forecast table: " + forecastTable);
 
-                            Forecast nextForecast = new ForecastAnalyzer(forecastTable).analyzeForecastFor();
+                            Forecast nextForecast = new ForecastAnalyzer(forecastTable).getNextForecastTransition();
                             Log.i(TAG, "Next expected forecast: " + nextForecast);
 
                             Log.i(TAG, "We could generate the following alerts:");
@@ -90,7 +91,7 @@ public class WeatherService extends Service {
                                             nextForecast.getTimeFromNow().getEndMillis()),
                                     Constants.Time.TEN_MINUTES_MILLIS
                             );
-                            Log.i(TAG, "Next weather alarm at: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(
+                            Log.i(TAG, "Next weather alarm at: " + new LocalTime(SchedulerHelper.nextWeatherCallAlarm(
                                     nextForecast.getTimeFromNow().getEndMillis())));
                             stopSelf();
                         }

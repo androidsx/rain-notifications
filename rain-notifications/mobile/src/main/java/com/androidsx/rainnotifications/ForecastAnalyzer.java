@@ -2,7 +2,6 @@ package com.androidsx.rainnotifications;
 
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.util.AnalyzerHelper;
 
 /*
  * Esta clase, deberá ser la clase principal para realizar el análisis de la respuesta recibida
@@ -27,7 +26,7 @@ public class ForecastAnalyzer {
     }
 
     //TODO: make algorithms to determine the weather the user wants
-    public Forecast analyzeForecastFor() {
-        return AnalyzerHelper.getNextChange(forecastTable);
+    public Forecast getNextForecastTransition() {
+        return forecastTable.getForecasts().get(0);
     }
 }
