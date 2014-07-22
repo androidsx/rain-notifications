@@ -16,6 +16,7 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.util.SchedulerHelper;
 
 /*
  * Este servicio es el encargado de realizar las llamdas a forecast.io.
@@ -36,8 +37,6 @@ public class WeatherService extends Service {
 
     private final AlertGenerator alertGenerator = new AlertGenerator();
 
-    private int weatherAlarmID = 0;
-
     public SharedPreferences sharedPrefs;
 
     @Override
@@ -57,8 +56,8 @@ public class WeatherService extends Service {
         if(intent != null) {
             Bundle mBundle = intent.getExtras();
             if(mBundle != null) {
-                double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
-                double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
+                final double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
+                final double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
 
                 // Para comprobar que se han recibido coordenadas.
                 if (latitude != 1000 && longitude != 1000) {
@@ -78,6 +77,9 @@ public class WeatherService extends Service {
                                     Log.i(TAG, "INFO alert: " + alert.getAlertMessage());
                                 }
                             }
+                            SchedulerHelper.setNextWeatherCallAlarm(WeatherService.this, latitude, longitude,
+                                    SchedulerHelper.nextWeatherCallAlarm(
+                                            forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis()));
                             stopSelf();
                         }
 

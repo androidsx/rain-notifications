@@ -43,11 +43,8 @@ public class LocationService extends Service implements GooglePlayServicesClient
     private static final String TAG = LocationService.class.getSimpleName();
 
     private Location lastLocation;
-    private AlarmManager alarmMgr;
-    private PendingIntent alarmIntent;
     private LocationClient mLocationClient;
 
-    private int locationAlarmID = 1;
     private SharedPreferences sharedPrefs;
 
     @Override
@@ -59,7 +56,6 @@ public class LocationService extends Service implements GooglePlayServicesClient
     public void onCreate() {
         super.onCreate();
 
-        alarmMgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
     }
 
@@ -118,16 +114,11 @@ public class LocationService extends Service implements GooglePlayServicesClient
     }
 
     private void callWeatherService(Location location) {
-        Intent mIntent = new Intent(this, LocationService.class);
+        SchedulerHelper.setNextLocationAlarm(this, location.getLatitude(), location.getLongitude(), Constants.Time.HOUR_MILLIS);
+
         Bundle mBundle = new Bundle();
         mBundle.putDouble(Constants.Extras.EXTRA_LAT, location.getLatitude());
         mBundle.putDouble(Constants.Extras.EXTRA_LON, location.getLongitude());
-        mIntent.putExtras(mBundle);
-
-        alarmIntent = PendingIntent.getService(getApplicationContext(), locationAlarmID, mIntent, 0);
-        if (alarmMgr != null) {
-            SchedulerHelper.setNextLocationAlarm(alarmMgr, alarmIntent, Constants.Time.HOUR_MILLIS);
-        }
 
         startService(new Intent(this, WeatherService.class).putExtras(mBundle));
 
