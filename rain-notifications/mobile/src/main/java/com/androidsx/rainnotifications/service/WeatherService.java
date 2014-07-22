@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.androidsx.rainnotifications.ForecastAnalyzer;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
@@ -16,7 +17,6 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.DateHelper;
 import com.androidsx.rainnotifications.util.SchedulerHelper;
 
@@ -70,6 +70,9 @@ public class WeatherService extends Service {
                             // TODO: Here is where we should apply our logic
                             Log.d(TAG, "Forecast table: " + forecastTable);
 
+                            Forecast nextForecast = new ForecastAnalyzer(forecastTable).analyzeForecastFor();
+                            Log.i(TAG, "Next expected forecast: " + nextForecast);
+
                             Log.i(TAG, "We could generate the following alerts:");
                             final Weather currentWeather = forecastTable.getBaselineWeather();
                             for (Forecast forecast  : forecastTable.getForecasts()) {
@@ -79,15 +82,16 @@ public class WeatherService extends Service {
                                     Log.i(TAG, "INFO alert: " + alert.getAlertMessage());
                                 }
                             }
+
                             SchedulerHelper.setAlarm(
                                     WeatherService.this, Constants.AlarmId.WEATHER_ID, WeatherService.class,
                                     latitude, longitude,
                                     SchedulerHelper.nextWeatherCallAlarm(
-                                            forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis()),
+                                            nextForecast.getTimeFromNow().getEndMillis()),
                                     Constants.Time.TEN_MINUTES_MILLIS
                             );
                             Log.i(TAG, "Next weather alarm at: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(
-                                    forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis())));
+                                    nextForecast.getTimeFromNow().getEndMillis())));
                             stopSelf();
                         }
 

@@ -1,8 +1,6 @@
 package com.androidsx.rainnotifications.util;
 
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 
 import com.androidsx.rainnotifications.Constants.Time;
 

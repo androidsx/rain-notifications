@@ -5,11 +5,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.service.LocationService;
 
 /*
  * Clase auxiliar, para registrar las alarmas de los servicios WeatherService y LocationService.

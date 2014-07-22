@@ -1,9 +1,8 @@
 package com.androidsx.rainnotifications;
 
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.util.AnalyzerHelper;
-
-import com.forecast.io.v2.network.services.ForecastService.Response;
-import com.forecast.io.v2.transfer.DataPoint;
 
 /*
  * Esta clase, deberá ser la clase principal para realizar el análisis de la respuesta recibida
@@ -19,17 +18,16 @@ public class ForecastAnalyzer {
 
     private static final String TAG = ForecastAnalyzer.class.getSimpleName();
 
-    private Response response;
+    private ForecastTable forecastTable;
     private long currentTime;
 
-    public void setResponse(Response res) {
-        this.response = res;
+    public ForecastAnalyzer (ForecastTable fT) {
+        this.forecastTable = fT;
         this.currentTime = System.currentTimeMillis();
     }
 
     //TODO: make algorithms to determine the weather the user wants
-
-    public DataPoint analyzeForecastFor(String searchingIcon, String currentlyIcon) {
-        return AnalyzerHelper.getNextChange(currentlyIcon, searchingIcon, response, currentTime);
+    public Forecast analyzeForecastFor() {
+        return AnalyzerHelper.getNextChange(forecastTable);
     }
 }
