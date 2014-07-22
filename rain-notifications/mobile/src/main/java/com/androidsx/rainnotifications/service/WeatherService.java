@@ -16,6 +16,8 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.model.util.UiUtil;
+import com.androidsx.rainnotifications.util.DateHelper;
 import com.androidsx.rainnotifications.util.SchedulerHelper;
 
 /*
@@ -79,7 +81,10 @@ public class WeatherService extends Service {
                             }
                             SchedulerHelper.setNextWeatherCallAlarm(WeatherService.this, latitude, longitude,
                                     SchedulerHelper.nextWeatherCallAlarm(
-                                            forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis()));
+                                            forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis())
+                            );
+                            Log.i(TAG, "Next alarm at: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(
+                                    forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis())));
                             stopSelf();
                         }
 
