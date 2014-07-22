@@ -14,8 +14,9 @@ public class Constants {
         public static final int HALF_HOUR_MILLIS = 1000 * 60 * 30;
         public static final int HOUR_MILLIS = 1000 * 60 * 60 * 1;
     }
-    public static class Distance{
-        public static final float KM = (float) 1.0;
+    public static class AlarmId{
+        public static final int LOCATION_ID = 0;
+        public static final int WEATHER_ID = 1;
     }
     public static class Localization {
         public static final Double NEW_YORK_LAT = 40.71310899271792;

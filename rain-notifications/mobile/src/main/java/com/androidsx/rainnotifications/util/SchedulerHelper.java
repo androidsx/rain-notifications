@@ -20,40 +20,20 @@ public class SchedulerHelper {
         // Non-instantiable
     }
 
-    public static void setNextWeatherCallAlarm(Context context, double latitude, double longitude, long time) {
-        int weatherAlarmID = 0;
+    public static void setAlarm(Context context, int id, double latitude, double longitude, long initTime, long repeatTime) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent mIntent = new Intent(context, LocationService.class);
+        Intent mIntent = new Intent(context, context.getClass());
         Bundle mBundle = new Bundle();
         mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
         mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
         mIntent.putExtras(mBundle);
-        PendingIntent alarmIntent = PendingIntent.getService(context.getApplicationContext(), weatherAlarmID, mIntent, 0);
+        PendingIntent alarmIntent = PendingIntent.getService(context.getApplicationContext(), id, mIntent, 0);
         if(am != null) {
             am.cancel(alarmIntent);
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    time,
-                    Constants.Time.TEN_MINUTES_MILLIS,
-                    alarmIntent);
-        }
-    }
-
-    public static void setNextLocationAlarm(Context context, double latitude, double longitude, long time) {
-        int locationAlarmID = 1;
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent mIntent = new Intent(context, LocationService.class);
-        Bundle mBundle = new Bundle();
-        mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
-        mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
-        mIntent.putExtras(mBundle);
-        PendingIntent alarmIntent = PendingIntent.getService(context.getApplicationContext(), locationAlarmID, mIntent, 0);
-        if(am != null) {
-            am.cancel(alarmIntent);
-            am.setInexactRepeating(
-                    AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + time,
-                    time,
+                    initTime,
+                    repeatTime,
                     alarmIntent);
         }
     }

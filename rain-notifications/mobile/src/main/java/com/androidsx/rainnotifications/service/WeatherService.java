@@ -79,9 +79,9 @@ public class WeatherService extends Service {
                                     Log.i(TAG, "INFO alert: " + alert.getAlertMessage());
                                 }
                             }
-                            SchedulerHelper.setNextWeatherCallAlarm(WeatherService.this, latitude, longitude,
+                            SchedulerHelper.setAlarm(WeatherService.this, Constants.AlarmId.WEATHER_ID, latitude, longitude,
                                     SchedulerHelper.nextWeatherCallAlarm(
-                                            forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis())
+                                            forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis()), Constants.Time.TEN_MINUTES_MILLIS
                             );
                             Log.i(TAG, "Next alarm at: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(
                                     forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis())));

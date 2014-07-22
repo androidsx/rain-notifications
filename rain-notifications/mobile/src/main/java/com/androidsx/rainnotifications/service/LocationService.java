@@ -114,7 +114,10 @@ public class LocationService extends Service implements GooglePlayServicesClient
     }
 
     private void callWeatherService(Location location) {
-        SchedulerHelper.setNextLocationAlarm(this, location.getLatitude(), location.getLongitude(), Constants.Time.HOUR_MILLIS);
+        SchedulerHelper.setAlarm(
+                LocationService.this, Constants.AlarmId.LOCATION_ID,
+                location.getLatitude(), location.getLongitude(),
+                System.currentTimeMillis() + Constants.Time.HOUR_MILLIS, Constants.Time.HOUR_MILLIS);
 
         Bundle mBundle = new Bundle();
         mBundle.putDouble(Constants.Extras.EXTRA_LAT, location.getLatitude());
