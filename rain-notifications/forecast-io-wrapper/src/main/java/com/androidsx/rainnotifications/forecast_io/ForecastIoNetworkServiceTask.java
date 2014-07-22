@@ -26,10 +26,7 @@ public abstract class ForecastIoNetworkServiceTask extends NetworkServiceTask {
             final ForecastService.Response response = (ForecastService.Response) rawNetworkResponse;
             Log.v(TAG, "Raw response from Forecast.io:\n" + response);
 
-            final ForecastTable forecastTable = ForecastTableBuilder.buildFromForecastIo(response);
-            Log.d(TAG, "Forecast table: " + forecastTable);
-
-            onSuccess(forecastTable);
+            onSuccess(ForecastTableBuilder.buildFromForecastIo(response));
         }
     }
 
