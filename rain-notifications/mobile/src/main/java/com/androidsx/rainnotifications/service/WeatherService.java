@@ -83,7 +83,7 @@ public class WeatherService extends Service {
                                     SchedulerHelper.nextWeatherCallAlarm(
                                             forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis()), Constants.Time.TEN_MINUTES_MILLIS
                             );
-                            Log.i(TAG, "Next alarm at: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(
+                            Log.i(TAG, "Next weather alarm at: " + DateHelper.formatTimeMadrid(SchedulerHelper.nextWeatherCallAlarm(
                                     forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis())));
                             stopSelf();
                         }
