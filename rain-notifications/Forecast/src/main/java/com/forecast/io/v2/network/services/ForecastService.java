@@ -158,7 +158,13 @@ public class ForecastService {
 			
 			return null;
 		}
-	}
+
+        /** (Added by Androidsx.) */
+        @Override
+        public String toString() {
+            return getForecast().toString();
+        }
+    }
 	
 	public static class Builder {
 

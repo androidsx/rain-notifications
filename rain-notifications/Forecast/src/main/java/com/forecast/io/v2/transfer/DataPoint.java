@@ -17,6 +17,11 @@ package com.forecast.io.v2.transfer;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+
+import java.util.Locale;
+
 public class DataPoint implements Parcelable {
 
 	private long mTime;
@@ -504,4 +509,26 @@ public class DataPoint implements Parcelable {
 		
 	}
 
+    /** (Added by Androidsx.) */
+    @Override
+    public String toString() {
+        final DateTimeFormatter debugDateTimeFormatter = new DateTimeFormatterBuilder()
+                .appendDayOfWeekShortText()
+                .appendLiteral(", ")
+                .appendMonthOfYearShortText()
+                .appendLiteral(" ")
+                .appendDayOfMonth(2)
+                .appendLiteral(" at ")
+                .appendHourOfDay(2)
+                .appendLiteral(":")
+                .appendMinuteOfHour(2)
+                .appendLiteral(":")
+                .appendSecondOfMinute(2)
+                .toFormatter()
+                .withLocale(Locale.US);
+
+        return "[" + debugDateTimeFormatter.print(getTime() * 1000) + "] "
+                        + "\"" + getIcon() + "\", "
+                        + "(temp: " + getTemperature() + ")";
+    }
 }

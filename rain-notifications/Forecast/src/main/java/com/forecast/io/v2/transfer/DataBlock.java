@@ -136,4 +136,15 @@ public class DataBlock implements Parcelable {
 		}
     }
 
+    /** (Added by Androidsx.) */
+    @Override
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(getIcon()).append('\n');
+        for (DataPoint dataPoint : getData()) {
+            builder.append("** ").append(dataPoint).append('\n');
+        }
+        return builder.toString();
+    }
+
 }
