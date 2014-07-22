@@ -180,6 +180,15 @@ public class ForecastResponse implements Parcelable {
 	public static Builder newBuilder() {
 		return new Builder();
 	}
+
+    /** (Added by Androidsx.) */
+    @Override
+    public String toString() {
+        return "* CURRENTLY: " + getCurrently() + "\n"
+                + "* Minutely: " + getMinutely() + "\n"
+                + "* Hourly: " + getHourly() + "\n"
+                + "* Daily: " + getDaily();
+    }
 	
 	public static final class Builder {
 		
