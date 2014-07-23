@@ -17,6 +17,7 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.util.LocationHelper;
 import com.androidsx.rainnotifications.util.SchedulerHelper;
 
 import org.joda.time.LocalTime;
@@ -61,8 +62,7 @@ public class WeatherService extends Service {
                 final double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
                 final double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
 
-                // Para comprobar que se han recibido coordenadas.
-                if (latitude != 1000 && longitude != 1000) {
+                if (LocationHelper.rightCoordinates(latitude, longitude)) {
                     new ForecastIoNetworkServiceTask() {
 
                         @Override

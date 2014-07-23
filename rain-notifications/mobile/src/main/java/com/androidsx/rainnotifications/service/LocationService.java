@@ -64,7 +64,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
                 double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
                 double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
 
-                if(latitude != 1000 && longitude != 1000) {
+                if(LocationHelper.rightCoordinates(latitude, longitude)) {
                     lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
                     lastLocation.setLatitude(latitude);
                     lastLocation.setLongitude(longitude);
