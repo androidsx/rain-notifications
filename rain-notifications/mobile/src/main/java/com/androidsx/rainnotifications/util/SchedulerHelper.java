@@ -19,18 +19,23 @@ import org.joda.time.LocalTime;
 
 public class SchedulerHelper {
 
+    private static PendingIntent alarmIntent;
+
     private SchedulerHelper() {
         // Non-instantiable
     }
 
     public static void setAlarm(Context context, int id, Class<? extends Service> service, double latitude, double longitude, long initTime, long repeatTime) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent mIntent = new Intent(context, service);
+        Intent mIntent = new Intent(context, context.getClass());
         Bundle mBundle = new Bundle();
         mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
         mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
         mIntent.putExtras(mBundle);
-        PendingIntent alarmIntent = PendingIntent.getService(context, id, mIntent, 0);
+        if(alarmIntent != null) {
+            alarmIntent.cancel();
+        }
+        alarmIntent = PendingIntent.getService(context, id, mIntent, 0);
 
         long startTime = initTime;
         if(service.getSimpleName().equals(WeatherService.class.getSimpleName())) {
