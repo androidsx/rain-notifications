@@ -10,7 +10,7 @@ import android.os.Bundle;
 import com.androidsx.rainnotifications.Constants;
 
 /*
- * Clase auxiliar, para registrar las alarmas de los servicios WeatherService y LocationService.
+ * This helper class is for register new Alarms with extras, for call our services at assigned time.
  */
 
 public class SchedulerHelper {
@@ -37,6 +37,7 @@ public class SchedulerHelper {
         }
     }
 
+    // That method is for determine the next time that we must call again to WeatherService.
     public static long nextWeatherCallAlarm(long time) {
         final long currentTime = System.currentTimeMillis();
         if (time != 0) {
