@@ -21,17 +21,16 @@ import com.androidsx.rainnotifications.util.SchedulerHelper;
 
 import org.joda.time.LocalTime;
 
-/*
- * Este servicio es el encargado de realizar las llamdas a forecast.io.
- * Cada vez que se inicia, realiza una llamada a la API de forecast.io con las coordenadas recibidas
- * por extras desde LocationService o desde la propia alarma iniciada después de la primera ejecución.
+/**
+ * This service is responsible to make API calls to forecast.io
+ * Once it starts, make an API call to forecast.io with the received coordinates into extras
+ * from LocationService or from its alarm (if it's not the first call).
  *
- * Analizamos la respuesta con las diferentes clases auxiliares, y se determina la hora de la siguiente
- * ejecución, con la que se registrará una alarma, para volver a realizar una llamada a WeatherService.
+ * The response is analyzed for determine the next alarm time, and if it's appropriate
+ * notify to user the next significant weather change.
  *
- * De esta manera, si la posición no sufriera ninguna modificación considerable, esta alarma, será la
- * encargada de ir llamando a WeatherService, cada periodo de tiempo que se irá recalculando, con cada
- * respuesta de la API forecast.io.
+ * So, if the location doesn't has a significant change, this alarm, will be responsible to call
+ * this service again. Each time period will be recalculated with each API response.
  */
 
 public class WeatherService extends Service {
