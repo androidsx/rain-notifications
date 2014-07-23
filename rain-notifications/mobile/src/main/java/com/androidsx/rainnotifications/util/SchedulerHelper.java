@@ -19,7 +19,8 @@ import org.joda.time.LocalTime;
 
 public class SchedulerHelper {
 
-    private static PendingIntent alarmIntent;
+    private static PendingIntent weatherAlarmIntent;
+    private static PendingIntent locationAlarmIntent;
 
     private SchedulerHelper() {
         // Non-instantiable
@@ -32,25 +33,33 @@ public class SchedulerHelper {
         mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
         mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
         mIntent.putExtras(mBundle);
-        if(alarmIntent != null) {
-            alarmIntent.cancel();
-        }
-        alarmIntent = PendingIntent.getService(context, id, mIntent, 0);
 
-        long startTime = initTime;
         if(service.getSimpleName().equals(WeatherService.class.getSimpleName())) {
-            startTime = nextWeatherCallAlarmTime(initTime);
-            Log.i(service.getSimpleName(), "Next weather alarm at: " + new LocalTime(startTime));
+            initTime = nextWeatherCallAlarmTime(initTime);
+            if(weatherAlarmIntent != null) {
+                weatherAlarmIntent.cancel();
+            }
+            weatherAlarmIntent = PendingIntent.getService(context, id, mIntent, 0);
+            registerAlarm(am, weatherAlarmIntent, initTime, repeatTime);
+            Log.i(service.getSimpleName(), "Next weather alarm at: " + new LocalTime(initTime));
         } else {
-            Log.i(service.getSimpleName(), "Next location alarm at: " + new LocalTime(startTime));
+            if(locationAlarmIntent != null) {
+                locationAlarmIntent.cancel();
+            }
+            locationAlarmIntent = PendingIntent.getService(context, id, mIntent, 0);
+            registerAlarm(am, locationAlarmIntent, initTime, repeatTime);
+            Log.i(service.getSimpleName(), "Next location alarm at: " + new LocalTime(initTime));
         }
+    }
+
+    private static void registerAlarm(AlarmManager am, PendingIntent pi, long initTime, long repeatTime) {
         if(am != null) {
-            am.cancel(alarmIntent);
-            am.setRepeating(
+            am.cancel(pi);
+            am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    startTime,
+                    initTime,
                     repeatTime,
-                    alarmIntent);
+                    pi);
         }
     }
 
