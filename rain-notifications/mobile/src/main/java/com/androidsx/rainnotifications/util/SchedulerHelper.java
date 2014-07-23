@@ -6,8 +6,12 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.service.WeatherService;
+
+import org.joda.time.LocalTime;
 
 /*
  * This helper class is for register new Alarms with extras, for call our services at assigned time.
@@ -27,18 +31,26 @@ public class SchedulerHelper {
         mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
         mIntent.putExtras(mBundle);
         PendingIntent alarmIntent = PendingIntent.getService(context.getApplicationContext(), id, mIntent, 0);
+
+        long startTime = initTime;
+        if(service.getSimpleName().equals(WeatherService.class.getSimpleName())) {
+            startTime = nextWeatherCallAlarmTime(initTime);
+            Log.i(service.getSimpleName(), "Next weather alarm at: " + new LocalTime(startTime));
+        } else {
+            Log.i(service.getSimpleName(), "Next location alarm at: " + new LocalTime(startTime));
+        }
         if(am != null) {
             am.cancel(alarmIntent);
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    initTime,
+                    startTime,
                     repeatTime,
                     alarmIntent);
         }
     }
 
     // That method is for determine the next time that we must call again to WeatherService.
-    public static long nextWeatherCallAlarm(long time) {
+    private static long nextWeatherCallAlarmTime(long time) {
         final long currentTime = System.currentTimeMillis();
         if (time != 0) {
             if ((time - currentTime) < Constants.Time.TEN_MINUTES_MILLIS) {

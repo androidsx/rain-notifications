@@ -88,7 +88,7 @@ public class ForecastMobile extends Activity {
         if(Constants.ForecastIO.FORECAST_ICON.containsKey(nextIcon)) {
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(nextIcon)));
         } else {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(Constants.ForecastIO.Icon.UNKNOWN)));
+            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(Constants.ForecastIO.Icon.UNKNOWN)));
         }
     }
 }

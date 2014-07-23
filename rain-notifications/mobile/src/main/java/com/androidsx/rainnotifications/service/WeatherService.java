@@ -83,16 +83,7 @@ public class WeatherService extends Service {
                                     Log.i(TAG, "INFO alert: " + alert.getAlertMessage());
                                 }
                             }
-
-                            SchedulerHelper.setAlarm(
-                                    WeatherService.this, Constants.AlarmId.WEATHER_ID, WeatherService.class,
-                                    latitude, longitude,
-                                    SchedulerHelper.nextWeatherCallAlarm(
-                                            nextForecast.getTimeFromNow().getEndMillis()),
-                                    Constants.Time.TEN_MINUTES_MILLIS
-                            );
-                            Log.i(TAG, "Next weather alarm at: " + new LocalTime(SchedulerHelper.nextWeatherCallAlarm(
-                                    nextForecast.getTimeFromNow().getEndMillis())));
+                            registerWeatherAlarm(nextForecast, latitude, longitude);
                             stopSelf();
                         }
 
@@ -106,5 +97,14 @@ public class WeatherService extends Service {
             }
         }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void registerWeatherAlarm(Forecast nextForecast, double latitude, double longitude) {
+        SchedulerHelper.setAlarm(
+                WeatherService.this, Constants.AlarmId.WEATHER_ID, WeatherService.class,
+                latitude, longitude,
+                        nextForecast.getTimeFromNow().getEndMillis(),
+                Constants.Time.TEN_MINUTES_MILLIS
+        );
     }
 }
