@@ -3,14 +3,9 @@ package com.androidsx.rainnotifications;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 
-/*
- * Esta clase, deberá ser la clase principal para realizar el análisis de la respuesta recibida
- * desde la API forecast.io; para así poder determinar el DataPoint de más interés encontrado.
- *
- * Actualmente, el DataPoint devuelto es el del siguiente cambio de tiempo, dependiendo del
- * estado actual.
- *
- * Futura implementación, definir diferentes funciones para obtener diferentes análisis.
+/**
+ * This class, must be the main class for analyze the API response, and determine the next
+ * significant weather change.
  */
 
 public class ForecastAnalyzer {

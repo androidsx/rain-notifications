@@ -11,7 +11,8 @@ import com.androidsx.rainnotifications.ForecastMobile;
 import com.androidsx.rainnotifications.R;
 
 /*
- * Clase auxiliar para realizar notificaciones al usuario.
+ * This helper class is for notify the user by notifications if a significant weather change
+ * is near to occur.
  */
 
 public class NotificationHelper {
