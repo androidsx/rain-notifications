@@ -18,20 +18,20 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 
-/*
- * Este servicio es el encargado de obtener la posición gps del usuario.
+/**
+ * This service is responsible of obtain the user location.
  *
- * Se inicia por primera vez al ser llamada por la activity (botón Call the Forecast API).
- * (En su defecto, también está registrado en el OnBootReceiver, para inicar el proceso una vez se inicia el sistema).
+ * Now, it starts first time by main activity (Call the Forecast API button).
+ * In turn, also it's registered on OnBootReceiver, for be started when system boots.
  *
- * Una vez iniciado, calcula la posición actual, e inicia el servicio WeatherService con dicha posición y se
- * registra una alarma para que vuelva a llamar a LocationService (actualmente 1 hora) con las coordenadas de
- * la posición obtenida.
+ * Once started, it obtain the user location and starts WeatherService with that location and
+ * registers an alarm that will call it later (now 1 hora later) with location coordinates into extras.
  *
- * Cuando la alarma llama de nuevo de LocationService, este recibe las última coordenadas por extras, y las compara
- * con la nueva posición obtenida, para determinar si se va a llamar a WeatherService con las nuevas coordenadas;
- * debido a que si la posición ha sufrido un cambio considerable, la respuesta de WeatherService podría variar.
- * (Actualmente 5 km de distancia entre posiciones)
+ * When LocationService is called again by the alarm, it receives the last location coordinates
+ * into extras, and compares it with the new obtained location for determine
+ * if WeatherService be called with the newest coordinates.
+ * (It will restart the process because the new location is far of previous,
+ * and the forecast will be different).
  */
 
 public class LocationService extends Service implements GooglePlayServicesClient.ConnectionCallbacks,
@@ -78,16 +78,21 @@ public class LocationService extends Service implements GooglePlayServicesClient
         String address = AddressHelper.getLocationAddress(this,
                 loc.getLatitude(), loc.getLongitude());
 
-        // Solo para la primera llamada, para iniciar el proceso de alarmas.
+        // If LocationService is called without extras, we call WeatherService with the location
+        // and registers an alarm for be called again later with this location into extras.
         if(lastLocation == null) {
             callWeatherService(loc);
+            registerLocationAlarm(loc);
 
             Log.d(TAG, ".\nLocation Observer update...\nLocation: " + address +
                     " --> lat: " + loc.getLatitude() +
                     " - long: " + loc.getLongitude());
+
+        // Else, we compare the lastLocation with newest for determine if we call to WeatherService
         } else {
-            if (loc.distanceTo(lastLocation) > 5) {
-                callWeatherService(loc);
+            if (loc.distanceTo(lastLocation) > 5) { // If new location is 5 km or more
+                callWeatherService(loc);            // far to previous one, we restart the process.
+                registerLocationAlarm(loc);
 
                 // Only for debug
                 float distance = (float) 0.0;
@@ -103,17 +108,11 @@ public class LocationService extends Service implements GooglePlayServicesClient
                         " - long: " + loc.getLongitude() +
                         "\nSame location");
             }
-
         }
         stopSelf();
     }
 
     private void callWeatherService(Location location) {
-        SchedulerHelper.setAlarm(
-                LocationService.this, Constants.AlarmId.LOCATION_ID, LocationService.class,
-                location.getLatitude(), location.getLongitude(),
-                System.currentTimeMillis() + Constants.Time.HOUR_MILLIS, Constants.Time.HOUR_MILLIS);
-
         Bundle mBundle = new Bundle();
         mBundle.putDouble(Constants.Extras.EXTRA_LAT, location.getLatitude());
         mBundle.putDouble(Constants.Extras.EXTRA_LON, location.getLongitude());
@@ -126,6 +125,13 @@ public class LocationService extends Service implements GooglePlayServicesClient
         SharedPrefsHelper.setForecastAddress(address, sharedPrefs.edit());
 
         lastLocation = location;
+    }
+
+    private void registerLocationAlarm(Location location) {
+        SchedulerHelper.setAlarm(
+                LocationService.this, Constants.AlarmId.LOCATION_ID, LocationService.class,
+                location.getLatitude(), location.getLongitude(),
+                System.currentTimeMillis() + Constants.Time.HOUR_MILLIS, Constants.Time.HOUR_MILLIS);
     }
 
     @Override
