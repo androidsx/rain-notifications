@@ -41,7 +41,7 @@ public class SchedulerHelper {
         }
         if(am != null) {
             am.cancel(alarmIntent);
-            am.setInexactRepeating(
+            am.setRepeating(
                     AlarmManager.RTC_WAKEUP,
                     startTime,
                     repeatTime,

@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.service.LocationService;
+import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 /**
@@ -56,8 +57,15 @@ public class ForecastMobile extends Activity {
     }
 
     /** Linked to the button in the XML layout. */
-    public void callApi(View view) {
-        startService(new Intent(this, LocationService.class));
+    public void startLocationAlarm(View view) {
+        SchedulerHelper.setAlarm(
+                getApplicationContext(),
+                Constants.AlarmId.LOCATION_ID,
+                LocationService.class,
+                1000,
+                1000,
+                System.currentTimeMillis(),
+                Constants.Time.ONE_MINUTE_MILLIS);
         view.setEnabled(false);
     }
 

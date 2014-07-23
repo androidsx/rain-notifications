@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.util.SchedulerHelper;
+
 /**
  * This receiver is responsible to init LocationService on system boot, for start all the processes.
  *
@@ -17,7 +20,13 @@ import android.content.Intent;
 public class OnBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Intent i = new Intent(context, LocationService.class);
-        context.startService(i);
+        SchedulerHelper.setAlarm(
+                context.getApplicationContext(),
+                Constants.AlarmId.LOCATION_ID,
+                LocationService.class,
+                1000,
+                1000,
+                System.currentTimeMillis(),
+                Constants.Time.ONE_MINUTE_MILLIS);
     }
 }

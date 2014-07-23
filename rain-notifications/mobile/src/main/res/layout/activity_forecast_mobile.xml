@@ -19,7 +19,7 @@
                 android:text="@string/btn_refresh_ui"
                 android:layout_width="0dip"
                 android:layout_weight="50"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_centerHorizontal="true"
                 android:onClick="refreshUi"/>
             <Button
@@ -27,9 +27,9 @@
                 android:text="@string/btn_forecast"
                 android:layout_width="0dip"
                 android:layout_weight="50"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_centerHorizontal="true"
-                android:onClick="callApi"/>
+                android:onClick="startLocationAlarm"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
