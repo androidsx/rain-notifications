@@ -25,9 +25,9 @@ public class ForecastMobile extends Activity {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
 
-    private TextView txt_response;
-    private TextView txt_city;
-    private TextView txt_update;
+    private TextView locationTextView;
+    private TextView nextWeatherTextView;
+    private TextView historyTextView;
     private ImageView currentWeatherImageView;
     private ImageView nextWeatherImageView;
 
@@ -44,9 +44,9 @@ public class ForecastMobile extends Activity {
     private void setupUI() {
         sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
 
-        txt_response = (TextView) findViewById(R.id.txt_response);
-        txt_city = (TextView) findViewById(R.id.txt_city);
-        txt_update = (TextView) findViewById(R.id.txt_update);
+        locationTextView = (TextView) findViewById(R.id.locationTextView);
+        nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
+        historyTextView = (TextView) findViewById(R.id.historyTextView);
         currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
         nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
     }
@@ -73,9 +73,9 @@ public class ForecastMobile extends Activity {
      * Updates the UI with the information stored in the shared preferences.
      */
     private void updateUiFromPrefs() {
-        txt_city.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
-        txt_update.setText(SharedPrefsHelper.getCurrentForecast(sharedPrefs));
-        txt_response.setText(SharedPrefsHelper.getForecastHistory(sharedPrefs));
+        locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
+        nextWeatherTextView.setText(SharedPrefsHelper.getCurrentForecast(sharedPrefs));
+        historyTextView.setText(SharedPrefsHelper.getForecastHistory(sharedPrefs));
 
         String currentWeatherIcon = SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs);
         if(Constants.ForecastIO.FORECAST_ICON.containsKey(currentWeatherIcon)) {

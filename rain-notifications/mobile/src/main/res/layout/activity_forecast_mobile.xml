@@ -39,7 +39,7 @@
         android:layout_below="@+id/buttons">
 
             <TextView
-                android:id="@+id/txt_city"
+                android:id="@+id/locationTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -56,7 +56,7 @@
             android:layout_weight="100">
 
             <TextView
-                android:id="@+id/update_text"
+                android:id="@+id/txt_currentWeather"
                 android:layout_width="0dip"
                 android:layout_weight="40"
                 android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                 android:paddingRight="5dip"/>
 
             <TextView
-                android:id="@+id/txt_update"
+                android:id="@+id/nextWeatherTextView"
                 android:layout_width="0dip"
                 android:layout_weight="60"
                 android:layout_height="fill_parent"
@@ -118,7 +118,7 @@
             android:layout_height="wrap_content" >
 
             <TextView
-                        android:id="@+id/txt_response"
+                        android:id="@+id/historyTextView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"

@@ -91,9 +91,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
 
                 // Only for debug
                 float distance = (float) 0.0;
-                if(lastLocation != null) {
-                    distance = lastLocation.distanceTo(loc);
-                }
+                distance = lastLocation.distanceTo(loc);
 
                 Log.d(TAG, ".\nLocation Observer update...\nLocation: " + address +
                         " --> lat: " + loc.getLatitude() +
