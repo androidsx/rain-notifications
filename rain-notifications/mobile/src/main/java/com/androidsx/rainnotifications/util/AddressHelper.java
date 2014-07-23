@@ -8,6 +8,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import com.androidsx.rainnotifications.R;
+
+/**
+ * This class is for obtain the place name of the coordinates
+ */
+
 public class AddressHelper {
 
     private AddressHelper() {
@@ -15,7 +21,7 @@ public class AddressHelper {
     }
 
     public static String getLocationAddress(Context context, double latitude, double longitude) {
-        String address = "Unknown location";
+        String address = context.getString(R.string.current_name_location);
 
         Geocoder gcd = new Geocoder(context, Locale.getDefault());
         List<Address> addresses = null;
