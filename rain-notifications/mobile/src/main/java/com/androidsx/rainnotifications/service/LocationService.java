@@ -111,7 +111,6 @@ public class LocationService extends Service implements GooglePlayServicesClient
                         "\nSame location");
             }
         }
-        lastLocation = loc;
         stopSelf();
     }
 
@@ -130,7 +129,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
 
     private void updateLocationAlarm(Location location) {
         SchedulerHelper.setAlarm(
-                getApplicationContext(), Constants.AlarmId.LOCATION_ID, LocationService.class,
+                this, Constants.AlarmId.LOCATION_ID, LocationService.class,
                 location.getLatitude(), location.getLongitude(),
                 System.currentTimeMillis() + Constants.Time.HOUR_MILLIS, Constants.Time.HOUR_MILLIS);
     }

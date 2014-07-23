@@ -100,7 +100,7 @@ public class WeatherService extends Service {
 
     private void updateWeatherAlarm(Forecast nextForecast, double latitude, double longitude) {
         SchedulerHelper.setAlarm(
-                getApplicationContext(), Constants.AlarmId.WEATHER_ID, WeatherService.class,
+                this, Constants.AlarmId.WEATHER_ID, WeatherService.class,
                 latitude, longitude,
                         nextForecast.getTimeFromNow().getEndMillis(),
                 Constants.Time.TEN_MINUTES_MILLIS

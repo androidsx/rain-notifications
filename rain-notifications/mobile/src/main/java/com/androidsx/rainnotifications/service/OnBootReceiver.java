@@ -20,13 +20,6 @@ import com.androidsx.rainnotifications.util.SchedulerHelper;
 public class OnBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        SchedulerHelper.setAlarm(
-                context.getApplicationContext(),
-                Constants.AlarmId.LOCATION_ID,
-                LocationService.class,
-                1000,
-                1000,
-                System.currentTimeMillis(),
-                Constants.Time.ONE_MINUTE_MILLIS);
+        context.startService(new Intent(context, LocationService.class));
     }
 }

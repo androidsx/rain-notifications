@@ -30,7 +30,7 @@ public class SchedulerHelper {
         mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
         mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
         mIntent.putExtras(mBundle);
-        PendingIntent alarmIntent = PendingIntent.getService(context.getApplicationContext(), id, mIntent, 0);
+        PendingIntent alarmIntent = PendingIntent.getService(context, id, mIntent, 0);
 
         long startTime = initTime;
         if(service.getSimpleName().equals(WeatherService.class.getSimpleName())) {
