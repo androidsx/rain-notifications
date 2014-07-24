@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.service.LocationService;
-import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 /**

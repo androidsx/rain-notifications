@@ -1,9 +1,10 @@
 package com.androidsx.rainnotifications.service;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -11,10 +12,8 @@ import android.os.IBinder;
 import android.util.Log;
 
 import com.androidsx.rainnotifications.util.LocationHelper;
-import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -126,10 +125,15 @@ public class LocationService extends Service implements GooglePlayServicesClient
                 Constants.AlarmId.LOCATION_ID,
                 new Intent(this, LocationService.class).putExtras(mBundle),
                 0);
-        SchedulerHelper.setAlarm(
-                this,
-                locationAlarmIntent,
-                System.currentTimeMillis() + Constants.Time.HOUR_MILLIS, Constants.Time.HOUR_MILLIS);
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if(am != null) {
+            am.cancel(locationAlarmIntent);
+            am.setInexactRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + Constants.Time.HOUR_MILLIS,
+                    Constants.Time.HOUR_MILLIS,
+                    locationAlarmIntent);
+        }
     }
 
     @Override

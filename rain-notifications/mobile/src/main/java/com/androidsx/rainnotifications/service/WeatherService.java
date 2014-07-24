@@ -1,14 +1,15 @@
 package com.androidsx.rainnotifications.service;
 
+import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.androidsx.rainnotifications.ForecastAnalyzer;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
@@ -20,10 +21,7 @@ import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.util.LocationHelper;
-import com.androidsx.rainnotifications.util.SchedulerHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
-
-import org.joda.time.LocalTime;
 
 /**
  * This service is responsible to make API calls to forecast.io
@@ -125,12 +123,15 @@ public class WeatherService extends Service {
                 Constants.AlarmId.WEATHER_ID,
                 new Intent(this, WeatherService.class).putExtras(mBundle),
                 0);
-        SchedulerHelper.setAlarm(
-                this,
-                weatherAlarmIntent,
-                nextWeatherCallAlarmTime(time),
-                Constants.Time.TEN_MINUTES_MILLIS
-        );
+        AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if(am != null) {
+            am.cancel(weatherAlarmIntent);
+            am.setInexactRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    nextWeatherCallAlarmTime(time),
+                    Constants.Time.TEN_MINUTES_MILLIS,
+                    weatherAlarmIntent);
+        }
     }
 
     // That method is for determine the next time that we must call again to WeatherService.

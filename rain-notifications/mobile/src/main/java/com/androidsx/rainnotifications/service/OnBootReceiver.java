@@ -4,9 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.util.SchedulerHelper;
-
 /**
  * This receiver is responsible to init LocationService on system boot, for start all the processes.
  */
