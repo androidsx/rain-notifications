@@ -22,6 +22,10 @@ public class ForecastAnalyzer {
 
     //TODO: make algorithms to determine the weather the user wants
     public Forecast getNextForecastTransition() {
-        return forecastTable.getForecasts().get(0);
+        if(forecastTable != null && !forecastTable.getForecasts().isEmpty()) {
+            return forecastTable.getForecasts().get(0);
+        } else {
+            return null;
+        }
     }
 }

@@ -80,8 +80,11 @@ public class WeatherService extends Service {
                             }
 
                             final Forecast nextForecast = new ForecastAnalyzer(forecastTable).getNextForecastTransition();
-                            Log.i(TAG, "Next expected forecast: " + nextForecast);
-
+                            if(nextForecast != null) {
+                                Log.i(TAG, "Next expected forecast: " + nextForecast);
+                            } else {
+                                Log.i(TAG, "Next expected forecast: no changes expected until next 48 hours.");
+                            }
                             updateWeatherAlarm(nextForecast, latitude, longitude);
                             stopSelf();
                         }
@@ -99,11 +102,20 @@ public class WeatherService extends Service {
     }
 
     private void updateWeatherAlarm(Forecast nextForecast, double latitude, double longitude) {
-        SchedulerHelper.setAlarm(
-                this, Constants.AlarmId.WEATHER_ID, WeatherService.class,
-                latitude, longitude,
-                        nextForecast.getTimeFromNow().getEndMillis(),
-                Constants.Time.TEN_MINUTES_MILLIS
-        );
+        if(nextForecast != null) {
+            SchedulerHelper.setAlarm(
+                    this, Constants.AlarmId.WEATHER_ID, WeatherService.class,
+                    latitude, longitude,
+                    nextForecast.getTimeFromNow().getEndMillis(),
+                    Constants.Time.TEN_MINUTES_MILLIS
+            );
+        } else {
+            SchedulerHelper.setAlarm(
+                    this, Constants.AlarmId.WEATHER_ID, WeatherService.class,
+                    latitude, longitude,
+                    0,
+                    Constants.Time.TEN_MINUTES_MILLIS
+            );
+        }
     }
 }
