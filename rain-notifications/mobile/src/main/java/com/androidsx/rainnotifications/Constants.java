@@ -4,16 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-    public static class Time{
-        public static final String TIME_ZONE_MADRID = "Europe/Madrid";
-        public static final String TIME_ZONE_NEW_YORK = "America/New_York";
-        public static final String TIME_FORMAT = "HH:mm";
-
-        public static final int ONE_MINUTE_MILLIS = 1000 * 60 * 1;
-        public static final int TEN_MINUTES_MILLIS = 1000 * 60 * 10;
-        public static final int HALF_HOUR_MILLIS = 1000 * 60 * 30;
-        public static final int HOUR_MILLIS = 1000 * 60 * 60 * 1;
-    }
     public static class AlarmId{
         public static final int LOCATION_ID = 0;
         public static final int WEATHER_ID = 1;
@@ -31,7 +21,6 @@ public class Constants {
         public static final String EXTRA_LON = "extra_lon";
     }
     public static class ForecastIO {
-        public static final String API_KEY = "f1fd27e70564bd6765bf40b3497cbf4f";
         public static final Map<String, Integer> FORECAST_ICON = new HashMap<String, Integer>() {
             {
                 put(Icon.CLEAR_DAY, R.drawable.clear_day);

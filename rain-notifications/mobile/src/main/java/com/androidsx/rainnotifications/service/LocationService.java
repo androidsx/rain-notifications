@@ -18,6 +18,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 
 /**
@@ -40,6 +41,10 @@ public class LocationService extends Service implements GooglePlayServicesClient
         GooglePlayServicesClient.OnConnectionFailedListener {
 
     private static final String TAG = LocationService.class.getSimpleName();
+
+    private static final float DEFAULT_DISTANCE = (float)5000.0;
+    private static final long LOCATION_EXTRA_TIME_MILLIS = 60 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private static final long LOCATION_REPEATING_TIME_MILLIS = 60 * DateTimeConstants.MILLIS_PER_MINUTE;
 
     private Location lastLocation;
     private LocationClient mLocationClient;
@@ -92,7 +97,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
 
         // Else, we compare the lastLocation with newest for determine if we call to WeatherService
         } else {
-            if (loc.distanceTo(lastLocation) > 5) { // If new location is 5 km or more
+            if (loc.distanceTo(lastLocation) > DEFAULT_DISTANCE) { // If new location is 5 km or more
                 startWeatherService(mBundle);            // far to previous one, we restart the process.
                 updateLocationAlarm(mBundle);
 
@@ -132,11 +137,11 @@ public class LocationService extends Service implements GooglePlayServicesClient
             am.cancel(locationAlarmIntent);
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + Constants.Time.HOUR_MILLIS,
-                    Constants.Time.HOUR_MILLIS,
+                    System.currentTimeMillis() + LOCATION_EXTRA_TIME_MILLIS,
+                    LOCATION_REPEATING_TIME_MILLIS,
                     locationAlarmIntent);
         }
-        Log.i(TAG, "Next location alarm at: " + new LocalTime(System.currentTimeMillis() + Constants.Time.HOUR_MILLIS));
+        Log.i(TAG, "Next location alarm at: " + new LocalTime(System.currentTimeMillis() + LOCATION_EXTRA_TIME_MILLIS));
     }
 
     @Override

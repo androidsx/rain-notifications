@@ -2,13 +2,16 @@ package com.androidsx.rainnotifications.util;
 
 import android.location.Location;
 
-import com.androidsx.rainnotifications.Constants.Time;
+import org.joda.time.DateTimeConstants;
 
 /*
  * Used for determine if the newest location is better than last.
  */
 
 public class LocationHelper {
+
+    private static final long TWO_MINUTES_MILLIS = 2 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private static final int DELTA_ACCURACY = 200;
 
     private LocationHelper() {
         //No-instantiate
@@ -22,8 +25,8 @@ public class LocationHelper {
 
         // Check whether the new location fix is newer or older
         long timeDelta = location.getTime() - currentBestLocation.getTime();
-        boolean isSignificantlyNewer = timeDelta > Time.ONE_MINUTE_MILLIS * 2;
-        boolean isSignificantlyOlder = timeDelta < -Time.ONE_MINUTE_MILLIS * 2;
+        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES_MILLIS;
+        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES_MILLIS;
         boolean isNewer = timeDelta > 0;
 
         // If it's been more than two minutes since the current location, use the new location
@@ -39,7 +42,7 @@ public class LocationHelper {
         int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
         boolean isLessAccurate = accuracyDelta > 0;
         boolean isMoreAccurate = accuracyDelta < 0;
-        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+        boolean isSignificantlyLessAccurate = accuracyDelta > DELTA_ACCURACY;
 
         // Check if the old and new location are from the same provider
         boolean isFromSameProvider = isSameProvider(location.getProvider(),

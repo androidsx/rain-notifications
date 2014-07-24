@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 
 import com.androidsx.rainnotifications.alert.AlertGenerator;
@@ -39,6 +41,11 @@ import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 public class WeatherService extends Service {
 
     private static final String TAG = WeatherService.class.getSimpleName();
+
+    private static final long WEATHER_REPEATING_TIME_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private static final long TWO_HOUR_MILLIS = 2 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private static final long DEFAULT_EXTRA_TIME_MILLIS = 2 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
 
     private final AlertGenerator alertGenerator = new AlertGenerator();
 
@@ -94,7 +101,7 @@ public class WeatherService extends Service {
                             mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
 
                             if(forecastTable.getForecasts().isEmpty()) {
-                                updateWeatherAlarm(0, mBundle);
+                                updateWeatherAlarm(System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS, mBundle);
                                 Log.i(TAG, "Next expected forecast: no changes expected in next days.");
                             } else {
                                 updateWeatherAlarm(forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis(), mBundle);
@@ -115,7 +122,7 @@ public class WeatherService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void updateWeatherAlarm(long time, Bundle mBundle) {
+    private void updateWeatherAlarm(long expectedHour, Bundle mBundle) {
         if(weatherAlarmIntent != null) {
             weatherAlarmIntent.cancel();
         }
@@ -129,26 +136,22 @@ public class WeatherService extends Service {
             am.cancel(weatherAlarmIntent);
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    nextWeatherCallAlarmTime(time),
-                    Constants.Time.TEN_MINUTES_MILLIS,
+                    nextWeatherCallAlarmTime(expectedHour),
+                    WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
         }
-        Log.i(TAG, "Next weather alarm at: " + new LocalTime(nextWeatherCallAlarmTime(time)));
+        Log.i(TAG, "Next weather alarm at: " + new LocalTime(nextWeatherCallAlarmTime(expectedHour)));
     }
 
     // That method is for determine the next time that we must call again to WeatherService.
-    private long nextWeatherCallAlarmTime(long time) {
+    private long nextWeatherCallAlarmTime(long expectedHour) {
         final long currentTime = System.currentTimeMillis();
-        if (time != 0) {
-            if ((time - currentTime) < Constants.Time.TEN_MINUTES_MILLIS) {
-                return time;
-            } else if (time - currentTime < (2 * Constants.Time.HOUR_MILLIS)){
-                return currentTime + ((time - currentTime) * 70 / 100);
-            } else {
-                return currentTime + (2 * Constants.Time.HOUR_MILLIS);
-            }
+        if ((expectedHour - currentTime) < TEN_MINUTES_MILLIS) {
+            return expectedHour;
+        } else if (expectedHour - currentTime < TWO_HOUR_MILLIS){
+            return currentTime + ((expectedHour - currentTime) * 70 / 100);
         } else {
-            return currentTime + (2 * Constants.Time.HOUR_MILLIS);
+            return currentTime + TWO_HOUR_MILLIS;
         }
     }
 }
