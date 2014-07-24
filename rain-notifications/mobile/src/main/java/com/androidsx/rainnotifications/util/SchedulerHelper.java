@@ -37,20 +37,4 @@ public class SchedulerHelper {
                     pi);
         }
     }
-
-    // That method is for determine the next time that we must call again to WeatherService.
-    public static long nextWeatherCallAlarmTime(long time) {
-        final long currentTime = System.currentTimeMillis();
-        if (time != 0) {
-            if ((time - currentTime) < Constants.Time.TEN_MINUTES_MILLIS) {
-                return time;
-            } else if (time - currentTime < (2 * Constants.Time.HOUR_MILLIS)){
-                return currentTime + ((time - currentTime) * 70 / 100);
-            } else {
-                return currentTime + (2 * Constants.Time.HOUR_MILLIS);
-            }
-        } else {
-            return currentTime + (2 * Constants.Time.HOUR_MILLIS);
-        }
-    }
 }

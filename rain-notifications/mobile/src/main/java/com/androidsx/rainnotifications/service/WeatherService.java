@@ -129,16 +129,32 @@ public class WeatherService extends Service {
             SchedulerHelper.setAlarm(
                     this,
                     weatherAlarmIntent,
-                    nextForecast.getTimeFromNow().getEndMillis(),
+                    nextWeatherCallAlarmTime(nextForecast.getTimeFromNow().getEndMillis()),
                     Constants.Time.TEN_MINUTES_MILLIS
             );
         } else {
             SchedulerHelper.setAlarm(
                     this,
                     weatherAlarmIntent,
-                    0,
+                    nextWeatherCallAlarmTime(0),
                     Constants.Time.TEN_MINUTES_MILLIS
             );
+        }
+    }
+
+    // That method is for determine the next time that we must call again to WeatherService.
+    private long nextWeatherCallAlarmTime(long time) {
+        final long currentTime = System.currentTimeMillis();
+        if (time != 0) {
+            if ((time - currentTime) < Constants.Time.TEN_MINUTES_MILLIS) {
+                return time;
+            } else if (time - currentTime < (2 * Constants.Time.HOUR_MILLIS)){
+                return currentTime + ((time - currentTime) * 70 / 100);
+            } else {
+                return currentTime + (2 * Constants.Time.HOUR_MILLIS);
+            }
+        } else {
+            return currentTime + (2 * Constants.Time.HOUR_MILLIS);
         }
     }
 }
