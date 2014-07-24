@@ -6,16 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-    public static class AlarmId{
-        public static final int LOCATION_ID = 0;
-        public static final int WEATHER_ID = 1;
-    }
-
-    public static class Extras {
-        public static final String EXTRA_LAT = "extra_lat";
-        public static final String EXTRA_LON = "extra_lon";
-    }
-
     public static final Map<WeatherType, Integer> FORECAST_ICONS = new HashMap<WeatherType, Integer>() {
         {
             put(WeatherType.CLEAR_DAY, R.drawable.clear_day);
@@ -28,7 +18,14 @@ public class Constants {
             put(WeatherType.UNKNOWN, R.drawable.unknown);
         }
     };
-
+    public static class AlarmId{
+        public static final int LOCATION_ID = 0;
+        public static final int WEATHER_ID = 1;
+    }
+    public static class Extras {
+        public static final String EXTRA_LAT = "extra_lat";
+        public static final String EXTRA_LON = "extra_lon";
+    }
     public static class SharedPref {
         public static final String SHARED_RAIN = "shared_rain";
 
