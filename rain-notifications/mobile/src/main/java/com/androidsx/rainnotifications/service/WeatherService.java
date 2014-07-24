@@ -123,7 +123,7 @@ public class WeatherService extends Service {
         weatherAlarmIntent = PendingIntent.getService(
                 this,
                 Constants.AlarmId.WEATHER_ID,
-                new Intent(this, LocationService.class).putExtras(mBundle),
+                new Intent(this, WeatherService.class).putExtras(mBundle),
                 0);
         SchedulerHelper.setAlarm(
                 this,
