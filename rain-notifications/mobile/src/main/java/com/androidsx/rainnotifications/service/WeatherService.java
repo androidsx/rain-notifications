@@ -98,7 +98,7 @@ public class WeatherService extends Service {
                             if(nextForecast != null) {
                                 Log.i(TAG, "Next expected forecast: " + nextForecast);
                             } else {
-                                Log.i(TAG, "Next expected forecast: no changes expected until next 48 hours.");
+                                Log.i(TAG, "Next expected forecast: no changes expected in next days.");
                             }
                             updateWeatherAlarm(nextForecast, mBundle);
                             stopSelf();
