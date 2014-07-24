@@ -1,5 +1,7 @@
 package com.androidsx.rainnotifications;
 
+import com.androidsx.rainnotifications.model.WeatherType;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,39 +22,20 @@ public class Constants {
         public static final String EXTRA_LAT = "extra_lat";
         public static final String EXTRA_LON = "extra_lon";
     }
-    public static class ForecastIO {
-        public static final Map<String, Integer> FORECAST_ICON = new HashMap<String, Integer>() {
-            {
-                put(Icon.CLEAR_DAY, R.drawable.clear_day);
-                put(Icon.CLEAR_NIGHT, R.drawable.clear_night);
-                put(Icon.RAIN, R.drawable.rain);
-                put(Icon.SNOW, R.drawable.snow);
-                put(Icon.CLOUDY, R.drawable.cloudy);
-                put(Icon.PARTLY_CLOUDY_DAY, R.drawable.partly_cloudy_day);
-                put(Icon.PARTLY_CLOUDY_NIGHT, R.drawable.partly_cloudy_night);
-                put(Icon.HAIL, R.drawable.hail);
-                put(Icon.THUNDERSTORM, R.drawable.thunderstorm);
-                put(Icon.UNKNOWN, R.drawable.unknown);
-            }
-        };
 
-        public static class Icon {
-            public static final String CLEAR_DAY = "clear-day";
-            public static final String CLEAR_NIGHT = "clear-night";
-            public static final String RAIN = "rain";
-            public static final String SNOW = "snow";
-            public static final String SLEET = "sleet";
-            public static final String WIND = "wind";
-            public static final String FOG = "fog";
-            public static final String CLOUDY = "cloudy";
-            public static final String PARTLY_CLOUDY_DAY = "partly-cloudy-day";
-            public static final String PARTLY_CLOUDY_NIGHT = "partly-cloudy-night";
-            public static final String HAIL = "hail";
-            public static final String THUNDERSTORM = "thunderstorm";
-            public static final String TORNADO = "tornado";
-            public static final String UNKNOWN = "unknown";
+    public static final Map<WeatherType, Integer> FORECAST_ICONS = new HashMap<WeatherType, Integer>() {
+        {
+            put(WeatherType.CLEAR_DAY, R.drawable.clear_day);
+            put(WeatherType.CLEAR_NIGHT, R.drawable.clear_night);
+            put(WeatherType.RAIN, R.drawable.rain);
+            put(WeatherType.SNOW, R.drawable.snow);
+            put(WeatherType.CLOUDY, R.drawable.cloudy);
+            put(WeatherType.PARTLY_CLOUDY_DAY, R.drawable.partly_cloudy_day);
+            put(WeatherType.PARTLY_CLOUDY_NIGHT, R.drawable.partly_cloudy_night);
+            put(WeatherType.UNKNOWN, R.drawable.unknown);
         }
-    }
+    };
+
     public static class SharedPref {
         public static final String SHARED_RAIN = "shared_rain";
 

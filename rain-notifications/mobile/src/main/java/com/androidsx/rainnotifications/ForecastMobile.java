@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.model.WeatherType;
+import com.androidsx.rainnotifications.model.WeatherTypeBuilder;
 import com.androidsx.rainnotifications.service.LocationService;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
@@ -74,18 +76,17 @@ public class ForecastMobile extends Activity {
         nextWeatherTextView.setText(SharedPrefsHelper.getCurrentForecast(sharedPrefs));
         historyTextView.setText(SharedPrefsHelper.getForecastHistory(sharedPrefs));
 
-        String currentWeatherIcon = SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs);
-        if(Constants.ForecastIO.FORECAST_ICON.containsKey(currentWeatherIcon)) {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(currentWeatherIcon)));
+        WeatherType currentWeatherIcon = WeatherTypeBuilder.buildFromForecastIo(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs));
+        if(Constants.FORECAST_ICONS.containsKey(currentWeatherIcon)) {
+            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(currentWeatherIcon)));
         } else {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(Constants.ForecastIO.Icon.UNKNOWN)));
+            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
         }
-
-        String nextIcon = SharedPrefsHelper.getNextForecastIcon(sharedPrefs);
-        if(Constants.ForecastIO.FORECAST_ICON.containsKey(nextIcon)) {
-            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(nextIcon)));
+        WeatherType nextWeatherIcon = WeatherTypeBuilder.buildFromForecastIo(SharedPrefsHelper.getNextForecastIcon(sharedPrefs));
+        if(Constants.FORECAST_ICONS.containsKey(nextWeatherIcon)) {
+            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(nextWeatherIcon)));
         } else {
-            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.ForecastIO.FORECAST_ICON.get(Constants.ForecastIO.Icon.UNKNOWN)));
+            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
         }
     }
 }
