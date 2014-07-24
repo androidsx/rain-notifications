@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 
 import com.androidsx.rainnotifications.alert.AlertGenerator;
