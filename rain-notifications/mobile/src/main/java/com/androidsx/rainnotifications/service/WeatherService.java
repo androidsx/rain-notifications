@@ -70,18 +70,18 @@ public class WeatherService extends Service {
                             // TODO: Here is where we should apply our logic
                             Log.d(TAG, "Forecast table: " + forecastTable);
 
-                            Forecast nextForecast = new ForecastAnalyzer(forecastTable).getNextForecastTransition();
-                            Log.i(TAG, "Next expected forecast: " + nextForecast);
-
                             Log.i(TAG, "We could generate the following alerts:");
                             final Weather currentWeather = forecastTable.getBaselineWeather();
                             for (Forecast forecast  : forecastTable.getForecasts()) {
-
                                 final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                                 if (alert.getAlertLevel() == AlertLevel.INFO) {
                                     Log.i(TAG, "INFO alert: " + alert.getAlertMessage());
                                 }
                             }
+
+                            final Forecast nextForecast = new ForecastAnalyzer(forecastTable).getNextForecastTransition();
+                            Log.i(TAG, "Next expected forecast: " + nextForecast);
+
                             updateWeatherAlarm(nextForecast, latitude, longitude);
                             stopSelf();
                         }
