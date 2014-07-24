@@ -11,7 +11,7 @@ import org.joda.time.DateTimeConstants;
 public class LocationHelper {
 
     private static final long TWO_MINUTES_MILLIS = 2 * DateTimeConstants.MILLIS_PER_MINUTE;
-    private static final int DELTA_ACCURACY = 200;
+    private static final int ACCURACY_LIMIT = 200;
 
     private LocationHelper() {
         //No-instantiate
@@ -42,7 +42,7 @@ public class LocationHelper {
         int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
         boolean isLessAccurate = accuracyDelta > 0;
         boolean isMoreAccurate = accuracyDelta < 0;
-        boolean isSignificantlyLessAccurate = accuracyDelta > DELTA_ACCURACY;
+        boolean isSignificantlyLessAccurate = accuracyDelta > ACCURACY_LIMIT;
 
         // Check if the old and new location are from the same provider
         boolean isFromSameProvider = isSameProvider(location.getProvider(),
