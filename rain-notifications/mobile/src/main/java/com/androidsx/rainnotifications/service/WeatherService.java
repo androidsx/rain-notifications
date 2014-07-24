@@ -94,13 +94,13 @@ public class WeatherService extends Service {
                             mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
                             mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
 
-                            final Forecast nextForecast = new ForecastAnalyzer(forecastTable).getNextForecastTransition();
-                            if(nextForecast != null) {
-                                Log.i(TAG, "Next expected forecast: " + nextForecast);
-                            } else {
+                            if(forecastTable.getForecasts().isEmpty()) {
+                                updateWeatherAlarm(0, mBundle);
                                 Log.i(TAG, "Next expected forecast: no changes expected in next days.");
+                            } else {
+                                updateWeatherAlarm(forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis(), mBundle);
+                                Log.i(TAG, "Next expected forecast: " + forecastTable.getForecasts().get(0).toString());
                             }
-                            updateWeatherAlarm(nextForecast, mBundle);
                             stopSelf();
                         }
 
@@ -116,7 +116,7 @@ public class WeatherService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void updateWeatherAlarm(Forecast nextForecast, Bundle mBundle) {
+    private void updateWeatherAlarm(long time, Bundle mBundle) {
         if(weatherAlarmIntent != null) {
             weatherAlarmIntent.cancel();
         }
@@ -125,21 +125,12 @@ public class WeatherService extends Service {
                 Constants.AlarmId.WEATHER_ID,
                 new Intent(this, LocationService.class).putExtras(mBundle),
                 0);
-        if(nextForecast != null) {
-            SchedulerHelper.setAlarm(
-                    this,
-                    weatherAlarmIntent,
-                    nextWeatherCallAlarmTime(nextForecast.getTimeFromNow().getEndMillis()),
-                    Constants.Time.TEN_MINUTES_MILLIS
-            );
-        } else {
-            SchedulerHelper.setAlarm(
-                    this,
-                    weatherAlarmIntent,
-                    nextWeatherCallAlarmTime(0),
-                    Constants.Time.TEN_MINUTES_MILLIS
-            );
-        }
+        SchedulerHelper.setAlarm(
+                this,
+                weatherAlarmIntent,
+                nextWeatherCallAlarmTime(time),
+                Constants.Time.TEN_MINUTES_MILLIS
+        );
     }
 
     // That method is for determine the next time that we must call again to WeatherService.
