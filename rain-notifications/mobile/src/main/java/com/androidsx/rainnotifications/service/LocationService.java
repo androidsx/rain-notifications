@@ -151,6 +151,8 @@ public class LocationService extends Service implements GooglePlayServicesClient
             if(loc != null) {
                 if (LocationHelper.isBetterLocation(loc, lastLocation)) {
                     updateLocation(loc);
+                } else {
+                    //TODO: something smart if no location is obtained.
                 }
             }
         }
