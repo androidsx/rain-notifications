@@ -19,9 +19,6 @@ import org.joda.time.LocalTime;
 
 public class SchedulerHelper {
 
-    //private static PendingIntent weatherAlarmIntent;
-    //private static PendingIntent locationAlarmIntent;
-
     private SchedulerHelper() {
         // Non-instantiable
     }
