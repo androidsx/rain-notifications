@@ -18,6 +18,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 
+import org.joda.time.LocalTime;
+
 /**
  * This service is responsible of obtain the user location.
  *
@@ -134,6 +136,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
                     Constants.Time.HOUR_MILLIS,
                     locationAlarmIntent);
         }
+        Log.i(TAG, "Next location alarm at: " + new LocalTime(System.currentTimeMillis() + Constants.Time.HOUR_MILLIS));
     }
 
     @Override

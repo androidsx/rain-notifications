@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import org.joda.time.DateTime;
+import org.joda.time.LocalTime;
 
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
@@ -132,6 +134,7 @@ public class WeatherService extends Service {
                     Constants.Time.TEN_MINUTES_MILLIS,
                     weatherAlarmIntent);
         }
+        Log.i(TAG, "Next weather alarm at: " + new LocalTime(nextWeatherCallAlarmTime(time)));
     }
 
     // That method is for determine the next time that we must call again to WeatherService.
