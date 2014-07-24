@@ -44,18 +44,9 @@ public class LocationService extends Service implements GooglePlayServicesClient
     private LocationClient mLocationClient;
     private PendingIntent locationAlarmIntent;
 
-    private SharedPreferences sharedPrefs;
-
     @Override
     public IBinder onBind(Intent intent) {
         return null;
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
     }
 
     @Override
