@@ -45,6 +45,8 @@ public class LocationService extends Service implements GooglePlayServicesClient
     private static final float DEFAULT_DISTANCE = (float)5000.0;
     private static final long LOCATION_EXTRA_TIME_MILLIS = 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long LOCATION_REPEATING_TIME_MILLIS = 60 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private static final long SPECIAL_LOCATION_EXTRA_TIME_MILLIS = 1 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private static final long SPECIAL_LOCATION_REPEATING_TIME_MILLIS = 5 * DateTimeConstants.MILLIS_PER_MINUTE;
 
     private Location lastLocation;
     private LocationClient mLocationClient;
@@ -89,7 +91,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
         // and registers an alarm for be called again later with this location into extras.
         if(lastLocation == null) {
             startWeatherService(mBundle);
-            updateLocationAlarm(mBundle);
+            updateLocationAlarm(mBundle, LOCATION_EXTRA_TIME_MILLIS, LOCATION_REPEATING_TIME_MILLIS);
 
             Log.d(TAG, ".\nLocation Observer update...\nLocation: " + address +
                     " --> lat: " + loc.getLatitude() +
@@ -99,7 +101,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
         } else {
             if (loc.distanceTo(lastLocation) > DEFAULT_DISTANCE) { // If new location is 5 km or more
                 startWeatherService(mBundle);            // far to previous one, we restart the process.
-                updateLocationAlarm(mBundle);
+                updateLocationAlarm(mBundle, LOCATION_EXTRA_TIME_MILLIS, LOCATION_REPEATING_TIME_MILLIS);
 
                 // Only for debug
                 float distance = (float) 0.0;
@@ -123,7 +125,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
         startService(new Intent(this, WeatherService.class).putExtras(mBundle));
     }
 
-    private void updateLocationAlarm(Bundle mBundle) {
+    private void updateLocationAlarm(Bundle mBundle, long extraTime, long repeatingTime) {
         if(locationAlarmIntent != null) {
             locationAlarmIntent.cancel();
         }
@@ -137,8 +139,8 @@ public class LocationService extends Service implements GooglePlayServicesClient
             am.cancel(locationAlarmIntent);
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + LOCATION_EXTRA_TIME_MILLIS,
-                    LOCATION_REPEATING_TIME_MILLIS,
+                    System.currentTimeMillis() + extraTime,
+                    repeatingTime,
                     locationAlarmIntent);
         }
         Log.i(TAG, "Next location alarm at: " + new LocalTime(System.currentTimeMillis() + LOCATION_EXTRA_TIME_MILLIS));
@@ -151,9 +153,19 @@ public class LocationService extends Service implements GooglePlayServicesClient
             if(loc != null) {
                 if (LocationHelper.isBetterLocation(loc, lastLocation)) {
                     updateLocation(loc);
-                } else {
-                    //TODO: something smart if no location is obtained.
                 }
+            } else {
+                // TODO: probably notify to user, that the gps is disabled or not available,
+                // if we try to obtain many times the location.
+                Bundle b = new Bundle();
+                if(lastLocation != null) {
+                    b.putDouble(Constants.Extras.EXTRA_LAT, lastLocation.getLatitude());
+                    b.putDouble(Constants.Extras.EXTRA_LON, lastLocation.getLongitude());
+                } else {
+                    b.putDouble(Constants.Extras.EXTRA_LAT, 1000); // Bad location coordinates
+                    b.putDouble(Constants.Extras.EXTRA_LON, 1000); // for simulate first call.
+                }
+                updateLocationAlarm(b, SPECIAL_LOCATION_EXTRA_TIME_MILLIS, SPECIAL_LOCATION_REPEATING_TIME_MILLIS);
             }
         }
     }
