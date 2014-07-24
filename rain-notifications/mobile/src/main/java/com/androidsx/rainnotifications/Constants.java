@@ -10,14 +10,7 @@ public class Constants {
         public static final int LOCATION_ID = 0;
         public static final int WEATHER_ID = 1;
     }
-    public static class Localization {
-        public static final Double NEW_YORK_LAT = 40.71310899271792;
-        public static final Double NEW_YORK_LON = -74.005758909787;
-        public static final Double WASHINGTON_LAT = 38.9072423927665;
-        public static final Double WASHINGTON_LON = -77.03653810608216;
-        public static final Double HOUSTON_LAT = 29.75974563585816;
-        public static final Double HOUSTON_LON = -95.36844546242673;
-    }
+
     public static class Extras {
         public static final String EXTRA_LAT = "extra_lat";
         public static final String EXTRA_LON = "extra_lon";
