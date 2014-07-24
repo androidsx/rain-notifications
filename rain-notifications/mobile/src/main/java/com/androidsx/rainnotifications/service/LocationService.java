@@ -1,5 +1,6 @@
 package com.androidsx.rainnotifications.service;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,6 +42,7 @@ public class LocationService extends Service implements GooglePlayServicesClient
 
     private Location lastLocation;
     private LocationClient mLocationClient;
+    private PendingIntent locationAlarmIntent;
 
     private SharedPreferences sharedPrefs;
 
@@ -61,6 +63,8 @@ public class LocationService extends Service implements GooglePlayServicesClient
         if(intent != null) {
             Bundle mBundle = intent.getExtras();
             if(mBundle != null) {
+                locationAlarmIntent = PendingIntent.getService(this, Constants.AlarmId.LOCATION_ID, intent, 0);
+
                 double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
                 double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
 
@@ -80,11 +84,15 @@ public class LocationService extends Service implements GooglePlayServicesClient
         String address = AddressHelper.getLocationAddress(this,
                 loc.getLatitude(), loc.getLongitude());
 
+        Bundle mBundle = new Bundle();
+        mBundle.putDouble(Constants.Extras.EXTRA_LAT, loc.getLatitude());
+        mBundle.putDouble(Constants.Extras.EXTRA_LON, loc.getLongitude());
+
         // If LocationService is called without extras, we call WeatherService with the location
         // and registers an alarm for be called again later with this location into extras.
         if(lastLocation == null) {
-            startWeatherService(loc);
-            updateLocationAlarm(loc);
+            startWeatherService(mBundle);
+            updateLocationAlarm(mBundle);
 
             Log.d(TAG, ".\nLocation Observer update...\nLocation: " + address +
                     " --> lat: " + loc.getLatitude() +
@@ -93,8 +101,8 @@ public class LocationService extends Service implements GooglePlayServicesClient
         // Else, we compare the lastLocation with newest for determine if we call to WeatherService
         } else {
             if (loc.distanceTo(lastLocation) > 5) { // If new location is 5 km or more
-                startWeatherService(loc);            // far to previous one, we restart the process.
-                updateLocationAlarm(loc);
+                startWeatherService(mBundle);            // far to previous one, we restart the process.
+                updateLocationAlarm(mBundle);
 
                 // Only for debug
                 float distance = (float) 0.0;
@@ -114,23 +122,22 @@ public class LocationService extends Service implements GooglePlayServicesClient
         stopSelf();
     }
 
-    private void startWeatherService(Location location) {
-        Bundle mBundle = new Bundle();
-        mBundle.putDouble(Constants.Extras.EXTRA_LAT, location.getLatitude());
-        mBundle.putDouble(Constants.Extras.EXTRA_LON, location.getLongitude());
-
+    private void startWeatherService(Bundle mBundle) {
         startService(new Intent(this, WeatherService.class).putExtras(mBundle));
-
-        String address = AddressHelper.getLocationAddress(this,
-                location.getLatitude(), location.getLongitude());
-
-        SharedPrefsHelper.setForecastAddress(address, sharedPrefs.edit());
     }
 
-    private void updateLocationAlarm(Location location) {
+    private void updateLocationAlarm(Bundle mBundle) {
+        if(locationAlarmIntent != null) {
+            locationAlarmIntent.cancel();
+        }
+        locationAlarmIntent = PendingIntent.getService(
+                this,
+                Constants.AlarmId.LOCATION_ID,
+                new Intent(this, LocationService.class).putExtras(mBundle),
+                0);
         SchedulerHelper.setAlarm(
-                this, Constants.AlarmId.LOCATION_ID, LocationService.class,
-                location.getLatitude(), location.getLongitude(),
+                this,
+                locationAlarmIntent,
                 System.currentTimeMillis() + Constants.Time.HOUR_MILLIS, Constants.Time.HOUR_MILLIS);
     }
 
@@ -138,8 +145,10 @@ public class LocationService extends Service implements GooglePlayServicesClient
     public void onConnected(Bundle bundle) {
         if(mLocationClient.isConnected()) {
             Location loc = mLocationClient.getLastLocation();
-            if(LocationHelper.isBetterLocation(loc, lastLocation)) {
-                updateLocation(loc);
+            if(loc != null) {
+                if (LocationHelper.isBetterLocation(loc, lastLocation)) {
+                    updateLocation(loc);
+                }
             }
         }
     }

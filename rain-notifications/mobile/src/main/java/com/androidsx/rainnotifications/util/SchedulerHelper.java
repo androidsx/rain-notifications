@@ -19,40 +19,15 @@ import org.joda.time.LocalTime;
 
 public class SchedulerHelper {
 
-    private static PendingIntent weatherAlarmIntent;
-    private static PendingIntent locationAlarmIntent;
+    //private static PendingIntent weatherAlarmIntent;
+    //private static PendingIntent locationAlarmIntent;
 
     private SchedulerHelper() {
         // Non-instantiable
     }
 
-    public static void setAlarm(Context context, int id, Class<? extends Service> service, double latitude, double longitude, long initTime, long repeatTime) {
+    public static void setAlarm(Context context, PendingIntent pi, long initTime, long repeatTime) {
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Intent mIntent = new Intent(context, service);
-        Bundle mBundle = new Bundle();
-        mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
-        mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
-        mIntent.putExtras(mBundle);
-
-        if(service.getSimpleName().equals(WeatherService.class.getSimpleName())) {
-            initTime = nextWeatherCallAlarmTime(initTime);
-            if(weatherAlarmIntent != null) {
-                weatherAlarmIntent.cancel();
-            }
-            weatherAlarmIntent = PendingIntent.getService(context, id, mIntent, 0);
-            registerAlarm(am, weatherAlarmIntent, initTime, repeatTime);
-            Log.i(service.getSimpleName(), "Next weather alarm at: " + new LocalTime(initTime));
-        } else {
-            if(locationAlarmIntent != null) {
-                locationAlarmIntent.cancel();
-            }
-            locationAlarmIntent = PendingIntent.getService(context, id, mIntent, 0);
-            registerAlarm(am, locationAlarmIntent, initTime, repeatTime);
-            Log.i(service.getSimpleName(), "Next location alarm at: " + new LocalTime(initTime));
-        }
-    }
-
-    private static void registerAlarm(AlarmManager am, PendingIntent pi, long initTime, long repeatTime) {
         if(am != null) {
             am.cancel(pi);
             am.setInexactRepeating(
@@ -64,7 +39,7 @@ public class SchedulerHelper {
     }
 
     // That method is for determine the next time that we must call again to WeatherService.
-    private static long nextWeatherCallAlarmTime(long time) {
+    public static long nextWeatherCallAlarmTime(long time) {
         final long currentTime = System.currentTimeMillis();
         if (time != 0) {
             if ((time - currentTime) < Constants.Time.TEN_MINUTES_MILLIS) {

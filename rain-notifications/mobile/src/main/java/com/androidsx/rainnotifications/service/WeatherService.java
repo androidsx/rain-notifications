@@ -1,5 +1,6 @@
 package com.androidsx.rainnotifications.service;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +18,10 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.util.LocationHelper;
 import com.androidsx.rainnotifications.util.SchedulerHelper;
+import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import org.joda.time.LocalTime;
 
@@ -41,6 +44,7 @@ public class WeatherService extends Service {
     private final AlertGenerator alertGenerator = new AlertGenerator();
 
     public SharedPreferences sharedPrefs;
+    private PendingIntent weatherAlarmIntent;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -59,10 +63,17 @@ public class WeatherService extends Service {
         if(intent != null) {
             Bundle mBundle = intent.getExtras();
             if(mBundle != null) {
+                weatherAlarmIntent = PendingIntent.getService(this, Constants.AlarmId.WEATHER_ID, intent, 0);
+
                 final double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
                 final double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
 
                 if (LocationHelper.rightCoordinates(latitude, longitude)) {
+                    String address = AddressHelper.getLocationAddress(this,
+                            latitude, longitude);
+
+                    SharedPrefsHelper.setForecastAddress(address, sharedPrefs.edit());
+
                     new ForecastIoNetworkServiceTask() {
 
                         @Override
@@ -79,13 +90,17 @@ public class WeatherService extends Service {
                                 }
                             }
 
+                            Bundle mBundle = new Bundle();
+                            mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
+                            mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
+
                             final Forecast nextForecast = new ForecastAnalyzer(forecastTable).getNextForecastTransition();
                             if(nextForecast != null) {
                                 Log.i(TAG, "Next expected forecast: " + nextForecast);
                             } else {
                                 Log.i(TAG, "Next expected forecast: no changes expected until next 48 hours.");
                             }
-                            updateWeatherAlarm(nextForecast, latitude, longitude);
+                            updateWeatherAlarm(nextForecast, mBundle);
                             stopSelf();
                         }
 
@@ -101,18 +116,26 @@ public class WeatherService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void updateWeatherAlarm(Forecast nextForecast, double latitude, double longitude) {
+    private void updateWeatherAlarm(Forecast nextForecast, Bundle mBundle) {
+        if(weatherAlarmIntent != null) {
+            weatherAlarmIntent.cancel();
+        }
+        weatherAlarmIntent = PendingIntent.getService(
+                this,
+                Constants.AlarmId.WEATHER_ID,
+                new Intent(this, LocationService.class).putExtras(mBundle),
+                0);
         if(nextForecast != null) {
             SchedulerHelper.setAlarm(
-                    this, Constants.AlarmId.WEATHER_ID, WeatherService.class,
-                    latitude, longitude,
+                    this,
+                    weatherAlarmIntent,
                     nextForecast.getTimeFromNow().getEndMillis(),
                     Constants.Time.TEN_MINUTES_MILLIS
             );
         } else {
             SchedulerHelper.setAlarm(
-                    this, Constants.AlarmId.WEATHER_ID, WeatherService.class,
-                    latitude, longitude,
+                    this,
+                    weatherAlarmIntent,
                     0,
                     Constants.Time.TEN_MINUTES_MILLIS
             );
