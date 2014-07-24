@@ -42,9 +42,14 @@ public class ForecastTable {
                 .append(baselineWeather)
                 .append(" at ")
                 .append(baselineTime)
-                .append('\n');
-        for (Forecast forecast : forecasts) {
-            builder.append("* ").append(forecast).append("\n");
+                .append(". Forecasts:");
+        if (forecasts.isEmpty()) {
+            builder.append(" <No forecasts>");
+        } else {
+            builder.append('\n');
+            for (Forecast forecast : forecasts) {
+                builder.append("* ").append(forecast).append("\n");
+            }
         }
 
         return builder.toString();
