@@ -86,7 +86,10 @@ public class ForecastService extends Service implements GooglePlayServicesClient
                 int alarmType = mBundle.getInt(EXTRA_ALARM_TYPE, -1); // Default -1 for indicate no valid alarm type.
                 double latitude = mBundle.getDouble(EXTRA_LATITUDE, BAD_COORDINATE); // Default 200 for indicate no valid coordinate.
                 double longitude = mBundle.getDouble(EXTRA_LONGITUDE, BAD_COORDINATE); // Default 200 for indicate no valid coordinate.
+
                 goodCoordinatesReceived = false;
+                locationAlarmIntent = PendingIntent.getService(this, LOCATION_ALARM_ID, intent, 0);
+                weatherAlarmIntent = PendingIntent.getService(this, FORECAST_ALARM_ID, intent, 0);
 
                 if(alarmType == LOCATION_ALARM_ID) {
                     if(LocationHelper.rightCoordinates(latitude, longitude)) {
@@ -95,12 +98,10 @@ public class ForecastService extends Service implements GooglePlayServicesClient
                         lastLocation.setLatitude(latitude);
                         lastLocation.setLongitude(longitude);
                     }
-                    locationAlarmIntent = PendingIntent.getService(this, LOCATION_ALARM_ID, intent, 0);
                     mLocationClient = new LocationClient(this, this, this);
                     mLocationClient.connect();
 
                 } else if(alarmType == FORECAST_ALARM_ID) {
-                    weatherAlarmIntent = PendingIntent.getService(this, FORECAST_ALARM_ID, intent, 0);
                     if(LocationHelper.rightCoordinates(latitude, longitude)) {
                         callForecastAPI(latitude, longitude);
                     }
@@ -140,37 +141,36 @@ public class ForecastService extends Service implements GooglePlayServicesClient
         Bundle mBundle = new Bundle();
         mBundle.putDouble(EXTRA_LATITUDE, loc.getLatitude());
         mBundle.putDouble(EXTRA_LONGITUDE, loc.getLongitude());
+        mBundle.putInt(EXTRA_ALARM_TYPE, LOCATION_ALARM_ID);
 
         // If ForecastService is called without extras, we call ForecastAPI with the location
         // and registers an alarm for be called again later with this location into extras.
         if(!goodCoordinatesReceived) {
-            Timber.i(Log.DEBUG + "/" + TAG + ": Init forecast process in %s (GPS %d, %d).", getAddress(loc.getLatitude(), loc.getLongitude()), loc.getLatitude(), loc.getLongitude());
-
+            Timber.i("Init forecast process in %s (GPS %f, %f).", getAddress(loc.getLatitude(), loc.getLongitude()), loc.getLatitude(), loc.getLongitude());
             callForecastAPI(loc.getLatitude(), loc.getLongitude());
             updateLocationAlarm(mBundle, LOCATION_EXTRA_TIME_MILLIS, LOCATION_REPEATING_TIME_MILLIS);
 
         // Else, we compare the lastLocation with newest for determine if we call to ForecastService
         } else {
             if (loc.distanceTo(lastLocation) > DEFAULT_DISTANCE) {      // If new location is 5 km or more
-                Timber.i(Log.DEBUG + "/" + TAG + ": Restart forecast process in %s (GPS %d, %d).", getAddress(loc.getLatitude(), loc.getLongitude()), loc.getLatitude(), loc.getLongitude());
-
+                Timber.i("Restart forecast process in %s (GPS %f, %f).", getAddress(loc.getLatitude(), loc.getLongitude()), loc.getLatitude(), loc.getLongitude());
                 callForecastAPI(loc.getLatitude(), loc.getLongitude()); // far to previous one, we restart the process.
                 updateLocationAlarm(mBundle, LOCATION_EXTRA_TIME_MILLIS, LOCATION_REPEATING_TIME_MILLIS);
 
             } else {
-                Timber.i(Log.DEBUG + "/" + TAG + ": No location changes, nothing to do.");
+                Timber.i("No location changes, nothing to do.");
             }
         }
     }
 
     private void callForecastAPI(final double latitude, final double longitude) {
-        Timber.i(Log.DEBUG + "/" + TAG + ": Ask forecast.io for the forecast in %s (GPS %d, %d).", getAddress(latitude, longitude), latitude, longitude);
+        Timber.i("Ask forecast.io for the forecast in %s (GPS %f, %f).", getAddress(latitude, longitude), latitude, longitude);
         new ForecastIoNetworkServiceTask() {
 
             @Override
             protected void onSuccess(ForecastTable forecastTable) {
                 // TODO: Here is where we should apply our logic
-                Log.d(TAG, "Forecast table: " + forecastTable);
+                Timber.i("Forecast table in %s (GPS %f, %f).\n%s", getAddress(latitude, longitude), latitude, longitude, forecastTable);
 
                 Log.i(TAG, "We could generate the following alerts:");
                 final Weather currentWeather = forecastTable.getBaselineWeather();
@@ -184,16 +184,16 @@ public class ForecastService extends Service implements GooglePlayServicesClient
                 Bundle mBundle = new Bundle();
                 mBundle.putDouble(EXTRA_LATITUDE, latitude);
                 mBundle.putDouble(EXTRA_LONGITUDE, longitude);
-                mBundle.putInt(EXTRA_ALARM_TYPE, LOCATION_ALARM_ID);
+                mBundle.putInt(EXTRA_ALARM_TYPE, FORECAST_ALARM_ID);
 
                 if(forecastTable.getForecasts().isEmpty()) {
                     updateWeatherAlarm(System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS, mBundle);
-                    Timber.i(Log.DEBUG + "/" + TAG + ": There is no transition in %s (GPS %d, %d) expected in next days.",
+                    Timber.i("There is no transition in %s (GPS %f, %f) expected in next days.",
                             getAddress(latitude, longitude), latitude, longitude);
                 } else {
                     updateWeatherAlarm(forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis(), mBundle);
-                    Timber.i(Log.DEBUG + "/" + TAG + ": The next transition in %s (GPS %d, %d) is " + forecastTable.getForecasts().get(0),
-                            getAddress(latitude, longitude), latitude, longitude);
+                    Timber.i("The next transition in %s (GPS %f, %f) is\n ---> %s",
+                            getAddress(latitude, longitude), latitude, longitude, forecastTable.getForecasts().get(0));
                 }
             }
 
@@ -205,6 +205,7 @@ public class ForecastService extends Service implements GooglePlayServicesClient
     }
 
     private void updateLocationAlarm(Bundle mBundle, long extraTime, long repeatingTime) {
+        Timber.i("Schedule alarm for new location %s", new LocalTime(System.currentTimeMillis() + extraTime));
         locationAlarmIntent.cancel();
         locationAlarmIntent = PendingIntent.getService(
                 this,
@@ -220,10 +221,10 @@ public class ForecastService extends Service implements GooglePlayServicesClient
                     repeatingTime,
                     locationAlarmIntent);
         }
-        Timber.i(Log.DEBUG + "/" + TAG + ": Schedule alarm for new location %s" + new LocalTime(System.currentTimeMillis() + LOCATION_EXTRA_TIME_MILLIS));
     }
 
     private void updateWeatherAlarm(long expectedHour, Bundle mBundle) {
+        Timber.i("Schedule alarm for update forecast %s", new LocalTime(nextWeatherCallAlarmTime(expectedHour)));
         weatherAlarmIntent.cancel();
         weatherAlarmIntent = PendingIntent.getService(
                 this,
@@ -239,7 +240,6 @@ public class ForecastService extends Service implements GooglePlayServicesClient
                     FORECAST_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
         }
-        Timber.i(Log.DEBUG + "/" + TAG + ": Schedule alarm for update forecast %s" + new LocalTime(nextWeatherCallAlarmTime(expectedHour)));
     }
 
     // That method is for determine the next time that we must call again to ForecastService.
