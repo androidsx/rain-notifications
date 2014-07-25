@@ -141,7 +141,7 @@ public class ForecastService extends Service implements GooglePlayServicesClient
         mBundle.putDouble(EXTRA_LATITUDE, loc.getLatitude());
         mBundle.putDouble(EXTRA_LONGITUDE, loc.getLongitude());
 
-        // If LocationService is called without extras, we call WeatherService with the location
+        // If ForecastService is called without extras, we call ForecastAPI with the location
         // and registers an alarm for be called again later with this location into extras.
         if(!goodCoordinatesReceived) {
             Timber.i(Log.DEBUG + "/" + TAG + ": Init forecast process in %s (GPS %d, %d).", getAddress(loc.getLatitude(), loc.getLongitude()), loc.getLatitude(), loc.getLongitude());
@@ -149,7 +149,7 @@ public class ForecastService extends Service implements GooglePlayServicesClient
             callForecastAPI(loc.getLatitude(), loc.getLongitude());
             updateLocationAlarm(mBundle, LOCATION_EXTRA_TIME_MILLIS, LOCATION_REPEATING_TIME_MILLIS);
 
-        // Else, we compare the lastLocation with newest for determine if we call to WeatherService
+        // Else, we compare the lastLocation with newest for determine if we call to ForecastService
         } else {
             if (loc.distanceTo(lastLocation) > DEFAULT_DISTANCE) {      // If new location is 5 km or more
                 Timber.i(Log.DEBUG + "/" + TAG + ": Restart forecast process in %s (GPS %d, %d).", getAddress(loc.getLatitude(), loc.getLongitude()), loc.getLatitude(), loc.getLongitude());
@@ -209,7 +209,7 @@ public class ForecastService extends Service implements GooglePlayServicesClient
         locationAlarmIntent = PendingIntent.getService(
                 this,
                 LOCATION_ALARM_ID,
-                new Intent(this, LocationService.class).putExtras(mBundle),
+                new Intent(this, ForecastService.class).putExtras(mBundle),
                 0);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if(am != null) {
@@ -228,7 +228,7 @@ public class ForecastService extends Service implements GooglePlayServicesClient
         weatherAlarmIntent = PendingIntent.getService(
                 this,
                 FORECAST_ALARM_ID,
-                new Intent(this, WeatherService.class).putExtras(mBundle),
+                new Intent(this, ForecastService.class).putExtras(mBundle),
                 0);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if(am != null) {
@@ -242,7 +242,7 @@ public class ForecastService extends Service implements GooglePlayServicesClient
         Timber.i(Log.DEBUG + "/" + TAG + ": Schedule alarm for update forecast %s" + new LocalTime(nextWeatherCallAlarmTime(expectedHour)));
     }
 
-    // That method is for determine the next time that we must call again to WeatherService.
+    // That method is for determine the next time that we must call again to ForecastService.
     private long nextWeatherCallAlarmTime(long expectedHour) {
         final long currentTime = System.currentTimeMillis();
         if ((expectedHour - currentTime) < TEN_MINUTES_MILLIS) {
