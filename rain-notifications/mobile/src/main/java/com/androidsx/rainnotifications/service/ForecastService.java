@@ -35,12 +35,12 @@ public class ForecastService extends Service implements GooglePlayServicesClient
 
     private static final String TAG = ForecastService.class.getSimpleName();
 
-    private static final String EXTRA_ALARM_TYPE = "extra_alarm_type"; // Location or Forecast
-    private static final String EXTRA_LATITUDE = "extra_latitude";
-    private static final String EXTRA_LONGITUDE = "extra_longitude";
+    public static final String EXTRA_ALARM_TYPE = "extra_alarm_type"; // Location or Forecast
+    public static final String EXTRA_LATITUDE = "extra_latitude";
+    public static final String EXTRA_LONGITUDE = "extra_longitude";
 
-    private static final int LOCATION_ALARM_ID = 0;
-    private static final int FORECAST_ALARM_ID = 1;
+    public static final int LOCATION_ALARM_ID = 0;
+    public static final int FORECAST_ALARM_ID = 1;
 
     private static final double BAD_COORDINATE = 200;
 
