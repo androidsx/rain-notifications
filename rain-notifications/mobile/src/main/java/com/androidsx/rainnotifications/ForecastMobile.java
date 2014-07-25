@@ -1,194 +1,93 @@
 package com.androidsx.rainnotifications;
 
 import android.app.Activity;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Observer;
-import java.util.Observable;
 
-import android.text.format.DateUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.androidsx.rainnotifications.Models.LocationObservable;
-import com.androidsx.rainnotifications.Models.WeatherObservable;
-import com.androidsx.rainnotifications.Utils.DateHelper;
-import com.forecast.io.v2.network.services.ForecastService.Response;
+import com.androidsx.rainnotifications.model.WeatherType;
+import com.androidsx.rainnotifications.model.WeatherTypeBuilder;
+import com.androidsx.rainnotifications.service.LocationService;
+import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
-import com.androidsx.rainnotifications.Utils.Constants.Time;
-import com.androidsx.rainnotifications.Utils.Constants.Localization;
+/**
+ * Main activity for show the retrieved and analyzed info.
+ * We show the current weather, and the next weather change with its remaining time for occur.
+ * Next API call too.
+ */
 
-public class ForecastMobile extends Activity implements Observer, View.OnClickListener/*, DataApi.DataListener*/ {
+public class ForecastMobile extends Activity {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
 
-    private LocationObservable locationObservable;
-    private WeatherObservable weatherObservable;
-    private Button btn_call;
+    private TextView locationTextView;
+    private TextView nextWeatherTextView;
+    private TextView historyTextView;
+    private ImageView currentWeatherImageView;
+    private ImageView nextWeatherImageView;
 
-    //private GoogleApiClient mGoogleApiClient = getGoogleApiClient();
+    private SharedPreferences sharedPrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forecast_mobile);
 
-        locationObservable =
-                new LocationObservable(this, Localization.LOCATION_GPS_TIMEOUT,
-                        Localization.LOCATION_NETWORK_TIMEOUT, Localization.LOCATION_DISTANCE);
-        locationObservable.addObserver(this);
-
-        weatherObservable = new WeatherObservable();
-        weatherObservable.addObserver(this);
-
         setupUI();
     }
 
-    @Override
-    public void update(Observable observable, Object o) {
-        if(observable.getClass().equals(LocationObservable.class)){
-            Location location = (Location) o;
-
-            String address = "Uknown Location";
-
-            Geocoder gcd = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = null;
-            try {
-                addresses = gcd.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (addresses != null && addresses.size() > 0) {
-                address = addresses.get(0).getLocality();
-            }
-
-            //TODO: something if location has changed
-            weatherObservable.getWeather(
-                    location.getLatitude(),
-                    location.getLongitude(),
-                    Time.TEN_MINUTES_AGO);
-
-            Log.d(TAG, "Location Observer update...\nLocation: " + address +
-                    " --> lat: " + location.getLatitude() +
-                    " - long: " + location.getLongitude());
-
-        } else if(observable.getClass().equals(WeatherObservable.class)) {
-            Response response = (Response) o;
-
-            String summary = response.getForecast().getCurrently().getSummary();
-            String icon = response.getForecast().getCurrently().getIcon();
-
-            String deltaTime = new DateHelper()
-                    .deltaTime(response, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS);
-
-            String forecastTime = new DateHelper()
-                    .getForecastTime(response, Time.TIME_FORMAT, Time.TIME_ZONE_MADRID, Locale.US);
-
-            //TODO: something if weather has changed
-            //sendToWatch(summary, icon, deltaTime, forecastTime);
-            Log.d(TAG, "Weather Observer update..." +
-                    "\nSummary: " + summary +
-                    "\nicon: " + icon +
-                    "\ndeltaTime: " + deltaTime +
-                    "\nforecastTime: " + forecastTime);
-        }
-    }
-
     private void setupUI() {
-        btn_call = (Button) findViewById(R.id.btn_call);
-        btn_call.setOnClickListener(this);
-        btn_call.setVisibility(View.GONE);
+        sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
+
+        locationTextView = (TextView) findViewById(R.id.locationTextView);
+        nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
+        historyTextView = (TextView) findViewById(R.id.historyTextView);
+        currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
+        nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        locationObservable.deleteObserver(this);
-        locationObservable = null;
+    protected void onResume() {
+        super.onResume();
+
+        updateUiFromPrefs();
     }
 
-    @Override
-    public void onClick(View view) {
-
+    /** Linked to the button in the XML layout. */
+    public void startLocationService(View view) {
+        startService(new Intent(this, LocationService.class));
+        view.setEnabled(false);
     }
 
-    /*private void sendToWatch(String summary, String icon, String deltaTime, String forecastTime) {
-        PutDataMapRequest dataMap = PutDataMapRequest.create("/forecast");
-        dataMap.getDataMap().putString(EXTRA_FORECAST, summary);
+    /** Linked to the button in the XML layout. */
+    public void refreshUi(View view) {
+        updateUiFromPrefs();
+    }
 
-        PutDataRequest request = dataMap.asPutDataRequest();
-        PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi
-                .putDataItem(mGoogleApiClient, request);
+    /**
+     * Updates the UI with the information stored in the shared preferences.
+     */
+    private void updateUiFromPrefs() {
+        locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
+        nextWeatherTextView.setText(SharedPrefsHelper.getCurrentForecast(sharedPrefs));
+        historyTextView.setText(SharedPrefsHelper.getForecastHistory(sharedPrefs));
 
-        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-            @Override
-            public void onResult(DataApi.DataItemResult dataItemResult) {
-                if(dataItemResult.getStatus().isSuccess()) {
-                    Log.d(TAG, "Data item set: " + dataItemResult.getDataItem().getUri());
-                }
-            }
-        });
-    }*/
-
-    /*@Override
-    public void onDataChanged(DataEventBuffer dataEvents) {
-        for (DataEvent event : dataEvents) {
-            if (event.getType() == DataEvent.TYPE_DELETED) {
-                Log.d(TAG, "DataItem deleted: " + event.getDataItem().getUri());
-            } else if (event.getType() == DataEvent.TYPE_CHANGED) {
-                Log.d(TAG, "DataItem changed: " + event.getDataItem().getUri());
-            }
+        WeatherType currentWeatherIcon = WeatherTypeBuilder.buildFromForecastIo(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs));
+        if(Constants.FORECAST_ICONS.containsKey(currentWeatherIcon)) {
+            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(currentWeatherIcon)));
+        } else {
+            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
         }
-    }*/
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.forecast_mobile, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        WeatherType nextWeatherIcon = WeatherTypeBuilder.buildFromForecastIo(SharedPrefsHelper.getNextForecastIcon(sharedPrefs));
+        if(Constants.FORECAST_ICONS.containsKey(nextWeatherIcon)) {
+            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(nextWeatherIcon)));
+        } else {
+            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
         }
-        return super.onOptionsItemSelected(item);
     }
-
-    /*private GoogleApiClient getGoogleApiClient() {
-        return new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle connectionHint) {
-                        Log.d(TAG, "onConnected: " + connectionHint);
-                    }
-                    @Override
-                    public void onConnectionSuspended(int cause) {
-                        Log.d(TAG, "onConnectionSuspended: " + cause);
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult result) {
-                        Log.d(TAG, "onConnectionFailed: " + result);
-                    }
-                })
-                .addApi(Wearable.API)
-                .build();
-    }*/
 }
 

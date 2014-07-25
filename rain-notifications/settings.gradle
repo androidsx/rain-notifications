@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':Forecast'
+include ':mobile', ':wear', ':Forecast', ':model', ':forecast-io-wrapper', 'alert-generator'
