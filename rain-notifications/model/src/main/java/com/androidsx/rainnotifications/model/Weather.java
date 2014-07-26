@@ -34,7 +34,13 @@ public class Weather {
             return false;
         } else {
             final Weather otherWeather = (Weather) other;
-            if (getType() == WeatherType.UNKNOWN || ((Weather) other).getType() == WeatherType.UNKNOWN) {
+            if((getType() == WeatherType.CLEAR_DAY || getType() == WeatherType.CLEAR_NIGHT)
+                    && (otherWeather.getType() == WeatherType.CLEAR_DAY || otherWeather.getType() == WeatherType.CLEAR_NIGHT)) {
+                return true;
+            } else if((getType() == WeatherType.PARTLY_CLOUDY_DAY || getType() == WeatherType.PARTLY_CLOUDY_NIGHT)
+                    && (otherWeather.getType() == WeatherType.PARTLY_CLOUDY_DAY || otherWeather.getType() == WeatherType.PARTLY_CLOUDY_NIGHT)) {
+                return true;
+            } else if (getType() == WeatherType.UNKNOWN || otherWeather.getType() == WeatherType.UNKNOWN) {
                 return true;
             } else {
                 return getType() == otherWeather.getType();
