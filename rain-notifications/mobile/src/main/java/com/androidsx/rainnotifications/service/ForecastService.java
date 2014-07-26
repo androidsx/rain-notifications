@@ -5,12 +5,15 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
@@ -19,7 +22,6 @@ import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
-import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.util.LocationHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -27,6 +29,10 @@ import com.google.android.gms.location.LocationClient;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -114,16 +120,19 @@ public class ForecastService extends Service implements GooglePlayServicesClient
 
     @Override
     public void onConnected(Bundle bundle) {
+        Bundle b = new Bundle();
+        b.putInt(EXTRA_ALARM_TYPE, LOCATION_ALARM_ID);
         if(mLocationClient.isConnected()) {
             Location loc = mLocationClient.getLastLocation();
             if(loc != null) {
                 if (LocationHelper.isBetterLocation(loc, lastLocation)) {
-                    updateForNewLocation(loc);
+                    b.putDouble(EXTRA_LATITUDE, loc.getLatitude());
+                    b.putDouble(EXTRA_LONGITUDE, loc.getLongitude());
+                    updateForNewLocation(loc, b);
                 }
             } else {
                 // TODO: probably notify to user, that the gps is disabled or not available,
                 // if we try to obtain many times the location.
-                Bundle b = new Bundle();
                 if(goodCoordinatesReceived) { // if good coordinates was received.
                     b.putDouble(EXTRA_LATITUDE, lastLocation.getLatitude());
                     b.putDouble(EXTRA_LONGITUDE, lastLocation.getLongitude());
@@ -131,18 +140,12 @@ public class ForecastService extends Service implements GooglePlayServicesClient
                     b.putDouble(EXTRA_LATITUDE, BAD_COORDINATE); // Bad location coordinates
                     b.putDouble(EXTRA_LONGITUDE, BAD_COORDINATE); // for simulate first call.
                 }
-                b.putInt(EXTRA_ALARM_TYPE, LOCATION_ALARM_ID);
                 updateLocationAlarm(b, SPECIAL_LOCATION_EXTRA_TIME_MILLIS, SPECIAL_LOCATION_REPEATING_TIME_MILLIS);
             }
         }
     }
 
-    private void updateForNewLocation(Location loc) {
-        Bundle mBundle = new Bundle();
-        mBundle.putDouble(EXTRA_LATITUDE, loc.getLatitude());
-        mBundle.putDouble(EXTRA_LONGITUDE, loc.getLongitude());
-        mBundle.putInt(EXTRA_ALARM_TYPE, LOCATION_ALARM_ID);
-
+    private void updateForNewLocation(Location loc, Bundle mBundle) {
         // If ForecastService is called without extras, we call ForecastAPI with the location
         // and registers an alarm for be called again later with this location into extras.
         if(!goodCoordinatesReceived) {
@@ -255,8 +258,24 @@ public class ForecastService extends Service implements GooglePlayServicesClient
     }
 
     private String getAddress(double latitude, double longitude) {
-        return AddressHelper.getLocationAddress(this,
-                latitude, longitude);
+        String address = getString(R.string.current_name_location);
+
+        Geocoder gcd = new Geocoder(this, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = gcd.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (addresses != null && addresses.size() > 0) {
+            if(addresses.get(0).getAddressLine(0) != null) address = addresses.get(0).getAddressLine(0);
+            else if(addresses.get(0).getSubLocality() != null) address = addresses.get(0).getSubLocality();
+            else if(addresses.get(0).getLocality() != null) address = addresses.get(0).getLocality();
+            else if(addresses.get(0).getCountryName() != null) address = addresses.get(0).getCountryName();
+        }
+
+        return address;
     }
 
     @Override
