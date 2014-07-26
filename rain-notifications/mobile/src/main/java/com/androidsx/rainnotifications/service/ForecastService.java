@@ -87,11 +87,11 @@ public class ForecastService extends Service implements GooglePlayServicesClient
                 double latitude = mBundle.getDouble(EXTRA_LATITUDE, BAD_COORDINATE); // Default 200 for indicate no valid coordinate.
                 double longitude = mBundle.getDouble(EXTRA_LONGITUDE, BAD_COORDINATE); // Default 200 for indicate no valid coordinate.
 
-                goodCoordinatesReceived = false;
                 locationAlarmIntent = PendingIntent.getService(this, LOCATION_ALARM_ID, intent, 0);
                 weatherAlarmIntent = PendingIntent.getService(this, FORECAST_ALARM_ID, intent, 0);
 
                 if(alarmType == LOCATION_ALARM_ID) {
+                    goodCoordinatesReceived = false;
                     if(LocationHelper.rightCoordinates(latitude, longitude)) {
                         goodCoordinatesReceived = true;
                         lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
