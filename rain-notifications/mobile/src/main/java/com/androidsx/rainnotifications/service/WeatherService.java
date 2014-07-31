@@ -52,7 +52,7 @@ public class WeatherService extends Service {
 
     private final AlertGenerator alertGenerator = new AlertGenerator();
 
-    public SharedPreferences sharedPrefs;
+    public SharedPreferences sharedPrefs; //Now only for debug.
     private PendingIntent weatherAlarmIntent;
 
     @Override
@@ -65,6 +65,7 @@ public class WeatherService extends Service {
         super.onCreate();
 
         Timber.plant(new Timber.DebugTree());
+        //Now only for debug.
         sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
     }
 
@@ -91,6 +92,7 @@ public class WeatherService extends Service {
     private void checkForecast(final double latitude, final double longitude, final String address) {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
 
+            //Only for debug.
             SharedPrefsHelper.setForecastAddress(address, sharedPrefs.edit());
 
             new ForecastIoNetworkServiceTask() {
