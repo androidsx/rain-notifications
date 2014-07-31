@@ -77,8 +77,7 @@ public class WeatherService extends Service {
             @Override
             public void obtainedLocation(Location loc) {
                 if(loc != null) {
-                    String address = getLocationAddress(WeatherService.this, loc.getLatitude(), loc.getLongitude());
-                    checkForecast(loc.getLatitude(), loc.getLongitude(), address);
+                    checkForecast(loc.getLatitude(), loc.getLongitude());
                 } else {
                     // TODO: probably notify to user, that the gps is disabled or not available,
                     // if we try to obtain many times the location.
@@ -89,12 +88,13 @@ public class WeatherService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void checkForecast(final double latitude, final double longitude, final String address) {
+    private void checkForecast(final double latitude, final double longitude) {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
-
             //Only for debug.
-            SharedPrefsHelper.setForecastAddress(address, sharedPrefs.edit());
-
+            SharedPrefsHelper.setForecastAddress(
+                    getLocationAddress(WeatherService.this, latitude, longitude),
+                    sharedPrefs.edit()
+            );
             new ForecastIoNetworkServiceTask() {
 
                 @Override
