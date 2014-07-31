@@ -5,15 +5,22 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.util.LocationHelper;
-import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.Constants;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -80,10 +87,11 @@ public class LocationService extends Service implements GooglePlayServicesClient
     }
 
     private void updateLocation(Location loc) {
-        String address = AddressHelper.getLocationAddress(this,
+        String address = getLocationAddress(this,
                 loc.getLatitude(), loc.getLongitude());
 
         Bundle mBundle = new Bundle();
+        mBundle.putString(Constants.Extras.EXTRA_ADDRESS, address);
         mBundle.putDouble(Constants.Extras.EXTRA_LAT, loc.getLatitude());
         mBundle.putDouble(Constants.Extras.EXTRA_LON, loc.getLongitude());
 
@@ -168,6 +176,27 @@ public class LocationService extends Service implements GooglePlayServicesClient
                 updateLocationAlarm(b, SPECIAL_LOCATION_EXTRA_TIME_MILLIS, SPECIAL_LOCATION_REPEATING_TIME_MILLIS);
             }
         }
+    }
+
+    public static String getLocationAddress(Context context, double latitude, double longitude) {
+        String address = context.getString(R.string.current_name_location);
+
+        Geocoder gcd = new Geocoder(context, Locale.getDefault());
+        List<Address> addresses = null;
+        try {
+            addresses = gcd.getFromLocation(latitude, longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (addresses != null && addresses.size() > 0) {
+            if(addresses.get(0).getAddressLine(0) != null) address = addresses.get(0).getAddressLine(0);
+            else if(addresses.get(0).getSubLocality() != null) address = addresses.get(0).getSubLocality();
+            else if(addresses.get(0).getLocality() != null) address = addresses.get(0).getLocality();
+            else if(addresses.get(0).getCountryName() != null) address = addresses.get(0).getCountryName();
+        }
+
+        return address;
     }
 
     @Override

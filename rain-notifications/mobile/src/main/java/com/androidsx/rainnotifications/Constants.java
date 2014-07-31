@@ -25,6 +25,7 @@ public class Constants {
     public static class Extras {
         public static final String EXTRA_LAT = "extra_lat";
         public static final String EXTRA_LON = "extra_lon";
+        public static final String EXTRA_ADDRESS = "extra_address";
     }
     public static class SharedPref {
         public static final String SHARED_RAIN = "shared_rain";

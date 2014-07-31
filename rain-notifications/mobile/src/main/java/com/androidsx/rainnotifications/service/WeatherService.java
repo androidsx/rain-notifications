@@ -13,6 +13,7 @@ import android.util.Log;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
 
+import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
@@ -22,7 +23,6 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.util.AddressHelper;
 import com.androidsx.rainnotifications.util.LocationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
@@ -71,12 +71,11 @@ public class WeatherService extends Service {
             if(mBundle != null) {
                 weatherAlarmIntent = PendingIntent.getService(this, Constants.AlarmId.WEATHER_ID, intent, 0);
 
+                final String address = mBundle.getString(Constants.Extras.EXTRA_ADDRESS, getString(R.string.current_name_location));
                 final double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
                 final double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
 
                 if (LocationHelper.rightCoordinates(latitude, longitude)) {
-                    String address = AddressHelper.getLocationAddress(this,
-                            latitude, longitude);
 
                     SharedPrefsHelper.setForecastAddress(address, sharedPrefs.edit());
 
@@ -97,6 +96,7 @@ public class WeatherService extends Service {
                             }
 
                             Bundle mBundle = new Bundle();
+                            mBundle.putString(Constants.Extras.EXTRA_ADDRESS, address);
                             mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
                             mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
 
