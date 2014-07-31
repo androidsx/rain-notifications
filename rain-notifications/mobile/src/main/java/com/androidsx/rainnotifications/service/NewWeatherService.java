@@ -73,8 +73,13 @@ public class NewWeatherService extends Service {
         new UserLocation(this) {
             @Override
             public void obtainedLocation(Location loc) {
-                String address = getLocationAddress(NewWeatherService.this, loc.getLatitude(), loc.getLongitude());
-                checkForecast(loc.getLatitude(), loc.getLongitude(), address);
+                if(loc != null) {
+                    String address = getLocationAddress(NewWeatherService.this, loc.getLatitude(), loc.getLongitude());
+                    checkForecast(loc.getLatitude(), loc.getLongitude(), address);
+                } else {
+                    // TODO: probably notify to user, that the gps is disabled or not available,
+                    // if we try to obtain many times the location.
+                }
             }
         }.getUserLocation();
     }
