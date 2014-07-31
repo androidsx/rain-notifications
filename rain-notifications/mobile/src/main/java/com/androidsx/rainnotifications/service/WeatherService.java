@@ -131,9 +131,7 @@ public class WeatherService extends Service {
     }
 
     private void updateWeatherAlarm(long expectedHour) {
-        if(weatherAlarmIntent != null) {
-            weatherAlarmIntent.cancel();
-        }
+        weatherAlarmIntent.cancel();
         weatherAlarmIntent = PendingIntent.getService(
                 this,
                 Constants.AlarmId.WEATHER_ID,
