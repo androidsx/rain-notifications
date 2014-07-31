@@ -25,6 +25,7 @@
             </intent-filter>
         </activity>
 
+        <service android:name=".service.NewWeatherService" />
         <service android:name=".service.WeatherService" />
         <service android:name=".service.LocationService" />
         <receiver android:name=".service.OnBootReceiver">
