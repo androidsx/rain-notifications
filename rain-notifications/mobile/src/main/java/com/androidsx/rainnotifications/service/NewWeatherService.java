@@ -11,7 +11,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
