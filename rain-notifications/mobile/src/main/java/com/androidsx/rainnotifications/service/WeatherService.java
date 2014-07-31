@@ -111,17 +111,11 @@ public class WeatherService extends Service {
                         }
                     }
 
-                    Bundle mBundle = new Bundle();
-                    /* Not used now, probably in future
-                    mBundle.putString(Constants.Extras.EXTRA_ADDRESS, address);
-                    mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
-                    mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);*/
-
                     if(forecastTable.getForecasts().isEmpty()) {
-                        updateWeatherAlarm(System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS, mBundle);
+                        updateWeatherAlarm(System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS);
                         Timber.i("Next expected forecast: no changes expected in next days.");
                     } else {
-                        updateWeatherAlarm(forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis(), mBundle);
+                        updateWeatherAlarm(forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis());
                         Timber.i("Next expected forecast: %s", forecastTable.getForecasts().get(0).toString());
                     }
                     stopSelf();
@@ -136,14 +130,14 @@ public class WeatherService extends Service {
         }
     }
 
-    private void updateWeatherAlarm(long expectedHour, Bundle mBundle) {
+    private void updateWeatherAlarm(long expectedHour) {
         if(weatherAlarmIntent != null) {
             weatherAlarmIntent.cancel();
         }
         weatherAlarmIntent = PendingIntent.getService(
                 this,
                 Constants.AlarmId.WEATHER_ID,
-                new Intent(this, WeatherService.class).putExtras(mBundle),
+                new Intent(this, WeatherService.class),
                 0);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if(am != null) {
