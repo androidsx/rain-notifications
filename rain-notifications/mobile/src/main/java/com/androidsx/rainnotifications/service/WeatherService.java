@@ -161,7 +161,7 @@ public class WeatherService extends Service {
         final long currentTime = System.currentTimeMillis();
         if ((expectedHour - currentTime) < TEN_MINUTES_MILLIS) {
             return expectedHour;
-        } else if (expectedHour - currentTime > ONE_HOUR_MILLIS){
+        } else if (expectedHour - currentTime < ONE_HOUR_MILLIS){
             return currentTime + getTimePercentage((expectedHour - currentTime), 70);
         } else {
             return currentTime + ONE_HOUR_MILLIS;
