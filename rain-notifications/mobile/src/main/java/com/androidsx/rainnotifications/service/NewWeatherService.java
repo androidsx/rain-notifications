@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
+import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
