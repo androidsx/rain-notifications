@@ -49,7 +49,8 @@ public class LocationService extends Service implements GooglePlayServicesClient
 
     private static final String TAG = LocationService.class.getSimpleName();
 
-    private static final float DEFAULT_DISTANCE = (float)5000.0;
+    private static final float DEFAULT_DISTANCE = 5000.0f;
+    private static final double BAD_COORDINATE = 200; //For indicate that there is no coordinates into extras.
     private static final long LOCATION_EXTRA_TIME_MILLIS = 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long LOCATION_REPEATING_TIME_MILLIS = 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long SPECIAL_LOCATION_EXTRA_TIME_MILLIS = 1 * DateTimeConstants.MILLIS_PER_MINUTE;
@@ -71,8 +72,8 @@ public class LocationService extends Service implements GooglePlayServicesClient
             if(mBundle != null) {
                 locationAlarmIntent = PendingIntent.getService(this, Constants.AlarmId.LOCATION_ID, intent, 0);
 
-                double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, 1000);
-                double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, 1000);
+                double latitude = mBundle.getDouble(Constants.Extras.EXTRA_LAT, BAD_COORDINATE);
+                double longitude = mBundle.getDouble(Constants.Extras.EXTRA_LON, BAD_COORDINATE);
 
                 if(LocationHelper.rightCoordinates(latitude, longitude)) {
                     lastLocation = new Location(LocationManager.NETWORK_PROVIDER);
@@ -111,14 +112,10 @@ public class LocationService extends Service implements GooglePlayServicesClient
                 startWeatherService(mBundle);            // far to previous one, we restart the process.
                 updateLocationAlarm(mBundle, LOCATION_EXTRA_TIME_MILLIS, LOCATION_REPEATING_TIME_MILLIS);
 
-                // Only for debug
-                float distance = (float) 0.0;
-                distance = lastLocation.distanceTo(loc);
-
                 Log.d(TAG, ".\nLocation Observer update...\nLocation: " + address +
                         " --> lat: " + loc.getLatitude() +
                         " - long: " + loc.getLongitude() +
-                        "\nDistance: " + distance);
+                        "\nDistance: " + lastLocation.distanceTo(loc));
             } else {
                 Log.d(TAG, ".\nLocation Observer update...\nLocation: " + address +
                         " --> lat: " + loc.getLatitude() +
@@ -170,8 +167,8 @@ public class LocationService extends Service implements GooglePlayServicesClient
                     b.putDouble(Constants.Extras.EXTRA_LAT, lastLocation.getLatitude());
                     b.putDouble(Constants.Extras.EXTRA_LON, lastLocation.getLongitude());
                 } else {
-                    b.putDouble(Constants.Extras.EXTRA_LAT, 1000); // Bad location coordinates
-                    b.putDouble(Constants.Extras.EXTRA_LON, 1000); // for simulate first call.
+                    b.putDouble(Constants.Extras.EXTRA_LAT, BAD_COORDINATE); // Bad location coordinates
+                    b.putDouble(Constants.Extras.EXTRA_LON, BAD_COORDINATE); // for simulate first call.
                 }
                 updateLocationAlarm(b, SPECIAL_LOCATION_EXTRA_TIME_MILLIS, SPECIAL_LOCATION_REPEATING_TIME_MILLIS);
             }
