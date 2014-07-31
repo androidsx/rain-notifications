@@ -35,7 +35,7 @@ import java.util.Locale;
 
 public class NewWeatherService extends Service {
 
-    private static final String TAG = WeatherService.class.getSimpleName();
+    private static final String TAG = NewWeatherService.class.getSimpleName();
 
     private static final long WEATHER_REPEATING_TIME_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
