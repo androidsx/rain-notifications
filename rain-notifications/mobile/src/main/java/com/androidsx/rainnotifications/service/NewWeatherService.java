@@ -34,6 +34,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * This service is responsible to make API calls to forecast.io
+ * Once it starts, make an API call to forecast.io with the obtained coordinates.
+ *
+ * The response is analyzed for determine the next alarm time, and if it's appropriate
+ * notify to user the next significant weather change.
+ */
+
 public class NewWeatherService extends Service {
 
     private static final String TAG = NewWeatherService.class.getSimpleName();
