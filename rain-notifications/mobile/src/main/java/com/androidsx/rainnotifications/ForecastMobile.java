@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherTypeBuilder;
-import com.androidsx.rainnotifications.service.LocationService;
+import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 /**
@@ -59,7 +59,7 @@ public class ForecastMobile extends Activity {
 
     /** Linked to the button in the XML layout. */
     public void startLocationService(View view) {
-        startService(new Intent(this, LocationService.class));
+        startService(new Intent(this, WeatherService.class));
         view.setEnabled(false);
     }
 
