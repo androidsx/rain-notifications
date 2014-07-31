@@ -112,9 +112,10 @@ public class WeatherService extends Service {
                     }
 
                     Bundle mBundle = new Bundle();
+                    /* Not used now, probably in future
                     mBundle.putString(Constants.Extras.EXTRA_ADDRESS, address);
                     mBundle.putDouble(Constants.Extras.EXTRA_LAT, latitude);
-                    mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);
+                    mBundle.putDouble(Constants.Extras.EXTRA_LON, longitude);*/
 
                     if(forecastTable.getForecasts().isEmpty()) {
                         updateWeatherAlarm(System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS, mBundle);
