@@ -49,7 +49,6 @@ public class WeatherService extends Service {
     private static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long DEFAULT_EXTRA_TIME_MILLIS = 2 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
-    private static final float SEVENTY_PERCENT = 70 / 100;
 
     private final AlertGenerator alertGenerator = new AlertGenerator();
 
@@ -162,8 +161,8 @@ public class WeatherService extends Service {
         final long currentTime = System.currentTimeMillis();
         if ((expectedHour - currentTime) < TEN_MINUTES_MILLIS) {
             return expectedHour;
-        } else if (expectedHour - currentTime < ONE_HOUR_MILLIS){
-            return (long) (currentTime + ((expectedHour - currentTime) * SEVENTY_PERCENT));
+        } else if (expectedHour - currentTime > ONE_HOUR_MILLIS){
+            return currentTime + getTimePercentage((expectedHour - currentTime), 70);
         } else {
             return currentTime + ONE_HOUR_MILLIS;
         }
@@ -188,5 +187,9 @@ public class WeatherService extends Service {
         }
 
         return address;
+    }
+
+    private long getTimePercentage(long time, int percentage) {
+        return time * percentage / 100;
     }
 }
