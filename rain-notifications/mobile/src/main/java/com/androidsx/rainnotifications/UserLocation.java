@@ -14,14 +14,12 @@ public abstract class UserLocation implements GooglePlayServicesClient.Connectio
     private static final String TAG = UserLocation.class.getSimpleName();
 
     private LocationClient mLocationClient;
-    private Context context;
 
     public UserLocation(Context context) {
-        this.context = context;
+        this.mLocationClient = new LocationClient(context, this, this);
     }
 
     public void getUserLocation() {
-        mLocationClient = new LocationClient(context, this, this);
         mLocationClient.connect();
     }
 
