@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import timber.log.Timber;
+
 /**
  * This service is responsible to make API calls to forecast.io
  * Once it starts, make an API call to forecast.io with the obtained coordinates.
@@ -65,6 +67,7 @@ public class NewWeatherService extends Service {
     public void onCreate() {
         super.onCreate();
 
+        Timber.plant(new Timber.DebugTree());
         sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
     }
 
@@ -98,14 +101,14 @@ public class NewWeatherService extends Service {
                 @Override
                 protected void onSuccess(ForecastTable forecastTable) {
                     // TODO: Here is where we should apply our logic
-                    Log.d(TAG, "Forecast table: " + forecastTable);
+                    Timber.d("Forecast table: %s", forecastTable);
 
-                    Log.i(TAG, "We could generate the following alerts:");
+                    Timber.i("We could generate the following alerts:");
                     final Weather currentWeather = forecastTable.getBaselineWeather();
                     for (Forecast forecast  : forecastTable.getForecasts()) {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
-                            Log.i(TAG, "INFO alert: " + alert.getAlertMessage());
+                            Timber.i("INFO alert: %s", alert.getAlertMessage());
                         }
                     }
 
@@ -116,10 +119,10 @@ public class NewWeatherService extends Service {
 
                     if(forecastTable.getForecasts().isEmpty()) {
                         updateWeatherAlarm(System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS, mBundle);
-                        Log.i(TAG, "Next expected forecast: no changes expected in next days.");
+                        Timber.i("Next expected forecast: no changes expected in next days.");
                     } else {
                         updateWeatherAlarm(forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis(), mBundle);
-                        Log.i(TAG, "Next expected forecast: " + forecastTable.getForecasts().get(0).toString());
+                        Timber.i("Next expected forecast: %s", forecastTable.getForecasts().get(0).toString());
                     }
                     stopSelf();
                 }
@@ -151,7 +154,7 @@ public class NewWeatherService extends Service {
                     WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
         }
-        Log.i(TAG, "Next weather alarm at: " + new LocalTime(nextWeatherCallAlarmTime(expectedHour)));
+        Timber.i("Next weather alarm at: %s", new LocalTime(nextWeatherCallAlarmTime(expectedHour)));
     }
 
     // That method is for determine the next time that we must call again to WeatherService.
