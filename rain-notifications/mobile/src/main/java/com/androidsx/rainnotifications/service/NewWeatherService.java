@@ -64,12 +64,6 @@ public class NewWeatherService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         weatherAlarmIntent = PendingIntent.getService(this, Constants.AlarmId.WEATHER_ID, intent, 0);
 
-        getLocation();
-
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    private void getLocation() {
         new UserLocation(this) {
             @Override
             public void obtainedLocation(Location loc) {
@@ -82,6 +76,8 @@ public class NewWeatherService extends Service {
                 }
             }
         }.getUserLocation();
+
+        return super.onStartCommand(intent, flags, startId);
     }
 
     private void checkForecast(final double latitude, final double longitude, final String address) {
