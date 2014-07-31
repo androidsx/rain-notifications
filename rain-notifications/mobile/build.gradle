@@ -23,6 +23,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     wearApp project(':wear')
     compile 'com.google.android.gms:play-services-wearable:+'
+    compile 'com.jakewharton.timber:timber:2.4.+'
     compile project(':model')
     compile project(':forecast-io-wrapper')
     compile project(':alert-generator')
