@@ -40,7 +40,7 @@ public class NewWeatherService extends Service {
 
     private static final long WEATHER_REPEATING_TIME_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
-    private static final long TWO_HOUR_MILLIS = 2 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long DEFAULT_EXTRA_TIME_MILLIS = 2 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
 
     private final AlertGenerator alertGenerator = new AlertGenerator();
@@ -67,6 +67,16 @@ public class NewWeatherService extends Service {
         getLocation();
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void getLocation() {
+        new UserLocation(this) {
+            @Override
+            public void obtainedLocation(Location loc) {
+                String address = getLocationAddress(NewWeatherService.this, loc.getLatitude(), loc.getLongitude());
+                checkForecast(loc.getLatitude(), loc.getLongitude(), address);
+            }
+        }.getUserLocation();
     }
 
     private void checkForecast(final double latitude, final double longitude, final String address) {
@@ -140,21 +150,11 @@ public class NewWeatherService extends Service {
         final long currentTime = System.currentTimeMillis();
         if ((expectedHour - currentTime) < TEN_MINUTES_MILLIS) {
             return expectedHour;
-        } else if (expectedHour - currentTime < TWO_HOUR_MILLIS){
+        } else if (expectedHour - currentTime < ONE_HOUR_MILLIS){
             return currentTime + ((expectedHour - currentTime) * 70 / 100);
         } else {
-            return currentTime + TWO_HOUR_MILLIS;
+            return currentTime + ONE_HOUR_MILLIS;
         }
-    }
-
-    private void getLocation() {
-        new UserLocation(this) {
-            @Override
-            public void obtainedLocation(Location loc) {
-                String address = getLocationAddress(NewWeatherService.this, loc.getLatitude(), loc.getLongitude());
-                checkForecast(loc.getLatitude(), loc.getLongitude(), address);
-            }
-        }.getUserLocation();
     }
 
     private static String getLocationAddress(Context context, double latitude, double longitude) {
