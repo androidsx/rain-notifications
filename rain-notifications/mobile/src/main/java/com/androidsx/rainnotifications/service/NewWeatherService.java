@@ -45,8 +45,6 @@ import timber.log.Timber;
 
 public class NewWeatherService extends Service {
 
-    private static final String TAG = NewWeatherService.class.getSimpleName();
-
     private static final long WEATHER_REPEATING_TIME_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
