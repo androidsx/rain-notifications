@@ -80,8 +80,7 @@ public class AlertGenerator {
                 + " (with a precision of +/- 1 " + forecast.getGranularity() + ", though)."
                 + " At the moment, it is " + currentWeather);*/
         if(currentWeather.getType() != forecast.getForecastedWeather().getType()) {
-            return new AlertMessage(forecast.getForecastedWeather().getType() +
-                    " in " + UiUtil.getDebugOnlyPeriodFormatter().print(forecast.getTimeFromNow().toPeriod()));
+            return new AlertMessage("At " + new LocalTime(System.currentTimeMillis() + forecast.getTimeFromNow().getEndMillis()) + " - " + forecast.getForecastedWeather().toString());
         } else {
             return new AlertMessage("No changes in next hours.");
         }

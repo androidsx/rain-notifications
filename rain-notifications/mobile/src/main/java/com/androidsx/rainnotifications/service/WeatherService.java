@@ -110,13 +110,19 @@ public class WeatherService extends Service {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
                             Timber.i("INFO alert: %s", alert.getAlertMessage());
-                            int icon;
+                            int nowIcon;
                             if(Constants.FORECAST_ICONS.containsKey(currentWeather.getType())) {
-                                icon = Constants.FORECAST_ICONS.get(currentWeather.getType());
+                                nowIcon = Constants.FORECAST_ICONS.get(currentWeather.getType());
                             } else {
-                                icon = Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
+                                nowIcon = Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
                             }
-                            NotificationHelper.sendNotification(WeatherService.this, 1, icon, alert.getAlertMessage().toString());
+                            int nextIcon;
+                            if(Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())) {
+                                nextIcon = Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType());
+                            } else {
+                                nextIcon = Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
+                            }
+                            NotificationHelper.sendNotification(WeatherService.this, 1, nowIcon, nextIcon, alert.getAlertMessage().toString());
                         }
                     }
 
