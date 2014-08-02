@@ -1,4 +1,4 @@
-package com.androidsx.forecastApis;
+package com.androidsx.forecast_apis;
 
 import com.androidsx.rainnotifications.model.ForecastTable;
 

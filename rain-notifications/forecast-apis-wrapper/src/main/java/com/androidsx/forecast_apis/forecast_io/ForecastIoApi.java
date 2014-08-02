@@ -1,7 +1,7 @@
-package com.androidsx.forecastApis.forecast_io;
+package com.androidsx.forecast_apis.forecast_io;
 
-import com.androidsx.forecastApis.IForecastApi;
-import com.androidsx.forecastApis.forecast_io.model.ForecastTableBuilder;
+import com.androidsx.forecast_apis.IForecastApi;
+import com.androidsx.forecast_apis.forecast_io.model.ForecastTableBuilder;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.forecast.io.network.responses.INetworkResponse;
 import com.forecast.io.network.responses.NetworkResponse;

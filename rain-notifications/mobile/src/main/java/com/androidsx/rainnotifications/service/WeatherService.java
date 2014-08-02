@@ -11,7 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.IBinder;
 
-import com.androidsx.forecastApis.forecast_io.ForecastIoApi;
+import com.androidsx.forecast_apis.forecast_io.ForecastIoApi;
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.UserLocation;

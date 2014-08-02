@@ -1,4 +1,4 @@
-package com.androidsx.forecastApis.forecast_io.model;
+package com.androidsx.forecast_apis.forecast_io.model;
 
 import android.util.Log;
 
