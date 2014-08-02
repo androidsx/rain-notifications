@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.forecast_apis.forecast_io.model.WeatherTypeBuilder;
 import com.androidsx.rainnotifications.model.WeatherType;
-import com.androidsx.rainnotifications.model.WeatherTypeBuilder;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 

@@ -9,15 +9,13 @@ import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Bundle;
 import android.os.IBinder;
 
+import com.androidsx.forecast_apis.forecast_io.ForecastIoApi;
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
-import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
-import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.Forecast;
@@ -95,10 +93,9 @@ public class WeatherService extends Service {
                     getLocationAddress(WeatherService.this, latitude, longitude),
                     sharedPrefs.edit()
             );
-            new ForecastIoNetworkServiceTask() {
-
+            new ForecastIoApi() {
                 @Override
-                protected void onSuccess(ForecastTable forecastTable) {
+                public void onCallBackSuccess(ForecastTable forecastTable) {
                     // TODO: Here is where we should apply our logic
                     Timber.d("Forecast table: %s", forecastTable);
 
@@ -122,11 +119,10 @@ public class WeatherService extends Service {
                 }
 
                 @Override
-                protected void onFailure() {
-                    // TODO: And here is where we do something smart about failures
-                    stopSelf();
+                public void onCallBackFailure() {
+
                 }
-            }.execute(new ForecastIoRequest(latitude, longitude).getRequest());
+            }.callToApi(latitude, longitude);
         }
     }
 

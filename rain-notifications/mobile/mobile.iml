@@ -66,8 +66,8 @@
     <orderEntry type="library" exported="" name="support-v4-19.1.0" level="project" />
     <orderEntry type="library" exported="" name="timber-2.4.1" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.3" level="project" />
+    <orderEntry type="module" module-name="forecast-apis-wrapper" exported="" />
     <orderEntry type="module" module-name="alert-generator" exported="" />
-    <orderEntry type="module" module-name="forecast-io-wrapper" exported="" />
     <orderEntry type="module" module-name="model" exported="" />
   </component>
 </module>
