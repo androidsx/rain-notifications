@@ -9,6 +9,8 @@ import android.support.v4.app.NotificationCompat;
 
 import com.androidsx.rainnotifications.ForecastMobile;
 import com.androidsx.rainnotifications.R;
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
 
 /*
  * This helper class is for notify the user by notifications if a significant weather change

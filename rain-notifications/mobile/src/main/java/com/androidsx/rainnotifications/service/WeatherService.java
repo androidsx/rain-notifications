@@ -23,7 +23,9 @@ import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
+import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.util.LocationHelper;
+import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import org.joda.time.DateTimeConstants;
@@ -108,6 +110,13 @@ public class WeatherService extends Service {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
                             Timber.i("INFO alert: %s", alert.getAlertMessage());
+                            int icon;
+                            if(Constants.FORECAST_ICONS.containsKey(currentWeather.getType())) {
+                                icon = Constants.FORECAST_ICONS.get(currentWeather.getType());
+                            } else {
+                                icon = Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
+                            }
+                            NotificationHelper.sendNotification(WeatherService.this, 1, icon, alert.getAlertMessage().toString());
                         }
                     }
 
