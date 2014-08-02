@@ -25,6 +25,6 @@ dependencies {
     compile 'com.google.android.gms:play-services-wearable:+'
     compile 'com.jakewharton.timber:timber:2.4.+'
     compile project(':model')
-    compile project(':forecast-io-wrapper')
     compile project(':alert-generator')
+    compile project(':forecast-apis-wrapper')
 }

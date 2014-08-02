@@ -9,7 +9,7 @@ public class ForecastTable {
     private final DateTime baselineTime;
     private final List<Forecast> forecasts;
 
-    ForecastTable(Weather baselineWeather, DateTime baselineTime, List<Forecast> forecasts) {
+    public ForecastTable(Weather baselineWeather, DateTime baselineTime, List<Forecast> forecasts) {
         this.baselineWeather = baselineWeather;
         this.baselineTime = baselineTime;
         this.forecasts = forecasts;

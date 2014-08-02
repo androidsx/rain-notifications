@@ -1,7 +1,10 @@
-package com.androidsx.rainnotifications.model;
+package com.androidsx.forecastApis.forecast_io.model;
 
 import android.util.Log;
 
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.Weather;
 import com.forecast.io.v2.network.services.ForecastService;
 import com.forecast.io.v2.transfer.DataBlock;
 import com.forecast.io.v2.transfer.DataPoint;
@@ -13,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder for {@link ForecastTable}.
+ * Builder for {@link com.androidsx.rainnotifications.model.ForecastTable}.
  * <p>
  * Should not be used from outside of this project.
  */
