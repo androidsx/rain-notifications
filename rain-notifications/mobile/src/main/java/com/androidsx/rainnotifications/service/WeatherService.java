@@ -23,7 +23,9 @@ import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
+import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.util.LocationHelper;
+import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import org.joda.time.DateTimeConstants;
@@ -101,13 +103,19 @@ public class WeatherService extends Service {
                 protected void onSuccess(ForecastTable forecastTable) {
                     // TODO: Here is where we should apply our logic
                     Timber.d("Forecast table: %s", forecastTable);
-
+                    boolean firstTime = true;
                     Timber.i("We could generate the following alerts:");
                     final Weather currentWeather = forecastTable.getBaselineWeather();
                     for (Forecast forecast  : forecastTable.getForecasts()) {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
                             Timber.i("INFO alert: %s", alert.getAlertMessage());
+                            int nowIcon = getWeatherIconDrawable(currentWeather);
+                            int nextIcon = getWeatherIconDrawable(forecast.getForecastedWeather());
+                            if(firstTime) {
+                                NotificationHelper.sendNotification(WeatherService.this, 1, nowIcon, nextIcon, alert.getAlertMessage().toString());
+                                firstTime = false;
+                            }
                         }
                     }
 
@@ -184,5 +192,13 @@ public class WeatherService extends Service {
 
     private long getTimePercentage(long time, int percentage) {
         return time * percentage / 100;
+    }
+
+    private int getWeatherIconDrawable(Weather weather) {
+        if(Constants.FORECAST_ICONS.containsKey(weather.getType())) {
+            return Constants.FORECAST_ICONS.get(weather.getType());
+        } else {
+            return Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
+        }
     }
 }

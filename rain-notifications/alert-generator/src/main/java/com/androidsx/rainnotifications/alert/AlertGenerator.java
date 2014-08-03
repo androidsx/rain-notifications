@@ -8,6 +8,7 @@ import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 
+import org.joda.time.LocalTime;
 import org.joda.time.Period;
 
 /**
@@ -48,9 +49,14 @@ public class AlertGenerator {
      * @return alert level that this weather transition deserves
      */
     AlertLevel generateAlertLevel(Weather current, Weather future) {
-        if (current.getType() != WeatherType.RAIN && future.getType() == WeatherType.RAIN) {
+        /*if (current.getType() != WeatherType.RAIN && future.getType() == WeatherType.RAIN) {
             return AlertLevel.INFO;
         } else if (current.getType() == WeatherType.RAIN && future.getType() != WeatherType.RAIN) {
+            return AlertLevel.INFO;
+        } else {
+            return AlertLevel.NEVER_MIND;
+        }*/
+        if(current.getType() != WeatherType.UNKNOWN && future.getType() != WeatherType.UNKNOWN) {
             return AlertLevel.INFO;
         } else {
             return AlertLevel.NEVER_MIND;
@@ -69,9 +75,14 @@ public class AlertGenerator {
     private AlertMessage generateAlertMessage(Weather currentWeather, Forecast forecast) {
         final Period periodFromNow = forecast.getTimeFromNow().toPeriod();
 
-        return new AlertMessage("It's gonna be \"" + forecast.getForecastedWeather() + "\""
+        /*return new AlertMessage("It's gonna be \"" + forecast.getForecastedWeather() + "\""
                 + " in " + UiUtil.getDebugOnlyPeriodFormatter().print(periodFromNow) + " from now"
                 + " (with a precision of +/- 1 " + forecast.getGranularity() + ", though)."
-                + " At the moment, it is " + currentWeather);
+                + " At the moment, it is " + currentWeather);*/
+        if(currentWeather.getType() != forecast.getForecastedWeather().getType()) {
+            return new AlertMessage("At " + new LocalTime(forecast.getTimeFromNow().getEndMillis()).getHourOfDay() + " o'clock will be a " + forecast.getForecastedWeather().toString());
+        } else {
+            return new AlertMessage("No changes in next hours.");
+        }
     }
 }
