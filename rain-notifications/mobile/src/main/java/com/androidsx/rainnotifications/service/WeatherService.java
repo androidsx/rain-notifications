@@ -103,26 +103,19 @@ public class WeatherService extends Service {
                 protected void onSuccess(ForecastTable forecastTable) {
                     // TODO: Here is where we should apply our logic
                     Timber.d("Forecast table: %s", forecastTable);
-
+                    boolean firstTime = true;
                     Timber.i("We could generate the following alerts:");
                     final Weather currentWeather = forecastTable.getBaselineWeather();
                     for (Forecast forecast  : forecastTable.getForecasts()) {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
                             Timber.i("INFO alert: %s", alert.getAlertMessage());
-                            int nowIcon;
-                            if(Constants.FORECAST_ICONS.containsKey(currentWeather.getType())) {
-                                nowIcon = Constants.FORECAST_ICONS.get(currentWeather.getType());
-                            } else {
-                                nowIcon = Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
+                            int nowIcon = getIconDrawable(currentWeather);
+                            int nextIcon = getIconDrawable(forecast.getForecastedWeather());
+                            if(firstTime) {
+                                NotificationHelper.sendNotification(WeatherService.this, 1, nowIcon, nextIcon, alert.getAlertMessage().toString());
+                                firstTime = false;
                             }
-                            int nextIcon;
-                            if(Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())) {
-                                nextIcon = Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType());
-                            } else {
-                                nextIcon = Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
-                            }
-                            NotificationHelper.sendNotification(WeatherService.this, 1, nowIcon, nextIcon, alert.getAlertMessage().toString());
                         }
                     }
 
@@ -199,5 +192,13 @@ public class WeatherService extends Service {
 
     private long getTimePercentage(long time, int percentage) {
         return time * percentage / 100;
+    }
+
+    private int getIconDrawable(Weather weather) {
+        if(Constants.FORECAST_ICONS.containsKey(weather.getType())) {
+            return Constants.FORECAST_ICONS.get(weather.getType());
+        } else {
+            return Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
+        }
     }
 }
