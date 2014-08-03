@@ -110,8 +110,8 @@ public class WeatherService extends Service {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
                             Timber.i("INFO alert: %s", alert.getAlertMessage());
-                            int nowIcon = getIconDrawable(currentWeather);
-                            int nextIcon = getIconDrawable(forecast.getForecastedWeather());
+                            int nowIcon = getWeatherIconDrawable(currentWeather);
+                            int nextIcon = getWeatherIconDrawable(forecast.getForecastedWeather());
                             if(firstTime) {
                                 NotificationHelper.sendNotification(WeatherService.this, 1, nowIcon, nextIcon, alert.getAlertMessage().toString());
                                 firstTime = false;
@@ -194,7 +194,7 @@ public class WeatherService extends Service {
         return time * percentage / 100;
     }
 
-    private int getIconDrawable(Weather weather) {
+    private int getWeatherIconDrawable(Weather weather) {
         if(Constants.FORECAST_ICONS.containsKey(weather.getType())) {
             return Constants.FORECAST_ICONS.get(weather.getType());
         } else {
