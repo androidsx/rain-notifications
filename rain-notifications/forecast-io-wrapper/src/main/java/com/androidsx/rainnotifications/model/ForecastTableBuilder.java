@@ -58,7 +58,7 @@ public class ForecastTableBuilder {
         final DateTime forecastTime = new DateTime(dataPoint.getTime() * 1000);
 
         if (forecastTime.isBefore(fromTime.toInstant())) {
-            Log.v(TAG, "Skip the forecast for the present interval at " + forecastTime);
+            //Log.v(TAG, "Skip the forecast for the present interval at " + forecastTime);
             return null;
         } else {
             final Interval timeFromNow = new Interval(fromTime, forecastTime);

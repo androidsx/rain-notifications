@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.os.Bundle;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
@@ -23,11 +22,14 @@ import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
+import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.LocationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
 
 import java.io.IOException;
 import java.util.List;
@@ -100,23 +102,38 @@ public class WeatherService extends Service {
                 @Override
                 protected void onSuccess(ForecastTable forecastTable) {
                     // TODO: Here is where we should apply our logic
-                    Timber.d("Forecast table: %s", forecastTable);
-
-                    Timber.i("We could generate the following alerts:");
+                    //Timber.tag("TABLE");
+                    //Timber.d("Forecast table: %s", forecastTable);
+                    Timber.tag("ALERTS");
+                    Timber.i(".\nWe could generate the following alerts:");
                     final Weather currentWeather = forecastTable.getBaselineWeather();
                     for (Forecast forecast  : forecastTable.getForecasts()) {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
-                            Timber.i("INFO alert: %s", alert.getAlertMessage());
+                            Timber.tag("ALERT");
+                            Timber.i(".\nINFO alert: %s", alert.getAlertMessage());
                         }
                     }
-
+                    long nextAlarmTime;
                     if(forecastTable.getForecasts().isEmpty()) {
-                        updateWeatherAlarm(System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS);
-                        Timber.i("Next expected forecast: no changes expected in next days.");
+                        nextAlarmTime = DEFAULT_EXTRA_TIME_MILLIS;
+                        updateWeatherAlarm(System.currentTimeMillis() + nextAlarmTime);
+                        Timber.tag("ALARM");
+                        Timber.i(".\nSchedule an alarm for %s from now, we don't expect changes.",
+                                UiUtil.getDebugOnlyPeriodFormatter().print(new Period(nextAlarmTime)));
                     } else {
-                        updateWeatherAlarm(forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis());
-                        Timber.i("Next expected forecast: %s", forecastTable.getForecasts().get(0).toString());
+                        Forecast forecast = forecastTable.getForecasts().get(0);
+                        nextAlarmTime = System.currentTimeMillis() + forecast.getTimeFromNow().getEndMillis();
+                        updateWeatherAlarm(nextAlarmTime);
+                        Timber.tag("ALARM");
+                        Timber.i(".\nSchedule an alarm for %s from now, we expect a change from %s to %s in %s from now, at %s.",
+                                UiUtil.getDebugOnlyPeriodFormatter().print(
+                                        new Period(nextWeatherCallAlarmTime(nextAlarmTime) - System.currentTimeMillis())),
+                                currentWeather.getType(),
+                                forecast.getForecastedWeather().getType(),
+                                UiUtil.getDebugOnlyPeriodFormatter().print(
+                                        new Period(forecast.getTimeFromNow())),
+                                new LocalTime(forecast.getTimeFromNow().getEndMillis()));
                     }
                     stopSelf();
                 }
@@ -146,7 +163,6 @@ public class WeatherService extends Service {
                     WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
         }
-        Timber.i("Next weather alarm at: %s", new LocalTime(nextWeatherCallAlarmTime(expectedHour)));
     }
 
     // That method is for determine the next time that we must call again to WeatherService.
