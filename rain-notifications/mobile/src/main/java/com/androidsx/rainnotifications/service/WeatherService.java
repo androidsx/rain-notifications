@@ -114,12 +114,19 @@ public class WeatherService extends Service {
                             Timber.i(".\nINFO alert: %s", alert.getAlertMessage());
                         }
                     }
+                    Forecast forecast = forecastTable.getForecasts().get(0);
                     if(forecastTable.getForecasts().isEmpty()) {
-                        updateWeatherAlarm(System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS, currentWeather, forecastTable.getForecasts().get(0));
+                        updateWeatherAlarm(
+                                System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS,
+                                currentWeather,
+                                forecast
+                        );
                     } else {
-                        Forecast forecast = forecastTable.getForecasts().get(0);
-                        long nextAlarmTime = forecast.getTimeFromNow().getEndMillis();
-                        updateWeatherAlarm(nextAlarmTime, currentWeather, forecast);
+                        updateWeatherAlarm(
+                                forecast.getTimeFromNow().getEndMillis(),
+                                currentWeather,
+                                forecast
+                        );
                     }
                     stopSelf();
                 }
