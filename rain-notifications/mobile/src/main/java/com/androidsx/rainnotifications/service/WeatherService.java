@@ -80,7 +80,7 @@ public class WeatherService extends Service {
             public void obtainedLocation(Location loc) {
                 if(loc != null) {
                     Timber.tag("WEATHERSERVICE FORECAST");
-                    Timber.i(".\nAsk forecast.io for de forecast in %s (GPS %f, %f).",
+                    Timber.i(".\nAsk forecast.io for the forecast in %s (GPS %f, %f).",
                             getLocationAddress(loc.getLatitude(), loc.getLongitude()),
                             loc.getLatitude(), loc.getLongitude());
                     checkForecast(loc.getLatitude(), loc.getLongitude());
@@ -116,18 +116,17 @@ public class WeatherService extends Service {
                             Timber.i(".\nINFO alert: %s", alert.getAlertMessage());
                         }
                     }
-                    Forecast forecast = forecastTable.getForecasts().get(0);
                     if(forecastTable.getForecasts().isEmpty()) {
                         updateWeatherAlarm(
                                 System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS,
                                 currentWeather,
-                                forecast
+                                null
                         );
                     } else {
                         updateWeatherAlarm(
-                                forecast.getTimeFromNow().getEndMillis(),
+                                forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis(),
                                 currentWeather,
-                                forecast
+                                forecastTable.getForecasts().get(0)
                         );
                     }
                     stopSelf();
@@ -159,20 +158,27 @@ public class WeatherService extends Service {
                     weatherAlarmIntent);
 
             Timber.tag("WEATHERSERVICE ALARM");
-            if(currentWeather.getType() == forecast.getForecastedWeather().getType()) {
+            if(forecast != null) {
+                if (currentWeather.getType() == forecast.getForecastedWeather().getType()) {
+                    Timber.i(".\nSchedule an alarm for %s from now, we don't expect changes. Bye!",
+                            UiUtil.getDebugOnlyPeriodFormatter().print(
+                                    new Period(nextWeatherCallAlarmTime(expectedHour) - System.currentTimeMillis()))
+                    );
+                } else {
+                    Timber.i(".\nSchedule an alarm for %s from now, we expect a change from %s to %s in %s from now, at %s. Bye!",
+                            UiUtil.getDebugOnlyPeriodFormatter().print(
+                                    new Period(nextWeatherCallAlarmTime(expectedHour) - System.currentTimeMillis())),
+                            currentWeather.getType(),
+                            forecast.getForecastedWeather().getType(),
+                            UiUtil.getDebugOnlyPeriodFormatter().print(
+                                    new Period(forecast.getTimeFromNow())),
+                            new LocalTime(forecast.getTimeFromNow().getEndMillis())
+                    );
+                }
+            } else {
                 Timber.i(".\nSchedule an alarm for %s from now, we don't expect changes. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(nextWeatherCallAlarmTime(expectedHour) - System.currentTimeMillis()))
-                );
-            } else {
-                Timber.i(".\nSchedule an alarm for %s from now, we expect a change from %s to %s in %s from now, at %s. Bye!",
-                        UiUtil.getDebugOnlyPeriodFormatter().print(
-                                new Period(nextWeatherCallAlarmTime(expectedHour) - System.currentTimeMillis())),
-                        currentWeather.getType(),
-                        forecast.getForecastedWeather().getType(),
-                        UiUtil.getDebugOnlyPeriodFormatter().print(
-                                new Period(forecast.getTimeFromNow())),
-                        new LocalTime(forecast.getTimeFromNow().getEndMillis())
                 );
             }
         }
