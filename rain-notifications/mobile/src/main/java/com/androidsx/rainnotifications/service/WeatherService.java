@@ -79,6 +79,10 @@ public class WeatherService extends Service {
             @Override
             public void obtainedLocation(Location loc) {
                 if(loc != null) {
+                    Timber.tag("WEATHERSERVICE FORECAST");
+                    Timber.i(".\nAsk forecast.io for de forecast in %s (GPS %f, %f).",
+                            getLocationAddress(loc.getLatitude(), loc.getLongitude()),
+                            loc.getLatitude(), loc.getLongitude());
                     checkForecast(loc.getLatitude(), loc.getLongitude());
                 } else {
                     // TODO: probably notify to user, that the gps is disabled or not available,
@@ -94,7 +98,7 @@ public class WeatherService extends Service {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
             //Only for debug.
             SharedPrefsHelper.setForecastAddress(
-                    getLocationAddress(WeatherService.this, latitude, longitude),
+                    getLocationAddress(latitude, longitude),
                     sharedPrefs.edit()
             );
             new ForecastIoNetworkServiceTask() {
@@ -104,13 +108,11 @@ public class WeatherService extends Service {
                     // TODO: Here is where we should apply our logic
                     //Timber.tag("TABLE");
                     //Timber.d("Forecast table: %s", forecastTable);
-                    Timber.tag("ALERTS");
-                    Timber.i(".\nWe could generate the following alerts:");
                     final Weather currentWeather = forecastTable.getBaselineWeather();
                     for (Forecast forecast  : forecastTable.getForecasts()) {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
-                            Timber.tag("ALERT");
+                            Timber.tag("WEATHERSERVICE ALERT");
                             Timber.i(".\nINFO alert: %s", alert.getAlertMessage());
                         }
                     }
@@ -156,14 +158,14 @@ public class WeatherService extends Service {
                     WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
 
-            Timber.tag("ALARM");
+            Timber.tag("WEATHERSERVICE ALARM");
             if(currentWeather.getType() == forecast.getForecastedWeather().getType()) {
-                Timber.i(".\nSchedule an alarm for %s from now, we don't expect changes.",
+                Timber.i(".\nSchedule an alarm for %s from now, we don't expect changes. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(nextWeatherCallAlarmTime(expectedHour) - System.currentTimeMillis()))
                 );
             } else {
-                Timber.i(".\nSchedule an alarm for %s from now, we expect a change from %s to %s in %s from now, at %s.",
+                Timber.i(".\nSchedule an alarm for %s from now, we expect a change from %s to %s in %s from now, at %s. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(nextWeatherCallAlarmTime(expectedHour) - System.currentTimeMillis())),
                         currentWeather.getType(),
@@ -188,10 +190,10 @@ public class WeatherService extends Service {
         }
     }
 
-    private static String getLocationAddress(Context context, double latitude, double longitude) {
-        String address = context.getString(R.string.current_name_location);
+    private String getLocationAddress(double latitude, double longitude) {
+        String address = getString(R.string.current_name_location);
 
-        Geocoder gcd = new Geocoder(context, Locale.getDefault());
+        Geocoder gcd = new Geocoder(this, Locale.getDefault());
         List<Address> addresses = null;
         try {
             addresses = gcd.getFromLocation(latitude, longitude, 1);
@@ -200,8 +202,8 @@ public class WeatherService extends Service {
         }
 
         if (addresses != null && addresses.size() > 0) {
-            if(addresses.get(0).getAddressLine(0) != null) address = addresses.get(0).getAddressLine(0);
-            else if(addresses.get(0).getSubLocality() != null) address = addresses.get(0).getSubLocality();
+            //if(addresses.get(0).getAddressLine(0) != null) address = addresses.get(0).getAddressLine(0);
+            if(addresses.get(0).getSubLocality() != null) address = addresses.get(0).getSubLocality();
             else if(addresses.get(0).getLocality() != null) address = addresses.get(0).getLocality();
             else if(addresses.get(0).getCountryName() != null) address = addresses.get(0).getCountryName();
         }
