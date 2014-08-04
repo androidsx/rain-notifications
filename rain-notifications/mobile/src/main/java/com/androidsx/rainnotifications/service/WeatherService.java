@@ -64,9 +64,9 @@ public class WeatherService extends Service {
         return null;
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+        @Override
+        public void onCreate() {
+            super.onCreate();
 
         Timber.plant(new Timber.DebugTree());
         //Now only for debug.
