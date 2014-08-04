@@ -204,7 +204,7 @@ public class WeatherService extends Service {
             long forecastDeltaTime = forecast.getTimeFromNow().getEndMillis() - System.currentTimeMillis();
             if(forecastDeltaTime >= ONE_HOUR_MILLIS) {
                 Timber.tag("WEATHERSERVICE NOTIFICATION");
-                Timber.i(".\nNext transition is %s -> %s in %s. So far for a notification.",
+                Timber.i(".\nNext transition is %s -> %s in %s. Too far for a notification.",
                         currentWeather.getType(),
                         forecast.getForecastedWeather().getType(),
                         UiUtil.getDebugOnlyPeriodFormatter().print(
