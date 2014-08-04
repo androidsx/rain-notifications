@@ -50,7 +50,7 @@ public class WeatherService extends Service {
     private static final long WEATHER_REPEATING_TIME_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
-    private static final long DEFAULT_EXTRA_TIME_MILLIS = 2 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private static final long DEFAULT_EXTRA_TIME_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
 
     private final AlertGenerator alertGenerator = new AlertGenerator();
 
@@ -114,26 +114,12 @@ public class WeatherService extends Service {
                             Timber.i(".\nINFO alert: %s", alert.getAlertMessage());
                         }
                     }
-                    long nextAlarmTime;
                     if(forecastTable.getForecasts().isEmpty()) {
-                        nextAlarmTime = DEFAULT_EXTRA_TIME_MILLIS;
-                        updateWeatherAlarm(System.currentTimeMillis() + nextAlarmTime);
-                        Timber.tag("ALARM");
-                        Timber.i(".\nSchedule an alarm for %s from now, we don't expect changes.",
-                                UiUtil.getDebugOnlyPeriodFormatter().print(new Period(nextAlarmTime)));
+                        updateWeatherAlarm(System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS, currentWeather, forecastTable.getForecasts().get(0));
                     } else {
                         Forecast forecast = forecastTable.getForecasts().get(0);
-                        nextAlarmTime = System.currentTimeMillis() + forecast.getTimeFromNow().getEndMillis();
-                        updateWeatherAlarm(nextAlarmTime);
-                        Timber.tag("ALARM");
-                        Timber.i(".\nSchedule an alarm for %s from now, we expect a change from %s to %s in %s from now, at %s.",
-                                UiUtil.getDebugOnlyPeriodFormatter().print(
-                                        new Period(nextWeatherCallAlarmTime(nextAlarmTime) - System.currentTimeMillis())),
-                                currentWeather.getType(),
-                                forecast.getForecastedWeather().getType(),
-                                UiUtil.getDebugOnlyPeriodFormatter().print(
-                                        new Period(forecast.getTimeFromNow())),
-                                new LocalTime(forecast.getTimeFromNow().getEndMillis()));
+                        long nextAlarmTime = forecast.getTimeFromNow().getEndMillis();
+                        updateWeatherAlarm(nextAlarmTime, currentWeather, forecast);
                     }
                     stopSelf();
                 }
@@ -147,7 +133,7 @@ public class WeatherService extends Service {
         }
     }
 
-    private void updateWeatherAlarm(long expectedHour) {
+    private void updateWeatherAlarm(long expectedHour, Weather currentWeather, Forecast forecast) {
         weatherAlarmIntent.cancel();
         weatherAlarmIntent = PendingIntent.getService(
                 this,
@@ -162,6 +148,24 @@ public class WeatherService extends Service {
                     nextWeatherCallAlarmTime(expectedHour),
                     WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
+
+            Timber.tag("ALARM");
+            if(currentWeather.getType() == forecast.getForecastedWeather().getType()) {
+                Timber.i(".\nSchedule an alarm for %s from now, we don't expect changes.",
+                        UiUtil.getDebugOnlyPeriodFormatter().print(
+                                new Period(nextWeatherCallAlarmTime(expectedHour) - System.currentTimeMillis()))
+                );
+            } else {
+                Timber.i(".\nSchedule an alarm for %s from now, we expect a change from %s to %s in %s from now, at %s.",
+                        UiUtil.getDebugOnlyPeriodFormatter().print(
+                                new Period(nextWeatherCallAlarmTime(expectedHour) - System.currentTimeMillis())),
+                        currentWeather.getType(),
+                        forecast.getForecastedWeather().getType(),
+                        UiUtil.getDebugOnlyPeriodFormatter().print(
+                                new Period(forecast.getTimeFromNow())),
+                        new LocalTime(forecast.getTimeFromNow().getEndMillis())
+                );
+            }
         }
     }
 
