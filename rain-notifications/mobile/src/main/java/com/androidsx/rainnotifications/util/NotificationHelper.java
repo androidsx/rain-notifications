@@ -28,7 +28,8 @@ public class NotificationHelper {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         mBuilder.setSmallIcon(icon);
         mBuilder.setContentTitle(context.getString(R.string.app_name));
-        mBuilder.setContentText(notification);
+        mBuilder.setContentText("");
+        mBuilder.setSubText(notification);
         mBuilder.setDefaults(Notification.DEFAULT_ALL);
 
         Intent intent = new Intent(context, ForecastMobile.class);
@@ -71,6 +72,6 @@ public class NotificationHelper {
                 return "Grab the umbrella! In minutes probably rain!";
             }
         }
-        return "We don't expect changes!";
+        return "Now is " + currentWeather + ". We don't expect changes!";
     }
 }
