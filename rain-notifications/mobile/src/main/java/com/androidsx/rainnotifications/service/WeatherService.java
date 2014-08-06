@@ -51,7 +51,7 @@ public class WeatherService extends Service {
 
     private static final long WEATHER_REPEATING_TIME_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
-    private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
+    public static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long DEFAULT_EXTRA_TIME_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
 
     private final AlertGenerator alertGenerator = new AlertGenerator();
@@ -81,8 +81,7 @@ public class WeatherService extends Service {
             @Override
             public void obtainedLocation(Location loc) {
                 if(loc != null) {
-                    Timber.tag("WEATHERSERVICE FORECAST");
-                    Timber.i(".\nAsk forecast.io for the forecast in %s (GPS %f, %f).",
+                    Timber.i("Ask forecast.io for the forecast in %s (GPS %f, %f).",
                             getLocationAddress(loc.getLatitude(), loc.getLongitude()),
                             loc.getLatitude(), loc.getLongitude());
                     checkForecast(loc.getLatitude(), loc.getLongitude());
@@ -108,29 +107,17 @@ public class WeatherService extends Service {
                 @Override
                 protected void onSuccess(ForecastTable forecastTable) {
                     // TODO: Here is where we should apply our logic
-                    //Timber.tag("TABLE");
-                    //Timber.d("Forecast table: %s", forecastTable);
                     final Weather currentWeather = forecastTable.getBaselineWeather();
                     for (Forecast forecast  : forecastTable.getForecasts()) {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
-                            Timber.tag("WEATHERSERVICE ALERT");
-                            Timber.i(".\nINFO alert: %s", alert.getAlertMessage());
+                            Timber.i("INFO alert: %s", alert.getAlertMessage());
                         }
                     }
-                    if(forecastTable.getForecasts().isEmpty()) {
-                        updateWeatherAlarm(
-                                System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS,
-                                currentWeather,
-                                null
-                        );
-                    } else {
-                        updateWeatherAlarm(
-                                forecastTable.getForecasts().get(0).getTimeFromNow().getEndMillis(),
-                                currentWeather,
-                                forecastTable.getForecasts().get(0)
-                        );
-                    }
+                    updateWeatherAlarm(
+                            currentWeather,
+                            forecastTable.getForecasts()
+                    );
                     stopSelf();
                 }
 
@@ -143,7 +130,15 @@ public class WeatherService extends Service {
         }
     }
 
-    private void updateWeatherAlarm(long expectedHour, Weather currentWeather, Forecast forecast) {
+    private void updateWeatherAlarm(Weather currentWeather, List<Forecast> forecasts) {
+        long nextAlarmTime;
+        if(forecasts.isEmpty()) {
+            nextAlarmTime = System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS;
+        } else {
+            nextAlarmTime = forecasts.get(0).getTimeFromNow().getEndMillis();
+        }
+        long nextAlarmTimePeriod = nextWeatherCallAlarmTime(nextAlarmTime) - System.currentTimeMillis();
+
         weatherAlarmIntent.cancel();
         weatherAlarmIntent = PendingIntent.getService(
                 this,
@@ -155,10 +150,47 @@ public class WeatherService extends Service {
             am.cancel(weatherAlarmIntent);
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    nextWeatherCallAlarmTime(expectedHour),
+                    nextWeatherCallAlarmTime(nextAlarmTime),
                     WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
-            notifyToUser(nextWeatherCallAlarmTime(expectedHour) - System.currentTimeMillis(), currentWeather, forecast);
+            if(!forecasts.isEmpty()) {
+                checkForNotifyToUser(nextAlarmTimePeriod, currentWeather, forecasts.get(0));
+                Timber.i("Schedule an alarm for %s from now. Bye!",
+                        UiUtil.getDebugOnlyPeriodFormatter().print(
+                                new Period(nextAlarmTimePeriod))
+                );
+            } else {
+                Timber.i("Schedule an alarm for %s from now, we don't expect changes. Bye!",
+                        UiUtil.getDebugOnlyPeriodFormatter().print(
+                                new Period(nextAlarmTimePeriod))
+                );
+            }
+
+        }
+    }
+
+    // Send a notification to the user if necessary.
+    private void checkForNotifyToUser(long nextAlarmTimePeriod, Weather currentWeather, Forecast forecast) {
+        if(nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
+            String message = NotificationHelper.getOptimumMessage(currentWeather, forecast);
+            int icon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
+                    ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
+                    : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
+            NotificationHelper.sendNotification(this, 1, icon, message);
+            Timber.i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
+                    currentWeather.getType(),
+                    forecast.getForecastedWeather().getType(),
+                    UiUtil.getDebugOnlyPeriodFormatter().print(
+                            new Period(forecast.getTimeFromNow())),
+                    message
+            );
+        } else {
+            Timber.i("Next transition is %s -> %s in %s. Too far for a notification.",
+                    currentWeather.getType(),
+                    forecast.getForecastedWeather().getType(),
+                    UiUtil.getDebugOnlyPeriodFormatter().print(
+                            new Period(forecast.getTimeFromNow()))
+            );
         }
     }
 
@@ -168,7 +200,7 @@ public class WeatherService extends Service {
         if ((expectedHour - currentTime) < TEN_MINUTES_MILLIS) {
             return expectedHour;
         } else if (expectedHour - currentTime < 2 * ONE_HOUR_MILLIS){
-            return currentTime + getTimePercentage((expectedHour - currentTime), 70);
+            return currentTime + getTimePeriodPercentage((expectedHour - currentTime), 70);
         } else {
             return currentTime + ONE_HOUR_MILLIS;
         }
@@ -186,7 +218,6 @@ public class WeatherService extends Service {
         }
 
         if (addresses != null && addresses.size() > 0) {
-            //if(addresses.get(0).getAddressLine(0) != null) address = addresses.get(0).getAddressLine(0);
             if(addresses.get(0).getSubLocality() != null) address = addresses.get(0).getSubLocality();
             else if(addresses.get(0).getLocality() != null) address = addresses.get(0).getLocality();
             else if(addresses.get(0).getCountryName() != null) address = addresses.get(0).getCountryName();
@@ -195,47 +226,7 @@ public class WeatherService extends Service {
         return address;
     }
 
-    private long getTimePercentage(long time, int percentage) {
+    private long getTimePeriodPercentage(long time, int percentage) {
         return time * percentage / 100;
-    }
-
-    private void notifyToUser(long alarmDeltaTime, Weather currentWeather, Forecast forecast) {
-        if(forecast != null) {
-            long forecastDeltaTime = forecast.getTimeFromNow().getEndMillis() - System.currentTimeMillis();
-            if(forecastDeltaTime >= ONE_HOUR_MILLIS) {
-                Timber.tag("WEATHERSERVICE NOTIFICATION");
-                Timber.i(".\nNext transition is %s -> %s in %s. Too far for a notification.",
-                        currentWeather.getType(),
-                        forecast.getForecastedWeather().getType(),
-                        UiUtil.getDebugOnlyPeriodFormatter().print(
-                                new Period(forecast.getTimeFromNow()))
-                );
-            } else {
-                Timber.tag("WEATHERSERVICE NOTIFICATION");
-                String message = NotificationHelper.getOptimumMessage(currentWeather, forecast);
-                Timber.i(".\nNext transition is %s -> %s in %s : show a notification to the user \"%s\".",
-                        currentWeather.getType(),
-                        forecast.getForecastedWeather().getType(),
-                        UiUtil.getDebugOnlyPeriodFormatter().print(
-                                new Period(forecast.getTimeFromNow())),
-                        message
-                );
-                int icon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
-                        ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
-                        : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
-                NotificationHelper.sendNotification(this, 1, icon, message);
-            }
-            Timber.tag("WEATHERSERVICE ALARM");
-            Timber.i(".\nSchedule an alarm for %s from now. Bye!",
-                    UiUtil.getDebugOnlyPeriodFormatter().print(
-                            new Period(alarmDeltaTime))
-            );
-        } else {
-            Timber.tag("WEATHERSERVICE ALARM");
-            Timber.i(".\nSchedule an alarm for %s from now, we don't expect changes. Bye!",
-                    UiUtil.getDebugOnlyPeriodFormatter().print(
-                            new Period(alarmDeltaTime))
-            );
-        }
     }
 }

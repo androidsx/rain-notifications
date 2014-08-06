@@ -20,8 +20,6 @@ import com.androidsx.rainnotifications.model.WeatherType;
 
 public class NotificationHelper {
 
-    private static final String TAG = NotificationHelper.class.getSimpleName();
-
     private NotificationHelper() {
         //No-instantiate
     }
