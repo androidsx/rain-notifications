@@ -45,6 +45,10 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
         }
     }
 
+    public boolean isGoogleApiClientConnected() {
+        return mGoogleApiClient.isConnected();
+    }
+
     public void sendNotification(String message, Weather currentWeather, Forecast forecast){
         if (mGoogleApiClient.isConnected()) {
             PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/forecast");
