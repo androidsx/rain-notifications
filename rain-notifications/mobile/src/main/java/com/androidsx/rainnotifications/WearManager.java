@@ -60,8 +60,8 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
                     ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
                     : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
 
-            putDataMapRequest.getDataMap().putAsset(KEY_CURRENT_ICON, getAssetFromDrawable(weatherIcon));
-            putDataMapRequest.getDataMap().putAsset(KEY_FORECAST_ICON, getAssetFromDrawable(forecastIcon));
+            putDataMapRequest.getDataMap().putAsset(KEY_CURRENT_ICON, createAssetFromDrawable(weatherIcon));
+            putDataMapRequest.getDataMap().putAsset(KEY_FORECAST_ICON, createAssetFromDrawable(forecastIcon));
             PutDataRequest request = putDataMapRequest.asPutDataRequest();
 
             Wearable.DataApi.putDataItem(mGoogleApiClient, request)
@@ -83,18 +83,11 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
     @Override
     public abstract void onConnectionFailed(ConnectionResult connectionResult);
 
-    private Asset getAssetFromDrawable(int drawable) {
-        Bitmap iconB = BitmapFactory.decodeResource(context.getResources(), drawable);
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        iconB.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        Asset asset = null;
-        try {
-            stream.flush();
-            asset = Asset.createFromBytes(stream.toByteArray());
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return asset;
+    private Asset createAssetFromDrawable(int drawable) {
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawable);
+        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+
+        return Asset.createFromBytes(byteStream.toByteArray());
     }
 }
