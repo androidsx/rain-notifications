@@ -152,7 +152,16 @@ public class WeatherService extends Service {
                     WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
             if(!forecasts.isEmpty()) {
-                checkForNotifyToUser(nextAlarmTimePeriod, currentWeather, forecasts.get(0));
+                if(shouldLaunchNotification(nextAlarmTimePeriod)) {
+                    launchNotification(currentWeather, forecasts.get(0));
+                } else {
+                    Timber.i("Next transition is %s -> %s in %s. Too far for a notification.",
+                            currentWeather.getType(),
+                            forecasts.get(0).getForecastedWeather().getType(),
+                            UiUtil.getDebugOnlyPeriodFormatter().print(
+                                    new Period(forecasts.get(0).getTimeFromNow()))
+                    );
+                }
                 Timber.i("Schedule an alarm for %s from now. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(nextAlarmTimePeriod))
@@ -170,34 +179,37 @@ public class WeatherService extends Service {
     /**
      * Method for determine if a notification is launched,
      * depending on the next alarm time period passed as a param.
-     * CurrentWeather and Forecast is used for send a proper message.
      *
      * @param nextAlarmTimePeriod
+     */
+    private boolean shouldLaunchNotification(long nextAlarmTimePeriod) {
+        if(nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Method for send a notification, using a proper message determined by
+     * current and forecast weather passed as a param.
+     *
      * @param currentWeather
      * @param forecast
      */
-    private void checkForNotifyToUser(long nextAlarmTimePeriod, Weather currentWeather, Forecast forecast) {
-        if(nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
-            String message = NotificationHelper.getOptimumMessage(currentWeather, forecast);
-            int icon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
-                    ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
-                    : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
-            NotificationHelper.sendNotification(this, 1, icon, message);
-            Timber.i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
-                    currentWeather.getType(),
-                    forecast.getForecastedWeather().getType(),
-                    UiUtil.getDebugOnlyPeriodFormatter().print(
-                            new Period(forecast.getTimeFromNow())),
-                    message
-            );
-        } else {
-            Timber.i("Next transition is %s -> %s in %s. Too far for a notification.",
-                    currentWeather.getType(),
-                    forecast.getForecastedWeather().getType(),
-                    UiUtil.getDebugOnlyPeriodFormatter().print(
-                            new Period(forecast.getTimeFromNow()))
-            );
-        }
+    private void launchNotification(Weather currentWeather, Forecast forecast) {
+        String message = NotificationHelper.getOptimumMessage(currentWeather, forecast);
+        int icon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
+                ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
+                : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
+        NotificationHelper.sendNotification(this, 1, icon, message);
+        Timber.i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
+                currentWeather.getType(),
+                forecast.getForecastedWeather().getType(),
+                UiUtil.getDebugOnlyPeriodFormatter().print(
+                        new Period(forecast.getTimeFromNow())),
+                message
+        );
     }
 
     /**
