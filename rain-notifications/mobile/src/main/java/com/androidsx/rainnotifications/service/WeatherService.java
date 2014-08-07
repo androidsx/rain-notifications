@@ -169,7 +169,7 @@ public class WeatherService extends Service {
 
     // Send a notification to the user if necessary.
     private void checkForNotifyToUser(long nextAlarmTimePeriod, Weather currentWeather, Forecast forecast) {
-        //if(nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
+        if(nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
             String message = NotificationHelper.getOptimumMessage(currentWeather, forecast);
             int icon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
                     ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
@@ -182,14 +182,14 @@ public class WeatherService extends Service {
                             new Period(forecast.getTimeFromNow())),
                     message
             );
-        /*} else {
+        } else {
             Timber.i("Next transition is %s -> %s in %s. Too far for a notification.",
                     currentWeather.getType(),
                     forecast.getForecastedWeather().getType(),
                     UiUtil.getDebugOnlyPeriodFormatter().print(
                             new Period(forecast.getTimeFromNow()))
             );
-        }*/
+        }
     }
 
     // That method is for determine the next time that we must call again to WeatherService.
