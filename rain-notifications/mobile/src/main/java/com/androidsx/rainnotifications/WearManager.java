@@ -74,6 +74,14 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
         }
     }
 
+    private Asset createAssetFromDrawable(int drawable) {
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawable);
+        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+
+        return Asset.createFromBytes(byteStream.toByteArray());
+    }
+
     @Override
     public abstract void onConnected(Bundle bundle);
 
@@ -82,12 +90,4 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
 
     @Override
     public abstract void onConnectionFailed(ConnectionResult connectionResult);
-
-    private Asset createAssetFromDrawable(int drawable) {
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawable);
-        final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
-
-        return Asset.createFromBytes(byteStream.toByteArray());
-    }
 }
