@@ -24,7 +24,8 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
 
     private static final String KEY_TITLE = "key_title";
     private static final String KEY_MESSAGE = "key_message";
-    private static final String KEY_IMAGE = "key_image";
+    private static final String KEY_CURRENT_ICON = "key_current_image";
+    private static final String KEY_FORECAST_ICON = "key_forecast_image";
 
     private GoogleApiClient mGoogleApiClient;
     private Context context;
@@ -50,12 +51,17 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
             // Add data to the request
             putDataMapRequest.getDataMap().putString(KEY_TITLE,
                     context.getResources().getString(R.string.app_name));
+            putDataMapRequest.getDataMap().putString(KEY_MESSAGE, message);
 
-            int icon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
+            int weatherIcon = Constants.FORECAST_ICONS.containsKey(currentWeather.getType())
+                    ? Constants.FORECAST_ICONS.get(currentWeather.getType())
+                    : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
+            int forecastIcon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
                     ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
                     : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
 
-            putDataMapRequest.getDataMap().putAsset(KEY_IMAGE, getAssetFromDrawable(icon));
+            putDataMapRequest.getDataMap().putAsset(KEY_CURRENT_ICON, getAssetFromDrawable(weatherIcon));
+            putDataMapRequest.getDataMap().putAsset(KEY_FORECAST_ICON, getAssetFromDrawable(forecastIcon));
             PutDataRequest request = putDataMapRequest.asPutDataRequest();
 
             Wearable.DataApi.putDataItem(mGoogleApiClient, request)
