@@ -167,7 +167,15 @@ public class WeatherService extends Service {
         }
     }
 
-    // Send a notification to the user if necessary.
+    /**
+     * Method for determine if a notification is launched,
+     * depending on the next alarm time period passed as a param.
+     * CurrentWeather and Forecast is used for send a proper message.
+     *
+     * @param nextAlarmTimePeriod
+     * @param currentWeather
+     * @param forecast
+     */
     private void checkForNotifyToUser(long nextAlarmTimePeriod, Weather currentWeather, Forecast forecast) {
         if(nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
             String message = NotificationHelper.getOptimumMessage(currentWeather, forecast);
@@ -192,7 +200,13 @@ public class WeatherService extends Service {
         }
     }
 
-    // That method is for determine the next time that we must call again to WeatherService.
+    /**
+     * This method is for determine the next alarm hour,
+     * depending on the interval from now to expected hour passed as a param
+     *
+     * @param expectedHour
+     * @return next alarm hour in millis
+     */
     private long nextWeatherCallAlarmTime(long expectedHour) {
         final long currentTime = System.currentTimeMillis();
         if ((expectedHour - currentTime) < TEN_MINUTES_MILLIS) {
