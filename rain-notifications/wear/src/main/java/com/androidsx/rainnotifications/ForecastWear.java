@@ -8,6 +8,10 @@ import android.widget.TextView;
 public class ForecastWear extends Activity {
 
     private static final String TAG = ForecastWear.class.getSimpleName();
+    public static final String EXTRA_TITLE = "extra_title";
+    public static final String EXTRA_CURRENT_ICON = "extra_current_icon";
+    public static final String EXTRA_FORECAST_ICON = "extra_forecast_icon";
+
     private TextView mTextView;
 
     @Override

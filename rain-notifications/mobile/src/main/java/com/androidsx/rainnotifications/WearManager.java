@@ -22,6 +22,7 @@ import java.io.IOException;
 
 public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    private static final String PATH = "/forecast";
     private static final String KEY_TITLE = "key_title";
     private static final String KEY_MESSAGE = "key_message";
     private static final String KEY_CURRENT_ICON = "key_current_image";
@@ -51,7 +52,7 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
 
     public void sendNotification(String message, Weather currentWeather, Forecast forecast){
         if (mGoogleApiClient.isConnected()) {
-            PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/forecast");
+            PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(PATH);
             // Add data to the request
             putDataMapRequest.getDataMap().putString(KEY_TITLE,
                     context.getResources().getString(R.string.app_name));
