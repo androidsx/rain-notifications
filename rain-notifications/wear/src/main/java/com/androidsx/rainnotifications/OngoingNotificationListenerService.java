@@ -61,7 +61,8 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                     // Get the data out of the event
                     DataMapItem dataMapItem =
                             DataMapItem.fromDataItem(event.getDataItem());
-                    final String title = dataMapItem.getDataMap().getString(KEY_TITLE);
+                    String title = dataMapItem.getDataMap().getString(KEY_TITLE);
+                    String message = dataMapItem.getDataMap().getString(KEY_MESSAGE);
                     Asset currentIcon = dataMapItem.getDataMap().getAsset(KEY_CURRENT_ICON);
                     Asset forecastIcon = dataMapItem.getDataMap().getAsset(KEY_FORECAST_ICON);
                     // Build the intent to display our custom notification
@@ -69,6 +70,8 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                             new Intent(this, ForecastWear.class);
                     notificationIntent.putExtra(
                             ForecastWear.EXTRA_TITLE, title);
+                    notificationIntent.putExtra(
+                            ForecastWear.EXTRA_MESSAGE, message);
                     notificationIntent.putExtra(
                             ForecastWear.EXTRA_CURRENT_ICON, currentIcon);
                     notificationIntent.putExtra(
