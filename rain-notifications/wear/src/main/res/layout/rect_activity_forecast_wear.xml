@@ -5,10 +5,34 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".forecast_wear"
-    tools:deviceIds="wear_square">
+    tools:deviceIds="wear_square"
+    android:background="@color/white">
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/iconImageView"
+        android:layout_width="70dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="5dp"
+        android:background="#f5c3dd"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/forecastTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="texto jasdñflk asjf ñas dfñlkj asfdñlj asdlfkjasñlfk jasñdlfkas ñldkjask fjasdjfa sñdflkj"
+            android:textColor="@color/black"
+            android:layout_gravity="center_horizontal" />
+
+    </ScrollView>
+
 </LinearLayout>

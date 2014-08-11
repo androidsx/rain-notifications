@@ -14,6 +14,7 @@ import android.os.IBinder;
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.UserLocation;
+import com.androidsx.rainnotifications.WearManager;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
@@ -27,6 +28,7 @@ import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.LocationHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+import com.google.android.gms.common.ConnectionResult;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Period;
@@ -252,5 +254,26 @@ public class WeatherService extends Service {
 
     private long getTimePeriodPercentage(long time, int percentage) {
         return time * percentage / 100;
+    }
+
+    private void sendWearNotification(final String message, final Weather currentWeather, final Forecast forecast) {
+        new WearManager(this) {
+            @Override
+            public void onConnected(Bundle bundle) {
+                if(isGoogleApiClientConnected()){
+                    sendNotification(message, currentWeather, forecast);
+                }
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+
+            }
+
+            @Override
+            public void onConnectionFailed(ConnectionResult connectionResult) {
+
+            }
+        }.connect();
     }
 }
