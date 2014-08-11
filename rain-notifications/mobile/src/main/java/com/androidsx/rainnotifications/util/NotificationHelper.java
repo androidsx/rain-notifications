@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
 import com.androidsx.rainnotifications.ForecastMobile;
@@ -24,12 +25,12 @@ public class NotificationHelper {
         //No-instantiate
     }
 
-    public static void sendNotification(Context context, int id, int icon, String notification) {
+    public static void sendNotification(Context context, int id, int currentWeatherIcon, int forecastIcon, String message) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
-        mBuilder.setSmallIcon(icon);
+        mBuilder.setSmallIcon(currentWeatherIcon);
+        mBuilder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), forecastIcon));
         mBuilder.setContentTitle(context.getString(R.string.app_name));
-        mBuilder.setContentText("");
-        mBuilder.setSubText(notification);
+        mBuilder.setContentText(message);
         mBuilder.setDefaults(Notification.DEFAULT_ALL);
 
         Intent intent = new Intent(context, ForecastMobile.class);

@@ -49,22 +49,13 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
         return mGoogleApiClient.isConnected();
     }
 
-    public void sendNotification(String message, Weather currentWeather, Forecast forecast){
+    public void sendNotification(String message, int currentWeatherIcon, int forecastIcon){
         if (mGoogleApiClient.isConnected()) {
             PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(PATH);
             // Add data to the request
-            putDataMapRequest.getDataMap().putString(KEY_TITLE,
-                    context.getResources().getString(R.string.app_name));
+            putDataMapRequest.getDataMap().putString(KEY_TITLE, context.getResources().getString(R.string.app_name));
             putDataMapRequest.getDataMap().putString(KEY_MESSAGE, message);
-
-            int weatherIcon = Constants.FORECAST_ICONS.containsKey(currentWeather.getType())
-                    ? Constants.FORECAST_ICONS.get(currentWeather.getType())
-                    : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
-            int forecastIcon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
-                    ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
-                    : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
-
-            putDataMapRequest.getDataMap().putAsset(KEY_CURRENT_ICON, createAssetFromDrawable(weatherIcon));
+            putDataMapRequest.getDataMap().putAsset(KEY_CURRENT_ICON, createAssetFromDrawable(currentWeatherIcon));
             putDataMapRequest.getDataMap().putAsset(KEY_FORECAST_ICON, createAssetFromDrawable(forecastIcon));
             PutDataRequest request = putDataMapRequest.asPutDataRequest();
 

@@ -157,8 +157,15 @@ public class WeatherService extends Service {
             if(!forecasts.isEmpty()) {
                 if(shouldLaunchNotification(nextAlarmTimePeriod)) {
                     String message = NotificationHelper.getOptimumMessage(currentWeather, forecasts.get(0));
-                    launchNotification(message, currentWeather, forecasts.get(0));
-                    launchWearNotification(message, currentWeather, forecasts.get(0));
+                    Timber.i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
+                            currentWeather.getType(),
+                            forecasts.get(0).getForecastedWeather().getType(),
+                            UiUtil.getDebugOnlyPeriodFormatter().print(
+                                    new Period(forecasts.get(0).getTimeFromNow())),
+                            message
+                    );
+                    launchNotification(message, getIconFromWeather(currentWeather), getIconFromWeather(forecasts.get(0).getForecastedWeather()));
+                    launchWearNotification(message, getIconFromWeather(currentWeather), getIconFromWeather(forecasts.get(0).getForecastedWeather()));
                 } else {
                     Timber.i("Next transition is %s -> %s in %s. Too far for a notification.",
                             currentWeather.getType(),
@@ -197,40 +204,30 @@ public class WeatherService extends Service {
 
     /**
      * Method for send a notification, using a proper message determined by
-     * current and forecast weather passed as a param.
+     * current and forecast weather.
      *
      * @param message
-     * @param currentWeather
-     * @param forecast
+     * @param currentWeatherIcon
+     * @param forecastIcon
      */
-    private void launchNotification(String message, Weather currentWeather, Forecast forecast) {
-        int icon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
-                ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
-                : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
-        NotificationHelper.sendNotification(this, 1, icon, message);
-        Timber.i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
-                currentWeather.getType(),
-                forecast.getForecastedWeather().getType(),
-                UiUtil.getDebugOnlyPeriodFormatter().print(
-                        new Period(forecast.getTimeFromNow())),
-                message
-        );
+    private void launchNotification(String message, int currentWeatherIcon, int forecastIcon) {
+        NotificationHelper.sendNotification(this, 1, currentWeatherIcon, forecastIcon, message);
     }
 
     /**
      * Method for send a wear notification, using a proper message determined by
-     * current and forecast weather passed as a param.
+     * current and forecast weather.
      *
      * @param message
-     * @param currentWeather
-     * @param forecast
+     * @param currentWeatherIcon
+     * @param forecastIcon
      */
-    private void launchWearNotification(final String message, final Weather currentWeather, final Forecast forecast) {
+    private void launchWearNotification(final String message, final int currentWeatherIcon, final int forecastIcon) {
         new WearManager(this) {
             @Override
             public void onConnected(Bundle bundle) {
                 if(isGoogleApiClientConnected()) {
-                    sendNotification(message, currentWeather, forecast);
+                    sendNotification(message, currentWeatherIcon, forecastIcon);
                 }
             }
 
@@ -286,5 +283,11 @@ public class WeatherService extends Service {
 
     private long getTimePeriodPercentage(long time, int percentage) {
         return time * percentage / 100;
+    }
+
+    private int getIconFromWeather(Weather weather) {
+        return Constants.FORECAST_ICONS.containsKey(weather.getType())
+                ? Constants.FORECAST_ICONS.get(weather.getType())
+                : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
     }
 }
