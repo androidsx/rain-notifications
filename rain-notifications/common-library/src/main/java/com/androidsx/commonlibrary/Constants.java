@@ -1,4 +1,4 @@
-package com.androidsx.common_library;
+package com.androidsx.commonlibrary;
 
 public class Constants {
 

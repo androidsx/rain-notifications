@@ -1,4 +1,4 @@
-package com.androidsx.common_library;
+package com.androidsx.commonlibrary;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
