@@ -9,11 +9,13 @@ import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.UserLocation;
+import com.androidsx.rainnotifications.WearManager;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
@@ -27,6 +29,7 @@ import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.LocationHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+import com.google.android.gms.common.ConnectionResult;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Period;
@@ -153,7 +156,9 @@ public class WeatherService extends Service {
                     weatherAlarmIntent);
             if(!forecasts.isEmpty()) {
                 if(shouldLaunchNotification(nextAlarmTimePeriod)) {
-                    launchNotification(currentWeather, forecasts.get(0));
+                    String message = NotificationHelper.getOptimumMessage(currentWeather, forecasts.get(0));
+                    launchNotification(message, currentWeather, forecasts.get(0));
+                    launchWearNotification(message, currentWeather, forecasts.get(0));
                 } else {
                     Timber.i("Next transition is %s -> %s in %s. Too far for a notification.",
                             currentWeather.getType(),
@@ -194,11 +199,11 @@ public class WeatherService extends Service {
      * Method for send a notification, using a proper message determined by
      * current and forecast weather passed as a param.
      *
+     * @param message
      * @param currentWeather
      * @param forecast
      */
-    private void launchNotification(Weather currentWeather, Forecast forecast) {
-        String message = NotificationHelper.getOptimumMessage(currentWeather, forecast);
+    private void launchNotification(String message, Weather currentWeather, Forecast forecast) {
         int icon = Constants.FORECAST_ICONS.containsKey(forecast.getForecastedWeather().getType())
                 ? Constants.FORECAST_ICONS.get(forecast.getForecastedWeather().getType())
                 : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
@@ -210,6 +215,35 @@ public class WeatherService extends Service {
                         new Period(forecast.getTimeFromNow())),
                 message
         );
+    }
+
+    /**
+     * Method for send a wear notification, using a proper message determined by
+     * current and forecast weather passed as a param.
+     *
+     * @param message
+     * @param currentWeather
+     * @param forecast
+     */
+    private void launchWearNotification(final String message, final Weather currentWeather, final Forecast forecast) {
+        new WearManager(this) {
+            @Override
+            public void onConnected(Bundle bundle) {
+                if(isGoogleApiClientConnected()) {
+                    sendNotification(message, currentWeather, forecast);
+                }
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+
+            }
+
+            @Override
+            public void onConnectionFailed(ConnectionResult connectionResult) {
+
+            }
+        }.connect();
     }
 
     /**
