@@ -164,7 +164,6 @@ public class WeatherService extends Service {
                                     new Period(forecasts.get(0).getTimeFromNow())),
                             message
                     );
-                    launchNotification(message, getIconFromWeather(currentWeather), getIconFromWeather(forecasts.get(0).getForecastedWeather()));
                     launchWearNotification(message, getIconFromWeather(currentWeather), getIconFromWeather(forecasts.get(0).getForecastedWeather()));
                 } else {
                     Timber.i("Next transition is %s -> %s in %s. Too far for a notification.",

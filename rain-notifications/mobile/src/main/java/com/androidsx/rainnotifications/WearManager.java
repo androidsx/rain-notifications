@@ -49,6 +49,7 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
             putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_MESSAGE, message);
             putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_CURRENT_ICON, createAssetFromDrawable(currentWeatherIcon));
             putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_FORECAST_ICON, createAssetFromDrawable(forecastIcon));
+            putDataMapRequest.getDataMap().putLong(Constants.Keys.KEY_TIMESTAMP, System.currentTimeMillis());
             PutDataRequest request = putDataMapRequest.asPutDataRequest();
 
             Wearable.DataApi.putDataItem(mGoogleApiClient, request)
