@@ -5,20 +5,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
-import com.androidsx.commonlibrary.Constants;
 import com.androidsx.rainnotifications.ForecastMobile;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
-import com.google.android.gms.wearable.Asset;
-
-import java.io.ByteArrayOutputStream;
 
 /*
  * This helper class is for notify the user by notifications if a significant weather change
