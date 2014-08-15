@@ -193,7 +193,7 @@ public class WeatherService extends Service {
                 );
             }
         }
-        SharedPrefsHelper.setLogHistory(log, sharedPrefs.edit());
+        SharedPrefsHelper.setLogHistory(log + "\n\n**************************\n", sharedPrefs.edit());
         Timber.i(log);
     }
 
