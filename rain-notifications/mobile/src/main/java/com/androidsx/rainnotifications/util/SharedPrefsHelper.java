@@ -9,6 +9,14 @@ public class SharedPrefsHelper {
         //No-instantiate
     }
 
+    public static void setFirstTimeExecution(boolean bool, SharedPreferences.Editor editor) {
+        editor.putBoolean(SharedPref.FIRST_TIME_EXECUTION, bool).commit();
+    }
+
+    public static boolean getFirstTimeExecution(SharedPreferences sharedPref) {
+        return sharedPref.getBoolean(SharedPref.FIRST_TIME_EXECUTION, false);
+    }
+
     public static void setCurrentForecast(String current, SharedPreferences.Editor editor) {
         editor.putString(SharedPref.CURRENTLY, current).commit();
     }
@@ -17,20 +25,20 @@ public class SharedPrefsHelper {
         return sharedPref.getString(SharedPref.CURRENTLY, "");
     }
 
-    public static void setCurrentForecastIcon(String icon, SharedPreferences.Editor editor) {
-        editor.putString(SharedPref.CURRENTLY_ICON, icon).commit();
+    public static void setCurrentForecastIcon(int icon, SharedPreferences.Editor editor) {
+        editor.putInt(SharedPref.CURRENTLY_ICON, icon).commit();
     }
 
-    public static String getCurrentForecastIcon(SharedPreferences sharedPref) {
-        return sharedPref.getString(SharedPref.CURRENTLY_ICON, "");
+    public static int getCurrentForecastIcon(SharedPreferences sharedPref) {
+        return sharedPref.getInt(SharedPref.CURRENTLY_ICON, 0);
     }
 
-    public static void setNextForecastIcon(String icon, SharedPreferences.Editor editor) {
-        editor.putString(SharedPref.NEXT_FORECAST_ICON, icon).commit();
+    public static void setNextForecastIcon(int icon, SharedPreferences.Editor editor) {
+        editor.putInt(SharedPref.NEXT_FORECAST_ICON, icon).commit();
     }
 
-    public static String getNextForecastIcon(SharedPreferences sharedPref) {
-        return sharedPref.getString(SharedPref.NEXT_FORECAST_ICON, "");
+    public static int getNextForecastIcon(SharedPreferences sharedPref) {
+        return sharedPref.getInt(SharedPref.NEXT_FORECAST_ICON, 0);
     }
 
     public static void setForecastAddress(String address, SharedPreferences.Editor editor) {
@@ -41,11 +49,11 @@ public class SharedPrefsHelper {
         return sharedPref.getString(SharedPref.ADDRESS, "");
     }
 
-    public static void setForecastHistory(String history, SharedPreferences.Editor editor) {
+    public static void setLogHistory(String history, SharedPreferences.Editor editor) {
         editor.putString(SharedPref.HISTORY, history).commit();
     }
 
-    public static String getForecastHistory(SharedPreferences sharedPref) {
+    public static String getLogHistory(SharedPreferences sharedPref) {
         return sharedPref.getString(SharedPref.HISTORY, "");
     }
 }

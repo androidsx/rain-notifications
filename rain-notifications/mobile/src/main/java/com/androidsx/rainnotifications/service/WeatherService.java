@@ -59,6 +59,7 @@ public class WeatherService extends Service {
 
     public SharedPreferences sharedPrefs; //Now only for debug.
     private PendingIntent weatherAlarmIntent;
+    private String log = "";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -72,6 +73,7 @@ public class WeatherService extends Service {
         Timber.plant(new Timber.DebugTree());
         //Now only for debug.
         sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
+        log = SharedPrefsHelper.getLogHistory(sharedPrefs);
     }
 
     @Override
@@ -82,7 +84,7 @@ public class WeatherService extends Service {
             @Override
             public void obtainedLocation(Location loc) {
                 if(loc != null) {
-                    Timber.i("Ask forecast.io for the forecast in %s (GPS %f, %f).",
+                    log += "/n" + String.format("Ask forecast.io for the forecast in %s (GPS %f, %f).",
                             getLocationAddress(loc.getLatitude(), loc.getLongitude()),
                             loc.getLatitude(), loc.getLongitude());
                     checkForecast(loc.getLatitude(), loc.getLongitude());
@@ -112,7 +114,7 @@ public class WeatherService extends Service {
                     for (Forecast forecast  : forecastTable.getForecasts()) {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
-                            Timber.i("INFO alert: %s", alert.getAlertMessage());
+                            log += "/n" + String.format("INFO alert: %s", alert.getAlertMessage());
                         }
                     }
                     updateWeatherAlarm(
@@ -157,34 +159,33 @@ public class WeatherService extends Service {
             if(!forecasts.isEmpty()) {
                 if(shouldLaunchNotification(nextAlarmTimePeriod)) {
                     String message = NotificationHelper.getOptimumMessage(currentWeather, forecasts.get(0));
-                    Timber.i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
+                    log += "/n" + String.format("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
                             currentWeather.getType(),
                             forecasts.get(0).getForecastedWeather().getType(),
                             UiUtil.getDebugOnlyPeriodFormatter().print(
                                     new Period(forecasts.get(0).getTimeFromNow())),
-                            message
-                    );
-                    launchWearNotification(message, getIconFromWeather(currentWeather), getIconFromWeather(forecasts.get(0).getForecastedWeather()));
+                            message);
+                    launchNotification(message, getIconFromWeather(currentWeather), getIconFromWeather(forecasts.get(0).getForecastedWeather()));
                 } else {
-                    Timber.i("Next transition is %s -> %s in %s. Too far for a notification.",
+                    log += "/n" + String.format("Next transition is %s -> %s in %s. Too far for a notification.",
                             currentWeather.getType(),
                             forecasts.get(0).getForecastedWeather().getType(),
                             UiUtil.getDebugOnlyPeriodFormatter().print(
                                     new Period(forecasts.get(0).getTimeFromNow()))
                     );
                 }
-                Timber.i("Schedule an alarm for %s from now. Bye!",
+                log += "/n" + String.format("Schedule an alarm for %s from now. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(nextAlarmTimePeriod))
                 );
             } else {
-                Timber.i("Schedule an alarm for %s from now, we don't expect changes. Bye!",
+                log += "/n" + String.format("Schedule an alarm for %s from now, we don't expect changes. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(nextAlarmTimePeriod))
                 );
             }
-
         }
+        SharedPrefsHelper.setLogHistory(log, sharedPrefs.edit());
     }
 
     /**

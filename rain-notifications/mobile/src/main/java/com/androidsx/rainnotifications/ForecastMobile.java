@@ -43,6 +43,10 @@ public class ForecastMobile extends Activity {
     private void setupUI() {
         sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
 
+        if(SharedPrefsHelper.getFirstTimeExecution(sharedPrefs)) {
+            startWeatherService(null);
+            SharedPrefsHelper.setFirstTimeExecution(true, sharedPrefs.edit());
+        }
         locationTextView = (TextView) findViewById(R.id.locationTextView);
         nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
         historyTextView = (TextView) findViewById(R.id.historyTextView);
@@ -58,7 +62,7 @@ public class ForecastMobile extends Activity {
     }
 
     /** Linked to the button in the XML layout. */
-    public void startLocationService(View view) {
+    public void startWeatherService(View view) {
         startService(new Intent(this, WeatherService.class));
         view.setEnabled(false);
     }
@@ -74,20 +78,9 @@ public class ForecastMobile extends Activity {
     private void updateUiFromPrefs() {
         locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
         nextWeatherTextView.setText(SharedPrefsHelper.getCurrentForecast(sharedPrefs));
-        historyTextView.setText(SharedPrefsHelper.getForecastHistory(sharedPrefs));
-
-        WeatherType currentWeatherIcon = WeatherTypeBuilder.buildFromForecastIo(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs));
-        if(Constants.FORECAST_ICONS.containsKey(currentWeatherIcon)) {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(currentWeatherIcon)));
-        } else {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        }
-        WeatherType nextWeatherIcon = WeatherTypeBuilder.buildFromForecastIo(SharedPrefsHelper.getNextForecastIcon(sharedPrefs));
-        if(Constants.FORECAST_ICONS.containsKey(nextWeatherIcon)) {
-            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(nextWeatherIcon)));
-        } else {
-            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        }
+        historyTextView.setText(SharedPrefsHelper.getLogHistory(sharedPrefs));
+        currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
+        nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
     }
 }
 

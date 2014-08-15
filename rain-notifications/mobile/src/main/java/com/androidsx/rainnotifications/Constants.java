@@ -35,5 +35,6 @@ public class Constants {
         public static final String HISTORY = "history";
         public static final String CURRENTLY_ICON = "currently_icon";
         public static final String NEXT_FORECAST_ICON = "next_forecast_icon";
+        public static final String FIRST_TIME_EXECUTION = "first_time_execution";
     }
 }
