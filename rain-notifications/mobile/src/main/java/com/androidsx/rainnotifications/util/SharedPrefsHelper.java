@@ -14,14 +14,14 @@ public class SharedPrefsHelper {
     }
 
     public static boolean getFirstTimeExecution(SharedPreferences sharedPref) {
-        return sharedPref.getBoolean(SharedPref.FIRST_TIME_EXECUTION, false);
+        return sharedPref.getBoolean(SharedPref.FIRST_TIME_EXECUTION, true);
     }
 
-    public static void setCurrentForecast(String current, SharedPreferences.Editor editor) {
+    public static void setNextForecast(String current, SharedPreferences.Editor editor) {
         editor.putString(SharedPref.CURRENTLY, current).commit();
     }
 
-    public static String getCurrentForecast(SharedPreferences sharedPref) {
+    public static String getNextForecast(SharedPreferences sharedPref) {
         return sharedPref.getString(SharedPref.CURRENTLY, "");
     }
 

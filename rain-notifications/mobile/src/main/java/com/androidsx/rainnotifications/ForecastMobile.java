@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,15 +44,16 @@ public class ForecastMobile extends Activity {
     private void setupUI() {
         sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
 
-        if(SharedPrefsHelper.getFirstTimeExecution(sharedPrefs)) {
-            startWeatherService(null);
-            SharedPrefsHelper.setFirstTimeExecution(true, sharedPrefs.edit());
-        }
         locationTextView = (TextView) findViewById(R.id.locationTextView);
         nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
         historyTextView = (TextView) findViewById(R.id.historyTextView);
         currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
         nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
+
+        if(SharedPrefsHelper.getFirstTimeExecution(sharedPrefs)) {
+            startWeatherService();
+            SharedPrefsHelper.setFirstTimeExecution(false, sharedPrefs.edit());
+        }
     }
 
     @Override
@@ -59,6 +61,10 @@ public class ForecastMobile extends Activity {
         super.onResume();
 
         updateUiFromPrefs();
+    }
+
+    public void startWeatherService() {
+        startService(new Intent(this, WeatherService.class));
     }
 
     /** Linked to the button in the XML layout. */
@@ -77,10 +83,12 @@ public class ForecastMobile extends Activity {
      */
     private void updateUiFromPrefs() {
         locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
-        nextWeatherTextView.setText(SharedPrefsHelper.getCurrentForecast(sharedPrefs));
+        nextWeatherTextView.setText(SharedPrefsHelper.getNextForecast(sharedPrefs));
         historyTextView.setText(SharedPrefsHelper.getLogHistory(sharedPrefs));
-        currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
-        nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
+        if(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
+            currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
+            nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
+        }
     }
 }
 
