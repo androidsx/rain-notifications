@@ -48,7 +48,7 @@ public class RainApplication extends Application {
         public void i(String message, Object... args) {
             super.i(message, args);
             log += String.format("\n" + message, args);
-            SharedPrefsHelper.setLogHistory(log, sharedPrefs.edit());
+            SharedPrefsHelper.setLogHistory(log + "\n\n**************************\n", sharedPrefs.edit());
         }
     }
 }
