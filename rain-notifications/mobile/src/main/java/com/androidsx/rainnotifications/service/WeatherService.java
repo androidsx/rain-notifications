@@ -52,6 +52,8 @@ import timber.log.Timber;
 
 public class WeatherService extends Service {
 
+    private static final String TAG = WeatherService.class.getSimpleName();
+
     private static final long WEATHER_REPEATING_TIME_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
@@ -71,7 +73,6 @@ public class WeatherService extends Service {
         super.onCreate();
 
         sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0); //Only for debug
-        Timber.tag(WeatherService.class.getSimpleName());
     }
 
     @Override
@@ -82,7 +83,7 @@ public class WeatherService extends Service {
             @Override
             public void obtainedLocation(Location loc) {
                 if(loc != null) {
-                    Timber.i("\nTime: %s \nAsk forecast.io for the forecast in %s (GPS %f, %f).",
+                    Timber.tag(TAG).i("\nTime: %s \nAsk forecast.io for the forecast in %s (GPS %f, %f).",
                             new LocalTime(System.currentTimeMillis()),
                             getLocationAddress(loc.getLatitude(), loc.getLongitude()),
                             loc.getLatitude(), loc.getLongitude());
@@ -113,7 +114,7 @@ public class WeatherService extends Service {
                     for (Forecast forecast  : forecastTable.getForecasts()) {
                         final Alert alert = alertGenerator.generateAlert(currentWeather, forecast);
                         if (alert.getAlertLevel() == AlertLevel.INFO) {
-                            Timber.i("INFO alert: %s", alert.getAlertMessage());
+                            Timber.tag(TAG).i("INFO alert: %s", alert.getAlertMessage());
                         }
                     }
                     updateWeatherAlarm(
@@ -158,7 +159,7 @@ public class WeatherService extends Service {
             if(!forecasts.isEmpty()) {
                 if(shouldLaunchNotification(nextAlarmTimePeriod)) {
                     String message = NotificationHelper.getOptimumMessage(currentWeather, forecasts.get(0));
-                    Timber.i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
+                    Timber.tag(TAG).i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
                             currentWeather.getType(),
                             forecasts.get(0).getForecastedWeather().getType(),
                             UiUtil.getDebugOnlyPeriodFormatter().print(
@@ -167,7 +168,7 @@ public class WeatherService extends Service {
                     SharedPrefsHelper.setNextForecast(message, sharedPrefs.edit());
                     launchNotification(message, getIconFromWeather(currentWeather), getIconFromWeather(forecasts.get(0).getForecastedWeather()));
                 } else {
-                    Timber.i("Next transition is %s -> %s in %s. Too far for a notification.",
+                    Timber.tag(TAG).i("Next transition is %s -> %s in %s. Too far for a notification.",
                             currentWeather.getType(),
                             forecasts.get(0).getForecastedWeather().getType(),
                             UiUtil.getDebugOnlyPeriodFormatter().print(
@@ -177,12 +178,12 @@ public class WeatherService extends Service {
                 }
                 SharedPrefsHelper.setCurrentForecastIcon(getIconFromWeather(currentWeather), sharedPrefs.edit());
                 SharedPrefsHelper.setNextForecastIcon(getIconFromWeather(forecasts.get(0).getForecastedWeather()), sharedPrefs.edit());
-                Timber.i("Schedule an alarm for %s from now. Bye!",
+                Timber.tag(TAG).i("Schedule an alarm for %s from now. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(nextAlarmTimePeriod))
                 );
             } else {
-                Timber.i("Schedule an alarm for %s from now, we don't expect changes. Bye!",
+                Timber.tag(TAG).i("Schedule an alarm for %s from now, we don't expect changes. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(nextAlarmTimePeriod))
                 );
