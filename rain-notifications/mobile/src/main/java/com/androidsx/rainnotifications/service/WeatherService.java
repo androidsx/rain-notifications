@@ -14,6 +14,7 @@ import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
+import com.androidsx.rainnotifications.RainApplication;
 import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.WearManager;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
@@ -70,7 +71,7 @@ public class WeatherService extends Service {
         super.onCreate();
 
         sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0); //Only for debug
-        Timber.plant(new AlphaLogReporting(sharedPrefs));
+        Timber.tag(WeatherService.class.getSimpleName());
     }
 
     @Override
@@ -290,23 +291,5 @@ public class WeatherService extends Service {
         return Constants.FORECAST_ICONS.containsKey(weather.getType())
                 ? Constants.FORECAST_ICONS.get(weather.getType())
                 : Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
-    }
-
-    private static class AlphaLogReporting extends Timber.DebugTree {
-
-        private SharedPreferences sharedPrefs;
-        private String log;
-
-        public AlphaLogReporting(SharedPreferences sharedPrefs) {
-            this.sharedPrefs = sharedPrefs;
-            this.log = SharedPrefsHelper.getLogHistory(sharedPrefs);
-        }
-
-        @Override
-        public void i(String message, Object... args) {
-            super.i(message, args);
-            log += String.format("\n" + message, args);
-            SharedPrefsHelper.setLogHistory(log, sharedPrefs.edit());
-        }
     }
 }
