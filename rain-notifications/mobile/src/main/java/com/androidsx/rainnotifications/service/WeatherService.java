@@ -159,27 +159,26 @@ public class WeatherService extends Service {
                     WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
             if(!forecasts.isEmpty()) {
-                String phrase = "";
+                String message = "";
                 if(shouldLaunchNotification(nextAlarmTimePeriod)) {
-                    String message = NotificationHelper.getOptimumMessage(currentWeather, forecasts.get(0));
-                    phrase = String.format("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
+                    message = NotificationHelper.getOptimumMessage(currentWeather, forecasts.get(0));
+                    log += "\n" + String.format("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
                             currentWeather.getType(),
                             forecasts.get(0).getForecastedWeather().getType(),
                             UiUtil.getDebugOnlyPeriodFormatter().print(
                                     new Period(forecasts.get(0).getTimeFromNow())),
                             message);
-                    log += "\n" + phrase;
                     SharedPrefsHelper.setNextForecast(message, sharedPrefs.edit());
                     launchNotification(message, getIconFromWeather(currentWeather), getIconFromWeather(forecasts.get(0).getForecastedWeather()));
                 } else {
-                    phrase = String.format("Next transition is %s -> %s in %s. Too far for a notification.",
+                    message = "Too far for a notification.";
+                    log += "\n" + String.format("Next transition is %s -> %s in %s. Too far for a notification.",
                             currentWeather.getType(),
                             forecasts.get(0).getForecastedWeather().getType(),
                             UiUtil.getDebugOnlyPeriodFormatter().print(
                                     new Period(forecasts.get(0).getTimeFromNow()))
                     );
-                    log += "\n" + phrase;
-                    SharedPrefsHelper.setNextForecast(phrase, sharedPrefs.edit());
+                    SharedPrefsHelper.setNextForecast(message, sharedPrefs.edit());
                 }
                 SharedPrefsHelper.setCurrentForecastIcon(getIconFromWeather(currentWeather), sharedPrefs.edit());
                 SharedPrefsHelper.setNextForecastIcon(getIconFromWeather(forecasts.get(0).getForecastedWeather()), sharedPrefs.edit());
