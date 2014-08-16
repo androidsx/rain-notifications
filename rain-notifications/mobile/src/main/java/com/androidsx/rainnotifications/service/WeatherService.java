@@ -189,6 +189,7 @@ public class WeatherService extends Service {
                 );
             }
         }
+        Timber.tag(TAG).i("***********************");
     }
 
     /**
