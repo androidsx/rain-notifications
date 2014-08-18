@@ -10,11 +10,9 @@ import com.forecast.io.v2.transfer.DataPoint;
 public class WeatherBuilder {
 
     public static Weather buildFromForecastIo(DataPoint dataPoint) {
-        Weather.Builder weatherBuilder = new Weather.Builder(WeatherTypeBuilder.buildFromForecastIo(dataPoint.getIcon()));
-        weatherBuilder.precipProbability(dataPoint.getPrecipProbability());
-        if(dataPoint.getPrecipIntensity() > 0) {
-            weatherBuilder.precipIntensity(dataPoint.getPrecipIntensity());
-        }
-        return weatherBuilder.build();
+        return new Weather(
+                WeatherTypeBuilder.buildFromForecastIo(dataPoint.getIcon()),
+                dataPoint.getPrecipProbability(),
+                dataPoint.getPrecipIntensity());
     }
 }

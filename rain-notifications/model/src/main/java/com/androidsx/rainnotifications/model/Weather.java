@@ -8,10 +8,10 @@ public class Weather {
     private final double precipProbability;
     private final double precipIntensity;
 
-    private Weather(Builder builder) {
-        type = builder.type;
-        precipProbability = builder.precipProbability;
-        precipIntensity = builder.precipIntensity;
+    public Weather(WeatherType type, double precipProbability, double precipIntensity) {
+        this.type = type;
+        this.precipProbability = precipProbability;
+        this.precipIntensity = precipIntensity;
     }
 
     public WeatherType getType() {
@@ -69,32 +69,5 @@ public class Weather {
     @Override
     public int hashCode() {
         return getType() != null ? getType().hashCode() : 0;
-    }
-
-    public static class Builder {
-        //Required parameter
-        private final WeatherType type;
-
-        //Optional parameters - initialized to default values
-        private double precipProbability = -1;
-        private double precipIntensity = -1;
-
-        public Builder(WeatherType type) {
-            this.type = type;
-        }
-
-        public Builder precipProbability(double probability) {
-            precipProbability = probability;
-            return this;
-        }
-
-        public Builder precipIntensity(double intensity) {
-            precipIntensity = intensity;
-            return this;
-        }
-
-        public Weather build() {
-            return new Weather(this);
-        }
     }
 }
