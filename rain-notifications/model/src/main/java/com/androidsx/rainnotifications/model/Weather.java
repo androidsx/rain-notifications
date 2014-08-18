@@ -7,13 +7,11 @@ public class Weather {
     private final WeatherType type;
     private final double precipProbability;
     private final double precipIntensity;
-    private final String precipType;
 
     private Weather(Builder builder) {
         type = builder.type;
         precipProbability = builder.precipProbability;
         precipIntensity = builder.precipIntensity;
-        precipType = builder.precipType;
     }
 
     public WeatherType getType() {
@@ -39,18 +37,6 @@ public class Weather {
      */
     public double getPrecipIntensity() {
         return precipIntensity;
-    }
-
-    /**
-     * A string representing the type of precipitation occurring at the given time. If defined,
-     * this property will have one of the following values: rain, snow, sleet (which applies to
-     * each of freezing rain, ice pellets, and “wintery mix”), or hail. (If precipIntensity is zero,
-     * then this property will not be defined.)
-     *
-     * @return precipType
-     */
-    public String getPrecipType() {
-        return precipType;
     }
 
     @Override
@@ -90,9 +76,8 @@ public class Weather {
         private final WeatherType type;
 
         //Optional parameters - initialized to default values
-        private double precipProbability = 0;
-        private double precipIntensity = 0;
-        private String precipType = "";
+        private double precipProbability = -1;
+        private double precipIntensity = -1;
 
         public Builder(WeatherType type) {
             this.type = type;
@@ -105,11 +90,6 @@ public class Weather {
 
         public Builder precipIntensity(double intensity) {
             precipIntensity = intensity;
-            return this;
-        }
-
-        public Builder precipType(String type) {
-            precipType = type;
             return this;
         }
 

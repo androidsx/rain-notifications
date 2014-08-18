@@ -13,9 +13,7 @@ public class WeatherBuilder {
         Weather.Builder weatherBuilder = new Weather.Builder(WeatherTypeBuilder.buildFromForecastIo(dataPoint.getIcon()));
         weatherBuilder.precipProbability(dataPoint.getPrecipProbability());
         if(dataPoint.getPrecipIntensity() > 0) {
-            weatherBuilder
-                    .precipIntensity(dataPoint.getPrecipIntensity())
-                    .precipType(dataPoint.getPrecipType());
+            weatherBuilder.precipIntensity(dataPoint.getPrecipIntensity());
         }
         return weatherBuilder.build();
     }
