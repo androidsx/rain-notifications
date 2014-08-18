@@ -5,27 +5,15 @@ package com.androidsx.rainnotifications.model;
  */
 public class Weather {
     private final WeatherType type;
-    private final double precipProbability;
     private final double precipIntensity;
 
-    public Weather(WeatherType type, double precipProbability, double precipIntensity) {
+    public Weather(WeatherType type, double precipIntensity) {
         this.type = type;
-        this.precipProbability = precipProbability;
         this.precipIntensity = precipIntensity;
     }
 
     public WeatherType getType() {
         return type;
-    }
-
-    /**
-     * A numerical value between 0 and 1 (inclusive) representing the probability
-     * of precipitation occuring at the given time.
-     *
-     * @return precipProbability
-     */
-    public double getPrecipProbability() {
-        return precipProbability;
     }
 
     /**
