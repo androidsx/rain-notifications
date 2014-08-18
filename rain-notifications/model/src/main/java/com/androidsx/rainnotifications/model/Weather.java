@@ -9,14 +9,6 @@ public class Weather {
     private final double precipIntensity;
     private final String precipType;
 
-    /** Do not use outside of this package. Visibility raised to public for testing purposes. */
-    /*public Weather(WeatherType type, float precipProbability, float precipIntensity, String precipType) {
-        this.type = type;
-        this.precipProbability = precipProbability;
-        this.precipIntensity = precipIntensity;
-        this.precipType = precipType;
-    }*/
-
     private Weather(Builder builder) {
         type = builder.type;
         precipProbability = builder.precipProbability;
