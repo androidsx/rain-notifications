@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.model.WeatherType;
-import com.androidsx.rainnotifications.model.WeatherTypeBuilder;
 import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+
+import timber.log.Timber;
 
 /**
  * Main activity for show the retrieved and analyzed info.
@@ -30,6 +32,7 @@ public class ForecastMobile extends Activity {
     private ImageView currentWeatherImageView;
     private ImageView nextWeatherImageView;
 
+    private boolean appUsageIsTracked = false;
     private SharedPreferences sharedPrefs;
 
     @Override
@@ -41,13 +44,18 @@ public class ForecastMobile extends Activity {
     }
 
     private void setupUI() {
-        sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
+        sharedPrefs = getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0);
 
         locationTextView = (TextView) findViewById(R.id.locationTextView);
         nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
         historyTextView = (TextView) findViewById(R.id.historyTextView);
         currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
         nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
+
+        if(!appUsageIsTracked) {
+            trackAppUsage();
+            appUsageIsTracked = true;
+        }
     }
 
     @Override
@@ -58,7 +66,7 @@ public class ForecastMobile extends Activity {
     }
 
     /** Linked to the button in the XML layout. */
-    public void startLocationService(View view) {
+    public void startWeatherService(View view) {
         startService(new Intent(this, WeatherService.class));
         view.setEnabled(false);
     }
@@ -73,21 +81,29 @@ public class ForecastMobile extends Activity {
      */
     private void updateUiFromPrefs() {
         locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
-        nextWeatherTextView.setText(SharedPrefsHelper.getCurrentForecast(sharedPrefs));
-        historyTextView.setText(SharedPrefsHelper.getForecastHistory(sharedPrefs));
+        nextWeatherTextView.setText(SharedPrefsHelper.getNextForecast(sharedPrefs));
+        historyTextView.setText(((RainApplication) getApplication()).getLogHistory());
+        currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
+        nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
+        if(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
+            currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
+            nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
+        }
+    }
 
-        WeatherType currentWeatherIcon = WeatherTypeBuilder.buildFromForecastIo(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs));
-        if(Constants.FORECAST_ICONS.containsKey(currentWeatherIcon)) {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(currentWeatherIcon)));
+    /**
+     * Tracks this usage of the application.
+     */
+    private void trackAppUsage() {
+        final int numUsages = ApplicationVersionHelper.getNumUses(this);
+        if (numUsages == 0) {
+            Timber.i("New install. Setting the usage count to 0");
         } else {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
+            Timber.d("Usage number #" + (numUsages + 1));
         }
-        WeatherType nextWeatherIcon = WeatherTypeBuilder.buildFromForecastIo(SharedPrefsHelper.getNextForecastIcon(sharedPrefs));
-        if(Constants.FORECAST_ICONS.containsKey(nextWeatherIcon)) {
-            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(nextWeatherIcon)));
-        } else {
-            nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        }
+
+        ApplicationVersionHelper.saveNewUse(this);
+        ApplicationVersionHelper.saveCurrentVersionCode(this);
     }
 }
 
