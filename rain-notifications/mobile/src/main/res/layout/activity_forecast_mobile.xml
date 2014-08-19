@@ -13,8 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:weightSum="100"
-        android:id="@+id/buttons"
-        android:visibility="gone">
+        android:id="@+id/buttons">
             <Button
                 android:id="@+id/btn_refresh_ui"
                 android:text="@string/btn_refresh_ui"
