@@ -48,12 +48,4 @@ public class SharedPrefsHelper {
     public static String getForecastAddress(SharedPreferences sharedPref) {
         return sharedPref.getString(SharedPref.ADDRESS, "");
     }
-
-    public static void setLogHistory(String history, SharedPreferences.Editor editor) {
-        editor.putString(SharedPref.HISTORY, history).commit();
-    }
-
-    public static String getLogHistory(SharedPreferences sharedPref) {
-        return sharedPref.getString(SharedPref.HISTORY, "");
-    }
 }

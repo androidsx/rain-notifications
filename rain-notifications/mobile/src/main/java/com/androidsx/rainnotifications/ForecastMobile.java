@@ -81,7 +81,7 @@ public class ForecastMobile extends Activity {
     private void updateUiFromPrefs() {
         locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
         nextWeatherTextView.setText(SharedPrefsHelper.getNextForecast(sharedPrefs));
-        historyTextView.setText(SharedPrefsHelper.getLogHistory(sharedPrefs));
+        historyTextView.setText(((RainApplication) getApplication()).getLogHistory());
         if(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
             currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
