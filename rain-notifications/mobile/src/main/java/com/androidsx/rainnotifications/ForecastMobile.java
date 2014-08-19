@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
@@ -64,10 +65,6 @@ public class ForecastMobile extends Activity {
         updateUiFromPrefs();
     }
 
-    public void startWeatherService() {
-        startService(new Intent(this, WeatherService.class));
-    }
-
     /** Linked to the button in the XML layout. */
     public void startWeatherService(View view) {
         startService(new Intent(this, WeatherService.class));
@@ -86,6 +83,8 @@ public class ForecastMobile extends Activity {
         locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
         nextWeatherTextView.setText(SharedPrefsHelper.getNextForecast(sharedPrefs));
         historyTextView.setText(((RainApplication) getApplication()).getLogHistory());
+        currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
+        nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
         if(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
             currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
