@@ -43,28 +43,25 @@ public class RainApplication extends Application {
 
     /**
      * Timber tree for alpha releases, that keeps track of everything logged into the INFO level. Do
-     * NOT use in a Live environment, the internal shared preference grows out of control.
+     * NOT use in a Live environment, the internal shared preference grows out of control, and it
+     * does I/O operations in the UI thread.
      */
     private static class AlphaLogReporting extends Timber.DebugTree {
         private static final String HISTORY_SHARED_PREF = "history";
 
-        private SharedPreferences sharedPrefs;
-        private String log;
+        private final SharedPreferences sharedPrefs;
+        private final StringBuilder currentLog;
 
         public AlphaLogReporting(SharedPreferences sharedPrefs) {
             this.sharedPrefs = sharedPrefs;
-            this.log = getLogHistory(sharedPrefs);
+            currentLog = new StringBuilder(getLogHistory(sharedPrefs));
         }
 
         @Override
         public void i(String message, Object... args) {
             super.i(message, args);
-            log += String.format("\n" + message, args);
-            setLogHistory(log, sharedPrefs.edit());
-        }
-
-        private static void setLogHistory(String history, SharedPreferences.Editor editor) {
-            editor.putString(HISTORY_SHARED_PREF, history).commit();
+            currentLog.append(String.format("\n" + message, args));
+            sharedPrefs.edit().putString(HISTORY_SHARED_PREF, currentLog.toString()).commit();
         }
 
         private static String getLogHistory(SharedPreferences sharedPref) {
