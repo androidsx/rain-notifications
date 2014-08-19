@@ -93,13 +93,12 @@ public class ForecastMobile extends Activity {
     }
 
     /**
-     * Tracks this usage of the application. If it is the first one, we send an "Install" event to Flurry.
+     * Tracks this usage of the application.
      */
     private void trackAppUsage() {
         final int numUsages = ApplicationVersionHelper.getNumUses(this);
         if (numUsages == 0) {
             Timber.i("New install. Setting the usage count to 0");
-            startWeatherService();
         } else {
             Timber.d("Usage number #" + (numUsages + 1));
         }
