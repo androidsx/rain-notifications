@@ -72,7 +72,7 @@ public class WeatherService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0); //Only for debug
+        sharedPrefs = getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0); //Only for debug
     }
 
     @Override

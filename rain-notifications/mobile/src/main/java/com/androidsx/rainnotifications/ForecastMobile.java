@@ -10,7 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+
+import timber.log.Timber;
 
 /**
  * Main activity for show the retrieved and analyzed info.
@@ -28,6 +31,7 @@ public class ForecastMobile extends Activity {
     private ImageView currentWeatherImageView;
     private ImageView nextWeatherImageView;
 
+    private boolean appUsageIsTracked = false;
     private SharedPreferences sharedPrefs;
 
     @Override
@@ -39,7 +43,7 @@ public class ForecastMobile extends Activity {
     }
 
     private void setupUI() {
-        sharedPrefs = getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0);
+        sharedPrefs = getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0);
 
         locationTextView = (TextView) findViewById(R.id.locationTextView);
         nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
@@ -47,9 +51,9 @@ public class ForecastMobile extends Activity {
         currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
         nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
 
-        if(SharedPrefsHelper.getFirstTimeExecution(sharedPrefs)) {
-            startWeatherService();
-            SharedPrefsHelper.setFirstTimeExecution(false, sharedPrefs.edit());
+        if(!appUsageIsTracked) {
+            trackAppUsage();
+            appUsageIsTracked = true;
         }
     }
 
@@ -86,6 +90,22 @@ public class ForecastMobile extends Activity {
             currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
         }
+    }
+
+    /**
+     * Tracks this usage of the application. If it is the first one, we send an "Install" event to Flurry.
+     */
+    private void trackAppUsage() {
+        final int numUsages = ApplicationVersionHelper.getNumUses(this);
+        if (numUsages == 0) {
+            Timber.i("New install. Setting the usage count to 0");
+            startWeatherService();
+        } else {
+            Timber.d("Usage number #" + (numUsages + 1));
+        }
+
+        ApplicationVersionHelper.saveNewUse(this);
+        ApplicationVersionHelper.saveCurrentVersionCode(this);
     }
 }
 

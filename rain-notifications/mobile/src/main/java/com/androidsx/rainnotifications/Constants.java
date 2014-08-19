@@ -28,8 +28,6 @@ public class Constants {
         public static final String EXTRA_ADDRESS = "extra_address";
     }
     public static class SharedPref {
-        public static final String SHARED_RAIN = "shared_rain";
-
         public static final String ADDRESS = "address";
         public static final String CURRENTLY = "currently";
         public static final String CURRENTLY_ICON = "currently_icon";

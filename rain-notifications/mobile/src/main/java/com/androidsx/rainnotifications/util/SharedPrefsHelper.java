@@ -1,20 +1,16 @@
 package com.androidsx.rainnotifications.util;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.androidsx.rainnotifications.Constants.SharedPref;
 
 public class SharedPrefsHelper {
 
+    public static final String SHARED_RAIN = "shared_rain";
+
     private SharedPrefsHelper() {
         //No-instantiate
-    }
-
-    public static void setFirstTimeExecution(boolean bool, SharedPreferences.Editor editor) {
-        editor.putBoolean(SharedPref.FIRST_TIME_EXECUTION, bool).commit();
-    }
-
-    public static boolean getFirstTimeExecution(SharedPreferences sharedPref) {
-        return sharedPref.getBoolean(SharedPref.FIRST_TIME_EXECUTION, true);
     }
 
     public static void setNextForecast(String current, SharedPreferences.Editor editor) {
@@ -47,5 +43,22 @@ public class SharedPrefsHelper {
 
     public static String getForecastAddress(SharedPreferences sharedPref) {
         return sharedPref.getString(SharedPref.ADDRESS, "");
+    }
+
+    public static void saveIntValue(Context context, String key, int value) {
+        SharedPreferences.Editor editor = context.getSharedPreferences(
+                SharedPrefsHelper.SHARED_RAIN, 0).edit();
+        editor.putInt(key, value);
+        editor.commit();
+    }
+
+    public static int getIntValue(Context context, String key) {
+        return SharedPrefsHelper.getIntValueInternal(context, key, 0);
+    }
+
+    private static int getIntValueInternal(Context context, String key, int defaultValue) {
+        SharedPreferences config = context.getSharedPreferences(SharedPrefsHelper.SHARED_RAIN,
+                0);
+        return config.getInt(key, defaultValue);
     }
 }

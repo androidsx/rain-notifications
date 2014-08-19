@@ -3,6 +3,8 @@ package com.androidsx.rainnotifications;
 import android.app.Application;
 import android.content.SharedPreferences;
 
+import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+
 import timber.log.Timber;
 
 public class RainApplication extends Application {
@@ -29,14 +31,14 @@ public class RainApplication extends Application {
      * debugging purposes.
      */
     public String getLogHistory() {
-        return AlphaLogReporting.getLogHistory(getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0));
+        return AlphaLogReporting.getLogHistory(getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0));
     }
 
     private void setupLogging() {
         // TODO: Create the concept of environments, and have a different tree for Live
         Timber.plant(
                 new AlphaLogReporting(
-                        getSharedPreferences(Constants.SharedPref.SHARED_RAIN, 0)
+                        getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0)
                 )
         );
     }
