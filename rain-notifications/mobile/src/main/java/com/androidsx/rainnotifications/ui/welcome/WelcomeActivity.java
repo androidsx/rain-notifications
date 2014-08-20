@@ -1,7 +1,7 @@
 package com.androidsx.rainnotifications.ui.welcome;
 
 import com.androidsx.rainnotifications.R;
-import com.androidsx.rainnotifications.utils.ApplicationHelper;
+//import com.androidsx.rainnotifications.utils.ApplicationHelper;
 
 import android.content.Context;
 import android.content.Intent;
@@ -44,7 +44,7 @@ public class WelcomeActivity extends FragmentActivity {
      */
     public static void startWelcomeActivity(Context context, String comesFrom, int numPages) {
         Log.i(TAG, "Start the welcome activity from \"" + comesFrom + "\"");
-        ApplicationHelper.Flurry.reportHelp(comesFrom);
+        //ApplicationHelper.Flurry.reportHelp(comesFrom);
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (numPages < 1 || numPages > MAX_NUM_PAGES) {
             throw new IllegalArgumentException("Wrong number of pages for the welcome tutorial: " + numPages);
