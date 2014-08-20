@@ -1,0 +1,19 @@
+<!-- Every item in the navigation drawer (that is, the menu on the left) -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+ 
+    <ImageView
+        android:id="@+id/imageViewIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/sliding_menu_entry_icon_description" />
+ 
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/imageViewIcon"
+        android:layout_marginLeft="15dip" />
+ 
+</RelativeLayout>

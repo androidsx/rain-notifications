@@ -12,4 +12,10 @@
     <string name="welcome_image_content_description">Content</string>
     <string name="welcome_go_to_app">Go to app!</string>
     <string name="welcome_skip">Skip!</string>
+    <string name="menu_instructions">Instructions</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
+    <string name="menu_contact_us">Contact us</string>
+    <string name="menu_share">Share</string>
+    <string name="sliding_menu_entry_icon_description">Sliding menu</string>
 </resources>

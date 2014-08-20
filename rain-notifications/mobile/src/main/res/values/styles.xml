@@ -5,18 +5,18 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="WelcomeScreen" >
+    <style name="WelcomeScreen">
         <item name="android:layout_gravity">center</item>
     </style>
 
-    <style name="WelcomeScreen.Center" >
+    <style name="WelcomeScreen.Center">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dip</item>
         <item name="android:layout_margin">10dp</item>
         <item name="android:layout_weight">1</item>
     </style>
 
-    <style name="WelcomeScreen.Line" >
+    <style name="WelcomeScreen.Line">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
@@ -24,7 +24,7 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="WelcomeScreen.Button" >
+    <style name="WelcomeScreen.Button">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
@@ -36,4 +36,19 @@
         <item name="android:textSize">22sp</item>
     </style>
 
+    <style name="NewAppTheme" parent="AppTheme">
+
+    </style>
+
+    <style name="NewAppTheme.SlidingMenuEntry">
+
+    </style>
+
+    <style name="NewAppTheme.SlidingMenuEntry.Image">
+
+    </style>
+
+    <style name="NewAppTheme.SlidingMenuEntry.Text">
+
+    </style>
 </resources>
