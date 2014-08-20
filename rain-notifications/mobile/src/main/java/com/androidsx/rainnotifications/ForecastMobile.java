@@ -1,6 +1,5 @@
 package com.androidsx.rainnotifications;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,8 +10,8 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
-import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
-import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+import com.androidsx.rainnotifications.utils.ApplicationVersionHelper;
+import com.androidsx.rainnotifications.utils.SharedPrefsHelper;
 
 import timber.log.Timber;
 
@@ -22,7 +21,7 @@ import timber.log.Timber;
  * Next API call too.
  */
 
-public class ForecastMobile extends Activity {
+public class ForecastMobile extends BaseWelcomeSlidingFragmentActivity {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
 
@@ -104,6 +103,11 @@ public class ForecastMobile extends Activity {
 
         ApplicationVersionHelper.saveNewUse(this);
         ApplicationVersionHelper.saveCurrentVersionCode(this);
+    }
+
+    @Override
+    public int getWelcomeNumPages() {
+        return 2;
     }
 }
 
