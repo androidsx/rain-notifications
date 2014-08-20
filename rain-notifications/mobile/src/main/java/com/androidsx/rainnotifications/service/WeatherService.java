@@ -14,7 +14,6 @@ import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
-import com.androidsx.rainnotifications.RainApplication;
 import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.WearManager;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
@@ -27,9 +26,9 @@ import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.util.UiUtil;
-import com.androidsx.rainnotifications.util.LocationHelper;
-import com.androidsx.rainnotifications.util.NotificationHelper;
-import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+import com.androidsx.rainnotifications.utils.LocationHelper;
+import com.androidsx.rainnotifications.utils.NotificationHelper;
+import com.androidsx.rainnotifications.utils.SharedPrefsHelper;
 import com.google.android.gms.common.ConnectionResult;
 
 import org.joda.time.DateTimeConstants;

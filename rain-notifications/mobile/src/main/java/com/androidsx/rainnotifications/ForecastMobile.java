@@ -1,6 +1,5 @@
 package com.androidsx.rainnotifications;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,8 +10,10 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
-import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
-import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+import com.androidsx.rainnotifications.utils.ApplicationVersionHelper;
+import com.androidsx.rainnotifications.utils.SharedPrefsHelper;
+
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -22,7 +23,7 @@ import timber.log.Timber;
  * Next API call too.
  */
 
-public class ForecastMobile extends Activity {
+public class ForecastMobile extends BaseLeftSlidingFragmentActivity {
 
     private static final String TAG = ForecastMobile.class.getSimpleName();
 
@@ -41,6 +42,16 @@ public class ForecastMobile extends Activity {
         setContentView(R.layout.activity_forecast_mobile);
 
         setupUI();
+    }
+
+    @Override
+    protected List<DrawerItem> getAppSpecificDrawerItemsFirst() {
+        return null;
+    }
+
+    @Override
+    protected List<DrawerItem> getAppSpecificDrawerItemsLast() {
+        return null;
     }
 
     private void setupUI() {
@@ -99,11 +110,16 @@ public class ForecastMobile extends Activity {
         if (numUsages == 0) {
             Timber.i("New install. Setting the usage count to 0");
         } else {
-            Timber.d("Usage number #" + (numUsages + 1));
+            Timber.i("Usage number #" + (numUsages + 1));
         }
 
         ApplicationVersionHelper.saveNewUse(this);
         ApplicationVersionHelper.saveCurrentVersionCode(this);
+    }
+
+    @Override
+    public int getWelcomeNumPages() {
+        return 2;
     }
 }
 

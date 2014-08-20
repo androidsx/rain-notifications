@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Rain Notifications</string>
     <string name="btn_forecast">Call the Forecast API</string>
     <string name="btn_refresh_ui">Refresh UI</string>
     <string name="current_name_location">In your current location</string>
+
+    <string name="welcome_step_1">Step 1</string>
+    <string name="welcome_step_2">Step 2</string>
+    <string name="welcome_step_3">Step 3</string>
+    <string name="welcome_step_4">Step 4</string>
+    <string name="welcome_image_content_description">Content</string>
+    <string name="welcome_go_to_app">Go to app!</string>
+    <string name="welcome_skip">Skip!</string>
+    <string name="menu_instructions">Instructions</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
+    <string name="menu_contact_us">Contact us</string>
+    <string name="menu_share">Share</string>
+    <string name="sliding_menu_entry_icon_description">Sliding menu</string>
 </resources>

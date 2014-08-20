@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.util;
+package com.androidsx.rainnotifications.utils;
 
 import android.location.Location;
 

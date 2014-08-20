@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="welcome_skip">#25ff51</color>
+    <color name="welcome_bottom_line">#000000</color>
+    <color name="welcome_background">#05f5dd</color>
+</resources>
