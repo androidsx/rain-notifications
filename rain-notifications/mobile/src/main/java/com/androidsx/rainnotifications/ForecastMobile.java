@@ -21,7 +21,7 @@ import timber.log.Timber;
  * Next API call too.
  */
 
-public class ForecastMobile extends BaseWelcomeSlidingFragmentActivity {
+public class ForecastMobile extends BaseWelcomeActivity {
     private TextView locationTextView;
     private TextView nextWeatherTextView;
     private TextView historyTextView;

@@ -10,7 +10,7 @@ import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 /**
  * Base activity that shows the welcome screens if necessary.
  */
-abstract class BaseWelcomeSlidingFragmentActivity extends Activity {
+abstract class BaseWelcomeActivity extends Activity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
