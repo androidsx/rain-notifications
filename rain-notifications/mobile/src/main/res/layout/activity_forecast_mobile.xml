@@ -12,14 +12,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="@dimen/location">
 
         <TextView
             android:id="@+id/locationTextView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/current_name_location"
-            android:textSize="30sp"
+            android:textSize="25sp"
             android:textColor="@color/location"
             android:fontFamily="sans-serif-"/>
 
@@ -27,8 +27,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="fill_parent"
         android:orientation="vertical"
         android:weightSum="100">
 
@@ -40,6 +39,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_margin="@dimen/owl_margin"
                 android:src="@drawable/welcome_step_1"/>
 
         </LinearLayout>
@@ -86,7 +86,7 @@
                             android:layout_height="match_parent"
                             android:text="@string/owl_example"
                             android:textAlignment="center"
-                            android:textSize="20sp"/>
+                            android:textSize="19sp"/>
 
                     </ScrollView>
 
