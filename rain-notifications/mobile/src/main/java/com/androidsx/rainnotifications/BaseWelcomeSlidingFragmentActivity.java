@@ -21,8 +21,4 @@ abstract class BaseWelcomeSlidingFragmentActivity extends ActionBarActivity {
 
 		setContentView(getLayoutResId());
 	}
-	
-    protected int getLayoutResId() {
-        return R.layout.activity_forecast_mobile;
-    }
 }
