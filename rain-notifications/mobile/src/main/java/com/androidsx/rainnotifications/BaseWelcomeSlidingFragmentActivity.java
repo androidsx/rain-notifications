@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
 import com.androidsx.rainnotifications.ui.welcome.WelcomeActivity;
-import com.androidsx.rainnotifications.utils.ApplicationVersionHelper;
-
-import com.androidsx.rainnotifications.R;
+import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 
 /**
  * Base activity that shows the welcome screens if necessary.

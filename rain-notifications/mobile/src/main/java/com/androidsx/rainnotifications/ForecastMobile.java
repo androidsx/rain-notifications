@@ -10,8 +10,8 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
-import com.androidsx.rainnotifications.utils.ApplicationVersionHelper;
-import com.androidsx.rainnotifications.utils.SharedPrefsHelper;
+import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
+import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import timber.log.Timber;
 

@@ -3,7 +3,7 @@ package com.androidsx.rainnotifications;
 import android.app.Application;
 import android.content.SharedPreferences;
 
-import com.androidsx.rainnotifications.utils.SharedPrefsHelper;
+import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import timber.log.Timber;
 
