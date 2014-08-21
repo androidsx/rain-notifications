@@ -5,9 +5,9 @@
     <string name="btn_refresh_ui">Refresh UI</string>
     <string name="current_name_location">In your current location</string>
 
-    <string name="welcome_step_1">Step 1</string>
-    <string name="welcome_step_2">Step 2</string>
-    <string name="welcome_image_content_description">Content</string>
-    <string name="welcome_go_to_app">Go to app!</string>
-    <string name="welcome_skip">Skip!</string>
+    <string name="welcome_step_1">Meet Mr. Owl, your weather assistant</string>
+    <string name="welcome_step_2">He will let you know about weather changes that you care about</string>
+    <string name="welcome_content_description">Logo</string> <!-- Just a generic one -->
+    <string name="welcome_go_to_app">Open the app</string>
+    <string name="welcome_skip">Skip</string>
 </resources>

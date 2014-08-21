@@ -9,10 +9,17 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
+    <style name="WelcomeScreen.Top" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">24dp</item>
+        <item name="android:paddingTop">32dp</item>
+    </style>
+
     <style name="WelcomeScreen.Center" >
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dip</item>
-        <item name="android:layout_margin">10dp</item>
+        <item name="android:padding">24dp</item>
         <item name="android:layout_weight">1</item>
     </style>
 
@@ -20,6 +27,9 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
+        <item name="android:paddingBottom">32dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
         <item name="android:textColor">@color/welcome_bottom_line</item>
         <item name="android:textSize">16sp</item>
     </style>

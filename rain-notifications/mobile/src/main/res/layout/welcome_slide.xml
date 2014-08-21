@@ -40,13 +40,6 @@
                 android:textColor="@color/welcome_skip"
                 android:textSize="@dimen/sliding_menu_entry_text_size" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/welcome_bottom_line"
-            android:orientation="vertical" >
-        </LinearLayout>
     </LinearLayout>
 
     <android.support.v4.view.ViewPager

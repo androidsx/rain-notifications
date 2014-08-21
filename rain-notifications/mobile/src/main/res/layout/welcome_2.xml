@@ -8,7 +8,7 @@
 
     <ImageView
         style="@style/WelcomeScreen.Center"
-        android:contentDescription="@string/welcome_image_content_description"
+        android:contentDescription="@string/welcome_content_description"
         android:src="@drawable/welcome_step_2"
         android:layout_margin="@dimen/welcome_image_margin" />
 
