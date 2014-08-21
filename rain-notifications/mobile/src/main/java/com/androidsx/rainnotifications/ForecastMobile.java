@@ -22,9 +22,6 @@ import timber.log.Timber;
  */
 
 public class ForecastMobile extends BaseWelcomeSlidingFragmentActivity {
-
-    private static final String TAG = ForecastMobile.class.getSimpleName();
-
     private TextView locationTextView;
     private TextView nextWeatherTextView;
     private TextView historyTextView;
@@ -104,10 +101,4 @@ public class ForecastMobile extends BaseWelcomeSlidingFragmentActivity {
         ApplicationVersionHelper.saveNewUse(this);
         ApplicationVersionHelper.saveCurrentVersionCode(this);
     }
-
-    @Override
-    public int getWelcomeNumPages() {
-        return 2;
-    }
 }
-

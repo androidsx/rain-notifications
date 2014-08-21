@@ -50,16 +50,10 @@ public class WelcomeFragment extends Fragment {
             rootView = (ViewGroup) inflater.inflate(R.layout.welcome_1, container, false);
             break;
         case 1:
+        default:
             rootView = (ViewGroup) inflater.inflate(R.layout.welcome_2, container, false);
             final TextView welcomeTextStepTwo = (TextView) rootView.findViewById(R.id.welcome_text_step2);
             welcomeTextStepTwo.setText(String.format(getString(R.string.welcome_step_2), getString(R.string.app_name)));
-            break;
-        case 2:
-            rootView = (ViewGroup) inflater.inflate(R.layout.welcome_3, container, false);
-            break;
-        case 3:
-        default:
-            rootView = (ViewGroup) inflater.inflate(R.layout.welcome_4, container, false);
             break;
         }
 

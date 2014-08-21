@@ -21,46 +21,19 @@ import android.widget.TextView;
 
 /**
  * Activity that shows the welcome pages.
- * <p>
- * Always use {@link #startWelcomeActivity} to launch this activity.
  */
 public class WelcomeActivity extends FragmentActivity {
-    private static final String TAG = WelcomeActivity.class.getSimpleName();
-    private static final String NUM_PAGES_EXTRA = "num_pages";
-    /** Note: increasing this limit requires changes in the XML and some code in this class. */
-    private static final int MAX_NUM_PAGES = 4;
+    /** Number of pages for the tutorial. Not configurable. */
+    private static final int NUM_PAGES = 2;
 
-    private int numPages;
-    
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
     
-    /**
-     * Starts the welcome activity.
-     * 
-     * @param context typically the activity where we launch from
-     * @param comesFrom for tracking purposes only
-     * @param numPages number of pages to display. Must be lower than {@link #MAX_NUM_PAGES}
-     */
-    public static void startWelcomeActivity(Context context, String comesFrom, int numPages) {
-        Log.i(TAG, "Start the welcome activity from \"" + comesFrom + "\"");
-        //ApplicationHelper.Flurry.reportHelp(comesFrom);
-        Intent intent = new Intent(context, WelcomeActivity.class);
-        if (numPages < 1 || numPages > MAX_NUM_PAGES) {
-            throw new IllegalArgumentException("Wrong number of pages for the welcome tutorial: " + numPages);
-        }
-       	intent.putExtra(NUM_PAGES_EXTRA, numPages);
-        context.startActivity(intent);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_slide);
         
-        numPages = getIntent().getIntExtra(NUM_PAGES_EXTRA, MAX_NUM_PAGES);
-        configureRadioButtonVisibility();
-
         final TextView skipButton = (TextView) findViewById(R.id.skip_button);
         skipButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -84,7 +57,7 @@ public class WelcomeActivity extends FragmentActivity {
             @Override
             public void onPageSelected(int position) {
                 setRadioPosition(position);
-                if (position == numPages - 1) {
+                if (position == NUM_PAGES - 1) {
                     skipButton.setVisibility(View.INVISIBLE);
                     goToAppButton.setVisibility(View.VISIBLE);
                 } else {
@@ -102,23 +75,6 @@ public class WelcomeActivity extends FragmentActivity {
 
             }
         });
-    }
-
-    /**
-     * Configures the visibility of the radio buttons. There are {@link #MAX_NUM_PAGES} of them hardcoded in the XML.
-     * <p>
-     * Careful: assumes {@link #MAX_NUM_PAGES} is exactly 4.
-     */
-    private void configureRadioButtonVisibility() {
-        if (numPages < MAX_NUM_PAGES) {
-            findViewById(R.id.radio3).setVisibility(View.GONE);
-        }
-        if (numPages < 3) {
-            findViewById(R.id.radio2).setVisibility(View.GONE);
-        }
-        if (numPages < 2) {
-            findViewById(R.id.radio1).setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -140,12 +96,6 @@ public class WelcomeActivity extends FragmentActivity {
             case 1 :
                 button = (RadioButton) findViewById(R.id.radio1);
                 break;
-            case 2 :
-                button = (RadioButton) findViewById(R.id.radio2);
-                break;
-            case 3 :
-                button = (RadioButton) findViewById(R.id.radio3);
-                break;
         }
 
         button.setChecked(true);
@@ -163,7 +113,7 @@ public class WelcomeActivity extends FragmentActivity {
 
         @Override
         public int getCount() {
-            return numPages;
+            return NUM_PAGES;
         }
     }
 }
