@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -76,6 +77,18 @@ public class ForecastMobile extends BaseWelcomeActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                onShare();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     /** Linked to the button in the XML layout. */
     public void startWeatherService(View view) {
         startService(new Intent(this, WeatherService.class));
@@ -85,6 +98,13 @@ public class ForecastMobile extends BaseWelcomeActivity {
     /** Linked to the button in the XML layout. */
     public void refreshUi(View view) {
         //updateUiFromPrefs();
+    }
+
+    public void onShare() {
+        final Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
+        startActivity(Intent.createChooser(intent, "Share the Owl"));
     }
 
     /**

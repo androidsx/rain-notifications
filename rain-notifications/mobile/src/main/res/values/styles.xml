@@ -5,10 +5,9 @@
         <!-- Customize your theme here. -->
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionBarTabTextStyle">@style/MyActionBarTabText</item>
-        <item name="android:actionMenuTextColor">@color/actionbar_text</item>
+        <item name="android:actionMenuTextColor">@color/actionbar_background</item>
         <item name="android:displayOptions">useLogo</item>
         <item name="android:logo">@drawable/welcome_app_name_actionbar</item>
-        <item name="android:textSize">0sp</item>
     </style>
 
     <!-- ActionBar styles -->
@@ -22,15 +21,14 @@
     <style name="MyActionBarTitleText"
         parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textColor">@color/actionbar_text</item>
-        <item name="android:textSize">0sp</item>
+        <item name="android:textColor">@color/actionbar_background</item>
     </style>
 
     <!-- ActionBar tabs text styles -->
     <style name="MyActionBarTabText"
         parent="@android:style/Widget.Holo.ActionBar.TabText">
-        <item name="android:textColor">@color/actionbar_text</item>
-        <item name="android:textSize">0sp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/actionbar_background</item>
     </style>
 
 
