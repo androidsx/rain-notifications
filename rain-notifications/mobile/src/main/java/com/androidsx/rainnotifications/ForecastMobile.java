@@ -1,7 +1,6 @@
 package com.androidsx.rainnotifications;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
@@ -12,10 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidsx.rainnotifications.model.WeatherType;
-import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
-import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import timber.log.Timber;
 
@@ -26,14 +22,13 @@ import timber.log.Timber;
  */
 
 public class ForecastMobile extends BaseWelcomeActivity {
+    private static final int MAX_NUM_CLICKS = 6;
+
     private TextView locationTextView;
-    private TextView nextWeatherTextView;
-    private TextView historyTextView;
-    private ImageView currentWeatherImageView;
-    private ImageView nextWeatherImageView;
+    private ImageView owlImageView;
 
     private boolean appUsageIsTracked = false;
-    private SharedPreferences sharedPrefs;
+    private int numClicks = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +39,17 @@ public class ForecastMobile extends BaseWelcomeActivity {
     }
 
     private void setupUI() {
-        sharedPrefs = getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0);
-
         locationTextView = (TextView) findViewById(R.id.locationTextView);
-        /*nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
-        historyTextView = (TextView) findViewById(R.id.historyTextView);
-        currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
-        nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);*/
+        owlImageView = (ImageView) findViewById(R.id.owl_image);
+        owlImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(++numClicks == MAX_NUM_CLICKS) {
+                    startDebugActivity();
+                    numClicks = 0;
+                }
+            }
+        });
 
         Typeface font = Typeface.createFromAsset(getAssets(), "roboto-slab/RobotoSlab-Regular.ttf");
         locationTextView.setTypeface(font);
@@ -88,15 +87,8 @@ public class ForecastMobile extends BaseWelcomeActivity {
         }
     }
 
-    /** Linked to the button in the XML layout. */
-    public void startWeatherService(View view) {
-        startService(new Intent(this, WeatherService.class));
-        view.setEnabled(false);
-    }
-
-    /** Linked to the button in the XML layout. */
-    public void refreshUi(View view) {
-        //updateUiFromPrefs();
+    public void startDebugActivity() {
+        startActivity(new Intent(this, DebugActivity.class));
     }
 
     public void onShare() {
@@ -104,21 +96,6 @@ public class ForecastMobile extends BaseWelcomeActivity {
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
         startActivity(Intent.createChooser(intent, "Share the Owl"));
-    }
-
-    /**
-     * Updates the UI with the information stored in the shared preferences.
-     */
-    private void updateUiFromPrefs() {
-        locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
-        nextWeatherTextView.setText(SharedPrefsHelper.getNextForecast(sharedPrefs));
-        historyTextView.setText(((RainApplication) getApplication()).getLogHistory());
-        currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        if(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
-            nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
-        }
     }
 
     /**

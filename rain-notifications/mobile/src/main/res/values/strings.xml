@@ -13,4 +13,8 @@
 
     <string name="owl_example">Mr. Owl will notify you about the weather changes you care about.\n\nHe will let you know about weather changes that you care about</string>
     <string name="today">Today</string>
+
+    <!-- DEBUG VIEW -->
+    <string name="btn_forecast">Call the Forecast API</string>
+    <string name="btn_refresh_ui">Refresh UI</string>
 </resources>

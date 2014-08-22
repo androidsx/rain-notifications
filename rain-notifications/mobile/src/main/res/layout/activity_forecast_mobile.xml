@@ -37,10 +37,12 @@
             android:layout_weight="@integer/owl_size">
 
             <ImageView
+                android:id="@+id/owl_image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/owl_margin"
-                android:src="@drawable/welcome_step_1"/>
+                android:src="@drawable/welcome_step_1"
+                android:clickable="true"/>
 
         </LinearLayout>
 
