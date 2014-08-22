@@ -79,7 +79,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_share:
-                onShare();
+                actionShare();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -90,7 +90,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
         startActivity(new Intent(this, DebugActivity.class));
     }
 
-    public void onShare() {
+    public void actionShare() {
         final Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
