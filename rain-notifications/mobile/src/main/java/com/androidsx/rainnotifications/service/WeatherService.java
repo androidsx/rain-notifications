@@ -14,7 +14,6 @@ import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
-import com.androidsx.rainnotifications.RainApplication;
 import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.WearManager;
 import com.androidsx.rainnotifications.alert.AlertGenerator;

@@ -1,6 +1,5 @@
 package com.androidsx.rainnotifications;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,10 +21,7 @@ import timber.log.Timber;
  * Next API call too.
  */
 
-public class ForecastMobile extends Activity {
-
-    private static final String TAG = ForecastMobile.class.getSimpleName();
-
+public class ForecastMobile extends BaseWelcomeActivity {
     private TextView locationTextView;
     private TextView nextWeatherTextView;
     private TextView historyTextView;
@@ -106,4 +102,3 @@ public class ForecastMobile extends Activity {
         ApplicationVersionHelper.saveCurrentVersionCode(this);
     }
 }
-
