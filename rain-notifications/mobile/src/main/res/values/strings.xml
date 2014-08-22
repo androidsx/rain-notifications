@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Rain Notifications</string>
-    <string name="btn_forecast">Call the Forecast API</string>
-    <string name="btn_refresh_ui">Refresh UI</string>
+    <string name="app_name">WeatherAssistant</string>
     <string name="current_name_location">In your current location</string>
+    <string name="action_share">Share</string>
 
     <string name="welcome_step_1">Meet Mr. Owl, your weather assistant</string>
     <string name="welcome_step_2">He will let you know about weather changes that you care about</string>
     <string name="welcome_content_description">Logo</string> <!-- Just a generic one -->
     <string name="welcome_go_to_app">Open the app</string>
     <string name="welcome_skip">Skip</string>
+
+    <string name="owl_example">Mr. Owl will notify you about the weather changes you care about.\n\nHe will let you know about weather changes that you care about</string>
+    <string name="today">Today</string>
 </resources>

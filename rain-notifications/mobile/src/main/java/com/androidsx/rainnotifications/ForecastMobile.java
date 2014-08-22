@@ -1,9 +1,13 @@
 package com.androidsx.rainnotifications;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,10 +47,13 @@ public class ForecastMobile extends BaseWelcomeActivity {
         sharedPrefs = getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0);
 
         locationTextView = (TextView) findViewById(R.id.locationTextView);
-        nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
+        /*nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
         historyTextView = (TextView) findViewById(R.id.historyTextView);
         currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
-        nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
+        nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);*/
+
+        Typeface font = Typeface.createFromAsset(getAssets(), "roboto-slab/RobotoSlab-Regular.ttf");
+        locationTextView.setTypeface(font);
 
         if(!appUsageIsTracked) {
             trackAppUsage();
@@ -58,7 +65,15 @@ public class ForecastMobile extends BaseWelcomeActivity {
     protected void onResume() {
         super.onResume();
 
-        updateUiFromPrefs();
+        //updateUiFromPrefs();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     /** Linked to the button in the XML layout. */
@@ -69,7 +84,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
 
     /** Linked to the button in the XML layout. */
     public void refreshUi(View view) {
-        updateUiFromPrefs();
+        //updateUiFromPrefs();
     }
 
     /**
