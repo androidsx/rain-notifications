@@ -120,15 +120,13 @@ public class ForecastMobile extends BaseWelcomeActivity {
     private void transcriptOwlMessage(final TextView textView, String message) {
         new AsyncTask<String, Void, Void>() {
             String actualMessage = "";
-
             @Override
             protected Void doInBackground(String... strings) {
                 char[] chars = strings[0].toCharArray();
-
                 for(char c : chars) {
                     actualMessage += c;
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(30);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -140,7 +138,6 @@ public class ForecastMobile extends BaseWelcomeActivity {
                         }
                     });
                 }
-
                 return null;
             }
         }.execute(message);
