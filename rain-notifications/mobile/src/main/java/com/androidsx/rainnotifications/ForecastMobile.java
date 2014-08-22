@@ -1,17 +1,18 @@
 package com.androidsx.rainnotifications;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidsx.rainnotifications.model.WeatherType;
-import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
-import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import timber.log.Timber;
 
@@ -22,14 +23,15 @@ import timber.log.Timber;
  */
 
 public class ForecastMobile extends BaseWelcomeActivity {
+    private static final int MAX_NUM_CLICKS = 6;
+
     private TextView locationTextView;
-    private TextView nextWeatherTextView;
-    private TextView historyTextView;
-    private ImageView currentWeatherImageView;
-    private ImageView nextWeatherImageView;
+    private TextView owlMessageTextView;
+    private ImageView owlImageView;
 
     private boolean appUsageIsTracked = false;
-    private SharedPreferences sharedPrefs;
+    private boolean obtainingLocation = true;
+    private int numClicks = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +42,25 @@ public class ForecastMobile extends BaseWelcomeActivity {
     }
 
     private void setupUI() {
-        sharedPrefs = getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0);
-
         locationTextView = (TextView) findViewById(R.id.locationTextView);
-        nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
-        historyTextView = (TextView) findViewById(R.id.historyTextView);
-        currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
-        nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
+        owlMessageTextView = (TextView) findViewById(R.id.owlMessageTextView);
+        owlImageView = (ImageView) findViewById(R.id.owl_image);
+        owlImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(++numClicks == MAX_NUM_CLICKS) {
+                    startDebugActivity();
+                    numClicks = 0;
+                }
+                obtainingLocation = false;
+            }
+        });
+
+        transcriptOwlMessage(owlMessageTextView, getString(R.string.owl_example));
+        //obtainingLocation(locationTextView); //Now infinite loop
+
+        Typeface font = Typeface.createFromAsset(getAssets(), "roboto-slab/RobotoSlab-Regular.ttf");
+        locationTextView.setTypeface(font);
 
         if(!appUsageIsTracked) {
             trackAppUsage();
@@ -58,33 +72,37 @@ public class ForecastMobile extends BaseWelcomeActivity {
     protected void onResume() {
         super.onResume();
 
-        updateUiFromPrefs();
     }
 
-    /** Linked to the button in the XML layout. */
-    public void startWeatherService(View view) {
-        startService(new Intent(this, WeatherService.class));
-        view.setEnabled(false);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
-    /** Linked to the button in the XML layout. */
-    public void refreshUi(View view) {
-        updateUiFromPrefs();
-    }
-
-    /**
-     * Updates the UI with the information stored in the shared preferences.
-     */
-    private void updateUiFromPrefs() {
-        locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
-        nextWeatherTextView.setText(SharedPrefsHelper.getNextForecast(sharedPrefs));
-        historyTextView.setText(((RainApplication) getApplication()).getLogHistory());
-        currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        if(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
-            nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                actionShare();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void startDebugActivity() {
+        startActivity(new Intent(this, DebugActivity.class));
+    }
+
+    public void actionShare() {
+        final Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
+        startActivity(Intent.createChooser(intent, "Share the Owl"));
     }
 
     /**
@@ -100,5 +118,66 @@ public class ForecastMobile extends BaseWelcomeActivity {
 
         ApplicationVersionHelper.saveNewUse(this);
         ApplicationVersionHelper.saveCurrentVersionCode(this);
+    }
+
+    private void transcriptOwlMessage(final TextView textView, String message) {
+        new AsyncTask<String, Void, Void>() {
+            String actualMessage = "";
+            @Override
+            protected Void doInBackground(String... strings) {
+                char[] chars = strings[0].toCharArray();
+                for(char c : chars) {
+                    actualMessage += c;
+                    try {
+                        Thread.sleep(30);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.invalidate();
+                            textView.setText(actualMessage);
+                        }
+                    });
+                }
+                return null;
+            }
+        }.execute(message);
+    }
+
+    private void obtainingLocation(final TextView textView) {
+        new AsyncTask<String, Void, Void>() {
+            String location = getString(R.string.current_name_location);
+            int points = 1;
+            @Override
+            protected Void doInBackground(String... strings) {
+                while(obtainingLocation) {
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.invalidate();
+                            switch(++points) {
+                                case 1: textView.setText(location + ".");
+                                    break;
+                                case 2: textView.setText(location + "..");
+                                    break;
+                                case 3: textView.setText(location + "...");
+                                    break;
+                                default: textView.setText(location + "");
+                                    points = 0;
+                                    break;
+                            }
+                        }
+                    });
+                }
+                return null;
+            }
+        }.execute();
     }
 }
