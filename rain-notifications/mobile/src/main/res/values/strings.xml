@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">WeatherAssistant</string>
-    <string name="current_name_location">Obtaining location...</string>
+    <string name="current_name_location">Obtaining location</string>
     <string name="action_share">Share</string>
     <string name="share_text">Meet Mr. Owl, your weather assistant for Google Wear https://play.google.com/store/apps/details?id=com.androidsx.rainnotifications</string>
 

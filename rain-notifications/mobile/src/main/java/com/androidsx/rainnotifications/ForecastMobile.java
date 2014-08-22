@@ -30,6 +30,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
     private ImageView owlImageView;
 
     private boolean appUsageIsTracked = false;
+    private boolean obtainingLocation = true;
     private int numClicks = 0;
 
     @Override
@@ -51,10 +52,12 @@ public class ForecastMobile extends BaseWelcomeActivity {
                     startDebugActivity();
                     numClicks = 0;
                 }
+                obtainingLocation = false;
             }
         });
 
         transcriptOwlMessage(owlMessageTextView, getString(R.string.owl_example));
+        //obtainingLocation(locationTextView); //Now infinite loop
 
         Typeface font = Typeface.createFromAsset(getAssets(), "roboto-slab/RobotoSlab-Regular.ttf");
         locationTextView.setTypeface(font);
@@ -141,5 +144,40 @@ public class ForecastMobile extends BaseWelcomeActivity {
                 return null;
             }
         }.execute(message);
+    }
+
+    private void obtainingLocation(final TextView textView) {
+        new AsyncTask<String, Void, Void>() {
+            String location = getString(R.string.current_name_location);
+            int points = 1;
+            @Override
+            protected Void doInBackground(String... strings) {
+                while(obtainingLocation) {
+                    try {
+                        Thread.sleep(250);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.invalidate();
+                            switch(++points) {
+                                case 1: textView.setText(location + ".");
+                                    break;
+                                case 2: textView.setText(location + "..");
+                                    break;
+                                case 3: textView.setText(location + "...");
+                                    break;
+                                default: textView.setText(location + "");
+                                    points = 0;
+                                    break;
+                            }
+                        }
+                    });
+                }
+                return null;
+            }
+        }.execute();
     }
 }

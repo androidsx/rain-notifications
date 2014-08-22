@@ -87,7 +87,6 @@
                             android:id="@+id/owlMessageTextView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="@string/owl_example"
                             android:textAlignment="center"
                             android:textSize="19sp"/>
 
