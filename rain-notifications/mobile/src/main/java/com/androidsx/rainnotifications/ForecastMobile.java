@@ -64,7 +64,6 @@ public class ForecastMobile extends BaseWelcomeActivity {
     protected void onResume() {
         super.onResume();
 
-        //updateUiFromPrefs();
     }
 
     @Override
