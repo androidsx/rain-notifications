@@ -33,7 +33,9 @@ public class WelcomeActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.welcome_slide);
-        
+
+        getActionBar().hide();
+
         final TextView skipButton = (TextView) findViewById(R.id.skip_button);
         skipButton.setOnClickListener(new OnClickListener() {
             @Override
