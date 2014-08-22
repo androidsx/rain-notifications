@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.view.Menu;
@@ -25,6 +26,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
     private static final int MAX_NUM_CLICKS = 6;
 
     private TextView locationTextView;
+    private TextView owlMessageTextView;
     private ImageView owlImageView;
 
     private boolean appUsageIsTracked = false;
@@ -40,6 +42,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
 
     private void setupUI() {
         locationTextView = (TextView) findViewById(R.id.locationTextView);
+        owlMessageTextView = (TextView) findViewById(R.id.owlMessageTextView);
         owlImageView = (ImageView) findViewById(R.id.owl_image);
         owlImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +53,8 @@ public class ForecastMobile extends BaseWelcomeActivity {
                 }
             }
         });
+
+        transcriptOwlMessage(owlMessageTextView, getString(R.string.owl_example));
 
         Typeface font = Typeface.createFromAsset(getAssets(), "roboto-slab/RobotoSlab-Regular.ttf");
         locationTextView.setTypeface(font);
@@ -110,5 +115,34 @@ public class ForecastMobile extends BaseWelcomeActivity {
 
         ApplicationVersionHelper.saveNewUse(this);
         ApplicationVersionHelper.saveCurrentVersionCode(this);
+    }
+
+    private void transcriptOwlMessage(final TextView textView, String message) {
+        new AsyncTask<String, Void, Void>() {
+            String actualMessage = "";
+
+            @Override
+            protected Void doInBackground(String... strings) {
+                char[] chars = strings[0].toCharArray();
+
+                for(char c : chars) {
+                    actualMessage += c;
+                    try {
+                        Thread.sleep(50);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            textView.invalidate();
+                            textView.setText(actualMessage);
+                        }
+                    });
+                }
+
+                return null;
+            }
+        }.execute(message);
     }
 }
