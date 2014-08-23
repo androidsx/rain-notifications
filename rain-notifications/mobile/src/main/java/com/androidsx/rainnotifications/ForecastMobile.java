@@ -55,11 +55,11 @@ public class ForecastMobile extends BaseWelcomeActivity {
             }
         });
 
-        locationTextView.setTypeface(getTypeface("roboto-slab/RobotoSlab-Regular.ttf"));
+        locationTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_SLAB_REGULAR_URL));
         locationTextView.setText(getString(R.string.current_name_location));
-        cardMessageTextView.setTypeface(getTypeface("roboto/Roboto-Regular.ttf"));
+        cardMessageTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
         cardMessageTextView.setText(getString(R.string.owl_example));
-        cardTitleTextView.setTypeface(getTypeface("roboto/Roboto-Regular.ttf"));
+        cardTitleTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
         cardTitleTextView.setText(getString(R.string.today));
 
         if(!appUsageIsTracked) {
