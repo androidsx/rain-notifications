@@ -10,10 +10,7 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
-import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
-
-import timber.log.Timber;
 
 public class DebugActivity extends Activity {
     private TextView locationTextView;
@@ -22,7 +19,6 @@ public class DebugActivity extends Activity {
     private ImageView currentWeatherImageView;
     private ImageView nextWeatherImageView;
 
-    private boolean appUsageIsTracked = false;
     private SharedPreferences sharedPrefs;
 
     @Override
@@ -41,11 +37,6 @@ public class DebugActivity extends Activity {
         historyTextView = (TextView) findViewById(R.id.historyTextView);
         currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
         nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
-
-        if(!appUsageIsTracked) {
-            trackAppUsage();
-            appUsageIsTracked = true;
-        }
     }
 
     @Override
@@ -79,20 +70,5 @@ public class DebugActivity extends Activity {
             currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
         }
-    }
-
-    /**
-     * Tracks this usage of the application.
-     */
-    private void trackAppUsage() {
-        final int numUsages = ApplicationVersionHelper.getNumUses(this);
-        if (numUsages == 0) {
-            Timber.i("New install. Setting the usage count to 0");
-        } else {
-            Timber.d("Usage number #" + (numUsages + 1));
-        }
-
-        ApplicationVersionHelper.saveNewUse(this);
-        ApplicationVersionHelper.saveCurrentVersionCode(this);
     }
 }
