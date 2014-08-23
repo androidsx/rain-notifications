@@ -25,6 +25,8 @@ public class ForecastMobile extends BaseWelcomeActivity {
     private static final int MAX_NUM_CLICKS = 6;
 
     private TextView locationTextView;
+    private TextView cardMessageTextView;
+    private TextView cardTitleTextView;
     private ImageView owlImageView;
 
     private boolean appUsageIsTracked = false;
@@ -39,8 +41,10 @@ public class ForecastMobile extends BaseWelcomeActivity {
     }
 
     private void setupUI() {
-        locationTextView = (TextView) findViewById(R.id.locationTextView);
-        owlImageView = (ImageView) findViewById(R.id.owl_image);
+        locationTextView = (TextView) findViewById(R.id.location_text_view);
+        cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
+        cardTitleTextView = (TextView) findViewById(R.id.card_title_text_view);
+        owlImageView = (ImageView) findViewById(R.id.owl_image_view);
         owlImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,8 +55,16 @@ public class ForecastMobile extends BaseWelcomeActivity {
             }
         });
 
-        Typeface font = Typeface.createFromAsset(getAssets(), "roboto-slab/RobotoSlab-Regular.ttf");
-        locationTextView.setTypeface(font);
+        Typeface locationFont = Typeface.createFromAsset(getAssets(), "roboto-slab/RobotoSlab-Regular.ttf");
+        Typeface messageCardFont = Typeface.createFromAsset(getAssets(), "roboto/Roboto-Regular.ttf");
+        Typeface titleCardFont = Typeface.createFromAsset(getAssets(), "roboto/Roboto-Regular.ttf");
+
+        locationTextView.setTypeface(locationFont);
+        locationTextView.setText(getString(R.string.current_name_location));
+        cardMessageTextView.setTypeface(messageCardFont);
+        cardMessageTextView.setText(getString(R.string.owl_example));
+        cardTitleTextView.setTypeface(titleCardFont);
+        cardTitleTextView.setText(getString(R.string.today));
 
         if(!appUsageIsTracked) {
             trackAppUsage();

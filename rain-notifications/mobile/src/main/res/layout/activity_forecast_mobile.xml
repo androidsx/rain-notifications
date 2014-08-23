@@ -18,7 +18,6 @@
             android:id="@+id/location_text_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/current_name_location"
             android:textSize="25sp"
             android:textColor="@color/location"
             android:fontFamily="sans-serif-"/>
@@ -68,9 +67,8 @@
                         android:id="@+id/card_title_text_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/today"
                         android:textColor="@color/card_title"
-                        android:textSize="17sp"/>
+                        android:textSize="20sp"/>
 
                 </LinearLayout>
 
@@ -85,10 +83,9 @@
                         android:layout_margin="5dp">
 
                         <TextView
-                            android:id="@+id/card_text_view"
+                            android:id="@+id/card_message_text_view"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="@string/owl_example"
                             android:textAlignment="center"
                             android:textSize="19sp"/>
 
