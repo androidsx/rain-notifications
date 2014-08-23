@@ -55,15 +55,11 @@ public class ForecastMobile extends BaseWelcomeActivity {
             }
         });
 
-        Typeface locationFont = Typeface.createFromAsset(getAssets(), "roboto-slab/RobotoSlab-Regular.ttf");
-        Typeface messageCardFont = Typeface.createFromAsset(getAssets(), "roboto/Roboto-Regular.ttf");
-        Typeface titleCardFont = Typeface.createFromAsset(getAssets(), "roboto/Roboto-Regular.ttf");
-
-        locationTextView.setTypeface(locationFont);
+        locationTextView.setTypeface(getTypeface("roboto-slab/RobotoSlab-Regular.ttf"));
         locationTextView.setText(getString(R.string.current_name_location));
-        cardMessageTextView.setTypeface(messageCardFont);
+        cardMessageTextView.setTypeface(getTypeface("roboto/Roboto-Regular.ttf"));
         cardMessageTextView.setText(getString(R.string.owl_example));
-        cardTitleTextView.setTypeface(titleCardFont);
+        cardTitleTextView.setTypeface(getTypeface("roboto/Roboto-Regular.ttf"));
         cardTitleTextView.setText(getString(R.string.today));
 
         if(!appUsageIsTracked) {
@@ -122,5 +118,9 @@ public class ForecastMobile extends BaseWelcomeActivity {
 
         ApplicationVersionHelper.saveNewUse(this);
         ApplicationVersionHelper.saveCurrentVersionCode(this);
+    }
+
+    private Typeface getTypeface(String url) {
+        return Typeface.createFromAsset(getAssets(), url);
     }
 }
