@@ -4,6 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="welcome_image_margin">32dp</dimen>
     <dimen name="sliding_menu_entry_text_size">16sp</dimen>
-    <dimen name="location">40dp</dimen>
+    <dimen name="owl_size">60dp</dimen>
     <dimen name="owl_margin">0dp</dimen>
 </resources>

@@ -16,13 +16,12 @@ import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 import timber.log.Timber;
 
 /**
- * Main activity for show the retrieved and analyzed info.
- * We show the current weather, and the next weather change with its remaining time for occur.
- * Next API call too.
+ * Main activity.
+ * <p>
+ * It just shows the owl picture and a sample text so far.
  */
-
 public class ForecastMobile extends BaseWelcomeActivity {
-    private static final int MAX_NUM_CLICKS = 6;
+    private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
 
     private TextView locationTextView;
     private TextView cardMessageTextView;
@@ -30,7 +29,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
     private ImageView owlImageView;
 
     private boolean appUsageIsTracked = false;
-    private int numClicks = 0;
+    private int numClicksForDebugScreenSoFar = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +37,10 @@ public class ForecastMobile extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         setupUI();
+        if (!appUsageIsTracked) {
+            trackAppUsage();
+            appUsageIsTracked = true;
+        }
     }
 
     private void setupUI() {
@@ -48,9 +51,10 @@ public class ForecastMobile extends BaseWelcomeActivity {
         owlImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(++numClicks == MAX_NUM_CLICKS) {
-                    startDebugActivity();
-                    numClicks = 0;
+                // TODO: This trick should time out rather quickly
+                if (++numClicksForDebugScreenSoFar == NUM_CLICKS_FOR_DEBUG_SCREEN) {
+                    startActivity(new Intent(ForecastMobile.this, DebugActivity.class));
+                    numClicksForDebugScreenSoFar = 0;
                 }
             }
         });
@@ -61,22 +65,10 @@ public class ForecastMobile extends BaseWelcomeActivity {
         cardMessageTextView.setText(getString(R.string.owl_example));
         cardTitleTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
         cardTitleTextView.setText(getString(R.string.today));
-
-        if(!appUsageIsTracked) {
-            trackAppUsage();
-            appUsageIsTracked = true;
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return super.onCreateOptionsMenu(menu);
@@ -84,25 +76,20 @@ public class ForecastMobile extends BaseWelcomeActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_share:
-                actionShare();
+                shareApp();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public void startDebugActivity() {
-        startActivity(new Intent(this, DebugActivity.class));
-    }
-
-    public void actionShare() {
+    public void shareApp() {
         final Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
-        startActivity(Intent.createChooser(intent, "Share the Owl"));
+        startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_dialog_title)));
     }
 
     /**

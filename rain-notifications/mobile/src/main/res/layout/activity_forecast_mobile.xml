@@ -12,7 +12,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/location">
+        android:minHeight="40dp"
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/location_text_view"
@@ -33,7 +34,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="@integer/owl_size">
+            android:layout_weight="@integer/owl_horizontal_weight">
 
             <ImageView
                 android:id="@+id/owl_image_view"
@@ -48,7 +49,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="@integer/card_size"
+            android:layout_weight="@integer/card_horizontal_weight"
             android:background="@drawable/background_with_shadow">
 
             <LinearLayout

@@ -3,6 +3,7 @@
     <string name="app_name">WeatherAssistant</string>
     <string name="current_name_location">Obtaining location...</string>
     <string name="action_share">Share</string>
+    <string name="share_dialog_title">Share the app</string>
     <string name="share_text">Meet Mr. Owl, your weather assistant for Google Wear https://play.google.com/store/apps/details?id=com.androidsx.rainnotifications</string>
 
     <string name="welcome_step_1">Meet Mr. Owl, your weather assistant</string>
@@ -11,7 +12,7 @@
     <string name="welcome_go_to_app">Open the app</string>
     <string name="welcome_skip">Skip</string>
 
-    <string name="owl_example">Mr. Owl will notify you about the weather changes you care about.\n\nHe will let you know about weather changes that you care about</string>
+    <string name="owl_example">It\'s gonna get a little chilly tonight, and we may even have some rain. That sucks! (Mock text)</string>
     <string name="today">Today</string>
 
     <!-- DEBUG VIEW -->
