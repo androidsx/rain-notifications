@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="owl_horizontal_weight">50</integer>
+    <integer name="card_horizontal_weight">50</integer>
+
+</resources>

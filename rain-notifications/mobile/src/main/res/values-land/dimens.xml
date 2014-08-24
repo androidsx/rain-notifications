@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="owl_size">60dp</dimen>
+    <dimen name="owl_margin">5dp</dimen>
+</resources>

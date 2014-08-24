@@ -1,35 +1,35 @@
 package com.androidsx.rainnotifications;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidsx.rainnotifications.model.WeatherType;
-import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
-import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import timber.log.Timber;
 
 /**
- * Main activity for show the retrieved and analyzed info.
- * We show the current weather, and the next weather change with its remaining time for occur.
- * Next API call too.
+ * Main activity.
+ * <p>
+ * It just shows the owl picture and a sample text so far.
  */
-
 public class ForecastMobile extends BaseWelcomeActivity {
+    private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
+
     private TextView locationTextView;
-    private TextView nextWeatherTextView;
-    private TextView historyTextView;
-    private ImageView currentWeatherImageView;
-    private ImageView nextWeatherImageView;
+    private TextView cardMessageTextView;
+    private TextView cardTitleTextView;
+    private ImageView owlImageView;
 
     private boolean appUsageIsTracked = false;
-    private SharedPreferences sharedPrefs;
+    private int numClicksForDebugScreenSoFar = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,54 +37,59 @@ public class ForecastMobile extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         setupUI();
-    }
-
-    private void setupUI() {
-        sharedPrefs = getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0);
-
-        locationTextView = (TextView) findViewById(R.id.locationTextView);
-        nextWeatherTextView = (TextView) findViewById(R.id.nextWeatherTextView);
-        historyTextView = (TextView) findViewById(R.id.historyTextView);
-        currentWeatherImageView = (ImageView) findViewById(R.id.currentWeatherImageView);
-        nextWeatherImageView = (ImageView) findViewById(R.id.nextWeatherImageView);
-
-        if(!appUsageIsTracked) {
+        if (!appUsageIsTracked) {
             trackAppUsage();
             appUsageIsTracked = true;
         }
     }
 
+    private void setupUI() {
+        locationTextView = (TextView) findViewById(R.id.location_text_view);
+        cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
+        cardTitleTextView = (TextView) findViewById(R.id.card_title_text_view);
+        owlImageView = (ImageView) findViewById(R.id.owl_image_view);
+        owlImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: This trick should time out rather quickly
+                if (++numClicksForDebugScreenSoFar == NUM_CLICKS_FOR_DEBUG_SCREEN) {
+                    startActivity(new Intent(ForecastMobile.this, DebugActivity.class));
+                    numClicksForDebugScreenSoFar = 0;
+                }
+            }
+        });
+
+        locationTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_SLAB_REGULAR_URL));
+        locationTextView.setText(getString(R.string.current_name_location));
+        cardMessageTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
+        cardMessageTextView.setText(getString(R.string.owl_example));
+        cardTitleTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
+        cardTitleTextView.setText(getString(R.string.today));
+    }
+
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        updateUiFromPrefs();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
-    /** Linked to the button in the XML layout. */
-    public void startWeatherService(View view) {
-        startService(new Intent(this, WeatherService.class));
-        view.setEnabled(false);
-    }
-
-    /** Linked to the button in the XML layout. */
-    public void refreshUi(View view) {
-        updateUiFromPrefs();
-    }
-
-    /**
-     * Updates the UI with the information stored in the shared preferences.
-     */
-    private void updateUiFromPrefs() {
-        locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
-        nextWeatherTextView.setText(SharedPrefsHelper.getNextForecast(sharedPrefs));
-        historyTextView.setText(((RainApplication) getApplication()).getLogHistory());
-        currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        if(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
-            currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
-            nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                shareApp();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void shareApp() {
+        final Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text));
+        startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_dialog_title)));
     }
 
     /**
@@ -100,5 +105,9 @@ public class ForecastMobile extends BaseWelcomeActivity {
 
         ApplicationVersionHelper.saveNewUse(this);
         ApplicationVersionHelper.saveCurrentVersionCode(this);
+    }
+
+    private Typeface getTypeface(String url) {
+        return Typeface.createFromAsset(getAssets(), url);
     }
 }

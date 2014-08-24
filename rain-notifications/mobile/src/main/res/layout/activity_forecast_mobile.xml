@@ -1,130 +1,103 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context=".forecast_mobile" >
+    tools:context=".forecast_mobile"
+    android:background="@color/background">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="100"
-        android:id="@+id/buttons">
-            <Button
-                android:id="@+id/btn_refresh_ui"
-                android:text="@string/btn_refresh_ui"
-                android:layout_width="0dip"
-                android:layout_weight="50"
-                android:layout_height="fill_parent"
-                android:layout_centerHorizontal="true"
-                android:onClick="refreshUi"/>
-            <Button
-                android:id="@+id/btn_call"
-                android:text="@string/btn_forecast"
-                android:layout_width="0dip"
-                android:layout_weight="50"
-                android:layout_height="fill_parent"
-                android:layout_centerHorizontal="true"
-                android:onClick="startWeatherService"/>
+        android:minHeight="40dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/location_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="25sp"
+            android:textColor="@color/location"
+            android:fontFamily="sans-serif-"/>
+
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:id="@+id/update_info"
-        android:layout_below="@+id/buttons">
+        android:weightSum="100">
 
-            <TextView
-                android:id="@+id/locationTextView"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="@integer/owl_horizontal_weight">
+
+            <ImageView
+                android:id="@+id/owl_image_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:textColor="#ff0000"
-                android:textStyle="bold|italic"
-                android:textSize="20dip"
-                android:textAllCaps="true" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="100">
-
-            <TextView
-                android:id="@+id/txt_currentWeather"
-                android:layout_width="0dip"
-                android:layout_weight="40"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:textColor="#ff258c2e"
-                android:textStyle="bold|italic"
-                android:textSize="20dip"
-                android:layout_marginTop="45dip"
-                android:text="Now"/>
-
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_weight="60"
-                android:layout_height="120dip"
-                android:id="@+id/currentWeatherImageView" />
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/owl_margin"
+                android:src="@drawable/welcome_step_1"
+                android:clickable="true"/>
 
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/update"
-        android:layout_width="match_parent"
-        android:layout_height="120dip"
-        android:orientation="horizontal"
-        android:layout_below="@+id/update_info"
-        android:weightSum="100"
-        android:paddingBottom="15dip">
-
-            <ImageView
-                android:layout_width="0dip"
-                android:layout_height="fill_parent"
-                android:layout_weight="40"
-                android:id="@+id/nextWeatherImageView"
-                android:layout_toRightOf="@+id/txt_update"
-                android:gravity="top"/>
-
-            <TextView
-                android:id="@+id/nextWeatherTextView"
-                android:layout_width="0dip"
-                android:layout_weight="60"
-                android:layout_height="fill_parent"
-                android:gravity="left"
-                android:textColor="#ffed7100"
-                android:textSize="16dip"
-                android:textStyle="bold"
-                android:layout_marginTop="25dip"/>
-
-    </LinearLayout>
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/update"
-        android:layout_centerHorizontal="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" >
+            android:layout_height="0dp"
+            android:layout_weight="@integer/card_horizontal_weight"
+            android:background="@drawable/background_with_shadow">
 
-            <TextView
-                        android:id="@+id/historyTextView"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_margin="4dp"
+                android:background="@android:color/white" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_margin="5dp">
+
+                    <TextView
+                        android:id="@+id/card_title_text_view"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:gravity="center"
-                        android:textColor="#ff4750ed"
-                        android:textSize="13dip"
-                        android:textStyle="bold" />
+                        android:layout_height="match_parent"
+                        android:textColor="@color/card_title"
+                        android:textSize="20sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp">
+
+                        <TextView
+                            android:id="@+id/card_message_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAlignment="center"
+                            android:textSize="19sp"/>
+
+                    </ScrollView>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

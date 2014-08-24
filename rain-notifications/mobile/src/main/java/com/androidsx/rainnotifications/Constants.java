@@ -34,4 +34,8 @@ public class Constants {
         public static final String NEXT_FORECAST_ICON = "next_forecast_icon";
         public static final String FIRST_TIME_EXECUTION = "first_time_execution";
     }
+    public static class Assets {
+        public static final String ROBOTO_REGULAR_URL = "roboto/Roboto-Regular.ttf";
+        public static final String ROBOTO_SLAB_REGULAR_URL = "roboto-slab/RobotoSlab-Regular.ttf";
+    }
 }
