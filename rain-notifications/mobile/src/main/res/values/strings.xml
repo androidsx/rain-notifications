@@ -15,7 +15,11 @@
     <string name="owl_example">It\'s gonna get a little chilly tonight, and we may even have some rain. That sucks! (Mock text)</string>
     <string name="today">Today</string>
 
+    <string name="notif_title">Mr. Owl says...</string>
+    <string name="notif_long_text_fake">Looks like it\'s gonna rain cats and dogs in 15 minutes (Fake)</string>
+
     <!-- DEBUG VIEW -->
     <string name="btn_forecast">Call the Forecast API</string>
     <string name="btn_refresh_ui">Refresh UI</string>
+    <string name="btn_show_notification">Show random notification</string>
 </resources>
