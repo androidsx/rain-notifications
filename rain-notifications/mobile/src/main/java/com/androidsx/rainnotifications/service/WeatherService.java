@@ -6,6 +6,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.ForecastMobile;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.WearManager;
@@ -30,6 +32,7 @@ import com.androidsx.rainnotifications.util.LocationHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalTime;
@@ -157,7 +160,7 @@ public class WeatherService extends Service {
                     weatherAlarmIntent);
             if(!forecasts.isEmpty()) {
                 if(shouldLaunchNotification(nextAlarmTimePeriod)) {
-                    String message = NotificationHelper.getOptimumMessage(currentWeather, forecasts.get(0));
+                    String message = getString(R.string.owl_example);
                     Timber.tag(TAG).i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
                             currentWeather.getType(),
                             forecasts.get(0).getForecastedWeather().getType(),
@@ -214,7 +217,7 @@ public class WeatherService extends Service {
      * @param forecastIcon
      */
     private void launchNotification(String message, int currentWeatherIcon, int forecastIcon) {
-        NotificationHelper.sendNotification(this, 1, currentWeatherIcon, forecastIcon, message);
+        launchWearNotification(message, currentWeatherIcon, forecastIcon);
     }
 
     /**
@@ -229,9 +232,34 @@ public class WeatherService extends Service {
         new WearManager(this) {
             @Override
             public void onConnected(Bundle bundle) {
-                if(isGoogleApiClientConnected()) {
-                    sendNotification(message, currentWeatherIcon, forecastIcon);
-                }
+                getConnectedNodes();
+            }
+
+            @Override
+            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                if(getConnectedNodesResult.getNodes() != null) {
+                    if(getConnectedNodesResult.getNodes().size() > 0) {
+                        sendWearNotification(
+                                getString(R.string.notif_title),
+                                getString(R.string.notif_long_text_fake),
+                                R.drawable.notification_background_fake,
+                                R.drawable.owl_sunny_fake);
+                    } else {
+                        NotificationHelper.sendNotification(
+                                WeatherService.this,
+                                ForecastMobile.class,
+                                getString(R.string.notif_title),
+                                getString(R.string.notif_long_text_fake),
+                                BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                        );                    }
+                } else {
+                    NotificationHelper.sendNotification(
+                            WeatherService.this,
+                            ForecastMobile.class,
+                            getString(R.string.notif_title),
+                            getString(R.string.notif_long_text_fake),
+                            BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                    );                }
             }
 
             @Override

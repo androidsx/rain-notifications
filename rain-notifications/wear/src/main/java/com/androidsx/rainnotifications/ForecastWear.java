@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidsx.commonlibrary.Constants;
@@ -12,8 +13,10 @@ import com.google.android.gms.wearable.Asset;
 
 public class ForecastWear extends Activity {
 
+    private TextView mTitleView;
     private TextView mTextView;
     private ImageView mImageView;
+    private LinearLayout mBackgroundLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,19 +26,24 @@ public class ForecastWear extends Activity {
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override
             public void onLayoutInflated(WatchViewStub stub) {
+                mTitleView = (TextView) stub.findViewById(R.id.title);
                 mTextView = (TextView) stub.findViewById(R.id.text);
+                mBackgroundLinearLayout = (LinearLayout) stub.findViewById(R.id.background);
                 mImageView = (ImageView) stub.findViewById(R.id.image);
 
                 Intent mIntent = getIntent();
                 if(mIntent != null) {
-                    String text = mIntent.getStringExtra(Constants.Extras.EXTRA_MESSAGE);
+                    String title = mIntent.getStringExtra(Constants.Extras.EXTRA_TITLE);
+                    String text = mIntent.getStringExtra(Constants.Extras.EXTRA_TEXT);
                     if(text != null) {
+                        mTitleView.setText(title);
                         mTextView.setText(text);
                     }
-                    Asset asset = mIntent.getParcelableExtra(Constants.Extras.EXTRA_FORECAST_ICON);
-                    if(asset != null) {
-                        AssetHelper.loadBitmapFromAsset(ForecastWear.this, asset, mImageView);
+                    Asset assetBackground = mIntent.getParcelableExtra(Constants.Extras.EXTRA_CONTENT_ICON);
+                    if(assetBackground != null) {
+                        AssetHelper.loadBitmapFromAsset(ForecastWear.this, assetBackground, mImageView);
                     }
+                    mBackgroundLinearLayout.setBackground(getResources().getDrawable(R.drawable.notification_background_fake));
                 }
             }
         });

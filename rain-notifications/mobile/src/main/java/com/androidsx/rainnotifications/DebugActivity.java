@@ -1,20 +1,20 @@
 package com.androidsx.rainnotifications;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.wearable.NodeApi;
 
 import timber.log.Timber;
 
@@ -66,39 +66,51 @@ public class DebugActivity extends Activity {
     /** Linked to the button in the XML layout. */
     public void showNotification(View view) {
         Timber.d("Show a random notification");
+        new WearManager(this) {
+            @Override
+            public void onConnected(Bundle bundle) {
+                getConnectedNodes();
+            }
 
-        final int notificationId = 002;
+            @Override
+            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                if(getConnectedNodesResult.getNodes() != null) {
+                    if(getConnectedNodesResult.getNodes().size() > 0) {
+                        sendWearNotification(
+                                getString(R.string.notif_title),
+                                getString(R.string.notif_long_text_fake),
+                                R.drawable.notification_background_fake,
+                                R.drawable.owl_sunny_fake);
+                    } else {
+                        NotificationHelper.sendNotification(
+                                DebugActivity.this,
+                                ForecastMobile.class,
+                                getString(R.string.notif_title),
+                                getString(R.string.notif_long_text_fake),
+                                BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                                );
+                    }
+                } else {
+                    NotificationHelper.sendNotification(
+                            DebugActivity.this,
+                            ForecastMobile.class,
+                            getString(R.string.notif_title),
+                            getString(R.string.notif_long_text_fake),
+                            BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                    );
+                }
+            }
 
-        // Main intent for the notification (click for mobile, swipe left and click for wear)
-        Intent viewIntent = new Intent(this, ForecastMobile.class);
-        PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, viewIntent, 0);
+            @Override
+            public void onConnectionSuspended(int i) {
 
-        // Big style for the notification. It only matters for mobile AFAIK, to show several lines
-        NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle()
-                .setBigContentTitle(getString(R.string.notif_title))
-                .bigText(getString(R.string.notif_long_text_fake));
+            }
 
-        // Additional functionality for wear
-        NotificationCompat.WearableExtender wearableExtender = new NotificationCompat.WearableExtender()
-                        .setHintHideIcon(true)
-                        .setBackground(BitmapFactory.decodeResource(getResources(), R.drawable.notification_background_fake))
-                        .setContentIcon(R.drawable.owl_sunny_fake);
+            @Override
+            public void onConnectionFailed(ConnectionResult connectionResult) {
 
-        // Finally configure the notification builder
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher) // Compulsory. Only for the phone AFAIK. TODO: follow guidelines: gray
-                        .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake))
-                        .setContentTitle(getString(R.string.notif_title))
-                        .setContentText(getString(R.string.notif_long_text_fake))
-                        .setContentIntent(viewPendingIntent)
-                        .setStyle(bigTextStyle)
-                        .extend(wearableExtender)
-                ;
-
-        // Build the notification and launch it
-        NotificationManagerCompat.from(this).notify(notificationId, notificationBuilder.build());
+            }
+        }.connect();
     }
 
     /**

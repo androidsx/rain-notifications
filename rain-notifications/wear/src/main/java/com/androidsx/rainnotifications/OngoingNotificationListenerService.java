@@ -58,15 +58,15 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                     // Get the data out of the event
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
                     final String title = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TITLE);
-                    final String message = dataMapItem.getDataMap().getString(Constants.Keys.KEY_MESSAGE);
-                    Asset assetCurrent = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_CURRENT_ICON);
-                    Asset assetForecast = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_FORECAST_ICON);
+                    final String text = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TEXT);
+                    Asset assetBackground = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_BACKGROUND);
+                    Asset assetContentIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_CONTENT_ICON);
 
                     Intent actionIntent = new Intent(this, ForecastWear.class);
                     actionIntent.putExtra(Constants.Extras.EXTRA_TITLE, title);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_MESSAGE, message);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_CURRENT_ICON, assetCurrent);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_FORECAST_ICON, assetForecast);
+                    actionIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
+                    actionIntent.putExtra(Constants.Extras.EXTRA_BACKGROUND, assetBackground);
+                    actionIntent.putExtra(Constants.Extras.EXTRA_CONTENT_ICON, assetContentIcon);
                     PendingIntent actionPendingIntent = PendingIntent.getActivity(
                             this,
                             0,
@@ -75,17 +75,19 @@ public class OngoingNotificationListenerService extends WearableListenerService 
 
                     NotificationCompat.Action action =
                             new NotificationCompat.Action.Builder(R.drawable.rain,
-                                    title, actionPendingIntent)
+                                    getString(R.string.app_name), actionPendingIntent)
                                     .build();
 
                     NotificationCompat.Builder notificationBuilder =
                             new NotificationCompat.Builder(this)
                                     .setDefaults(NotificationCompat.DEFAULT_ALL)
                                     .setContentTitle(title)
-                                    .setContentText(message)
-                                    .setLargeIcon(AssetHelper.loadBitmapFromAsset(mGoogleApiClient, assetCurrent))
+                                    .setContentText(text)
                                     .setSmallIcon(R.drawable.clear_day)
                                     .extend(new WearableExtender()
+                                                    .setHintHideIcon(true)
+                                                    .setContentIcon(R.drawable.owl_sunny_fake)
+                                                    .setBackground(AssetHelper.loadBitmapFromAsset(mGoogleApiClient, assetBackground))
                                                     .addAction(action)
                                     );
 

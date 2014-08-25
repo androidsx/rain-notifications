@@ -11,13 +11,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.wearable.Asset;
 import com.google.android.gms.wearable.DataApi;
+import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
 import com.google.android.gms.wearable.Wearable;
 
 import com.androidsx.commonlibrary.Constants;
 
-public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<NodeApi.GetConnectedNodesResult> {
 
     private GoogleApiClient mGoogleApiClient;
     private Context context;
@@ -41,14 +42,18 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
         return mGoogleApiClient.isConnected();
     }
 
-    public void sendNotification(String message, int currentWeatherIcon, int forecastIcon){
-        if (mGoogleApiClient.isConnected()) {
+    public void getConnectedNodes() {
+        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(this);
+    }
+
+    public void sendWearNotification(String title, String text, int backgroundIcon, int contentIcon){
+        if (isGoogleApiClientConnected()) {
             PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Constants.WEAR_PATH);
             // Add data to the request
-            putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TITLE, context.getResources().getString(R.string.app_name));
-            putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_MESSAGE, message);
-            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_CURRENT_ICON, createAssetFromDrawable(currentWeatherIcon));
-            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_FORECAST_ICON, createAssetFromDrawable(forecastIcon));
+            putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TITLE, title);
+            putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TEXT, text);
+            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_BACKGROUND, createAssetFromDrawable(backgroundIcon));
+            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_CONTENT_ICON, createAssetFromDrawable(contentIcon));
             putDataMapRequest.getDataMap().putLong(Constants.Keys.KEY_TIMESTAMP, System.currentTimeMillis());
             PutDataRequest request = putDataMapRequest.asPutDataRequest();
 
@@ -78,4 +83,8 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
 
     @Override
     public abstract void onConnectionFailed(ConnectionResult connectionResult);
+
+    @Override
+    public abstract void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult);
+
 }
