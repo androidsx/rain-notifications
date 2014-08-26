@@ -39,11 +39,10 @@ public class ForecastWear extends Activity {
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
                             .setContentTitle(getString(R.string.app_name))
                             .setContentText(getString(R.string.owl_example))
-                            .setSmallIcon(R.drawable.cloudy_owl)
+                            .setSmallIcon(R.drawable.owl_sunny_fake)
                             .extend(new NotificationCompat.WearableExtender()
                                             .setHintHideIcon(true)
-                                            .setContentIcon(R.drawable.cloudy_owl)
-                                            .setCustomContentHeight(300)
+                                            .setCustomContentHeight(400)
                                             .setBackground(BitmapFactory.decodeResource(getResources(), R.drawable.notification_background_fake))
                                             .setDisplayIntent(notificationPendingIntent)
                             );
