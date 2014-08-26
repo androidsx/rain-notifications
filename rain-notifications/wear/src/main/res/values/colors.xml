@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main_background">#9bebff</color>
+    <color name="highlighted">#185ec7</color>
+
+    <color name="welcome_skip">@color/highlighted</color>
+    <color name="welcome_bottom_line">@color/highlighted</color>
+    <color name="welcome_background">@color/main_background</color>
+    <color name="welcome_button_background">@color/highlighted</color>
+    <color name="welcome_button_foreground">@android:color/white</color>
+
+    <!-- Main Activity Colors -->
+    <color name="location">#103893</color>
+    <color name="background">#8be7fe</color>
+    <color name="card_title">#9f9f9f</color>
+    <color name="card_shadow">#cacaca</color>
+
+    <!-- ActionBar Colors -->
+    <color name="actionbar_background">#08beec</color>
+    <color name="actionbar_text">#103893</color>
+</resources>
