@@ -81,6 +81,8 @@ public class OngoingNotificationListenerService extends WearableListenerService 
 
                     // Intent for change the standard notification by our custom notification layout
                     Intent notificationIntent = new Intent(this, CustomNotification.class);
+                    notificationIntent.putExtra(Constants.Extras.EXTRA_PET_ICON, assetPetIcon);
+                    notificationIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
                     PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
 

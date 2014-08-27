@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.wearable.view.WatchViewStub;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
