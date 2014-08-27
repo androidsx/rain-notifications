@@ -60,14 +60,14 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
                     final String title = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TITLE);
                     final String text = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TEXT);
-                    Asset assetBackground = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_BACKGROUND);
-                    Asset assetContentIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_CONTENT_ICON);
+                    Asset assetPetIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_PET_ICON);
+                    Asset assetForecastIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_FORECAST_ICON);
 
                     Intent actionIntent = new Intent(this, ForecastWear.class);
                     actionIntent.putExtra(Constants.Extras.EXTRA_TITLE, title);
                     actionIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_BACKGROUND, assetBackground);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_CONTENT_ICON, assetContentIcon);
+                    actionIntent.putExtra(Constants.Extras.EXTRA_PET_ICON, assetPetIcon);
+                    actionIntent.putExtra(Constants.Extras.EXTRA_FORECAST_ICON, assetForecastIcon);
                     PendingIntent actionPendingIntent = PendingIntent.getActivity(
                             this,
                             0,
