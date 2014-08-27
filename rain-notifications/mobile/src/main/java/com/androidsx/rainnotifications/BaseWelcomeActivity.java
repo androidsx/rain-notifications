@@ -24,18 +24,16 @@ abstract class BaseWelcomeActivity extends Activity {
             startActivity(new Intent(this, WelcomeActivity.class));
         }
 
-        boolean alarmUp = (
-                PendingIntent.getService(this,
+        final PendingIntent ongoingAlarm = PendingIntent.getService(this,
                 Constants.AlarmId.WEATHER_ID,
                 new Intent(getApplicationContext(), WeatherService.class),
-                PendingIntent.FLAG_NO_CREATE) != null
-        );
+                PendingIntent.FLAG_NO_CREATE);
 
-        if (alarmUp) {
-            Timber.d("Set alarm");
-        } else {
-            Timber.d("Not set alarm");
+        if (ongoingAlarm == null) {
+            Timber.d("The alarm is not set. Let's start the weather service now");
             startService(new Intent(this, WeatherService.class));
+        } else {
+            Timber.d("The alarm is already set");
         }
 	}
 }
