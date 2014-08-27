@@ -28,30 +28,8 @@ public class ForecastWear extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Only for test
-            Intent notificationIntent = new Intent(this, CustomNotification.class);
-            PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-            NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(this)
-                            .setDefaults(NotificationCompat.DEFAULT_ALL)
-                            .setContentTitle(getString(R.string.app_name))
-                            .setContentText(getString(R.string.owl_example))
-                            .setSmallIcon(R.drawable.owl_sunny_fake)
-                            .extend(new NotificationCompat.WearableExtender()
-                                            .setHintHideIcon(true)
-                                            .setCustomContentHeight(400)
-                                            .setBackground(BitmapFactory.decodeResource(getResources(), R.drawable.notification_background_fake))
-                                            .setDisplayIntent(notificationPendingIntent)
-                            );
-
-            NotificationManagerCompat.from(this)
-                    .notify(NOTIFICATION_ID, notificationBuilder.build());
-        // Only for test
-
         setContentView(R.layout.activity_forecast_wear);
+
         final WatchViewStub stub = (WatchViewStub) findViewById(R.id.watch_view_stub);
         stub.setOnLayoutInflatedListener(new WatchViewStub.OnLayoutInflatedListener() {
             @Override

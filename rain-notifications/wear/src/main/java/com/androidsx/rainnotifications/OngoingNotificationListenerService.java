@@ -78,6 +78,11 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                                     getString(R.string.app_name), actionPendingIntent)
                                     .build();
 
+                    // Intent for change the standard notification by our custom notification layout
+                    Intent notificationIntent = new Intent(this, CustomNotification.class);
+                    PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
+
                     NotificationCompat.Builder notificationBuilder =
                             new NotificationCompat.Builder(this)
                                     .setDefaults(NotificationCompat.DEFAULT_ALL)
@@ -86,8 +91,10 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                                     .setSmallIcon(R.drawable.clear_day)
                                     .extend(new WearableExtender()
                                                     .setHintHideIcon(true)
+                                                    .setCustomContentHeight(400)
                                                     .setContentIcon(R.drawable.owl_sunny_fake)
                                                     .setBackground(AssetHelper.loadBitmapFromAsset(mGoogleApiClient, assetBackground))
+                                                    .setDisplayIntent(notificationPendingIntent)
                                                     .addAction(action)
                                     );
 
