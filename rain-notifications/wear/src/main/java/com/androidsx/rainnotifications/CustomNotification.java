@@ -24,13 +24,13 @@ public class CustomNotification extends Activity {
 
         Intent mIntent = getIntent();
 
-        if(mIntent != null) {
+        if (mIntent != null) {
             String text = mIntent.getStringExtra(Constants.Extras.EXTRA_TEXT);
-            if(text != null) {
+            if (text != null) {
                 mTextView.setText(text);
             }
             Asset assetMascotIcon = mIntent.getParcelableExtra(Constants.Extras.EXTRA_MASCOT_ICON);
-            if(assetMascotIcon != null) {
+            if (assetMascotIcon != null) {
                 AssetHelper.loadBitmapFromAsset(CustomNotification.this, assetMascotIcon, mMascotImageView);
             }
         }

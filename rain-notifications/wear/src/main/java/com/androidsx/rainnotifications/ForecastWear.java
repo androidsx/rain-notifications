@@ -32,19 +32,19 @@ public class ForecastWear extends Activity {
                 mForecastImageView = (ImageView) stub.findViewById(R.id.forecast_icon);
 
                 Intent mIntent = getIntent();
-                if(mIntent != null) {
+                if (mIntent != null) {
                     String title = mIntent.getStringExtra(Constants.Extras.EXTRA_TITLE);
                     String text = mIntent.getStringExtra(Constants.Extras.EXTRA_TEXT);
-                    if(text != null) {
+                    if (text != null) {
                         mTitleView.setText(title);
                         mTextView.setText(text);
                     }
                     Asset assetMascotIcon = mIntent.getParcelableExtra(Constants.Extras.EXTRA_MASCOT_ICON);
                     Asset assetForecastIcon = mIntent.getParcelableExtra(Constants.Extras.EXTRA_FORECAST_ICON);
-                    if(assetMascotIcon != null) {
+                    if (assetMascotIcon != null) {
                         AssetHelper.loadBitmapFromAsset(ForecastWear.this, assetMascotIcon, mMascotImageView);
                     }
-                    if(assetForecastIcon != null) {
+                    if (assetForecastIcon != null) {
                         AssetHelper.loadBitmapFromAsset(ForecastWear.this, assetForecastIcon, mForecastImageView);
                     }
                 }

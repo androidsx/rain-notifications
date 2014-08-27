@@ -31,7 +31,7 @@ abstract class BaseWelcomeActivity extends Activity {
                 PendingIntent.FLAG_NO_CREATE) != null
         );
 
-        if(alarmUp) {
+        if (alarmUp) {
             Timber.d("Set alarm");
         } else {
             Timber.d("Not set alarm");

@@ -74,8 +74,8 @@ public class DebugActivity extends Activity {
 
             @Override
             public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                if(getConnectedNodesResult.getNodes() != null) {
-                    if(getConnectedNodesResult.getNodes().size() > 0) {
+                if (getConnectedNodesResult.getNodes() != null) {
+                    if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
                                 getString(R.string.notif_title),
                                 getString(R.string.notif_long_text_fake),
@@ -122,7 +122,7 @@ public class DebugActivity extends Activity {
         historyTextView.setText(((RainApplication) getApplication()).getLogHistory());
         currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
         nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        if(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
+        if (SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
             currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
         }

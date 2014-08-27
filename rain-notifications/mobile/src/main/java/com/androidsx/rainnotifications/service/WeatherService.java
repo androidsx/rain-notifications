@@ -84,7 +84,7 @@ public class WeatherService extends Service {
         new UserLocation(this) {
             @Override
             public void obtainedLocation(Location loc) {
-                if(loc != null) {
+                if (loc != null) {
                     Timber.tag(TAG).i("\nTime: %s \nAsk forecast.io for the forecast in %s (GPS %f, %f).",
                             new LocalTime(System.currentTimeMillis()),
                             getLocationAddress(loc.getLatitude(), loc.getLongitude()),
@@ -137,7 +137,7 @@ public class WeatherService extends Service {
 
     private void updateWeatherAlarm(Weather currentWeather, List<Forecast> forecasts) {
         long nextAlarmTime;
-        if(forecasts.isEmpty()) {
+        if (forecasts.isEmpty()) {
             nextAlarmTime = System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS;
         } else {
             nextAlarmTime = forecasts.get(0).getTimeFromNow().getEndMillis();
@@ -151,15 +151,15 @@ public class WeatherService extends Service {
                 new Intent(this, WeatherService.class),
                 0);
         AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        if(am != null) {
+        if (am != null) {
             am.cancel(weatherAlarmIntent);
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
                     nextWeatherCallAlarmTime(nextAlarmTime),
                     WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
-            if(!forecasts.isEmpty()) {
-                if(shouldLaunchNotification(nextAlarmTimePeriod)) {
+            if (!forecasts.isEmpty()) {
+                if (shouldLaunchNotification(nextAlarmTimePeriod)) {
                     String message = getString(R.string.owl_example);
                     Timber.tag(TAG).i("Next transition is %s -> %s in %s: show a notification to the user \"%s\".",
                             currentWeather.getType(),
@@ -201,7 +201,7 @@ public class WeatherService extends Service {
      * @param nextAlarmTimePeriod
      */
     private boolean shouldLaunchNotification(long nextAlarmTimePeriod) {
-        if(nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
+        if (nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
             return true;
         } else {
             return false;
@@ -237,8 +237,8 @@ public class WeatherService extends Service {
 
             @Override
             public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                if(getConnectedNodesResult.getNodes() != null) {
-                    if(getConnectedNodesResult.getNodes().size() > 0) {
+                if (getConnectedNodesResult.getNodes() != null) {
+                    if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
                                 getString(R.string.notif_title),
                                 getString(R.string.notif_long_text_fake),
@@ -305,9 +305,9 @@ public class WeatherService extends Service {
         }
 
         if (addresses != null && addresses.size() > 0) {
-            if(addresses.get(0).getSubLocality() != null) address = addresses.get(0).getSubLocality();
-            else if(addresses.get(0).getLocality() != null) address = addresses.get(0).getLocality();
-            else if(addresses.get(0).getCountryName() != null) address = addresses.get(0).getCountryName();
+            if (addresses.get(0).getSubLocality() != null) address = addresses.get(0).getSubLocality();
+            else if (addresses.get(0).getLocality() != null) address = addresses.get(0).getLocality();
+            else if (addresses.get(0).getCountryName() != null) address = addresses.get(0).getCountryName();
         }
 
         return address;
