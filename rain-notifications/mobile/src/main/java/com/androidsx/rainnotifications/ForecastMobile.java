@@ -1,6 +1,7 @@
 package com.androidsx.rainnotifications;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Bundle;
 
@@ -11,7 +12,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.Weather;
+import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
+
+import org.joda.time.Period;
 
 import timber.log.Timber;
 
@@ -26,7 +33,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
     private TextView locationTextView;
     private TextView cardMessageTextView;
     private TextView cardTitleTextView;
-    private ImageView owlImageView;
+    private ImageView mascotImageView;
 
     private boolean appUsageIsTracked = false;
     private int numClicksForDebugScreenSoFar = 0;
@@ -41,14 +48,15 @@ public class ForecastMobile extends BaseWelcomeActivity {
             trackAppUsage();
             appUsageIsTracked = true;
         }
+        obtainForecast(getIntent());
     }
 
     private void setupUI() {
         locationTextView = (TextView) findViewById(R.id.location_text_view);
         cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
         cardTitleTextView = (TextView) findViewById(R.id.card_title_text_view);
-        owlImageView = (ImageView) findViewById(R.id.owl_image_view);
-        owlImageView.setOnClickListener(new View.OnClickListener() {
+        mascotImageView = (ImageView) findViewById(R.id.owl_image_view);
+        mascotImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // TODO: This trick should time out rather quickly
@@ -65,6 +73,30 @@ public class ForecastMobile extends BaseWelcomeActivity {
         cardMessageTextView.setText(getString(R.string.owl_example));
         cardTitleTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
         cardTitleTextView.setText(getString(R.string.today));
+    }
+
+    private void obtainForecast(Intent mIntent) {
+        new CheckForecast(this, mIntent) {
+            @Override
+            public void summaryReady(String location, Weather currentWeather, Forecast forecast, Alert alert) {
+                String title;
+                if (forecast != null) {
+                    title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
+                } else {
+                    title = getString(R.string.today);
+                }
+                int mascot_icon = getIconFromWeather(forecast.getForecastedWeather());
+
+                updateUI(location, mascot_icon, title, alert.getAlertMessage().toString());
+            }
+        }.start();
+    }
+
+    private void updateUI(String location, int mascot_icon, String title, String message) {
+        locationTextView.setText(location);
+        mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), mascot_icon));
+        cardTitleTextView.setText(title);
+        cardMessageTextView.setText(message);
     }
 
     @Override
