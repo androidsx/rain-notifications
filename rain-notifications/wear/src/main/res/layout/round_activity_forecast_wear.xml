@@ -1,15 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".forecast_wear"
-    tools:deviceIds="wear_round">
+    tools:deviceIds="wear_round"
+    android:id="@+id/background">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.45"
+            android:background="#9bebff" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.45"
+            android:background="#ffffff" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.1"
+            android:background="#000000" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/forecast_icon"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/rain"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="5dp"/>
+
+    <ImageView
+        android:id="@+id/mascot_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_launcher"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="75dp"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="105dp"
+        android:text="75% chance of rain tonight"
+        android:textSize="8sp"
+        android:textColor="#9a9a9a"
+        android:gravity="center_horizontal" />
 
     <TextView
         android:id="@+id/text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
-</RelativeLayout>
+        android:layout_marginTop="122dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:text="Bring your umbrella to work"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+</FrameLayout>

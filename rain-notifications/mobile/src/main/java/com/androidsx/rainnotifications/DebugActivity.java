@@ -3,6 +3,7 @@ package com.androidsx.rainnotifications;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,7 +11,12 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.wearable.NodeApi;
+
+import timber.log.Timber;
 
 public class DebugActivity extends Activity {
     private TextView locationTextView;
@@ -57,6 +63,56 @@ public class DebugActivity extends Activity {
         updateUiFromPrefs();
     }
 
+    /** Linked to the button in the XML layout. */
+    public void showNotification(View view) {
+        Timber.d("Show a random notification");
+        new WearManager(this) {
+            @Override
+            public void onConnected(Bundle bundle) {
+                getConnectedNodes();
+            }
+
+            @Override
+            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                if (getConnectedNodesResult.getNodes() != null) {
+                    if (getConnectedNodesResult.getNodes().size() > 0) {
+                        sendWearNotification(
+                                getString(R.string.notif_title),
+                                getString(R.string.notif_long_text_fake),
+                                R.drawable.notification_background_fake,
+                                R.drawable.owl_sunny_fake);
+                    } else {
+                        NotificationHelper.sendNotification(
+                                DebugActivity.this,
+                                ForecastMobile.class,
+                                getString(R.string.notif_title),
+                                getString(R.string.notif_long_text_fake),
+                                BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                                );
+                    }
+                } else {
+                    NotificationHelper.sendNotification(
+                            DebugActivity.this,
+                            ForecastMobile.class,
+                            getString(R.string.notif_title),
+                            getString(R.string.notif_long_text_fake),
+                            BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                    );
+                }
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+
+            }
+
+            @Override
+            public void onConnectionFailed(ConnectionResult connectionResult) {
+
+            }
+        }.connect();
+    }
+
     /**
      * Updates the UI with the information stored in the shared preferences.
      */
@@ -66,7 +122,7 @@ public class DebugActivity extends Activity {
         historyTextView.setText(((RainApplication) getApplication()).getLogHistory());
         currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
         nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        if(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
+        if (SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
             currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
         }

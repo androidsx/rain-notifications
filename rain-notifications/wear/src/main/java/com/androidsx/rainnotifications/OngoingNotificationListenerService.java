@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
@@ -58,15 +59,15 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                     // Get the data out of the event
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
                     final String title = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TITLE);
-                    final String message = dataMapItem.getDataMap().getString(Constants.Keys.KEY_MESSAGE);
-                    Asset assetCurrent = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_CURRENT_ICON);
-                    Asset assetForecast = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_FORECAST_ICON);
+                    final String text = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TEXT);
+                    Asset assetMascotIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_MASCOT_ICON);
+                    Asset assetForecastIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_FORECAST_ICON);
 
                     Intent actionIntent = new Intent(this, ForecastWear.class);
                     actionIntent.putExtra(Constants.Extras.EXTRA_TITLE, title);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_MESSAGE, message);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_CURRENT_ICON, assetCurrent);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_FORECAST_ICON, assetForecast);
+                    actionIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
+                    actionIntent.putExtra(Constants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
+                    actionIntent.putExtra(Constants.Extras.EXTRA_FORECAST_ICON, assetForecastIcon);
                     PendingIntent actionPendingIntent = PendingIntent.getActivity(
                             this,
                             0,
@@ -74,18 +75,29 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                             PendingIntent.FLAG_UPDATE_CURRENT);
 
                     NotificationCompat.Action action =
-                            new NotificationCompat.Action.Builder(R.drawable.rain,
-                                    title, actionPendingIntent)
+                            new NotificationCompat.Action.Builder(R.drawable.ic_launcher,
+                                    getString(R.string.app_name), actionPendingIntent)
                                     .build();
+
+                    // Intent for change the standard notification by our custom notification layout
+                    Intent notificationIntent = new Intent(this, CustomNotification.class);
+                    notificationIntent.putExtra(Constants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
+                    notificationIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
+                    PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                            PendingIntent.FLAG_UPDATE_CURRENT);
 
                     NotificationCompat.Builder notificationBuilder =
                             new NotificationCompat.Builder(this)
                                     .setDefaults(NotificationCompat.DEFAULT_ALL)
                                     .setContentTitle(title)
-                                    .setContentText(message)
-                                    .setLargeIcon(AssetHelper.loadBitmapFromAsset(mGoogleApiClient, assetCurrent))
+                                    .setContentText(text)
                                     .setSmallIcon(R.drawable.clear_day)
                                     .extend(new WearableExtender()
+                                                    .setHintHideIcon(true)
+                                                    .setCustomContentHeight(400)
+                                                    .setContentIcon(R.drawable.ic_launcher)
+                                                    .setBackground(BitmapFactory.decodeResource(getResources(), R.drawable.custom_notification_background))
+                                                    .setDisplayIntent(notificationPendingIntent)
                                                     .addAction(action)
                                     );
 

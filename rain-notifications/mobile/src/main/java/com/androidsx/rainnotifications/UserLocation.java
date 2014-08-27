@@ -27,9 +27,9 @@ public abstract class UserLocation implements GooglePlayServicesClient.Connectio
 
     @Override
     public void onConnected(Bundle bundle) {
-        if(mLocationClient.isConnected()) {
+        if (mLocationClient.isConnected()) {
             Location loc = mLocationClient.getLastLocation();
-            if(loc != null) {
+            if (loc != null) {
                 obtainedLocation(loc);
             } else {
                 // TODO: probably notify to user, that the gps is disabled or not available,

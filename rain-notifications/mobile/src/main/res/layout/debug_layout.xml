@@ -12,24 +12,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="100"
         android:id="@+id/buttons">
             <Button
                 android:id="@+id/btn_refresh_ui"
                 android:text="@string/btn_refresh_ui"
                 android:layout_width="0dip"
-                android:layout_weight="50"
+                android:layout_weight="1"
                 android:layout_height="fill_parent"
-                android:layout_centerHorizontal="true"
                 android:onClick="refreshUi"/>
             <Button
                 android:id="@+id/btn_call"
                 android:text="@string/btn_forecast"
                 android:layout_width="0dip"
-                android:layout_weight="50"
+                android:layout_weight="1"
                 android:layout_height="fill_parent"
-                android:layout_centerHorizontal="true"
                 android:onClick="startWeatherService"/>
+            <Button
+                android:text="@string/btn_show_notification"
+                android:layout_width="0dip"
+                android:layout_weight="1"
+                android:layout_height="fill_parent"
+                android:onClick="showNotification"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"

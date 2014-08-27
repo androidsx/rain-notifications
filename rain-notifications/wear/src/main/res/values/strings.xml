@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Rain Notifications</string>
+    <string name="app_name">WeatherAssistant</string>
+    <string name="owl_example">It\'s gonna get a little chilly tonight, and we may even have some rain. That sucks! (Mock text)</string>
 
 </resources>
