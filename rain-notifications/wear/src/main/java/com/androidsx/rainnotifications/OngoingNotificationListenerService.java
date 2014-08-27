@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications;
 
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
@@ -74,7 +75,7 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                             PendingIntent.FLAG_UPDATE_CURRENT);
 
                     NotificationCompat.Action action =
-                            new NotificationCompat.Action.Builder(R.drawable.rain,
+                            new NotificationCompat.Action.Builder(R.drawable.ic_launcher,
                                     getString(R.string.app_name), actionPendingIntent)
                                     .build();
 
@@ -92,8 +93,8 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                                     .extend(new WearableExtender()
                                                     .setHintHideIcon(true)
                                                     .setCustomContentHeight(400)
-                                                    .setContentIcon(R.drawable.owl_sunny_fake)
-                                                    .setBackground(AssetHelper.loadBitmapFromAsset(mGoogleApiClient, assetBackground))
+                                                    .setContentIcon(R.drawable.ic_launcher)
+                                                    .setBackground(BitmapFactory.decodeResource(getResources(), R.drawable.custom_notification_background))
                                                     .setDisplayIntent(notificationPendingIntent)
                                                     .addAction(action)
                                     );
