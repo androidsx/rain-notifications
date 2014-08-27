@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/pet_icon"
+        android:id="@+id/mascot_icon"
         android:layout_width="110dp"
         android:layout_height="80dp"
         android:layout_marginTop="1dp"

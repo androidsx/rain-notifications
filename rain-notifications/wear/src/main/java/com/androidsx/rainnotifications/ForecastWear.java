@@ -14,7 +14,7 @@ public class ForecastWear extends Activity {
 
     private TextView mTitleView;
     private TextView mTextView;
-    private ImageView mPetImageView;
+    private ImageView mMascotImageView;
     private ImageView mForecastImageView;
 
     @Override
@@ -28,7 +28,7 @@ public class ForecastWear extends Activity {
             public void onLayoutInflated(WatchViewStub stub) {
                 mTitleView = (TextView) stub.findViewById(R.id.title);
                 mTextView = (TextView) stub.findViewById(R.id.text);
-                mPetImageView = (ImageView) stub.findViewById(R.id.pet_icon);
+                mMascotImageView = (ImageView) stub.findViewById(R.id.mascot_icon);
                 mForecastImageView = (ImageView) stub.findViewById(R.id.forecast_icon);
 
                 Intent mIntent = getIntent();
@@ -39,10 +39,10 @@ public class ForecastWear extends Activity {
                         mTitleView.setText(title);
                         mTextView.setText(text);
                     }
-                    Asset assetPetIcon = mIntent.getParcelableExtra(Constants.Extras.EXTRA_PET_ICON);
+                    Asset assetMascotIcon = mIntent.getParcelableExtra(Constants.Extras.EXTRA_MASCOT_ICON);
                     Asset assetForecastIcon = mIntent.getParcelableExtra(Constants.Extras.EXTRA_FORECAST_ICON);
-                    if(assetPetIcon != null) {
-                        AssetHelper.loadBitmapFromAsset(ForecastWear.this, assetPetIcon, mPetImageView);
+                    if(assetMascotIcon != null) {
+                        AssetHelper.loadBitmapFromAsset(ForecastWear.this, assetMascotIcon, mMascotImageView);
                     }
                     if(assetForecastIcon != null) {
                         AssetHelper.loadBitmapFromAsset(ForecastWear.this, assetForecastIcon, mForecastImageView);

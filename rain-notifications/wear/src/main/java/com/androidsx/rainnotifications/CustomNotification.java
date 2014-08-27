@@ -11,7 +11,7 @@ import com.google.android.gms.wearable.Asset;
 
 public class CustomNotification extends Activity {
 
-    private ImageView mPetImageView;
+    private ImageView mMascotImageView;
     private TextView mTextView;
 
     @Override
@@ -19,7 +19,7 @@ public class CustomNotification extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_notification_layout);
 
-        mPetImageView = (ImageView) findViewById(R.id.pet_icon);
+        mMascotImageView = (ImageView) findViewById(R.id.mascot_icon);
         mTextView = (TextView) findViewById(R.id.text);
 
         Intent mIntent = getIntent();
@@ -29,9 +29,9 @@ public class CustomNotification extends Activity {
             if(text != null) {
                 mTextView.setText(text);
             }
-            Asset assetPetIcon = mIntent.getParcelableExtra(Constants.Extras.EXTRA_PET_ICON);
-            if(assetPetIcon != null) {
-                AssetHelper.loadBitmapFromAsset(CustomNotification.this, assetPetIcon, mPetImageView);
+            Asset assetMascotIcon = mIntent.getParcelableExtra(Constants.Extras.EXTRA_MASCOT_ICON);
+            if(assetMascotIcon != null) {
+                AssetHelper.loadBitmapFromAsset(CustomNotification.this, assetMascotIcon, mMascotImageView);
             }
         }
     }

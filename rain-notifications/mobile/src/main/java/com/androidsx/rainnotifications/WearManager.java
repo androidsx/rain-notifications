@@ -46,13 +46,13 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
         Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(this);
     }
 
-    public void sendWearNotification(String title, String text, int petIcon, int forecastIcon){
+    public void sendWearNotification(String title, String text, int mascotIcon, int forecastIcon){
         if (isGoogleApiClientConnected()) {
             PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Constants.WEAR_PATH);
             // Add data to the request
             putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TITLE, title);
             putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TEXT, text);
-            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_PET_ICON, createAssetFromDrawable(petIcon));
+            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_MASCOT_ICON, createAssetFromDrawable(mascotIcon));
             putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_FORECAST_ICON, createAssetFromDrawable(forecastIcon));
             putDataMapRequest.getDataMap().putLong(Constants.Keys.KEY_TIMESTAMP, System.currentTimeMillis());
             PutDataRequest request = putDataMapRequest.asPutDataRequest();

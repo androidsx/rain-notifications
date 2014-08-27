@@ -60,13 +60,13 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
                     final String title = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TITLE);
                     final String text = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TEXT);
-                    Asset assetPetIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_PET_ICON);
+                    Asset assetMascotIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_MASCOT_ICON);
                     Asset assetForecastIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_FORECAST_ICON);
 
                     Intent actionIntent = new Intent(this, ForecastWear.class);
                     actionIntent.putExtra(Constants.Extras.EXTRA_TITLE, title);
                     actionIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_PET_ICON, assetPetIcon);
+                    actionIntent.putExtra(Constants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
                     actionIntent.putExtra(Constants.Extras.EXTRA_FORECAST_ICON, assetForecastIcon);
                     PendingIntent actionPendingIntent = PendingIntent.getActivity(
                             this,
@@ -81,7 +81,7 @@ public class OngoingNotificationListenerService extends WearableListenerService 
 
                     // Intent for change the standard notification by our custom notification layout
                     Intent notificationIntent = new Intent(this, CustomNotification.class);
-                    notificationIntent.putExtra(Constants.Extras.EXTRA_PET_ICON, assetPetIcon);
+                    notificationIntent.putExtra(Constants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
                     notificationIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
                     PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT);

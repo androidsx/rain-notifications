@@ -41,7 +41,7 @@
         android:layout_margin="5dp"/>
 
     <ImageView
-        android:id="@+id/pet_icon"
+        android:id="@+id/mascot_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/ic_launcher"
