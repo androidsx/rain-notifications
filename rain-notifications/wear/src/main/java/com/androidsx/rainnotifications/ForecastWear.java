@@ -1,16 +1,11 @@
 package com.androidsx.rainnotifications;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.view.GravityCompat;
 import android.support.wearable.view.WatchViewStub;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidsx.commonlibrary.Constants;
@@ -18,12 +13,9 @@ import com.google.android.gms.wearable.Asset;
 
 public class ForecastWear extends Activity {
 
-    private static final int NOTIFICATION_ID = 100;
-
     private TextView mTitleView;
     private TextView mTextView;
     private ImageView mImageView;
-    private LinearLayout mBackgroundLinearLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +28,6 @@ public class ForecastWear extends Activity {
             public void onLayoutInflated(WatchViewStub stub) {
                 mTitleView = (TextView) stub.findViewById(R.id.title);
                 mTextView = (TextView) stub.findViewById(R.id.text);
-                mBackgroundLinearLayout = (LinearLayout) stub.findViewById(R.id.background);
                 mImageView = (ImageView) stub.findViewById(R.id.image);
 
                 Intent mIntent = getIntent();
@@ -51,7 +42,6 @@ public class ForecastWear extends Activity {
                     if(assetBackground != null) {
                         AssetHelper.loadBitmapFromAsset(ForecastWear.this, assetBackground, mImageView);
                     }
-                    mBackgroundLinearLayout.setBackground(getResources().getDrawable(R.drawable.notification_background_fake));
                 }
             }
         });
