@@ -3,14 +3,22 @@ package com.androidsx.rainnotifications.service;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.CheckForecast;
+import com.androidsx.rainnotifications.ForecastException;
+import com.androidsx.rainnotifications.UserLocation;
+import com.androidsx.rainnotifications.ForecastLocationException;
+import com.androidsx.rainnotifications.ForecastLocationResultListener;
 import com.androidsx.rainnotifications.ForecastMobile;
+import com.androidsx.rainnotifications.ForecastResultListener;
 import com.androidsx.rainnotifications.WearManager;
+import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.NotificationHelper;
@@ -28,11 +36,13 @@ import org.joda.time.Period;
  * notify to user the next significant weather change.
  */
 
-public class WeatherService extends Service {
+public class WeatherService extends Service implements ForecastLocationResultListener, ForecastResultListener {
 
     private static final String TAG = WeatherService.class.getSimpleName();
 
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
+
+    private Intent intent;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -41,22 +51,46 @@ public class WeatherService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        new CheckForecast(this, intent) {
-            @Override
-            public void summaryReady(String location, Weather currentWeather, Forecast forecast, Alert alert) {
-                if (forecast != null) {
-                    if (shouldLaunchNotification(forecast.getTimeFromNow().toDurationMillis())) {
-                        launchNotification(
-                                UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow())),
-                                alert.getAlertMessage().toString(),
-                                getIconFromWeather(currentWeather),
-                                getIconFromWeather(forecast.getForecastedWeather()));
-                    }
-                }
-            }
-        }.start();
+        this.intent = intent;
+        new UserLocation(this, this);
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+
+    @Override
+    public void onLocationSuccess(Location location, String address) {
+        CheckForecast.requestForecastForLocation(this, intent, location.getLongitude(), location.getLatitude(), address, this);
+    }
+
+    @Override
+    public void onForecastSuccess(ForecastTable forecastTable, String address) {
+        Weather currentWeather = forecastTable.getBaselineWeather();
+        Forecast forecast = null;
+        if (!forecastTable.getForecasts().isEmpty()) {
+            forecast = forecastTable.getForecasts().get(0);
+        }
+        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
+        String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
+        String text = alert.getAlertMessage().toString();
+        if(shouldLaunchNotification(CheckForecast.nextWeatherCallAlarmTime(forecast.getTimeFromNow()).toDurationMillis())) {
+            launchNotification(
+                    title,
+                    text,
+                    CheckForecast.getIconFromWeather(currentWeather),
+                    CheckForecast.getIconFromWeather(forecast.getForecastedWeather())
+            );
+        }
+    }
+
+    @Override
+    public void onLocationFailure(ForecastLocationException exception) {
+
+    }
+
+    @Override
+    public void onForecastFailure(ForecastException exception) {
+
     }
 
     /**

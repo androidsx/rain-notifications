@@ -3,6 +3,7 @@ package com.androidsx.rainnotifications;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.os.Bundle;
 
 import android.view.Menu;
@@ -12,9 +13,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
+import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 
@@ -27,7 +30,7 @@ import timber.log.Timber;
  * <p>
  * It just shows the owl picture and a sample text so far.
  */
-public class ForecastMobile extends BaseWelcomeActivity {
+public class ForecastMobile extends BaseWelcomeActivity implements ForecastLocationResultListener, ForecastResultListener {
     private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
 
     private TextView locationTextView;
@@ -48,7 +51,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
             trackAppUsage();
             appUsageIsTracked = true;
         }
-        obtainForecast(getIntent());
+        new UserLocation(this, this).determineLocation();
     }
 
     private void setupUI() {
@@ -75,25 +78,37 @@ public class ForecastMobile extends BaseWelcomeActivity {
         cardTitleTextView.setText(getString(R.string.today));
     }
 
-    private void obtainForecast(Intent mIntent) {
-        new CheckForecast(this, mIntent) {
-            @Override
-            public void summaryReady(String location, Weather currentWeather, Forecast forecast, Alert alert) {
-                String title;
-                if (forecast != null) {
-                    title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
-                } else {
-                    title = getString(R.string.today);
-                }
-                int mascot_icon = getIconFromWeather(forecast.getForecastedWeather());
-
-                updateUI(location, mascot_icon, title, alert.getAlertMessage().toString());
-            }
-        }.start();
+    @Override
+    public void onLocationSuccess(Location location, String address) {
+        CheckForecast.requestForecastForLocation(this, getIntent(), location.getLongitude(), location.getLatitude(), address, this);
     }
 
-    private void updateUI(String location, int mascot_icon, String title, String message) {
-        locationTextView.setText(location);
+    @Override
+    public void onForecastSuccess(ForecastTable forecastTable, String address) {
+        Weather currentWeather = forecastTable.getBaselineWeather();
+        Forecast forecast = null;
+        if (!forecastTable.getForecasts().isEmpty()) {
+            forecast = forecastTable.getForecasts().get(0);
+        }
+        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
+        String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
+        String message = alert.getAlertMessage().toString();
+
+        updateUI(address, CheckForecast.getIconFromWeather(forecast.getForecastedWeather()), title, message);
+    }
+
+    @Override
+    public void onLocationFailure(ForecastLocationException exception) {
+
+    }
+
+    @Override
+    public void onForecastFailure(ForecastException exception) {
+
+    }
+
+    private void updateUI(String address, int mascot_icon, String title, String message) {
+        locationTextView.setText(address);
         mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), mascot_icon));
         cardTitleTextView.setText(title);
         cardMessageTextView.setText(message);
