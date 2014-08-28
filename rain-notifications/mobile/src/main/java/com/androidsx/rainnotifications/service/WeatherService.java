@@ -8,12 +8,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.CheckForecast;
-import com.androidsx.rainnotifications.ForecastException;
+import com.androidsx.rainnotifications.CheckForecastException;
+import com.androidsx.rainnotifications.CheckForecastResultListener;
 import com.androidsx.rainnotifications.UserLocation;
-import com.androidsx.rainnotifications.ForecastLocationException;
-import com.androidsx.rainnotifications.ForecastLocationResultListener;
+import com.androidsx.rainnotifications.UserLocationException;
+import com.androidsx.rainnotifications.UserLocationResultListener;
 import com.androidsx.rainnotifications.ForecastMobile;
-import com.androidsx.rainnotifications.ForecastResultListener;
 import com.androidsx.rainnotifications.WearManager;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
@@ -36,7 +36,7 @@ import org.joda.time.Period;
  * notify to user the next significant weather change.
  */
 
-public class WeatherService extends Service implements ForecastLocationResultListener, ForecastResultListener {
+public class WeatherService extends Service implements UserLocationResultListener, CheckForecastResultListener {
 
     private static final String TAG = WeatherService.class.getSimpleName();
 
@@ -84,12 +84,12 @@ public class WeatherService extends Service implements ForecastLocationResultLis
     }
 
     @Override
-    public void onLocationFailure(ForecastLocationException exception) {
+    public void onLocationFailure(UserLocationException exception) {
 
     }
 
     @Override
-    public void onForecastFailure(ForecastException exception) {
+    public void onForecastFailure(CheckForecastException exception) {
 
     }
 

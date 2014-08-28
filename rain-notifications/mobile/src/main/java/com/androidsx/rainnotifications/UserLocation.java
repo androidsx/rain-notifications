@@ -20,13 +20,13 @@ public class UserLocation implements GooglePlayServicesClient.ConnectionCallback
     private static final String TAG = UserLocation.class.getSimpleName();
 
     private LocationClient mLocationClient;
-    private ForecastLocationResultListener mForecastLocationResultListener;
+    private UserLocationResultListener mUserLocationResultListener;
     private Context context;
 
-    public UserLocation(Context context, ForecastLocationResultListener forecastLocationResultListener) {
+    public UserLocation(Context context, UserLocationResultListener userLocationResultListener) {
         this.context = context;
         mLocationClient = new LocationClient(context, this, this);
-        mForecastLocationResultListener = forecastLocationResultListener;
+        mUserLocationResultListener = userLocationResultListener;
     }
 
     public void determineLocation() {
@@ -38,9 +38,9 @@ public class UserLocation implements GooglePlayServicesClient.ConnectionCallback
         if (mLocationClient.isConnected()) {
             Location loc = mLocationClient.getLastLocation();
             if (loc != null) {
-                mForecastLocationResultListener.onLocationSuccess(loc, getLocationAddress(context, loc.getLatitude(), loc.getLongitude()));
+                mUserLocationResultListener.onLocationSuccess(loc, getLocationAddress(context, loc.getLatitude(), loc.getLongitude()));
             } else {
-                mForecastLocationResultListener.onLocationFailure(new ForecastLocationException());
+                mUserLocationResultListener.onLocationFailure(new UserLocationException());
             }
         }
     }

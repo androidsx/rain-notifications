@@ -30,7 +30,7 @@ import timber.log.Timber;
  * <p>
  * It just shows the owl picture and a sample text so far.
  */
-public class ForecastMobile extends BaseWelcomeActivity implements ForecastLocationResultListener, ForecastResultListener {
+public class ForecastMobile extends BaseWelcomeActivity implements UserLocationResultListener, CheckForecastResultListener {
     private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
 
     private TextView locationTextView;
@@ -98,12 +98,12 @@ public class ForecastMobile extends BaseWelcomeActivity implements ForecastLocat
     }
 
     @Override
-    public void onLocationFailure(ForecastLocationException exception) {
+    public void onLocationFailure(UserLocationException exception) {
 
     }
 
     @Override
-    public void onForecastFailure(ForecastException exception) {
+    public void onForecastFailure(CheckForecastException exception) {
 
     }
 

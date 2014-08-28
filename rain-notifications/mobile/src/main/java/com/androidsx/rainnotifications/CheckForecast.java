@@ -39,7 +39,7 @@ public class CheckForecast {
      */
     public static void requestForecastForLocation(final Context context, final Intent mIntent,
                                                   final double longitude, final double latitude,
-                                                  final String address, final ForecastResultListener forecastResultListener) {
+                                                  final String address, final CheckForecastResultListener checkForecastResultListener) {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
             final PendingIntent weatherAlarmIntent;
             if(mIntent != null) {
@@ -58,11 +58,11 @@ public class CheckForecast {
                             currentWeather,
                             forecastTable.getForecasts()
                     );
-                    forecastResultListener.onForecastSuccess(forecastTable, address);
+                    checkForecastResultListener.onForecastSuccess(forecastTable, address);
                 }
                 @Override
                 protected void onFailure() {
-                    forecastResultListener.onForecastFailure(new ForecastException());
+                    checkForecastResultListener.onForecastFailure(new CheckForecastException());
                     // TODO: And here is where we do something smart about failures
                 }
             }.execute(new ForecastIoRequest(latitude, longitude).getRequest());
