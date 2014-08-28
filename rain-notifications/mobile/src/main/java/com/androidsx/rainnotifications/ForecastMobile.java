@@ -81,7 +81,7 @@ public class ForecastMobile extends BaseWelcomeActivity implements UserLocationR
 
     @Override
     public void onLocationSuccess(Location location, String address) {
-        ForecastChecker.requestForecastForLocation(this, getIntent(), location.getLongitude(), location.getLatitude(), address, this);
+        ForecastChecker.requestForecastForLocation(this, getIntent(), location.getLatitude(), location.getLongitude(), address, this);
     }
 
     @Override

@@ -19,11 +19,15 @@ public class ForecastChecker {
     /**
      * Asynchronous method that call for obtain the weather forecast into a determined location.
      *
-     * @param longitude
+     * @param context
+     * @param mIntent
      * @param latitude
+     * @param longitude
+     * @param address
+     * @param checkForecastResultListener
      */
     public static void requestForecastForLocation(final Context context, final Intent mIntent,
-                                                  final double longitude, final double latitude,
+                                                  final double latitude, final double longitude,
                                                   final String address, final CheckForecastResultListener checkForecastResultListener) {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
             final PendingIntent weatherAlarmIntent;
