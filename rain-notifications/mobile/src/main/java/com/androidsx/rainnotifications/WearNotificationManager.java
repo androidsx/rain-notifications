@@ -18,24 +18,24 @@ import com.google.android.gms.wearable.Wearable;
 
 import com.androidsx.commonlibrary.Constants;
 
-public class WearManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<NodeApi.GetConnectedNodesResult> {
+public class WearNotificationManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<NodeApi.GetConnectedNodesResult> {
 
     private GoogleApiClient mGoogleApiClient;
     private Context context;
-    private WearManagerResultListener mWearManagerResultListener;
+    private WearNotificationManagerResultListener mWearManagerResultListener;
 
     private String title;
     private String text;
     private int mascotIcon;
     private int forecastIcon;
 
-    public WearManager(Context context, WearManagerResultListener wearManagerResultListener, String title, String text, int mascotIcon, int forecastIcon) {
+    public WearNotificationManager(Context context, WearNotificationManagerResultListener wearNotificationManagerResultListener, String title, String text, int mascotIcon, int forecastIcon) {
         this.mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
-        this.mWearManagerResultListener = wearManagerResultListener;
+        this.mWearManagerResultListener = wearNotificationManagerResultListener;
         this.context = context;
         this.title = title;
         this.text = text;
@@ -109,7 +109,7 @@ public class WearManager implements GoogleApiClient.ConnectionCallbacks, GoogleA
         if(getConnectedNodesResult != null) {
             mWearManagerResultListener.onWearManagerSuccess(getConnectedNodesResult, this);
         } else {
-            mWearManagerResultListener.onWearManagerFailure(new WearManagerException());
+            mWearManagerResultListener.onWearManagerFailure(new WearNotificationManagerException());
         }
     }
 

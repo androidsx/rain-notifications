@@ -17,7 +17,7 @@ import com.google.android.gms.wearable.NodeApi;
 
 import timber.log.Timber;
 
-public class DebugActivity extends Activity implements WearManagerResultListener {
+public class DebugActivity extends Activity implements WearNotificationManagerResultListener {
     private TextView locationTextView;
     private TextView nextWeatherTextView;
     private TextView historyTextView;
@@ -65,36 +65,36 @@ public class DebugActivity extends Activity implements WearManagerResultListener
     /** Linked to the button in the XML layout. */
     public void showNotification(View view) {
         Timber.d("Show a random notification");
-        new WearManager(this, this, getString(R.string.notif_title), getString(R.string.notif_long_text_fake), R.drawable.notification_background_fake, R.drawable.owl_sunny_fake).connect();
+        new WearNotificationManager(this, this, getString(R.string.notif_title), getString(R.string.notif_long_text_fake), R.drawable.notification_background_fake, R.drawable.owl_sunny_fake).connect();
     }
 
     @Override
-    public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult, WearManager mWearManager) {
+    public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult, WearNotificationManager mWearNotificationManager) {
         if (getConnectedNodesResult.getNodes() != null) {
             if (getConnectedNodesResult.getNodes().size() > 0) {
-                mWearManager.sendWearNotification();
+                mWearNotificationManager.sendWearNotification();
             } else {
                 NotificationHelper.sendNotification(
                         this,
                         ForecastMobile.class,
-                        mWearManager.getTitle(),
-                        mWearManager.getText(),
-                        BitmapFactory.decodeResource(getResources(), mWearManager.getForecastIcon())
+                        mWearNotificationManager.getTitle(),
+                        mWearNotificationManager.getText(),
+                        BitmapFactory.decodeResource(getResources(), mWearNotificationManager.getForecastIcon())
                 );
             }
         } else {
             NotificationHelper.sendNotification(
                     this,
                     ForecastMobile.class,
-                    mWearManager.getTitle(),
-                    mWearManager.getText(),
-                    BitmapFactory.decodeResource(getResources(), mWearManager.getForecastIcon())
+                    mWearNotificationManager.getTitle(),
+                    mWearNotificationManager.getText(),
+                    BitmapFactory.decodeResource(getResources(), mWearNotificationManager.getForecastIcon())
             );
         }
     }
 
     @Override
-    public void onWearManagerFailure(WearManagerException exception) {
+    public void onWearManagerFailure(WearNotificationManagerException exception) {
 
     }
 

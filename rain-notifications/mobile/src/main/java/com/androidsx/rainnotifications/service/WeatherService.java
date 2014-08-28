@@ -13,9 +13,9 @@ import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.UserLocationException;
 import com.androidsx.rainnotifications.UserLocationResultListener;
 import com.androidsx.rainnotifications.ForecastMobile;
-import com.androidsx.rainnotifications.WearManager;
-import com.androidsx.rainnotifications.WearManagerException;
-import com.androidsx.rainnotifications.WearManagerResultListener;
+import com.androidsx.rainnotifications.WearNotificationManager;
+import com.androidsx.rainnotifications.WearNotificationManagerException;
+import com.androidsx.rainnotifications.WearNotificationManagerResultListener;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
@@ -39,7 +39,7 @@ import org.joda.time.Period;
  * notify to user the next significant weather change.
  */
 
-public class WeatherService extends Service implements UserLocationResultListener, ForecastCheckerResultListener, WearManagerResultListener {
+public class WeatherService extends Service implements UserLocationResultListener, ForecastCheckerResultListener, WearNotificationManagerResultListener {
 
     private static final String TAG = WeatherService.class.getSimpleName();
 
@@ -120,36 +120,36 @@ public class WeatherService extends Service implements UserLocationResultListene
      * @param forecastIcon
      */
     private void launchNotification(final String title, final String text, final int mascotIcon, final int forecastIcon) {
-        new WearManager(this, this, title, text, mascotIcon, forecastIcon).connect();
+        new WearNotificationManager(this, this, title, text, mascotIcon, forecastIcon).connect();
     }
 
     @Override
-    public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult, WearManager mWearManager) {
+    public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult, WearNotificationManager mWearNotificationManager) {
         if (getConnectedNodesResult.getNodes() != null) {
             if (getConnectedNodesResult.getNodes().size() > 0) {
-                mWearManager.sendWearNotification();
+                mWearNotificationManager.sendWearNotification();
             } else {
                 NotificationHelper.sendNotification(
                         this,
                         ForecastMobile.class,
-                        mWearManager.getTitle(),
-                        mWearManager.getText(),
-                        BitmapFactory.decodeResource(getResources(), mWearManager.getForecastIcon())
+                        mWearNotificationManager.getTitle(),
+                        mWearNotificationManager.getText(),
+                        BitmapFactory.decodeResource(getResources(), mWearNotificationManager.getForecastIcon())
                 );
             }
         } else {
             NotificationHelper.sendNotification(
                     this,
                     ForecastMobile.class,
-                    mWearManager.getTitle(),
-                    mWearManager.getText(),
-                    BitmapFactory.decodeResource(getResources(), mWearManager.getForecastIcon())
+                    mWearNotificationManager.getTitle(),
+                    mWearNotificationManager.getText(),
+                    BitmapFactory.decodeResource(getResources(), mWearNotificationManager.getForecastIcon())
             );
         }
     }
 
     @Override
-    public void onWearManagerFailure(WearManagerException exception) {
+    public void onWearManagerFailure(WearNotificationManagerException exception) {
 
     }
 }
