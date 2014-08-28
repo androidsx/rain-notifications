@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.os.Bundle;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.ForecastChecker;
@@ -15,6 +14,8 @@ import com.androidsx.rainnotifications.UserLocationException;
 import com.androidsx.rainnotifications.UserLocationResultListener;
 import com.androidsx.rainnotifications.ForecastMobile;
 import com.androidsx.rainnotifications.WearManager;
+import com.androidsx.rainnotifications.WearManagerException;
+import com.androidsx.rainnotifications.WearManagerResultListener;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
@@ -24,7 +25,6 @@ import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.WeatherHelper;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTimeConstants;
@@ -39,7 +39,7 @@ import org.joda.time.Period;
  * notify to user the next significant weather change.
  */
 
-public class WeatherService extends Service implements UserLocationResultListener, CheckForecastResultListener {
+public class WeatherService extends Service implements UserLocationResultListener, CheckForecastResultListener, WearManagerResultListener {
 
     private static final String TAG = WeatherService.class.getSimpleName();
 
@@ -120,49 +120,36 @@ public class WeatherService extends Service implements UserLocationResultListene
      * @param forecastIcon
      */
     private void launchNotification(final String title, final String text, final int mascotIcon, final int forecastIcon) {
-        new WearManager(this) {
-            @Override
-            public void onConnected(Bundle bundle) {
-                getConnectedNodes();
+        new WearManager(this, this, title, text, mascotIcon, forecastIcon).connect();
+    }
+
+    @Override
+    public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult, WearManager mWearManager) {
+        if (getConnectedNodesResult.getNodes() != null) {
+            if (getConnectedNodesResult.getNodes().size() > 0) {
+                mWearManager.sendWearNotification();
+            } else {
+                NotificationHelper.sendNotification(
+                        this,
+                        ForecastMobile.class,
+                        mWearManager.getTitle(),
+                        mWearManager.getText(),
+                        BitmapFactory.decodeResource(getResources(), mWearManager.getForecastIcon())
+                );
             }
+        } else {
+            NotificationHelper.sendNotification(
+                    this,
+                    ForecastMobile.class,
+                    mWearManager.getTitle(),
+                    mWearManager.getText(),
+                    BitmapFactory.decodeResource(getResources(), mWearManager.getForecastIcon())
+            );
+        }
+    }
 
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                if (getConnectedNodesResult.getNodes() != null) {
-                    if (getConnectedNodesResult.getNodes().size() > 0) {
-                        sendWearNotification(
-                                title,
-                                text,
-                                mascotIcon,
-                                forecastIcon);
-                    } else {
-                        NotificationHelper.sendNotification(
-                                WeatherService.this,
-                                ForecastMobile.class,
-                                title,
-                                text,
-                                BitmapFactory.decodeResource(getResources(), mascotIcon)
-                        );
-                    }
-                } else {
-                    NotificationHelper.sendNotification(
-                            WeatherService.this,
-                            ForecastMobile.class,
-                            title,
-                            text,
-                            BitmapFactory.decodeResource(getResources(), mascotIcon)
-                    );                }
-            }
+    @Override
+    public void onWearManagerFailure(WearManagerException exception) {
 
-            @Override
-            public void onConnectionSuspended(int i) {
-
-            }
-
-            @Override
-            public void onConnectionFailed(ConnectionResult connectionResult) {
-
-            }
-        }.connect();
     }
 }

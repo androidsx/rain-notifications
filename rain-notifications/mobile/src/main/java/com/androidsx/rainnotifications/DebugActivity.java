@@ -13,12 +13,11 @@ import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.wearable.NodeApi;
 
 import timber.log.Timber;
 
-public class DebugActivity extends Activity {
+public class DebugActivity extends Activity implements WearManagerResultListener {
     private TextView locationTextView;
     private TextView nextWeatherTextView;
     private TextView historyTextView;
@@ -66,51 +65,37 @@ public class DebugActivity extends Activity {
     /** Linked to the button in the XML layout. */
     public void showNotification(View view) {
         Timber.d("Show a random notification");
-        new WearManager(this) {
-            @Override
-            public void onConnected(Bundle bundle) {
-                getConnectedNodes();
+        new WearManager(this, this, getString(R.string.notif_title), getString(R.string.notif_long_text_fake), R.drawable.notification_background_fake, R.drawable.owl_sunny_fake).connect();
+    }
+
+    @Override
+    public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult, WearManager mWearManager) {
+        if (getConnectedNodesResult.getNodes() != null) {
+            if (getConnectedNodesResult.getNodes().size() > 0) {
+                mWearManager.sendWearNotification();
+            } else {
+                NotificationHelper.sendNotification(
+                        this,
+                        ForecastMobile.class,
+                        mWearManager.getTitle(),
+                        mWearManager.getText(),
+                        BitmapFactory.decodeResource(getResources(), mWearManager.getForecastIcon())
+                );
             }
+        } else {
+            NotificationHelper.sendNotification(
+                    this,
+                    ForecastMobile.class,
+                    mWearManager.getTitle(),
+                    mWearManager.getText(),
+                    BitmapFactory.decodeResource(getResources(), mWearManager.getForecastIcon())
+            );
+        }
+    }
 
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                if (getConnectedNodesResult.getNodes() != null) {
-                    if (getConnectedNodesResult.getNodes().size() > 0) {
-                        sendWearNotification(
-                                getString(R.string.notif_title),
-                                getString(R.string.notif_long_text_fake),
-                                R.drawable.notification_background_fake,
-                                R.drawable.owl_sunny_fake);
-                    } else {
-                        NotificationHelper.sendNotification(
-                                DebugActivity.this,
-                                ForecastMobile.class,
-                                getString(R.string.notif_title),
-                                getString(R.string.notif_long_text_fake),
-                                BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
-                                );
-                    }
-                } else {
-                    NotificationHelper.sendNotification(
-                            DebugActivity.this,
-                            ForecastMobile.class,
-                            getString(R.string.notif_title),
-                            getString(R.string.notif_long_text_fake),
-                            BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
-                    );
-                }
-            }
+    @Override
+    public void onWearManagerFailure(WearManagerException exception) {
 
-            @Override
-            public void onConnectionSuspended(int i) {
-
-            }
-
-            @Override
-            public void onConnectionFailed(ConnectionResult connectionResult) {
-
-            }
-        }.connect();
     }
 
     /**
@@ -127,4 +112,5 @@ public class DebugActivity extends Activity {
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
         }
     }
+
 }

@@ -18,18 +18,29 @@ import com.google.android.gms.wearable.Wearable;
 
 import com.androidsx.commonlibrary.Constants;
 
-public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<NodeApi.GetConnectedNodesResult> {
+public class WearManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<NodeApi.GetConnectedNodesResult> {
 
     private GoogleApiClient mGoogleApiClient;
     private Context context;
+    private WearManagerResultListener mWearManagerResultListener;
 
-    public WearManager(Context context) {
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
+    private String title;
+    private String text;
+    private int mascotIcon;
+    private int forecastIcon;
+
+    public WearManager(Context context, WearManagerResultListener wearManagerResultListener, String title, String text, int mascotIcon, int forecastIcon) {
+        this.mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
+        this.mWearManagerResultListener = wearManagerResultListener;
         this.context = context;
+        this.title = title;
+        this.text = text;
+        this.mascotIcon = mascotIcon;
+        this.forecastIcon = forecastIcon;
     }
 
     public void connect() {
@@ -38,7 +49,7 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
         }
     }
 
-    public boolean isGoogleApiClientConnected() {
+    private boolean isGoogleApiClientConnected() {
         return mGoogleApiClient.isConnected();
     }
 
@@ -46,7 +57,7 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
         Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(this);
     }
 
-    public void sendWearNotification(String title, String text, int mascotIcon, int forecastIcon){
+    public boolean sendWearNotification(){
         if (isGoogleApiClientConnected()) {
             PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Constants.WEAR_PATH);
             // Add data to the request
@@ -64,6 +75,9 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
 
                         }
                     });
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -76,15 +90,42 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
     }
 
     @Override
-    public abstract void onConnected(Bundle bundle);
+    public void onConnected(Bundle bundle) {
+        getConnectedNodes();
+    }
 
     @Override
-    public abstract void onConnectionSuspended(int i);
+    public void onConnectionSuspended(int i) {
+
+    }
 
     @Override
-    public abstract void onConnectionFailed(ConnectionResult connectionResult);
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
 
     @Override
-    public abstract void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult);
+    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+        if(getConnectedNodesResult != null) {
+            mWearManagerResultListener.onWearManagerSuccess(getConnectedNodesResult, this);
+        } else {
+            mWearManagerResultListener.onWearManagerFailure(new WearManagerException());
+        }
+    }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public int getMascotIcon() {
+        return mascotIcon;
+    }
+
+    public int getForecastIcon() {
+        return forecastIcon;
+    }
 }
