@@ -80,7 +80,7 @@ public class ForecastMobile extends BaseWelcomeActivity implements UserLocationR
 
     @Override
     public void onLocationSuccess(Location location, String address) {
-        CheckForecast.requestForecastForLocation(this, getIntent(), location.getLongitude(), location.getLatitude(), address, this);
+        ForecastChecker.requestForecastForLocation(this, getIntent(), location.getLongitude(), location.getLatitude(), address, this);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ForecastMobile extends BaseWelcomeActivity implements UserLocationR
         String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
         String message = alert.getAlertMessage().toString();
 
-        updateUI(address, CheckForecast.getIconFromWeather(forecast.getForecastedWeather()), title, message);
+        updateUI(address, ForecastChecker.getIconFromWeather(forecast.getForecastedWeather()), title, message);
     }
 
     @Override
