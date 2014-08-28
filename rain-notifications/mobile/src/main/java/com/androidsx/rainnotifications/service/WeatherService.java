@@ -23,6 +23,7 @@ import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
+import com.androidsx.rainnotifications.util.WeatherHelper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.wearable.NodeApi;
 
@@ -79,8 +80,8 @@ public class WeatherService extends Service implements UserLocationResultListene
             launchNotification(
                     title,
                     text,
-                    ForecastChecker.getIconFromWeather(currentWeather),
-                    ForecastChecker.getIconFromWeather(forecast.getForecastedWeather())
+                    WeatherHelper.getIconFromWeather(currentWeather),
+                    WeatherHelper.getIconFromWeather(forecast.getForecastedWeather())
             );
         }
     }

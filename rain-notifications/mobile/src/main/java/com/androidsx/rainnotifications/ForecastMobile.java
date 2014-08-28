@@ -20,6 +20,7 @@ import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
+import com.androidsx.rainnotifications.util.WeatherHelper;
 
 import org.joda.time.Period;
 
@@ -94,7 +95,7 @@ public class ForecastMobile extends BaseWelcomeActivity implements UserLocationR
         String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
         String message = alert.getAlertMessage().toString();
 
-        updateUI(address, ForecastChecker.getIconFromWeather(forecast.getForecastedWeather()), title, message);
+        updateUI(address, WeatherHelper.getIconFromWeather(forecast.getForecastedWeather()), title, message);
     }
 
     @Override
