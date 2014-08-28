@@ -2,7 +2,7 @@ package com.androidsx.rainnotifications;
 
 import com.androidsx.rainnotifications.model.ForecastTable;
 
-public interface CheckForecastResultListener {
+public interface ForecastCheckerResultListener {
     public void onForecastSuccess(ForecastTable forecastTable, String address);
-    public void onForecastFailure(CheckForecastException exception);
+    public void onForecastFailure(ForecastCheckerException exception);
 }
