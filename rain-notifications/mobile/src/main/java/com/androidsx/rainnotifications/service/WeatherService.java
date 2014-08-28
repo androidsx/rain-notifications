@@ -8,7 +8,6 @@ import android.os.IBinder;
 
 import com.androidsx.rainnotifications.CheckForecast;
 import com.androidsx.rainnotifications.ForecastMobile;
-import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.WearManager;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;

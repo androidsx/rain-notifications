@@ -19,7 +19,7 @@ public abstract class UserLocation implements GooglePlayServicesClient.Connectio
         this.mLocationClient = new LocationClient(context, this, this);
     }
 
-    public void getUserLocation() {
+    public void connect() {
         mLocationClient.connect();
     }
 

@@ -21,6 +21,7 @@ import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.LocationHelper;
 
 import org.joda.time.DateTimeConstants;
+import org.joda.time.Interval;
 import org.joda.time.LocalTime;
 import org.joda.time.Period;
 
@@ -35,7 +36,7 @@ public abstract class CheckForecast {
     private static final String TAG = CheckForecast.class.getSimpleName();
 
     private static final long WEATHER_REPEATING_TIME_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
-    private static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
+    public static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private static final long DEFAULT_EXTRA_TIME_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
 
@@ -46,16 +47,37 @@ public abstract class CheckForecast {
 
     public CheckForecast(Context context, Intent intent) {
         this.context = context;
-        weatherAlarmIntent = PendingIntent.getService(context, Constants.AlarmId.WEATHER_ID, intent, 0);
+        if(intent != null) {
+            weatherAlarmIntent = PendingIntent.getService(context, Constants.AlarmId.WEATHER_ID, intent, 0);
+        } else {
+            weatherAlarmIntent = PendingIntent.getService(context, Constants.AlarmId.WEATHER_ID, new Intent(context, WeatherService.class), 0);
+        }
     }
 
+    /**
+     * Final method called when all asynchronous methods have finished.
+     *
+     * @param location
+     * @param currentWeather
+     * @param forecast
+     * @param alert
+     */
     public abstract void summaryReady(String location, Weather currentWeather, Forecast forecast, Alert alert);
 
+    /**
+     * Unique public method for starting all the asynchronous cascade calls
+     */
     public void start() {
-        getLocation();
+        callForObtainLastLocation();
     }
 
-    private void getLocation() {
+    /**
+     * Asynchronous method that connect to GooglePlayServices for obtain the current location.
+     * When it finishes, it calls the implemented method that receives the last user location.
+     * Using that location, it calls to "callForObtainForecast" passing the latitude and longitude
+     * of the location.
+     */
+    private void callForObtainLastLocation() {
         new UserLocation(context) {
             @Override
             public void obtainedLocation(Location loc) {
@@ -64,19 +86,24 @@ public abstract class CheckForecast {
                             new LocalTime(System.currentTimeMillis()),
                             getLocationAddress(loc.getLatitude(), loc.getLongitude()),
                             loc.getLatitude(), loc.getLongitude());
-                    callForecastIO(loc.getLatitude(), loc.getLongitude());
+                    callForObtainForecast(loc.getLatitude(), loc.getLongitude());
                 } else {
                     // TODO: probably notify to user, that the gps is disabled or not available,
                     // if we try to obtain many times the location.
                 }
             }
-        }.getUserLocation();
+        }.connect();
     }
 
-    private void callForecastIO(final double longitude, final double latitude) {
+    /**
+     * Asynchronous method that call for obtain the weather forecast into a determined location.
+     *
+     * @param longitude
+     * @param latitude
+     */
+    private void callForObtainForecast(final double longitude, final double latitude) {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
             new ForecastIoNetworkServiceTask() {
-
                 @Override
                 protected void onSuccess(ForecastTable forecastTable) {
                     // TODO: Here is where we should apply our logic
@@ -97,7 +124,6 @@ public abstract class CheckForecast {
                             forecast,
                             alertGenerator.generateAlert(currentWeather, forecast));
                 }
-
                 @Override
                 protected void onFailure() {
                     // TODO: And here is where we do something smart about failures
@@ -106,14 +132,20 @@ public abstract class CheckForecast {
         }
     }
 
+    /**
+     * Method that set alarm next, depending on weather forecasts list.
+     *
+     * @param currentWeather
+     * @param forecasts
+     */
     private void scheduleAlarm(Weather currentWeather, List<Forecast> forecasts) {
-        long nextAlarmTime;
+        Interval nextIntervalAlarmTime;
         if (forecasts.isEmpty()) {
-            nextAlarmTime = System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS;
+            nextIntervalAlarmTime = new Interval(System.currentTimeMillis(), System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS);
         } else {
-            nextAlarmTime = forecasts.get(0).getTimeFromNow().toDurationMillis();
+            nextIntervalAlarmTime = forecasts.get(0).getTimeFromNow();
         }
-        long nextAlarmTimePeriod = nextWeatherCallAlarmTime(nextAlarmTime);
+        Interval nextAlarmTimePeriod = nextWeatherCallAlarmTime(nextIntervalAlarmTime);
 
         weatherAlarmIntent.cancel();
         weatherAlarmIntent = PendingIntent.getService(
@@ -126,7 +158,7 @@ public abstract class CheckForecast {
             am.cancel(weatherAlarmIntent);
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    nextWeatherCallAlarmTime(nextAlarmTime),
+                    nextAlarmTimePeriod.getEndMillis(),
                     WEATHER_REPEATING_TIME_MILLIS,
                     weatherAlarmIntent);
             if (!forecasts.isEmpty()) {
@@ -154,20 +186,28 @@ public abstract class CheckForecast {
      * This method is for determine the next alarm hour,
      * depending on the interval from now to expected hour passed as a param
      *
-     * @param expectedHour
-     * @return next alarm hour in millis
+     * @param interval
+     * @return long - next alarm hour in millis
      */
-    public long nextWeatherCallAlarmTime(long expectedHour) {
-        final long currentTime = System.currentTimeMillis();
-        if ((expectedHour - currentTime) < TEN_MINUTES_MILLIS) {
-            return expectedHour;
-        } else if (expectedHour - currentTime < 2 * ONE_HOUR_MILLIS){
-            return currentTime + getTimePeriodPercentage((expectedHour - currentTime), 70);
+    public Interval nextWeatherCallAlarmTime(Interval interval) {
+        final long startTime = interval.getStartMillis();
+        final long endTime = interval.getEndMillis();
+        if ((endTime - startTime) < TEN_MINUTES_MILLIS) {
+            return new Interval(startTime, endTime);
+        } else if (endTime - startTime < 2 * ONE_HOUR_MILLIS){
+            return new Interval(startTime, startTime + getTimePeriodPercentage((endTime - startTime), 70));
         } else {
-            return currentTime + ONE_HOUR_MILLIS;
+            return new Interval(startTime, startTime + ONE_HOUR_MILLIS);
         }
     }
 
+    /**
+     * Method that translate a location coordinates into a quotidian name.
+     *
+     * @param latitude
+     * @param longitude
+     * @return String - quotidian name of direction
+     */
     private String getLocationAddress(double latitude, double longitude) {
         String address = context.getString(R.string.current_name_location);
 
@@ -188,10 +228,23 @@ public abstract class CheckForecast {
         return address;
     }
 
+    /**
+     * Method for obtain a percentage time in milliseconds of an interval.
+     *
+     * @param time
+     * @param percentage
+     * @return long - period in milliseconds
+     */
     private long getTimePeriodPercentage(long time, int percentage) {
         return time * percentage / 100;
     }
 
+    /**
+     * Method for obtain the resource icon, depending on weather passed as a param, using its type.
+     *
+     * @param weather
+     * @return int - resource id
+     */
     public int getIconFromWeather(Weather weather) {
         if (weather == null) return Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN);
         return Constants.FORECAST_ICONS.containsKey(weather.getType())
