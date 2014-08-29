@@ -15,43 +15,42 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public abstract class UserLocation extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener, UserLocationResultListener {
+public abstract class UserLocation extends Activity implements UserLocationResultListener {
 
     private static final String TAG = UserLocation.class.getSimpleName();
 
     private LocationClient mLocationClient;
     private Context context;
 
-    public UserLocation(Context context) {
+    public UserLocation(final Context context) {
         this.context = context;
-        mLocationClient = new LocationClient(context, this, this);
+        mLocationClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
+            @Override
+            public void onConnected(Bundle bundle) {
+                if (mLocationClient.isConnected()) {
+                    Location loc = mLocationClient.getLastLocation();
+                    if (loc != null) {
+                        onLocationSuccess(loc, getLocationAddress(context, loc.getLatitude(), loc.getLongitude()));
+                    } else {
+                        onLocationFailure(new UserLocationException());
+                    }
+                }
+            }
+
+            @Override
+            public void onDisconnected() {
+
+            }
+        }, new GooglePlayServicesClient.OnConnectionFailedListener() {
+            @Override
+            public void onConnectionFailed(ConnectionResult connectionResult) {
+
+            }
+        });
     }
 
     public void determineLocation() {
         mLocationClient.connect();
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        if (mLocationClient.isConnected()) {
-            Location loc = mLocationClient.getLastLocation();
-            if (loc != null) {
-                onLocationSuccess(loc, getLocationAddress(context, loc.getLatitude(), loc.getLongitude()));
-            } else {
-                onLocationFailure(new UserLocationException());
-            }
-        }
-    }
-
-    @Override
-    public void onDisconnected() {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 
     /**
