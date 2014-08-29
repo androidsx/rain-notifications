@@ -28,8 +28,8 @@ public class ForecastChecker {
      * @param address
      * @param forecastCheckerResultListener
      */
-    public static void requestForecastForLocation(final Context context, final Intent mIntent,
-                                                  final double latitude, final double longitude,
+    public static void requestForecastForLocation(final Context context, Intent mIntent,
+                                                  double latitude, double longitude,
                                                   final String address, final ForecastCheckerResultListener forecastCheckerResultListener) {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
             final PendingIntent weatherAlarmIntent = PendingIntent.getService(context, Constants.AlarmId.WEATHER_ID, mIntent, 0);
