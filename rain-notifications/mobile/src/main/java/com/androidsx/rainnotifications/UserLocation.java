@@ -50,6 +50,9 @@ public abstract class UserLocation extends Activity implements UserLocationResul
         });
     }
 
+    /**
+     * Method called by class user, for obtain the last user location.
+     */
     public void determineLocation() {
         mLocationClient.connect();
     }
