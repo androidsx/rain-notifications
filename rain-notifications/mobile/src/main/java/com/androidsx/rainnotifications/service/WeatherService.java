@@ -55,9 +55,9 @@ public class WeatherService extends Service {
             public void onLocationSuccess(Location location, String address) {
                 Intent mIntent = intent;
                 if(mIntent == null) {
-                    mIntent = new Intent(this, WeatherService.class);
+                    mIntent = new Intent(WeatherService.this, WeatherService.class);
                 }
-                ForecastChecker.requestForecastForLocation(this, mIntent, location.getLatitude(), location.getLongitude(), address,
+                ForecastChecker.requestForecastForLocation(WeatherService.this, mIntent, location.getLatitude(), location.getLongitude(), address,
                         new ForecastCheckerResultListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable, String address) {
@@ -90,7 +90,7 @@ public class WeatherService extends Service {
             public void onLocationFailure(UserLocationException exception) {
 
             }
-        }.determineLocation();
+        }.connect();
 
         return super.onStartCommand(intent, flags, startId);
     }

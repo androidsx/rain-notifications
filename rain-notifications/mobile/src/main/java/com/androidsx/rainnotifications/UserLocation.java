@@ -1,6 +1,5 @@
 package com.androidsx.rainnotifications;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -18,7 +17,7 @@ import java.util.Locale;
 /**
  * Class that determine de user location in coordinates and text.
  */
-public abstract class UserLocation extends Activity implements UserLocationResultListener {
+public abstract class UserLocation implements UserLocationResultListener {
 
     private static final String TAG = UserLocation.class.getSimpleName();
 
@@ -50,10 +49,7 @@ public abstract class UserLocation extends Activity implements UserLocationResul
         });
     }
 
-    /**
-     * Method called by class user, for obtain the last user location.
-     */
-    public void determineLocation() {
+    public void connect() {
         mLocationClient.connect();
     }
 
