@@ -30,12 +30,7 @@ public class ForecastChecker {
                                                   final double latitude, final double longitude,
                                                   final String address, final ForecastCheckerResultListener forecastCheckerResultListener) {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
-            final PendingIntent weatherAlarmIntent;
-            if(mIntent != null) {
-                weatherAlarmIntent = PendingIntent.getService(context, Constants.AlarmId.WEATHER_ID, mIntent, 0);
-            } else {
-                weatherAlarmIntent = PendingIntent.getService(context, Constants.AlarmId.WEATHER_ID, new Intent(context, WeatherService.class), 0);
-            }
+            final PendingIntent weatherAlarmIntent = PendingIntent.getService(context, Constants.AlarmId.WEATHER_ID, mIntent, 0);
             new ForecastIoNetworkServiceTask() {
                 @Override
                 protected void onSuccess(ForecastTable forecastTable) {

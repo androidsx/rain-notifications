@@ -63,6 +63,9 @@ public class WeatherService extends Service implements UserLocationResultListene
 
     @Override
     public void onLocationSuccess(Location location, String address) {
+        if(intent == null) {
+            intent = new Intent(this, WeatherService.class);
+        }
         ForecastChecker.requestForecastForLocation(this, intent, location.getLatitude(), location.getLongitude(), address, this);
     }
 

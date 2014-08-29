@@ -19,6 +19,7 @@ import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.util.UiUtil;
+import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 import com.androidsx.rainnotifications.util.WeatherHelper;
 
@@ -81,7 +82,11 @@ public class ForecastMobile extends BaseWelcomeActivity implements UserLocationR
 
     @Override
     public void onLocationSuccess(Location location, String address) {
-        ForecastChecker.requestForecastForLocation(this, getIntent(), location.getLatitude(), location.getLongitude(), address, this);
+        Intent mIntent = getIntent();
+        if(mIntent == null) {
+            mIntent = new Intent(this, WeatherService.class);
+        }
+        ForecastChecker.requestForecastForLocation(this, mIntent, location.getLatitude(), location.getLongitude(), address, this);
     }
 
     @Override
