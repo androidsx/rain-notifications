@@ -59,7 +59,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
             public void onLocationSuccess(Location location, String address) {
                 Intent intent = mIntent;
                 if(intent == null) {
-                    intent = new Intent(this, WeatherService.class);
+                    intent = new Intent(ForecastMobile.this, WeatherService.class);
                 }
                 ForecastChecker.requestForecastForLocation(ForecastMobile.this, intent, location.getLatitude(), location.getLongitude(), address,
                         new ForecastCheckerResultListener() {
@@ -88,7 +88,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
             public void onLocationFailure(UserLocationException exception) {
 
             }
-        }.determineLocation();
+        }.connect();
     }
 
     private void setupUI() {
