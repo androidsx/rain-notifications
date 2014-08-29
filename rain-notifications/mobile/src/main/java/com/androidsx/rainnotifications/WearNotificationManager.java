@@ -18,18 +18,43 @@ import com.google.android.gms.wearable.Wearable;
 
 import com.androidsx.commonlibrary.Constants;
 
-public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ResultCallback<NodeApi.GetConnectedNodesResult> {
+/**
+ * Class for send wear notifications.
+ */
+public abstract class WearNotificationManager implements WearNotificationManagerResultListener {
 
     private GoogleApiClient mGoogleApiClient;
-    private Context context;
 
-    public WearManager(Context context) {
-        mGoogleApiClient = new GoogleApiClient.Builder(context)
+    public WearNotificationManager(Context context) {
+        this.mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle bundle) {
+                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                            @Override
+                            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                                if(getConnectedNodesResult != null) {
+                                    onWearManagerSuccess(getConnectedNodesResult);
+                                } else {
+                                    onWearManagerFailure(new WearNotificationManagerException());
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int i) {
+
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+                    }
+                })
                 .build();
-        this.context = context;
     }
 
     public void connect() {
@@ -38,22 +63,18 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
         }
     }
 
-    public boolean isGoogleApiClientConnected() {
+    private boolean isGoogleApiClientConnected() {
         return mGoogleApiClient.isConnected();
     }
 
-    public void getConnectedNodes() {
-        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(this);
-    }
-
-    public void sendWearNotification(String title, String text, int mascotIcon, int forecastIcon){
+    public boolean sendWearNotification(Context context, String title, String text, int mascotIcon, int forecastIcon){
         if (isGoogleApiClientConnected()) {
             PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Constants.WEAR_PATH);
             // Add data to the request
             putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TITLE, title);
             putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TEXT, text);
-            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_MASCOT_ICON, createAssetFromDrawable(mascotIcon));
-            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_FORECAST_ICON, createAssetFromDrawable(forecastIcon));
+            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_MASCOT_ICON, createAssetFromDrawable(context, mascotIcon));
+            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_FORECAST_ICON, createAssetFromDrawable(context, forecastIcon));
             putDataMapRequest.getDataMap().putLong(Constants.Keys.KEY_TIMESTAMP, System.currentTimeMillis());
             PutDataRequest request = putDataMapRequest.asPutDataRequest();
 
@@ -64,27 +85,17 @@ public abstract class WearManager implements GoogleApiClient.ConnectionCallbacks
 
                         }
                     });
+            return true;
+        } else {
+            return false;
         }
     }
 
-    private Asset createAssetFromDrawable(int drawable) {
+    private Asset createAssetFromDrawable(Context context, int drawable) {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawable);
         final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
 
         return Asset.createFromBytes(byteStream.toByteArray());
     }
-
-    @Override
-    public abstract void onConnected(Bundle bundle);
-
-    @Override
-    public abstract void onConnectionSuspended(int i);
-
-    @Override
-    public abstract void onConnectionFailed(ConnectionResult connectionResult);
-
-    @Override
-    public abstract void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult);
-
 }

@@ -13,11 +13,14 @@ import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.wearable.NodeApi;
 
 import timber.log.Timber;
 
+/**
+ * Class used only for debug purpose.
+ * Launch fake notifications, and load the forecast info response from shared preferences
+ */
 public class DebugActivity extends Activity {
     private TextView locationTextView;
     private TextView nextWeatherTextView;
@@ -66,21 +69,18 @@ public class DebugActivity extends Activity {
     /** Linked to the button in the XML layout. */
     public void showNotification(View view) {
         Timber.d("Show a random notification");
-        new WearManager(this) {
+        new WearNotificationManager(this) {
             @Override
-            public void onConnected(Bundle bundle) {
-                getConnectedNodes();
-            }
-
-            @Override
-            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+            public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
                 if (getConnectedNodesResult.getNodes() != null) {
                     if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
+                                DebugActivity.this,
                                 getString(R.string.notif_title),
                                 getString(R.string.notif_long_text_fake),
                                 R.drawable.notification_background_fake,
-                                R.drawable.owl_sunny_fake);
+                                R.drawable.owl_sunny_fake
+                        );
                     } else {
                         NotificationHelper.sendNotification(
                                 DebugActivity.this,
@@ -88,7 +88,7 @@ public class DebugActivity extends Activity {
                                 getString(R.string.notif_title),
                                 getString(R.string.notif_long_text_fake),
                                 BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
-                                );
+                        );
                     }
                 } else {
                     NotificationHelper.sendNotification(
@@ -102,12 +102,7 @@ public class DebugActivity extends Activity {
             }
 
             @Override
-            public void onConnectionSuspended(int i) {
-
-            }
-
-            @Override
-            public void onConnectionFailed(ConnectionResult connectionResult) {
+            public void onWearManagerFailure(WearNotificationManagerException exception) {
 
             }
         }.connect();
@@ -127,4 +122,5 @@ public class DebugActivity extends Activity {
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));
         }
     }
+
 }

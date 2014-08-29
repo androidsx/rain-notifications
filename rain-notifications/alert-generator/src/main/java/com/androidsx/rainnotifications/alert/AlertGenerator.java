@@ -67,6 +67,10 @@ public class AlertGenerator {
      * @return message for the user
      */
     private AlertMessage generateAlertMessage(Weather currentWeather, Forecast forecast) {
+        if (forecast == null) {
+            return new AlertMessage("No changes expected for a while.") //TODO: message that refers to no forecast expected in a few hours
+                + " At the moment, it is " + currentWeather);
+        }
         final Period periodFromNow = forecast.getTimeFromNow().toPeriod();
 
         return new AlertMessage("It's gonna be \"" + forecast.getForecastedWeather() + "\""
