@@ -11,11 +11,9 @@ import com.androidsx.rainnotifications.ForecastCheckerException;
 import com.androidsx.rainnotifications.ForecastCheckerResultListener;
 import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.UserLocationException;
-import com.androidsx.rainnotifications.UserLocationResultListener;
 import com.androidsx.rainnotifications.ForecastMobile;
 import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
-import com.androidsx.rainnotifications.WearNotificationManagerResultListener;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
@@ -39,13 +37,11 @@ import org.joda.time.Period;
  * notify to user the next significant weather change.
  */
 
-public class WeatherService extends Service implements UserLocationResultListener, ForecastCheckerResultListener, WearNotificationManagerResultListener {
+public class WeatherService extends Service implements ForecastCheckerResultListener {
 
     private static final String TAG = WeatherService.class.getSimpleName();
 
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
-
-    private Intent intent;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -53,20 +49,25 @@ public class WeatherService extends Service implements UserLocationResultListene
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        this.intent = intent;
-        new UserLocation(this, this);
+    public int onStartCommand(final Intent intent, int flags, int startId) {
+
+        new UserLocation(this) {
+            @Override
+            public void onLocationSuccess(Location location, String address) {
+                if(intent == null) {
+                    ForecastChecker.requestForecastForLocation(this, new Intent(this, WeatherService.class), location.getLatitude(), location.getLongitude(), address, WeatherService.this);
+                } else {
+                    ForecastChecker.requestForecastForLocation(this, intent, location.getLatitude(), location.getLongitude(), address, WeatherService.this);
+                }
+            }
+
+            @Override
+            public void onLocationFailure(UserLocationException exception) {
+
+            }
+        }.determineLocation();
 
         return super.onStartCommand(intent, flags, startId);
-    }
-
-
-    @Override
-    public void onLocationSuccess(Location location, String address) {
-        if(intent == null) {
-            intent = new Intent(this, WeatherService.class);
-        }
-        ForecastChecker.requestForecastForLocation(this, intent, location.getLatitude(), location.getLongitude(), address, this);
     }
 
     @Override
@@ -87,11 +88,6 @@ public class WeatherService extends Service implements UserLocationResultListene
                     WeatherHelper.getIconFromWeather(forecast.getForecastedWeather())
             );
         }
-    }
-
-    @Override
-    public void onLocationFailure(UserLocationException exception) {
-
     }
 
     @Override
@@ -123,36 +119,41 @@ public class WeatherService extends Service implements UserLocationResultListene
      * @param forecastIcon
      */
     private void launchNotification(final String title, final String text, final int mascotIcon, final int forecastIcon) {
-        new WearNotificationManager(this, this, title, text, mascotIcon, forecastIcon).connect();
-    }
-
-    @Override
-    public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult, WearNotificationManager mWearNotificationManager) {
-        if (getConnectedNodesResult.getNodes() != null) {
-            if (getConnectedNodesResult.getNodes().size() > 0) {
-                mWearNotificationManager.sendWearNotification();
-            } else {
-                NotificationHelper.sendNotification(
-                        this,
-                        ForecastMobile.class,
-                        mWearNotificationManager.getTitle(),
-                        mWearNotificationManager.getText(),
-                        BitmapFactory.decodeResource(getResources(), mWearNotificationManager.getForecastIcon())
-                );
+        new WearNotificationManager(this) {
+            @Override
+            public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                if (getConnectedNodesResult.getNodes() != null) {
+                    if (getConnectedNodesResult.getNodes().size() > 0) {
+                        sendWearNotification(
+                                title,
+                                text,
+                                mascotIcon,
+                                forecastIcon
+                        );
+                    } else {
+                        NotificationHelper.sendNotification(
+                                WeatherService.this,
+                                ForecastMobile.class,
+                                title,
+                                text,
+                                BitmapFactory.decodeResource(getResources(), forecastIcon)
+                        );
+                    }
+                } else {
+                    NotificationHelper.sendNotification(
+                            WeatherService.this,
+                            ForecastMobile.class,
+                            title,
+                            text,
+                            BitmapFactory.decodeResource(getResources(), forecastIcon)
+                    );
+                }
             }
-        } else {
-            NotificationHelper.sendNotification(
-                    this,
-                    ForecastMobile.class,
-                    mWearNotificationManager.getTitle(),
-                    mWearNotificationManager.getText(),
-                    BitmapFactory.decodeResource(getResources(), mWearNotificationManager.getForecastIcon())
-            );
-        }
-    }
 
-    @Override
-    public void onWearManagerFailure(WearNotificationManagerException exception) {
+            @Override
+            public void onWearManagerFailure(WearNotificationManagerException exception) {
 
+            }
+        }.connect();
     }
 }

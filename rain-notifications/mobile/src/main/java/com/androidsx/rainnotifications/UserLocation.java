@@ -1,5 +1,6 @@
 package com.androidsx.rainnotifications;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -14,19 +15,17 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class UserLocation implements GooglePlayServicesClient.ConnectionCallbacks,
-        GooglePlayServicesClient.OnConnectionFailedListener {
+public abstract class UserLocation extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener, UserLocationResultListener {
 
     private static final String TAG = UserLocation.class.getSimpleName();
 
     private LocationClient mLocationClient;
-    private UserLocationResultListener mUserLocationResultListener;
     private Context context;
 
-    public UserLocation(Context context, UserLocationResultListener userLocationResultListener) {
+    public UserLocation(Context context) {
         this.context = context;
         mLocationClient = new LocationClient(context, this, this);
-        mUserLocationResultListener = userLocationResultListener;
     }
 
     public void determineLocation() {
@@ -38,9 +37,9 @@ public class UserLocation implements GooglePlayServicesClient.ConnectionCallback
         if (mLocationClient.isConnected()) {
             Location loc = mLocationClient.getLastLocation();
             if (loc != null) {
-                mUserLocationResultListener.onLocationSuccess(loc, getLocationAddress(context, loc.getLatitude(), loc.getLongitude()));
+                onLocationSuccess(loc, getLocationAddress(context, loc.getLatitude(), loc.getLongitude()));
             } else {
-                mUserLocationResultListener.onLocationFailure(new UserLocationException());
+                onLocationFailure(new UserLocationException());
             }
         }
     }

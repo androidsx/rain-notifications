@@ -8,7 +8,6 @@ import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
-import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.LocationHelper;
 

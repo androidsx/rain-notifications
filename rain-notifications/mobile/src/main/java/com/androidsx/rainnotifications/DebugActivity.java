@@ -17,7 +17,7 @@ import com.google.android.gms.wearable.NodeApi;
 
 import timber.log.Timber;
 
-public class DebugActivity extends Activity implements WearNotificationManagerResultListener {
+public class DebugActivity extends Activity {
     private TextView locationTextView;
     private TextView nextWeatherTextView;
     private TextView historyTextView;
@@ -65,37 +65,42 @@ public class DebugActivity extends Activity implements WearNotificationManagerRe
     /** Linked to the button in the XML layout. */
     public void showNotification(View view) {
         Timber.d("Show a random notification");
-        new WearNotificationManager(this, this, getString(R.string.notif_title), getString(R.string.notif_long_text_fake), R.drawable.notification_background_fake, R.drawable.owl_sunny_fake).connect();
-    }
-
-    @Override
-    public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult, WearNotificationManager mWearNotificationManager) {
-        if (getConnectedNodesResult.getNodes() != null) {
-            if (getConnectedNodesResult.getNodes().size() > 0) {
-                mWearNotificationManager.sendWearNotification();
-            } else {
-                NotificationHelper.sendNotification(
-                        this,
-                        ForecastMobile.class,
-                        mWearNotificationManager.getTitle(),
-                        mWearNotificationManager.getText(),
-                        BitmapFactory.decodeResource(getResources(), mWearNotificationManager.getForecastIcon())
-                );
+        new WearNotificationManager(this) {
+            @Override
+            public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                if (getConnectedNodesResult.getNodes() != null) {
+                    if (getConnectedNodesResult.getNodes().size() > 0) {
+                        sendWearNotification(
+                                getString(R.string.notif_title),
+                                getString(R.string.notif_long_text_fake),
+                                R.drawable.notification_background_fake,
+                                R.drawable.owl_sunny_fake
+                        );
+                    } else {
+                        NotificationHelper.sendNotification(
+                                DebugActivity.this,
+                                ForecastMobile.class,
+                                getString(R.string.notif_title),
+                                getString(R.string.notif_long_text_fake),
+                                BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                        );
+                    }
+                } else {
+                    NotificationHelper.sendNotification(
+                            DebugActivity.this,
+                            ForecastMobile.class,
+                            getString(R.string.notif_title),
+                            getString(R.string.notif_long_text_fake),
+                            BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                    );
+                }
             }
-        } else {
-            NotificationHelper.sendNotification(
-                    this,
-                    ForecastMobile.class,
-                    mWearNotificationManager.getTitle(),
-                    mWearNotificationManager.getText(),
-                    BitmapFactory.decodeResource(getResources(), mWearNotificationManager.getForecastIcon())
-            );
-        }
-    }
 
-    @Override
-    public void onWearManagerFailure(WearNotificationManagerException exception) {
+            @Override
+            public void onWearManagerFailure(WearNotificationManagerException exception) {
 
+            }
+        }.connect();
     }
 
     /**

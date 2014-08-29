@@ -32,7 +32,7 @@ import timber.log.Timber;
  * <p>
  * It just shows the owl picture and a sample text so far.
  */
-public class ForecastMobile extends BaseWelcomeActivity implements UserLocationResultListener, ForecastCheckerResultListener {
+public class ForecastMobile extends BaseWelcomeActivity implements ForecastCheckerResultListener {
     private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
 
     private TextView locationTextView;
@@ -53,7 +53,40 @@ public class ForecastMobile extends BaseWelcomeActivity implements UserLocationR
             trackAppUsage();
             appUsageIsTracked = true;
         }
-        new UserLocation(this, this).determineLocation();
+        new UserLocation(this) {
+            @Override
+            public void onLocationSuccess(Location location, String address) {
+                Intent mIntent = getIntent();
+                if(mIntent == null) {
+                    mIntent = new Intent(this, WeatherService.class);
+                }
+                ForecastChecker.requestForecastForLocation(this, mIntent, location.getLatitude(), location.getLongitude(), address, ForecastMobile.this);
+            }
+
+            @Override
+            public void onLocationFailure(UserLocationException exception) {
+
+            }
+        }.determineLocation();
+    }
+
+    @Override
+    public void onForecastSuccess(ForecastTable forecastTable, String address) {
+        Weather currentWeather = forecastTable.getBaselineWeather();
+        Forecast forecast = null;
+        if (!forecastTable.getForecasts().isEmpty()) {
+            forecast = forecastTable.getForecasts().get(0);
+        }
+        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
+        String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
+        String message = alert.getAlertMessage().toString();
+
+        updateUI(address, WeatherHelper.getIconFromWeather(forecast.getForecastedWeather()), title, message);
+    }
+
+    @Override
+    public void onForecastFailure(ForecastCheckerException exception) {
+
     }
 
     private void setupUI() {
@@ -78,39 +111,6 @@ public class ForecastMobile extends BaseWelcomeActivity implements UserLocationR
         cardMessageTextView.setText(getString(R.string.owl_example));
         cardTitleTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
         cardTitleTextView.setText(getString(R.string.today));
-    }
-
-    @Override
-    public void onLocationSuccess(Location location, String address) {
-        Intent mIntent = getIntent();
-        if(mIntent == null) {
-            mIntent = new Intent(this, WeatherService.class);
-        }
-        ForecastChecker.requestForecastForLocation(this, mIntent, location.getLatitude(), location.getLongitude(), address, this);
-    }
-
-    @Override
-    public void onForecastSuccess(ForecastTable forecastTable, String address) {
-        Weather currentWeather = forecastTable.getBaselineWeather();
-        Forecast forecast = null;
-        if (!forecastTable.getForecasts().isEmpty()) {
-            forecast = forecastTable.getForecasts().get(0);
-        }
-        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
-        String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
-        String message = alert.getAlertMessage().toString();
-
-        updateUI(address, WeatherHelper.getIconFromWeather(forecast.getForecastedWeather()), title, message);
-    }
-
-    @Override
-    public void onLocationFailure(UserLocationException exception) {
-
-    }
-
-    @Override
-    public void onForecastFailure(ForecastCheckerException exception) {
-
     }
 
     private void updateUI(String address, int mascot_icon, String title, String message) {
