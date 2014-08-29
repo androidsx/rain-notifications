@@ -18,6 +18,9 @@ import com.google.android.gms.wearable.Wearable;
 
 import com.androidsx.commonlibrary.Constants;
 
+/**
+ * Class for send wear notifications.
+ */
 public abstract class WearNotificationManager implements WearNotificationManagerResultListener {
 
     private GoogleApiClient mGoogleApiClient;

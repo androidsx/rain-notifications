@@ -37,7 +37,7 @@ import org.joda.time.Period;
  * notify to user the next significant weather change.
  */
 
-public class WeatherService extends Service implements ForecastCheckerResultListener {
+public class WeatherService extends Service {
 
     private static final String TAG = WeatherService.class.getSimpleName();
 
@@ -50,15 +50,40 @@ public class WeatherService extends Service implements ForecastCheckerResultList
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
-
         new UserLocation(this) {
             @Override
             public void onLocationSuccess(Location location, String address) {
-                if(intent == null) {
-                    ForecastChecker.requestForecastForLocation(this, new Intent(this, WeatherService.class), location.getLatitude(), location.getLongitude(), address, WeatherService.this);
-                } else {
-                    ForecastChecker.requestForecastForLocation(this, intent, location.getLatitude(), location.getLongitude(), address, WeatherService.this);
+                Intent mIntent = intent;
+                if(mIntent == null) {
+                    mIntent = new Intent(this, WeatherService.class);
                 }
+                ForecastChecker.requestForecastForLocation(this, mIntent, location.getLatitude(), location.getLongitude(), address,
+                        new ForecastCheckerResultListener() {
+                    @Override
+                    public void onForecastSuccess(ForecastTable forecastTable, String address) {
+                        Weather currentWeather = forecastTable.getBaselineWeather();
+                        Forecast forecast = null;
+                        if (!forecastTable.getForecasts().isEmpty()) {
+                            forecast = forecastTable.getForecasts().get(0);
+                        }
+                        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
+                        String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
+                        String text = alert.getAlertMessage().toString();
+                        if(shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
+                            launchNotification(
+                                    title,
+                                    text,
+                                    WeatherHelper.getIconFromWeather(currentWeather),
+                                    WeatherHelper.getIconFromWeather(forecast.getForecastedWeather())
+                            );
+                        }
+                    }
+
+                    @Override
+                    public void onForecastFailure(ForecastCheckerException exception) {
+
+                    }
+                });
             }
 
             @Override
@@ -68,31 +93,6 @@ public class WeatherService extends Service implements ForecastCheckerResultList
         }.determineLocation();
 
         return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public void onForecastSuccess(ForecastTable forecastTable, String address) {
-        Weather currentWeather = forecastTable.getBaselineWeather();
-        Forecast forecast = null;
-        if (!forecastTable.getForecasts().isEmpty()) {
-            forecast = forecastTable.getForecasts().get(0);
-        }
-        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
-        String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
-        String text = alert.getAlertMessage().toString();
-        if(shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
-            launchNotification(
-                    title,
-                    text,
-                    WeatherHelper.getIconFromWeather(currentWeather),
-                    WeatherHelper.getIconFromWeather(forecast.getForecastedWeather())
-            );
-        }
-    }
-
-    @Override
-    public void onForecastFailure(ForecastCheckerException exception) {
-
     }
 
     /**
