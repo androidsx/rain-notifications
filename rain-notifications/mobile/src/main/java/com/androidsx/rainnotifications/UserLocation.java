@@ -15,6 +15,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Class that determine de user location in coordinates and text.
+ */
 public abstract class UserLocation extends Activity implements UserLocationResultListener {
 
     private static final String TAG = UserLocation.class.getSimpleName();

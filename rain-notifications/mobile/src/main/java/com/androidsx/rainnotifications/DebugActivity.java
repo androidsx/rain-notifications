@@ -17,6 +17,10 @@ import com.google.android.gms.wearable.NodeApi;
 
 import timber.log.Timber;
 
+/**
+ * Class used only for debug purpose.
+ * Launch fake notifications, and load the forecast info response from shared preferences
+ */
 public class DebugActivity extends Activity {
     private TextView locationTextView;
     private TextView nextWeatherTextView;
