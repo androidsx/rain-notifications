@@ -18,20 +18,42 @@ import com.google.android.gms.wearable.Wearable;
 
 import com.androidsx.commonlibrary.Constants;
 
-public abstract class WearNotificationManager
-        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<NodeApi.GetConnectedNodesResult>, WearNotificationManagerResultListener {
+public abstract class WearNotificationManager implements WearNotificationManagerResultListener {
 
     private GoogleApiClient mGoogleApiClient;
     private Context context;
 
     public WearNotificationManager(Context context) {
+        this.context = context;
         this.mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(Bundle bundle) {
+                        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(new ResultCallback<NodeApi.GetConnectedNodesResult>() {
+                            @Override
+                            public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                                if(getConnectedNodesResult != null) {
+                                    onWearManagerSuccess(getConnectedNodesResult);
+                                } else {
+                                    onWearManagerFailure(new WearNotificationManagerException());
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int i) {
+
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+                    }
+                })
                 .build();
-        this.context = context;
     }
 
     public void connect() {
@@ -42,19 +64,6 @@ public abstract class WearNotificationManager
 
     private boolean isGoogleApiClientConnected() {
         return mGoogleApiClient.isConnected();
-    }
-
-    public void getConnectedNodes() {
-        Wearable.NodeApi.getConnectedNodes(mGoogleApiClient).setResultCallback(this);
-    }
-
-    @Override
-    public void onResult(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-        if(getConnectedNodesResult != null) {
-            onWearManagerSuccess(getConnectedNodesResult);
-        } else {
-            onWearManagerFailure(new WearNotificationManagerException());
-        }
     }
 
     public boolean sendWearNotification(String title, String text, int mascotIcon, int forecastIcon){
@@ -87,20 +96,5 @@ public abstract class WearNotificationManager
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
 
         return Asset.createFromBytes(byteStream.toByteArray());
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        getConnectedNodes();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
     }
 }
