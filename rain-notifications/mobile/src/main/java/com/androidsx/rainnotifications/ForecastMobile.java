@@ -37,7 +37,6 @@ public class ForecastMobile extends BaseWelcomeActivity {
 
     private TextView locationTextView;
     private TextView cardMessageTextView;
-    private TextView cardTitleTextView;
 
     /** Image of the mascot that represents the next weather or, if we don't have it, the current one. */
     private ImageView mascotImageView;
@@ -77,10 +76,9 @@ public class ForecastMobile extends BaseWelcomeActivity {
                             weatherIcon = WeatherHelper.getIconFromWeather(currentWeather);
                         }
                         final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
-                        String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
                         String message = alert.getAlertMessage().toString();
 
-                        updateUI(address, weatherIcon, title, message);
+                        updateUI(address, weatherIcon, message);
                     }
 
                     @Override
@@ -100,7 +98,6 @@ public class ForecastMobile extends BaseWelcomeActivity {
     private void setupUI() {
         locationTextView = (TextView) findViewById(R.id.location_text_view);
         cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
-        cardTitleTextView = (TextView) findViewById(R.id.card_title_text_view);
         mascotImageView = (ImageView) findViewById(R.id.owl_image_view);
         mascotImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,14 +114,11 @@ public class ForecastMobile extends BaseWelcomeActivity {
         locationTextView.setText(getString(R.string.current_name_location));
         cardMessageTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
         cardMessageTextView.setText(getString(R.string.owl_example));
-        cardTitleTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
-        cardTitleTextView.setText(getString(R.string.today));
     }
 
-    private void updateUI(String address, int mascot_icon, String title, String message) {
+    private void updateUI(String address, int mascot_icon, String message) {
         locationTextView.setText(address);
         mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), mascot_icon));
-        cardTitleTextView.setText(title);
         cardMessageTextView.setText(message);
     }
 
