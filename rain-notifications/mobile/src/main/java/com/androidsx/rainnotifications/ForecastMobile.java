@@ -67,14 +67,18 @@ public class ForecastMobile extends BaseWelcomeActivity {
                     public void onForecastSuccess(ForecastTable forecastTable, String address) {
                         Weather currentWeather = forecastTable.getBaselineWeather();
                         Forecast forecast = null;
+                        int weatherIcon;
                         if (!forecastTable.getForecasts().isEmpty()) {
                             forecast = forecastTable.getForecasts().get(0);
+                            weatherIcon = WeatherHelper.getIconFromWeather(forecast.getForecastedWeather());
+                        } else {
+                            weatherIcon = WeatherHelper.getIconFromWeather(currentWeather);
                         }
                         final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
                         String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
                         String message = alert.getAlertMessage().toString();
 
-                        updateUI(address, WeatherHelper.getIconFromWeather(forecast.getForecastedWeather()), title, message);
+                        updateUI(address, weatherIcon, title, message);
                     }
 
                     @Override
