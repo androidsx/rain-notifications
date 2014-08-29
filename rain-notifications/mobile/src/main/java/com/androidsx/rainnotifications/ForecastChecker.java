@@ -34,7 +34,6 @@ public class ForecastChecker {
             new ForecastIoNetworkServiceTask() {
                 @Override
                 protected void onSuccess(ForecastTable forecastTable) {
-                    // TODO: Here is where we should apply our logic
                     final Weather currentWeather = forecastTable.getBaselineWeather();
                     AlarmHelper.setAlarm(
                             context,
@@ -47,7 +46,6 @@ public class ForecastChecker {
                 @Override
                 protected void onFailure() {
                     forecastCheckerResultListener.onForecastFailure(new ForecastCheckerException());
-                    // TODO: And here is where we do something smart about failures
                 }
             }.execute(new ForecastIoRequest(latitude, longitude).getRequest());
         }
