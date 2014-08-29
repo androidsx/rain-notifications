@@ -38,13 +38,13 @@
         android:layout_height="70dp"
         android:src="@drawable/ic_launcher"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="5dp"/>
+        android:layout_marginTop="13dp"/>
 
     <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="85dp"
+        android:layout_marginTop="95dp"
         android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
         android:layout_marginBottom="5dp"
