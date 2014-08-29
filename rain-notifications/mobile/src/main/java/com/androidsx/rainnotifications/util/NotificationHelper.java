@@ -20,7 +20,7 @@ public class NotificationHelper {
         //No-instantiate
     }
 
-    public static void sendNotification(Context context, Class<?> activity, String title, String text, Bitmap largeIcon) {
+    public static void sendNotification(Context context, Class<?> activity, String text, Bitmap largeIcon) {
         final int notificationId = 002;
 
         // Main intent for the notification (click for mobile, swipe left and click for wear)
@@ -30,7 +30,7 @@ public class NotificationHelper {
 
         // Big style for the notification. It only matters for mobile AFAIK, to show several lines
         NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle()
-                .setBigContentTitle(title)
+                .setBigContentTitle(context.getString(R.string.app_name))
                 .bigText(text);
 
         // Finally configure the notification builder
@@ -38,7 +38,7 @@ public class NotificationHelper {
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_launcher) // Compulsory. Only for the phone AFAIK. TODO: follow guidelines: gray
                         .setLargeIcon(largeIcon)
-                        .setContentTitle(title)
+                        .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(text)
                         .setContentIntent(viewPendingIntent)
                         .setStyle(bigTextStyle)

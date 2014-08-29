@@ -67,7 +67,7 @@ public abstract class WearNotificationManager implements WearNotificationManager
         return mGoogleApiClient.isConnected();
     }
 
-    public boolean sendWearNotification(Context context, String title, String text, int mascotIcon, int forecastIcon){
+    public boolean sendWearNotification(Context context, String text, int mascotIcon){
         if (isGoogleApiClientConnected()) {
             PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Constants.WEAR_PATH);
             // Add data to the request

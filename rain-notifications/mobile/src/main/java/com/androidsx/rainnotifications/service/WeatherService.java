@@ -19,7 +19,6 @@ import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
-import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.util.WeatherHelper;
@@ -27,7 +26,6 @@ import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
-import org.joda.time.Period;
 
 /**
  * This service is responsible to make API calls to forecast.io
@@ -65,13 +63,10 @@ public class WeatherService extends Service {
                             Weather currentWeather = forecastTable.getBaselineWeather();
                             Forecast forecast = forecastTable.getForecasts().get(0);
                             final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
-                            String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
                             String text = alert.getAlertMessage().toString();
                             if(shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
                                 launchNotification(
-                                        title,
                                         text,
-                                        WeatherHelper.getIconFromWeather(currentWeather),
                                         WeatherHelper.getIconFromWeather(forecast.getForecastedWeather())
                                 );
                             }
@@ -112,12 +107,10 @@ public class WeatherService extends Service {
      * Method for send a wear notification, using a proper message determined by
      * current and forecast weather.
      *
-     * @param title
      * @param text
      * @param mascotIcon
-     * @param forecastIcon
      */
-    private void launchNotification(final String title, final String text, final int mascotIcon, final int forecastIcon) {
+    private void launchNotification(final String text, final int mascotIcon) {
         new WearNotificationManager(this) {
             @Override
             public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
@@ -125,27 +118,23 @@ public class WeatherService extends Service {
                     if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
                                 WeatherService.this,
-                                title,
                                 text,
-                                mascotIcon,
-                                forecastIcon
+                                mascotIcon
                         );
                     } else {
                         NotificationHelper.sendNotification(
                                 WeatherService.this,
                                 ForecastMobile.class,
-                                title,
                                 text,
-                                BitmapFactory.decodeResource(getResources(), forecastIcon)
+                                BitmapFactory.decodeResource(getResources(), mascotIcon)
                         );
                     }
                 } else {
                     NotificationHelper.sendNotification(
                             WeatherService.this,
                             ForecastMobile.class,
-                            title,
                             text,
-                            BitmapFactory.decodeResource(getResources(), forecastIcon)
+                            BitmapFactory.decodeResource(getResources(), mascotIcon)
                     );
                 }
             }
