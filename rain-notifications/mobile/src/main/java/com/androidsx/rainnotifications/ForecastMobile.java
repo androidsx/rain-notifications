@@ -38,6 +38,8 @@ public class ForecastMobile extends BaseWelcomeActivity {
     private TextView locationTextView;
     private TextView cardMessageTextView;
     private TextView cardTitleTextView;
+
+    /** Image of the mascot that represents the next weather or, if we don't have it, the current one. */
     private ImageView mascotImageView;
 
     private boolean appUsageIsTracked = false;
