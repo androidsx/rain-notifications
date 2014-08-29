@@ -21,10 +21,8 @@ import com.androidsx.commonlibrary.Constants;
 public abstract class WearNotificationManager implements WearNotificationManagerResultListener {
 
     private GoogleApiClient mGoogleApiClient;
-    private Context context;
 
     public WearNotificationManager(Context context) {
-        this.context = context;
         this.mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addApi(Wearable.API)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
@@ -66,14 +64,14 @@ public abstract class WearNotificationManager implements WearNotificationManager
         return mGoogleApiClient.isConnected();
     }
 
-    public boolean sendWearNotification(String title, String text, int mascotIcon, int forecastIcon){
+    public boolean sendWearNotification(Context context, String title, String text, int mascotIcon, int forecastIcon){
         if (isGoogleApiClientConnected()) {
             PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Constants.WEAR_PATH);
             // Add data to the request
             putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TITLE, title);
             putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TEXT, text);
-            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_MASCOT_ICON, createAssetFromDrawable(mascotIcon));
-            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_FORECAST_ICON, createAssetFromDrawable(forecastIcon));
+            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_MASCOT_ICON, createAssetFromDrawable(context, mascotIcon));
+            putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_FORECAST_ICON, createAssetFromDrawable(context, forecastIcon));
             putDataMapRequest.getDataMap().putLong(Constants.Keys.KEY_TIMESTAMP, System.currentTimeMillis());
             PutDataRequest request = putDataMapRequest.asPutDataRequest();
 
@@ -90,7 +88,7 @@ public abstract class WearNotificationManager implements WearNotificationManager
         }
     }
 
-    private Asset createAssetFromDrawable(int drawable) {
+    private Asset createAssetFromDrawable(Context context, int drawable) {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), drawable);
         final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);

@@ -20,10 +20,8 @@ public abstract class UserLocation extends Activity implements UserLocationResul
     private static final String TAG = UserLocation.class.getSimpleName();
 
     private LocationClient mLocationClient;
-    private Context context;
 
     public UserLocation(final Context context) {
-        this.context = context;
         mLocationClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
             @Override
             public void onConnected(Bundle bundle) {

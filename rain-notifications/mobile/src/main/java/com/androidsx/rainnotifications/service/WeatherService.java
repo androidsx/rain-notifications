@@ -125,6 +125,7 @@ public class WeatherService extends Service implements ForecastCheckerResultList
                 if (getConnectedNodesResult.getNodes() != null) {
                     if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
+                                WeatherService.this,
                                 title,
                                 text,
                                 mascotIcon,

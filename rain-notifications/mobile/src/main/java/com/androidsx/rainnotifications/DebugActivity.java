@@ -71,6 +71,7 @@ public class DebugActivity extends Activity {
                 if (getConnectedNodesResult.getNodes() != null) {
                     if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
+                                DebugActivity.this,
                                 getString(R.string.notif_title),
                                 getString(R.string.notif_long_text_fake),
                                 R.drawable.notification_background_fake,
