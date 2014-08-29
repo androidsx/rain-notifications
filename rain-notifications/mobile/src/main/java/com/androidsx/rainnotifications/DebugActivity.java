@@ -76,16 +76,13 @@ public class DebugActivity extends Activity {
                     if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
                                 DebugActivity.this,
-                                getString(R.string.notif_title),
                                 getString(R.string.notif_long_text_fake),
-                                R.drawable.notification_background_fake,
                                 R.drawable.owl_sunny_fake
                         );
                     } else {
                         NotificationHelper.sendNotification(
                                 DebugActivity.this,
                                 ForecastMobile.class,
-                                getString(R.string.notif_title),
                                 getString(R.string.notif_long_text_fake),
                                 BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
                         );
@@ -94,7 +91,6 @@ public class DebugActivity extends Activity {
                     NotificationHelper.sendNotification(
                             DebugActivity.this,
                             ForecastMobile.class,
-                            getString(R.string.notif_title),
                             getString(R.string.notif_long_text_fake),
                             BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
                     );

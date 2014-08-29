@@ -58,16 +58,12 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                 if (Constants.WEAR_PATH.equals(path)) {
                     // Get the data out of the event
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
-                    final String title = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TITLE);
                     final String text = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TEXT);
                     Asset assetMascotIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_MASCOT_ICON);
-                    Asset assetForecastIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_FORECAST_ICON);
 
                     Intent actionIntent = new Intent(this, ForecastWear.class);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_TITLE, title);
                     actionIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
                     actionIntent.putExtra(Constants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_FORECAST_ICON, assetForecastIcon);
                     PendingIntent actionPendingIntent = PendingIntent.getActivity(
                             this,
                             0,
@@ -89,7 +85,6 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                     NotificationCompat.Builder notificationBuilder =
                             new NotificationCompat.Builder(this)
                                     .setDefaults(NotificationCompat.DEFAULT_ALL)
-                                    .setContentTitle(title)
                                     .setContentText(text)
                                     .setSmallIcon(R.drawable.clear_day)
                                     .extend(new WearableExtender()
