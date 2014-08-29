@@ -53,14 +53,15 @@ public class ForecastMobile extends BaseWelcomeActivity {
             trackAppUsage();
             appUsageIsTracked = true;
         }
+        final Intent mIntent = getIntent();
         new UserLocation(this) {
             @Override
             public void onLocationSuccess(Location location, String address) {
-                Intent mIntent = getIntent();
-                if(mIntent == null) {
-                    mIntent = new Intent(this, WeatherService.class);
+                Intent intent = mIntent;
+                if(intent == null) {
+                    intent = new Intent(this, WeatherService.class);
                 }
-                ForecastChecker.requestForecastForLocation(this, mIntent, location.getLatitude(), location.getLongitude(), address,
+                ForecastChecker.requestForecastForLocation(ForecastMobile.this, intent, location.getLatitude(), location.getLongitude(), address,
                         new ForecastCheckerResultListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable, String address) {
