@@ -61,21 +61,20 @@ public class WeatherService extends Service {
                         new ForecastCheckerResultListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable, String address) {
-                        Weather currentWeather = forecastTable.getBaselineWeather();
-                        Forecast forecast = null;
                         if (!forecastTable.getForecasts().isEmpty()) {
-                            forecast = forecastTable.getForecasts().get(0);
-                        }
-                        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
-                        String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
-                        String text = alert.getAlertMessage().toString();
-                        if(shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
-                            launchNotification(
-                                    title,
-                                    text,
-                                    WeatherHelper.getIconFromWeather(currentWeather),
-                                    WeatherHelper.getIconFromWeather(forecast.getForecastedWeather())
-                            );
+                            Weather currentWeather = forecastTable.getBaselineWeather();
+                            Forecast forecast = forecastTable.getForecasts().get(0);
+                            final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
+                            String title = UiUtil.getDebugOnlyPeriodFormatter().print(new Period(forecast.getTimeFromNow()));
+                            String text = alert.getAlertMessage().toString();
+                            if(shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
+                                launchNotification(
+                                        title,
+                                        text,
+                                        WeatherHelper.getIconFromWeather(currentWeather),
+                                        WeatherHelper.getIconFromWeather(forecast.getForecastedWeather())
+                                );
+                            }
                         }
                     }
 
