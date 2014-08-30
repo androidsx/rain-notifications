@@ -9,6 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.alert.AlertGenerator;
+import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.NotificationHelper;
@@ -108,11 +110,13 @@ public class DebugActivity extends Activity {
      * Updates the UI with the information stored in the shared preferences.
      */
     private void updateUiFromPrefs() {
-        locationTextView.setText(SharedPrefsHelper.getForecastAddress(sharedPrefs));
-        nextWeatherTextView.setText(SharedPrefsHelper.getNextForecast(sharedPrefs));
+        final String address = SharedPrefsHelper.getForecastAddress(sharedPrefs);
+        final String nextForecast = SharedPrefsHelper.getNextForecast(sharedPrefs);
+
+        locationTextView.setText(address);
+        nextWeatherTextView.setText(nextForecast);
         historyTextView.setText(((RainApplication) getApplication()).getLogHistory());
-        currentWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
-        nextWeatherImageView.setImageDrawable(getResources().getDrawable(Constants.FORECAST_ICONS.get(WeatherType.UNKNOWN)));
+
         if (SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs) != 0 && SharedPrefsHelper.getNextForecastIcon(sharedPrefs) != 0) {
             currentWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getCurrentForecastIcon(sharedPrefs)));
             nextWeatherImageView.setImageDrawable(getResources().getDrawable(SharedPrefsHelper.getNextForecastIcon(sharedPrefs)));

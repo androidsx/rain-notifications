@@ -18,10 +18,8 @@ import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
-import com.androidsx.rainnotifications.util.WeatherHelper;
 import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTimeConstants;
@@ -60,14 +58,13 @@ public class WeatherService extends Service {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
                         if (!forecastTable.getForecasts().isEmpty()) {
-                            Weather currentWeather = forecastTable.getBaselineWeather();
-                            Forecast forecast = forecastTable.getForecasts().get(0);
-                            final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
-                            String text = alert.getAlertMessage().toString();
-                            if(shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
+                            //final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
+                            final Forecast forecast = forecastTable.getForecasts().get(0);
+                            final Alert alert = new AlertGenerator().generateAlert(forecastTable.getBaselineWeather(), forecast);
+                            if (shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
                                 launchNotification(
-                                        text,
-                                        WeatherHelper.getIconFromWeather(forecast.getForecastedWeather())
+                                        alert.getAlertMessage().getNotificationMessage(),
+                                        alert.getDressedMascot()
                                 );
                             }
                         }

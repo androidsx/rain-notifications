@@ -6,10 +6,12 @@ package com.androidsx.rainnotifications.model;
 public class Alert {
     private final AlertLevel alertLevel;
     private final AlertMessage alertMessage;
+    private final int dressedMascot;
 
-    public Alert(AlertLevel alertLevel, AlertMessage alertMessage) {
+    public Alert(AlertLevel alertLevel, AlertMessage alertMessage, int dressedMascot) {
         this.alertLevel = alertLevel;
         this.alertMessage = alertMessage;
+        this.dressedMascot = dressedMascot;
     }
 
     public AlertLevel getAlertLevel() {
@@ -18,5 +20,16 @@ public class Alert {
 
     public AlertMessage getAlertMessage() {
         return alertMessage;
+    }
+
+    /**
+     * Mascot that is dressed in an outfit that's appropriate for the weather that is coming. Take
+     * into account that, if no changes are expected, the outfit may correspond to the current
+     * weather.
+     *
+     * @return mascot dressed for the weather announced in this alert
+     */
+    public int getDressedMascot() {
+        return dressedMascot;
     }
 }

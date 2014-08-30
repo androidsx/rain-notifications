@@ -6,18 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-    public static final Map<WeatherType, Integer> FORECAST_ICONS = new HashMap<WeatherType, Integer>() {
-        {
-            put(WeatherType.CLEAR_DAY, R.drawable.clear_day);
-            put(WeatherType.CLEAR_NIGHT, R.drawable.clear_night);
-            put(WeatherType.RAIN, R.drawable.rain);
-            put(WeatherType.SNOW, R.drawable.snow);
-            put(WeatherType.CLOUDY, R.drawable.cloudy);
-            put(WeatherType.PARTLY_CLOUDY_DAY, R.drawable.partly_cloudy_day);
-            put(WeatherType.PARTLY_CLOUDY_NIGHT, R.drawable.partly_cloudy_night);
-            put(WeatherType.UNKNOWN, R.drawable.unknown);
-        }
-    };
     public static class AlarmId{
         public static final int LOCATION_ID = 0;
         public static final int WEATHER_ID = 1;

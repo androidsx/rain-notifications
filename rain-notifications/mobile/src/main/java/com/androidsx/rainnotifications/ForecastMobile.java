@@ -66,23 +66,15 @@ public class ForecastMobile extends BaseWelcomeActivity {
                         new ForecastCheckerResultListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
-                        final Weather currentWeather = forecastTable.getBaselineWeather();
-                        final int weatherIcon = WeatherHelper.getIconFromWeather(currentWeather);
-
-                        final Forecast forecast;
-                        if (forecastTable.getForecasts().isEmpty()) {
-                            forecast = null;
-                        } else {
-                            forecast = forecastTable.getForecasts().get(0);
-                        }
-
-                        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
+                        final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
+                        final Alert alert = new AlertGenerator().generateAlert(forecastTable.getBaselineWeather(), forecast);
                         final String locationAddress = UserLocation.getLocationAddress(
                                 ForecastMobile.this,
                                 location.getLatitude(),
                                 location.getLongitude());
-                        final String message = alert.getAlertMessage().toString();
-                        updateUI(locationAddress, weatherIcon, message);
+                        updateUI(locationAddress,
+                                alert.getDressedMascot(),
+                                alert.getAlertMessage().getNotificationMessage());
                     }
 
                     @Override
