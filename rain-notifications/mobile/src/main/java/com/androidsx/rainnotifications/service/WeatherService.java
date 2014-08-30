@@ -1,11 +1,13 @@
 package com.androidsx.rainnotifications.service;
 
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.IBinder;
 
+import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.ForecastChecker;
 import com.androidsx.rainnotifications.ForecastCheckerException;
 import com.androidsx.rainnotifications.ForecastCheckerResultListener;
@@ -18,6 +20,7 @@ import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.google.android.gms.wearable.NodeApi;
@@ -47,11 +50,7 @@ public class WeatherService extends Service {
         new UserLocation(this) {
             @Override
             public void onLocationSuccess(Location location) {
-                Intent mIntent = intent;
-                if(mIntent == null) {
-                    mIntent = new Intent(WeatherService.this, WeatherService.class);
-                }
-                ForecastChecker.requestForecastForLocation(WeatherService.this, mIntent, location.getLatitude(), location.getLongitude(),
+                ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
                         new ForecastCheckerResultListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
@@ -66,22 +65,38 @@ public class WeatherService extends Service {
                                 );
                             }
                         }
+
+                        setNextAlarm(forecastTable);
                     }
 
                     @Override
                     public void onForecastFailure(ForecastCheckerException exception) {
-
+                        throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: set the next alarm a little from now?
                     }
                 });
             }
 
             @Override
             public void onLocationFailure(UserLocationException exception) {
-
+                throw new IllegalStateException("Failed to get the location", exception); // FIXME: set the next alarm a little from now?
             }
         }.connect();
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void setNextAlarm(ForecastTable forecastTable) {
+        final PendingIntent weatherAlarmIntent = PendingIntent.getService(
+                WeatherService.this,
+                Constants.AlarmId.WEATHER_ID,
+                new Intent(WeatherService.this, WeatherService.class),
+                0);
+        AlarmHelper.setAlarm(
+                WeatherService.this,
+                weatherAlarmIntent,
+                forecastTable.getBaselineWeather(),
+                forecastTable.getForecasts()
+        );
     }
 
     /**
@@ -136,7 +151,7 @@ public class WeatherService extends Service {
 
             @Override
             public void onWearManagerFailure(WearNotificationManagerException exception) {
-
+                // FIXME: show the notification in the mobile?
             }
         }.connect();
     }

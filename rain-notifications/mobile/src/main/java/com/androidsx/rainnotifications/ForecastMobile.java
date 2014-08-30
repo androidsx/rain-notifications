@@ -16,14 +16,8 @@ import android.widget.TextView;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.Forecast;
-import com.androidsx.rainnotifications.model.util.UiUtil;
-import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
-import com.androidsx.rainnotifications.util.WeatherHelper;
-
-import org.joda.time.Period;
 
 import timber.log.Timber;
 
@@ -54,16 +48,12 @@ public class ForecastMobile extends BaseWelcomeActivity {
             trackAppUsage();
             appUsageIsTracked = true;
         }
-        final Intent mIntent = getIntent();
+
         // FIXME: we do exactly the same in the weather service. grr..
         new UserLocation(this) {
             @Override
             public void onLocationSuccess(final Location location) {
-                Intent intent = mIntent;
-                if(intent == null) {
-                    intent = new Intent(ForecastMobile.this, WeatherService.class);
-                }
-                ForecastChecker.requestForecastForLocation(ForecastMobile.this, intent, location.getLatitude(), location.getLongitude(),
+                ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
                         new ForecastCheckerResultListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
