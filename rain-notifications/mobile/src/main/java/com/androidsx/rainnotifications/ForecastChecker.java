@@ -20,17 +20,10 @@ public class ForecastChecker {
 
     /**
      * Asynchronous method that call for obtain the weather forecast into a determined location.
-     *
-     * @param context
-     * @param mIntent
-     * @param latitude
-     * @param longitude
-     * @param address
-     * @param forecastCheckerResultListener
      */
     public static void requestForecastForLocation(final Context context, Intent mIntent,
                                                   double latitude, double longitude,
-                                                  final String address, final ForecastCheckerResultListener forecastCheckerResultListener) {
+                                                  final ForecastCheckerResultListener forecastCheckerResultListener) {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
             final PendingIntent weatherAlarmIntent = PendingIntent.getService(context, Constants.AlarmId.WEATHER_ID, mIntent, 0);
             new ForecastIoNetworkServiceTask() {
@@ -43,7 +36,7 @@ public class ForecastChecker {
                             currentWeather,
                             forecastTable.getForecasts()
                     );
-                    forecastCheckerResultListener.onForecastSuccess(forecastTable, address);
+                    forecastCheckerResultListener.onForecastSuccess(forecastTable);
                 }
                 @Override
                 protected void onFailure() {

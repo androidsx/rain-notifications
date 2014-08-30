@@ -50,15 +50,15 @@ public class WeatherService extends Service {
     public int onStartCommand(final Intent intent, int flags, int startId) {
         new UserLocation(this) {
             @Override
-            public void onLocationSuccess(Location location, String address) {
+            public void onLocationSuccess(Location location) {
                 Intent mIntent = intent;
                 if(mIntent == null) {
                     mIntent = new Intent(WeatherService.this, WeatherService.class);
                 }
-                ForecastChecker.requestForecastForLocation(WeatherService.this, mIntent, location.getLatitude(), location.getLongitude(), address,
+                ForecastChecker.requestForecastForLocation(WeatherService.this, mIntent, location.getLatitude(), location.getLongitude(),
                         new ForecastCheckerResultListener() {
                     @Override
-                    public void onForecastSuccess(ForecastTable forecastTable, String address) {
+                    public void onForecastSuccess(ForecastTable forecastTable) {
                         if (!forecastTable.getForecasts().isEmpty()) {
                             Weather currentWeather = forecastTable.getBaselineWeather();
                             Forecast forecast = forecastTable.getForecasts().get(0);

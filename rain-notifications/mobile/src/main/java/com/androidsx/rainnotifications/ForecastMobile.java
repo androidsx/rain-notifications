@@ -33,7 +33,7 @@ import timber.log.Timber;
  * It just shows the owl picture and a sample text so far.
  */
 public class ForecastMobile extends BaseWelcomeActivity {
-    private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
+    private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 1;
 
     private TextView locationTextView;
     private TextView cardMessageTextView;
@@ -57,28 +57,32 @@ public class ForecastMobile extends BaseWelcomeActivity {
         final Intent mIntent = getIntent();
         new UserLocation(this) {
             @Override
-            public void onLocationSuccess(Location location, String address) {
+            public void onLocationSuccess(final Location location) {
                 Intent intent = mIntent;
                 if(intent == null) {
                     intent = new Intent(ForecastMobile.this, WeatherService.class);
                 }
-                ForecastChecker.requestForecastForLocation(ForecastMobile.this, intent, location.getLatitude(), location.getLongitude(), address,
+                ForecastChecker.requestForecastForLocation(ForecastMobile.this, intent, location.getLatitude(), location.getLongitude(),
                         new ForecastCheckerResultListener() {
                     @Override
-                    public void onForecastSuccess(ForecastTable forecastTable, String address) {
-                        Weather currentWeather = forecastTable.getBaselineWeather();
-                        Forecast forecast = null;
-                        int weatherIcon;
-                        if (!forecastTable.getForecasts().isEmpty()) {
-                            forecast = forecastTable.getForecasts().get(0);
-                            weatherIcon = WeatherHelper.getIconFromWeather(forecast.getForecastedWeather());
-                        } else {
-                            weatherIcon = WeatherHelper.getIconFromWeather(currentWeather);
-                        }
-                        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
-                        String message = alert.getAlertMessage().toString();
+                    public void onForecastSuccess(ForecastTable forecastTable) {
+                        final Weather currentWeather = forecastTable.getBaselineWeather();
+                        final int weatherIcon = WeatherHelper.getIconFromWeather(currentWeather);
 
-                        updateUI(address, weatherIcon, message);
+                        final Forecast forecast;
+                        if (forecastTable.getForecasts().isEmpty()) {
+                            forecast = null;
+                        } else {
+                            forecast = forecastTable.getForecasts().get(0);
+                        }
+
+                        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
+                        final String locationAddress = UserLocation.getLocationAddress(
+                                ForecastMobile.this,
+                                location.getLatitude(),
+                                location.getLongitude());
+                        final String message = alert.getAlertMessage().toString();
+                        updateUI(locationAddress, weatherIcon, message);
                     }
 
                     @Override
@@ -111,9 +115,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
         });
 
         locationTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_SLAB_REGULAR_URL));
-        locationTextView.setText(getString(R.string.current_name_location));
         cardMessageTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
-        cardMessageTextView.setText(getString(R.string.owl_example));
     }
 
     private void updateUI(String address, int mascot_icon, String message) {
