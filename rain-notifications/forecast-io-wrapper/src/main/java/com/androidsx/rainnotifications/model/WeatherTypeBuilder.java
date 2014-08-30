@@ -13,16 +13,16 @@ import static com.androidsx.rainnotifications.model.WeatherType.*;
  */
 public class WeatherTypeBuilder {
     final static private Map<String, WeatherType> ICON_TO_WEATHER_TYPE = new HashMap<String, WeatherType>() {{
-        put("clear-day", CLEAR_DAY);
-        put("clear-night", CLEAR_NIGHT);
+        put("clear-day", SUNNY);
+        //put("clear-night", CLEAR_NIGHT); // Exists in Forecast.io. Not supported by us yet
         put("rain", RAIN);
-        put("snow", SNOW);
-        put("sleet", SLEET);
-        put("wind", WIND);
-        put("fog", FOG);
-        put("cloudy", CLOUDY);
-        put("partly-cloudy-day", PARTLY_CLOUDY_DAY);
-        put("partly-cloudy-night", PARTLY_CLOUDY_NIGHT);
+        //put("snow", SNOW); // Exists in Forecast.io. Not supported by us yet
+        //put("sleet", SLEET); // Exists in Forecast.io. Not supported by us yet
+        //put("wind", WIND); // Exists in Forecast.io. Not supported by us yet
+        //put("fog", FOG); // Exists in Forecast.io. Not supported by us yet
+        //put("cloudy", CLOUDY); // Exists in Forecast.io. Not supported by us yet
+        //put("partly-cloudy-day", PARTLY_CLOUDY_DAY); // Exists in Forecast.io. Not supported by us yet
+        //put("partly-cloudy-night", PARTLY_CLOUDY_NIGHT); // Exists in Forecast.io. Not supported by us yet
     }};
 
     public static WeatherType buildFromForecastIo(String icon) {
