@@ -16,8 +16,6 @@ import com.androidsx.rainnotifications.util.LocationHelper;
  */
 public class ForecastChecker {
 
-    private static final String TAG = ForecastChecker.class.getSimpleName();
-
     /**
      * Asynchronous method that call for obtain the weather forecast into a determined location.
      */

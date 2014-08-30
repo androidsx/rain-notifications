@@ -19,8 +19,6 @@ import java.util.Locale;
  */
 public abstract class UserLocation implements UserLocationResultListener {
 
-    private static final String TAG = UserLocation.class.getSimpleName();
-
     private LocationClient mLocationClient;
 
     public UserLocation(final Context context) {
@@ -54,11 +52,9 @@ public abstract class UserLocation implements UserLocationResultListener {
     }
 
     /**
-     * Method that translate a location coordinates into a quotidian name.
+     * Translates a location coordinates into a quotidian name.
      *
-     * @param latitude
-     * @param longitude
-     * @return String - quotidian name of direction or null if it couldn't be retrieved
+     * @return quotidian name of direction or null if it couldn't be retrieved
      */
     public static String getLocationAddress(Context context, double latitude, double longitude) {
 

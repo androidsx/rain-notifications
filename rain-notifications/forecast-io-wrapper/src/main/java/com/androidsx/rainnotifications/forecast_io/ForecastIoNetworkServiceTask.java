@@ -25,9 +25,12 @@ public abstract class ForecastIoNetworkServiceTask extends NetworkServiceTask {
             onFailure();
         } else {
             final ForecastService.Response response = (ForecastService.Response) rawNetworkResponse;
-            //Log.v(TAG, "Raw response from Forecast.io:\n" + response);
+            Log.v(TAG, "Raw response from Forecast.io:\n" + response);
 
-            onSuccess(ForecastTableBuilder.buildFromForecastIo(response));
+            final ForecastTable forecastTable = ForecastTableBuilder.buildFromForecastIo(response);
+            Log.d(TAG, "Transition table: " + forecastTable);
+
+            onSuccess(forecastTable);
         }
     }
 

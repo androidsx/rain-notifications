@@ -18,11 +18,11 @@ public class UiUtil {
     public static PeriodFormatter getDebugOnlyPeriodFormatter() {
         return new PeriodFormatterBuilder()
                 .appendDays()
-                .appendSeparatorIfFieldsBefore(" days, ")
+                .appendSeparatorIfFieldsBefore(" days ")
                 .appendHours()
-                .appendSeparatorIfFieldsBefore(" hours, ")
+                .appendSeparatorIfFieldsBefore(" hours ")
                 .appendMinutes()
-                .appendSeparatorIfFieldsBefore(" minutes, ")
+                .appendSeparatorIfFieldsBefore(" minutes ")
                 .appendSeconds()
                 .appendSeparatorIfFieldsBefore(" seconds")
                 .toFormatter();

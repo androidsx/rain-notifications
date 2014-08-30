@@ -34,9 +34,6 @@ import org.joda.time.Interval;
  */
 
 public class WeatherService extends Service {
-
-    private static final String TAG = WeatherService.class.getSimpleName();
-
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
 
     @Override
@@ -46,6 +43,7 @@ public class WeatherService extends Service {
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
+        // FIXME: we do exactly the same in the mobile activity!
         new UserLocation(this) {
             @Override
             public void onLocationSuccess(Location location) {

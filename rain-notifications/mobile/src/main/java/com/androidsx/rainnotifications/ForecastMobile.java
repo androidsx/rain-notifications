@@ -38,7 +38,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
     private TextView locationTextView;
     private TextView cardMessageTextView;
 
-    /** Image of the mascot that represents the next weather or, if we don't have it, the current one. */
+    /** Image of the mascot that represents the current weather. */
     private ImageView mascotImageView;
 
     private boolean appUsageIsTracked = false;
@@ -55,6 +55,7 @@ public class ForecastMobile extends BaseWelcomeActivity {
             appUsageIsTracked = true;
         }
         final Intent mIntent = getIntent();
+        // FIXME: we do exactly the same in the weather service. grr..
         new UserLocation(this) {
             @Override
             public void onLocationSuccess(final Location location) {

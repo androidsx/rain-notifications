@@ -18,7 +18,6 @@ import java.util.List;
  * Should not be used from outside of this project.
  */
 public class ForecastTableBuilder {
-    private static final String TAG = ForecastTableBuilder.class.getSimpleName();
 
     public static ForecastTable buildFromForecastIo(ForecastService.Response response) {
         final DataPoint currently = response.getForecast().getCurrently();
