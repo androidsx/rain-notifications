@@ -79,14 +79,14 @@ public class DebugActivity extends Activity {
                         sendWearNotification(
                                 DebugActivity.this,
                                 getString(R.string.notif_long_text_fake),
-                                R.drawable.owl_sunny_fake
+                                R.drawable.owlie_debug
                         );
                     } else {
                         NotificationHelper.sendNotification(
                                 DebugActivity.this,
                                 ForecastMobile.class,
                                 getString(R.string.notif_long_text_fake),
-                                BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                                BitmapFactory.decodeResource(getResources(), R.drawable.owlie_debug)
                         );
                     }
                 } else {
@@ -94,7 +94,7 @@ public class DebugActivity extends Activity {
                             DebugActivity.this,
                             ForecastMobile.class,
                             getString(R.string.notif_long_text_fake),
-                            BitmapFactory.decodeResource(getResources(), R.drawable.owl_sunny_fake)
+                            BitmapFactory.decodeResource(getResources(), R.drawable.owlie_debug)
                     );
                 }
             }
