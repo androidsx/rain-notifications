@@ -16,7 +16,5 @@
     <string name="notif_long_text_fake">Fake message from the debug activity. We didn\'t check with the alert generator</string>
 
     <!-- DEBUG VIEW -->
-    <string name="btn_forecast">Call the Forecast API</string>
-    <string name="btn_refresh_ui">Refresh UI</string>
     <string name="btn_show_notification">Show random notification</string>
 </resources>
