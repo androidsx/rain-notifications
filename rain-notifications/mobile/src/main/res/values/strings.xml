@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">WeatherAssistant</string>
-    <string name="current_name_location">Obtaining location...</string>
+    <string name="app_name">Weather Assistant</string> <!-- Careful: keep in sync with the one in wear -->
     <string name="action_share">Share</string>
     <string name="share_dialog_title">Share the app</string>
     <string name="share_text">Meet Mr. Owl, your weather assistant for Google Wear https://play.google.com/store/apps/details?id=com.androidsx.rainnotifications</string>
@@ -12,14 +11,10 @@
     <string name="welcome_go_to_app">Open the app</string>
     <string name="welcome_skip">Skip</string>
 
-    <string name="owl_example">It\'s gonna get a little chilly tonight, and we may even have some rain. That sucks! (Mock text)</string>
     <string name="today">Today</string>
 
-    <string name="notif_title">Mr. Owl says...</string>
-    <string name="notif_long_text_fake">Looks like it\'s gonna rain cats and dogs in 15 minutes (Fake)</string>
+    <string name="notif_long_text_fake">Fake message from the debug activity. We didn\'t check with the alert generator</string>
 
     <!-- DEBUG VIEW -->
-    <string name="btn_forecast">Call the Forecast API</string>
-    <string name="btn_refresh_ui">Refresh UI</string>
     <string name="btn_show_notification">Show random notification</string>
 </resources>

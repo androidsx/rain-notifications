@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CustomNotification"
+        <activity android:name=".WearCustomNotificationActivity"
             android:exported="true"
             android:allowEmbedded="true"
             android:taskAffinity=""

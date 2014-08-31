@@ -32,6 +32,7 @@ public class OngoingNotificationListenerService extends WearableListenerService 
     @Override
     public void onCreate() {
         super.onCreate();
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build();
@@ -40,6 +41,8 @@ public class OngoingNotificationListenerService extends WearableListenerService 
 
     @Override
     public void onDataChanged(DataEventBuffer dataEvents) {
+        Log.i(TAG, "Something changed. Perhaps a new notification");
+        
         final List<DataEvent> events = FreezableUtils.freezeIterable(dataEvents);
         dataEvents.close();
 
@@ -76,7 +79,7 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                                     .build();
 
                     // Intent for change the standard notification by our custom notification layout
-                    Intent notificationIntent = new Intent(this, CustomNotification.class);
+                    Intent notificationIntent = new Intent(this, WearCustomNotificationActivity.class);
                     notificationIntent.putExtra(Constants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
                     notificationIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
                     PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
@@ -86,7 +89,7 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                             new NotificationCompat.Builder(this)
                                     .setDefaults(NotificationCompat.DEFAULT_ALL)
                                     .setContentText(text)
-                                    .setSmallIcon(R.drawable.clear_day)
+                                    .setSmallIcon(R.drawable.ic_launcher) // ehem
                                     .extend(new WearableExtender()
                                                     .setHintHideIcon(true)
                                                     .setCustomContentHeight(400)
@@ -99,7 +102,7 @@ public class OngoingNotificationListenerService extends WearableListenerService 
                     NotificationManagerCompat.from(this)
                             .notify(NOTIFICATION_ID, notificationBuilder.build());
                 } else {
-                    Log.d(TAG, "Unrecognized path: " + path);
+                    Log.w(TAG, "Unrecognized path: " + path);
                 }
             }
         }

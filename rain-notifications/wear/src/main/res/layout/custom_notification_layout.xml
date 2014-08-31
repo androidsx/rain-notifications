@@ -11,14 +11,12 @@
         android:layout_marginTop="1dp"
         android:layout_marginRight="0dp"
         android:layout_marginBottom="15dp"
-        android:src="@drawable/cloudy_owl"
         android:layout_gravity="center_horizontal"/>
 
     <TextView
         android:id="@+id/text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/owl_example"
         android:textColor="@color/black"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"

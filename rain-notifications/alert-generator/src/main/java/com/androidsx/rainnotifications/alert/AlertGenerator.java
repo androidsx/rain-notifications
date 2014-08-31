@@ -10,6 +10,9 @@ import com.androidsx.rainnotifications.model.util.UiUtil;
 
 import org.joda.time.Period;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Generates weather alerts that are relevant to the user.
  * <p/>
@@ -23,18 +26,39 @@ public class AlertGenerator {
      * Generates a weather alert.
      *
      * @param currentWeather weather at the current moment
-     * @param forecast forecast for some point in the future. This is usually expected to be a
-     *                 different weather than the current one
+     * @param forecast forecast for some point in the future, or null if it is
+     *                 unknown. This is usually expected to be a different
+     *                 weather than the current one.
      *
      * @return an alert for the provided weather transition
      * @see #generateAlertLevel
      * @see #generateAlertMessage
+     * @see #generateMascot
      */
     public Alert generateAlert(Weather currentWeather, Forecast forecast) {
-        return new Alert(
-                generateAlertLevel(currentWeather, forecast.getForecastedWeather()),
-                generateAlertMessage(currentWeather, forecast)
-        );
+        if (forecast == null) {
+            return new Alert(AlertLevel.NEVER_MIND,
+                    generateAlertMessage(currentWeather, null),
+                    generateMascot(currentWeather));
+        } else {
+            return new Alert(
+                    generateAlertLevel(currentWeather, forecast.getForecastedWeather()),
+                    generateAlertMessage(currentWeather, forecast),
+                    generateMascot(forecast.getForecastedWeather())
+            );
+        }
+    }
+
+    public int generateMascot(Weather weather) {
+        final Map<WeatherType, Integer> owlieVariations = new HashMap<WeatherType, Integer>() {
+            {
+                put(WeatherType.RAIN, R.drawable.owlie_rainy);
+                put(WeatherType.SUNNY, R.drawable.owlie_sunny);
+                put(WeatherType.UNKNOWN, R.drawable.owlie_default);
+            }
+        };
+
+        return owlieVariations.get(weather.getType());
     }
 
     /**
@@ -73,9 +97,9 @@ public class AlertGenerator {
         }
         final Period periodFromNow = forecast.getTimeFromNow().toPeriod();
 
-        return new AlertMessage("It's gonna be \"" + forecast.getForecastedWeather() + "\""
+        return new AlertMessage("It's gonna be " + forecast.getForecastedWeather()
                 + " in " + UiUtil.getDebugOnlyPeriodFormatter().print(periodFromNow) + " from now"
-                + " (with a precision of +/- 1 " + forecast.getGranularity() + ", though)."
+                + " (with a precision of +/- 1 " + forecast.getGranularity() + ")."
                 + " At the moment, it is " + currentWeather);
     }
 }

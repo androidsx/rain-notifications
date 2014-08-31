@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications;
+package com.androidsx.rainnotifications.ui.main;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -13,35 +13,32 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.DebugActivity;
+import com.androidsx.rainnotifications.ForecastChecker;
+import com.androidsx.rainnotifications.ForecastCheckerException;
+import com.androidsx.rainnotifications.ForecastCheckerResultListener;
+import com.androidsx.rainnotifications.R;
+import com.androidsx.rainnotifications.UserLocation;
+import com.androidsx.rainnotifications.UserLocationException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.Forecast;
-import com.androidsx.rainnotifications.model.util.UiUtil;
-import com.androidsx.rainnotifications.service.WeatherService;
-import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
-import com.androidsx.rainnotifications.util.WeatherHelper;
-
-import org.joda.time.Period;
-
-import timber.log.Timber;
+import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
 
 /**
  * Main activity.
- * <p>
- * It just shows the owl picture and a sample text so far.
  */
-public class ForecastMobile extends BaseWelcomeActivity {
+public class MainMobileActivity extends BaseWelcomeActivity {
     private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
 
     private TextView locationTextView;
     private TextView cardMessageTextView;
 
-    /** Image of the mascot that represents the next weather or, if we don't have it, the current one. */
+    /** Image of the mascot that represents the current weather. */
     private ImageView mascotImageView;
 
-    private boolean appUsageIsTracked = false;
     private int numClicksForDebugScreenSoFar = 0;
 
     @Override
@@ -50,47 +47,36 @@ public class ForecastMobile extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         setupUI();
-        if (!appUsageIsTracked) {
-            trackAppUsage();
-            appUsageIsTracked = true;
-        }
-        final Intent mIntent = getIntent();
+
+        // FIXME: we do exactly the same in the weather service. grr..
         new UserLocation(this) {
             @Override
-            public void onLocationSuccess(Location location, String address) {
-                Intent intent = mIntent;
-                if(intent == null) {
-                    intent = new Intent(ForecastMobile.this, WeatherService.class);
-                }
-                ForecastChecker.requestForecastForLocation(ForecastMobile.this, intent, location.getLatitude(), location.getLongitude(), address,
+            public void onLocationSuccess(final Location location) {
+                ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
                         new ForecastCheckerResultListener() {
-                    @Override
-                    public void onForecastSuccess(ForecastTable forecastTable, String address) {
-                        Weather currentWeather = forecastTable.getBaselineWeather();
-                        Forecast forecast = null;
-                        int weatherIcon;
-                        if (!forecastTable.getForecasts().isEmpty()) {
-                            forecast = forecastTable.getForecasts().get(0);
-                            weatherIcon = WeatherHelper.getIconFromWeather(forecast.getForecastedWeather());
-                        } else {
-                            weatherIcon = WeatherHelper.getIconFromWeather(currentWeather);
-                        }
-                        final Alert alert = new AlertGenerator().generateAlert(currentWeather, forecast);
-                        String message = alert.getAlertMessage().toString();
+                            @Override
+                            public void onForecastSuccess(ForecastTable forecastTable) {
+                                final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
+                                final Alert alert = new AlertGenerator().generateAlert(forecastTable.getBaselineWeather(), forecast);
+                                final String locationAddress = UserLocation.getLocationAddress(
+                                        MainMobileActivity.this,
+                                        location.getLatitude(),
+                                        location.getLongitude());
+                                updateUI(locationAddress,
+                                        alert.getDressedMascot(),
+                                        alert.getAlertMessage().getNotificationMessage());
+                            }
 
-                        updateUI(address, weatherIcon, message);
-                    }
-
-                    @Override
-                    public void onForecastFailure(ForecastCheckerException exception) {
-
-                    }
-                });
+                            @Override
+                            public void onForecastFailure(ForecastCheckerException exception) {
+                                throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
+                            }
+                        });
             }
 
             @Override
             public void onLocationFailure(UserLocationException exception) {
-
+                throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
             }
         }.connect();
     }
@@ -104,16 +90,14 @@ public class ForecastMobile extends BaseWelcomeActivity {
             public void onClick(View view) {
                 // TODO: This trick should time out rather quickly
                 if (++numClicksForDebugScreenSoFar == NUM_CLICKS_FOR_DEBUG_SCREEN) {
-                    startActivity(new Intent(ForecastMobile.this, DebugActivity.class));
+                    startActivity(new Intent(MainMobileActivity.this, DebugActivity.class));
                     numClicksForDebugScreenSoFar = 0;
                 }
             }
         });
 
         locationTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_SLAB_REGULAR_URL));
-        locationTextView.setText(getString(R.string.current_name_location));
         cardMessageTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
-        cardMessageTextView.setText(getString(R.string.owl_example));
     }
 
     private void updateUI(String address, int mascot_icon, String message) {
@@ -147,20 +131,6 @@ public class ForecastMobile extends BaseWelcomeActivity {
         startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_dialog_title)));
     }
 
-    /**
-     * Tracks this usage of the application.
-     */
-    private void trackAppUsage() {
-        final int numUsages = ApplicationVersionHelper.getNumUses(this);
-        if (numUsages == 0) {
-            Timber.i("New install. Setting the usage count to 0");
-        } else {
-            Timber.d("Usage number #" + (numUsages + 1));
-        }
-
-        ApplicationVersionHelper.saveNewUse(this);
-        ApplicationVersionHelper.saveCurrentVersionCode(this);
-    }
 
     private Typeface getTypeface(String url) {
         return Typeface.createFromAsset(getAssets(), url);

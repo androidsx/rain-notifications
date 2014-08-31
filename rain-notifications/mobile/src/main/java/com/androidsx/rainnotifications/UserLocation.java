@@ -19,8 +19,6 @@ import java.util.Locale;
  */
 public abstract class UserLocation implements UserLocationResultListener {
 
-    private static final String TAG = UserLocation.class.getSimpleName();
-
     private LocationClient mLocationClient;
 
     public UserLocation(final Context context) {
@@ -30,7 +28,7 @@ public abstract class UserLocation implements UserLocationResultListener {
                 if (mLocationClient.isConnected()) {
                     Location loc = mLocationClient.getLastLocation();
                     if (loc != null) {
-                        onLocationSuccess(loc, getLocationAddress(context, loc.getLatitude(), loc.getLongitude()));
+                        onLocationSuccess(loc);
                     } else {
                         onLocationFailure(new UserLocationException());
                     }
@@ -54,14 +52,11 @@ public abstract class UserLocation implements UserLocationResultListener {
     }
 
     /**
-     * Method that translate a location coordinates into a quotidian name.
+     * Translates a location coordinates into a quotidian name.
      *
-     * @param latitude
-     * @param longitude
-     * @return String - quotidian name of direction
+     * @return quotidian name of direction or null if it couldn't be retrieved
      */
     public static String getLocationAddress(Context context, double latitude, double longitude) {
-        String address = context.getString(R.string.current_name_location);
 
         Geocoder gcd = new Geocoder(context, Locale.getDefault());
         List<Address> addresses = null;
@@ -71,10 +66,14 @@ public abstract class UserLocation implements UserLocationResultListener {
             e.printStackTrace();
         }
 
+        final String address;
         if (addresses != null && addresses.size() > 0) {
             if (addresses.get(0).getSubLocality() != null) address = addresses.get(0).getSubLocality();
             else if (addresses.get(0).getLocality() != null) address = addresses.get(0).getLocality();
             else if (addresses.get(0).getCountryName() != null) address = addresses.get(0).getCountryName();
+            else address = null;
+        } else {
+            address = null;
         }
 
         return address;

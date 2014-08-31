@@ -19,6 +19,7 @@
             android:id="@+id/location_text_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:singleLine="true"
             android:textSize="25sp"
             android:textColor="@color/location"
             android:fontFamily="sans-serif-"/>
@@ -41,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/owl_margin"
-                android:src="@drawable/welcome_step_1"
+                android:src="@drawable/owlie_default"
                 android:clickable="true"/>
 
         </LinearLayout>

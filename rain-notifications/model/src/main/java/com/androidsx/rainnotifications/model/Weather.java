@@ -5,26 +5,13 @@ package com.androidsx.rainnotifications.model;
  */
 public class Weather {
     private final WeatherType type;
-    private final double precipIntensity;
 
-    public Weather(WeatherType type, double precipIntensity) {
+    public Weather(WeatherType type) {
         this.type = type;
-        this.precipIntensity = precipIntensity;
     }
 
     public WeatherType getType() {
         return type;
-    }
-
-    /**
-     * A very rough guide is that a value of 0 in./hr. corresponds to no precipitation, 0.002 in./hr.
-     * corresponds to very light precipitation, 0.017 in./hr. corresponds to light precipitation,
-     * 0.1 in./hr. corresponds to moderate precipitation, and 0.4 in./hr. corresponds to heavy precipitation.
-     *
-     * @return precipIntensity
-     */
-    public double getPrecipIntensity() {
-        return precipIntensity;
     }
 
     @Override
