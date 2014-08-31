@@ -56,7 +56,10 @@ public class WeatherService extends Service {
                             final Forecast forecast = forecastTable.getForecasts().get(0);
                             final Alert alert = new AlertGenerator().generateAlert(forecastTable.getBaselineWeather(), forecast);
                             if (shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
+                                Timber.i("Will display notification for " + alert);
                                 NotificationHelper.displayCustomNotification(WeatherService.this, alert);
+                            } else {
+                                Timber.d("No notification for now. The alert was " + alert);
                             }
                         }
 

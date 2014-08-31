@@ -32,4 +32,9 @@ public class Alert {
     public int getDressedMascot() {
         return dressedMascot;
     }
+
+    @Override
+    public String toString() {
+        return "Alert " + getAlertLevel() + " with message \"" + getAlertMessage() + "\"";
+    }
 }
