@@ -35,7 +35,6 @@ public class ForecastMobile extends BaseWelcomeActivity {
     /** Image of the mascot that represents the current weather. */
     private ImageView mascotImageView;
 
-    private boolean appUsageIsTracked = false;
     private int numClicksForDebugScreenSoFar = 0;
 
     @Override
@@ -44,10 +43,6 @@ public class ForecastMobile extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         setupUI();
-        if (!appUsageIsTracked) {
-            trackAppUsage();
-            appUsageIsTracked = true;
-        }
 
         // FIXME: we do exactly the same in the weather service. grr..
         new UserLocation(this) {
@@ -132,20 +127,6 @@ public class ForecastMobile extends BaseWelcomeActivity {
         startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_dialog_title)));
     }
 
-    /**
-     * Tracks this usage of the application.
-     */
-    private void trackAppUsage() {
-        final int numUsages = ApplicationVersionHelper.getNumUses(this);
-        if (numUsages == 0) {
-            Timber.i("New install. Setting the usage count to 0");
-        } else {
-            Timber.d("Usage number #" + (numUsages + 1));
-        }
-
-        ApplicationVersionHelper.saveNewUse(this);
-        ApplicationVersionHelper.saveCurrentVersionCode(this);
-    }
 
     private Typeface getTypeface(String url) {
         return Typeface.createFromAsset(getAssets(), url);

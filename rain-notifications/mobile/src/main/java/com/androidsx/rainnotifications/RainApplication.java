@@ -3,6 +3,7 @@ package com.androidsx.rainnotifications;
 import android.app.Application;
 import android.content.SharedPreferences;
 
+import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import timber.log.Timber;
@@ -24,6 +25,7 @@ public class RainApplication extends Application {
         super.onCreate();
 
         setupLogging();
+        trackAppUsage();
     }
 
     /**
@@ -41,6 +43,21 @@ public class RainApplication extends Application {
                         getSharedPreferences(SharedPrefsHelper.SHARED_RAIN, 0)
                 )
         );
+    }
+
+    /**
+     * Tracks this usage of the application.
+     */
+    private void trackAppUsage() {
+        final int numUsages = ApplicationVersionHelper.getNumUses(this);
+        if (numUsages == 0) {
+            Timber.i("New install. Setting the usage count to 0");
+        } else {
+            Timber.d("Usage number #" + (numUsages + 1));
+        }
+
+        ApplicationVersionHelper.saveNewUse(this);
+        ApplicationVersionHelper.saveCurrentVersionCode(this);
     }
 
     /**

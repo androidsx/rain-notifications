@@ -20,7 +20,7 @@ abstract class BaseWelcomeActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        if (ApplicationVersionHelper.getNumUses(this) == 0) {
+        if (ApplicationVersionHelper.getNumUses(this) == 1) {
             startActivity(new Intent(this, WelcomeActivity.class));
         }
 	}
