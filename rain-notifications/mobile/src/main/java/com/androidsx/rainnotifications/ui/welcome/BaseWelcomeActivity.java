@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications;
+package com.androidsx.rainnotifications.ui.welcome;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -14,7 +14,7 @@ import timber.log.Timber;
 /**
  * Base activity that shows the welcome screens if necessary.
  */
-abstract class BaseWelcomeActivity extends Activity {
+abstract public class BaseWelcomeActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

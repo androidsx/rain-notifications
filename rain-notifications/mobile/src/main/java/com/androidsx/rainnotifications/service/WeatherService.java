@@ -13,14 +13,13 @@ import com.androidsx.rainnotifications.ForecastCheckerException;
 import com.androidsx.rainnotifications.ForecastCheckerResultListener;
 import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.UserLocationException;
-import com.androidsx.rainnotifications.ForecastMobile;
+import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.google.android.gms.wearable.NodeApi;
@@ -134,7 +133,7 @@ public class WeatherService extends Service {
                     } else {
                         NotificationHelper.sendNotification(
                                 WeatherService.this,
-                                ForecastMobile.class,
+                                MainMobileActivity.class,
                                 text,
                                 BitmapFactory.decodeResource(getResources(), mascotIcon)
                         );
@@ -142,7 +141,7 @@ public class WeatherService extends Service {
                 } else {
                     NotificationHelper.sendNotification(
                             WeatherService.this,
-                            ForecastMobile.class,
+                            MainMobileActivity.class,
                             text,
                             BitmapFactory.decodeResource(getResources(), mascotIcon)
                     );
