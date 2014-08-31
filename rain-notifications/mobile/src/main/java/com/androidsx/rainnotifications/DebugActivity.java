@@ -60,7 +60,7 @@ public class DebugActivity extends Activity {
     }
 
     public void showStandardNotification(View v) {
-        NotificationHelper.sendNotification(
+        NotificationHelper.displayStandardNotification(
                 DebugActivity.this,
                 MainMobileActivity.class,
                 getString(R.string.notif_long_text_fake),

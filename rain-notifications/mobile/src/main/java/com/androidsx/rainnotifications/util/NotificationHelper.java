@@ -4,23 +4,69 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.androidsx.rainnotifications.R;
+import com.androidsx.rainnotifications.WearNotificationManager;
+import com.androidsx.rainnotifications.WearNotificationManagerException;
+import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
+import com.google.android.gms.wearable.NodeApi;
 
 /*
- * This helper class is for notify the user by notifications if a significant weather change
- * is near to occur.
+ * Helper to build and display notifications on mobile and wear.
  */
-
 public class NotificationHelper {
 
     private NotificationHelper() {
-        //No-instantiate
+        // Non-instantiable
     }
 
-    public static void sendNotification(Context context, Class<?> activity, String text, Bitmap largeIcon) {
+    /**
+     * If wear is connected, only to wear. Otherwise, standard one.
+     */
+    public static void displayCustomNotification(final Context context, final Alert alert) {
+        new WearNotificationManager(context) {
+            @Override
+            public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                if (getConnectedNodesResult.getNodes() != null) {
+                    if (getConnectedNodesResult.getNodes().size() > 0) {
+                        sendWearNotification(
+                                context,
+                                alert.getAlertMessage().getNotificationMessage(),
+                                alert.getDressedMascot()
+                        );
+                    } else {
+                        NotificationHelper.displayStandardNotification(
+                                context,
+                                MainMobileActivity.class,
+                                alert.getAlertMessage().getNotificationMessage(),
+                                BitmapFactory.decodeResource(context.getResources(), alert.getDressedMascot())
+                        );
+                    }
+                } else {
+                    NotificationHelper.displayStandardNotification(
+                            context,
+                            MainMobileActivity.class,
+                            alert.getAlertMessage().getNotificationMessage(),
+                            BitmapFactory.decodeResource(context.getResources(), alert.getDressedMascot())
+                    );
+                }
+            }
+
+            @Override
+            public void onWearManagerFailure(WearNotificationManagerException exception) {
+                // FIXME: show the notification in the mobile?
+            }
+        }.connect();
+    }
+
+    /**
+     * Displays a standard notification, that will show up in both mobile and wear.
+     */
+    public static void displayStandardNotification(Context context, Class<?> activity, String text, Bitmap largeIcon) {
         final int notificationId = 002;
 
         // Main intent for the notification (click for mobile, swipe left and click for wear)

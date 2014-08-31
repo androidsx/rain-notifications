@@ -1,8 +1,5 @@
 package com.androidsx.rainnotifications;
 
-import android.content.Context;
-import android.content.Intent;
-
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
 import com.androidsx.rainnotifications.model.ForecastTable;
