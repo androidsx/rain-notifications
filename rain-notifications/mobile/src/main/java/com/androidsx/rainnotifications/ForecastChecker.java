@@ -28,4 +28,12 @@ public class ForecastChecker {
             }.execute(new ForecastIoRequest(latitude, longitude).getRequest());
         }
     }
+
+    public static interface ForecastCheckerResultListener {
+        public void onForecastSuccess(ForecastTable forecastTable);
+        public void onForecastFailure(ForecastCheckerException exception);
+    }
+
+    public static class ForecastCheckerException extends Exception {
+    }
 }
