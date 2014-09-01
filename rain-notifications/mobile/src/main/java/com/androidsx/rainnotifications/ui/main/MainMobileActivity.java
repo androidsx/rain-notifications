@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Constants;
@@ -23,6 +24,8 @@ import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 
 /**
  * Main activity.
@@ -32,6 +35,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
 
     private TextView locationTextView;
     private TextView cardMessageTextView;
+    private LinearLayout loadingContainer;
 
     /** Image of the mascot that represents the current weather. */
     private ImageView mascotImageView;
@@ -82,6 +86,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         locationTextView = (TextView) findViewById(R.id.location_text_view);
         cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
         mascotImageView = (ImageView) findViewById(R.id.owl_image_view);
+        loadingContainer = (LinearLayout) findViewById(R.id.loading_container);
         mascotImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,8 +104,20 @@ public class MainMobileActivity extends BaseWelcomeActivity {
 
     private void updateUI(String address, int mascot_icon, String message) {
         locationTextView.setText(address);
-        mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), mascot_icon));
         cardMessageTextView.setText(message);
+
+        mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), mascot_icon));
+        YoYo.with(Techniques.Pulse)
+                .duration(300)
+                .playOn(mascotImageView);
+
+        loadingContainer.setVisibility(View.GONE);
+
+        final View cardMessageContainer = findViewById(R.id.card_message_container);
+        cardMessageContainer.setVisibility(View.VISIBLE);
+        YoYo.with(Techniques.BounceInUp)
+                .duration(800)
+                .playOn(cardMessageContainer);
     }
 
     @Override

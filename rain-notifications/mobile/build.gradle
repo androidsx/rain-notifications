@@ -29,4 +29,9 @@ dependencies {
     compile project(':forecast-io-wrapper')
     compile project(':alert-generator')
     compile project(':common-library')
+
+    // Animations framework: https://github.com/daimajia/AndroidViewAnimations
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.easing:library:1.0.0@aar'
+    compile 'com.daimajia.androidanimations:library:1.1.2@aar'
 }
