@@ -9,7 +9,7 @@ import android.os.IBinder;
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.UserLocationFetcher;
 import com.androidsx.rainnotifications.UserLocationResultListener;
-import com.androidsx.rainnotifications.ForecastChecker;
+import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.UserLocationException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;

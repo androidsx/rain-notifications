@@ -1,9 +1,8 @@
-package com.androidsx.rainnotifications;
+package com.androidsx.rainnotifications.util;
 
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.util.LocationHelper;
 
 /**
  * Class that calls for obtain the weather forecast.
