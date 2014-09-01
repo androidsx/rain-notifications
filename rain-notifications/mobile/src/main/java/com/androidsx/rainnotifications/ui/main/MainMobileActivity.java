@@ -14,13 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.DebugActivity;
-import com.androidsx.rainnotifications.ForecastChecker;
-import com.androidsx.rainnotifications.ForecastCheckerException;
-import com.androidsx.rainnotifications.ForecastCheckerResultListener;
+import com.androidsx.rainnotifications.ui.debug.DebugActivity;
+import com.androidsx.rainnotifications.util.UserLocationFetcher;
+import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.R;
-import com.androidsx.rainnotifications.UserLocation;
-import com.androidsx.rainnotifications.UserLocationException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
@@ -49,16 +46,16 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setupUI();
 
         // FIXME: we do exactly the same in the weather service. grr..
-        new UserLocation(this) {
+        new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(final Location location) {
                 ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
-                        new ForecastCheckerResultListener() {
+                        new ForecastChecker.ForecastCheckerResultListener() {
                             @Override
                             public void onForecastSuccess(ForecastTable forecastTable) {
                                 final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
                                 final Alert alert = new AlertGenerator().generateAlert(forecastTable.getBaselineWeather(), forecast);
-                                final String locationAddress = UserLocation.getLocationAddress(
+                                final String locationAddress = UserLocationFetcher.getLocationAddress(
                                         MainMobileActivity.this,
                                         location.getLatitude(),
                                         location.getLongitude());
@@ -68,17 +65,17 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                             }
 
                             @Override
-                            public void onForecastFailure(ForecastCheckerException exception) {
+                            public void onForecastFailure(ForecastChecker.ForecastCheckerException exception) {
                                 throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
                             }
                         });
             }
 
             @Override
-            public void onLocationFailure(UserLocationException exception) {
+            public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
             }
-        }.connect();
+        }).connect();
     }
 
     private void setupUI() {

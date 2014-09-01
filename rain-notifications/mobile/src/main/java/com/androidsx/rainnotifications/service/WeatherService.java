@@ -7,11 +7,8 @@ import android.location.Location;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.ForecastChecker;
-import com.androidsx.rainnotifications.ForecastCheckerException;
-import com.androidsx.rainnotifications.ForecastCheckerResultListener;
-import com.androidsx.rainnotifications.UserLocation;
-import com.androidsx.rainnotifications.UserLocationException;
+import com.androidsx.rainnotifications.util.UserLocationFetcher;
+import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
@@ -43,11 +40,11 @@ public class WeatherService extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         // FIXME: we do exactly the same in the mobile activity!
-        new UserLocation(this) {
+        new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(Location location) {
                 ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
-                        new ForecastCheckerResultListener() {
+                        new ForecastChecker.ForecastCheckerResultListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
                         if (forecastTable.getForecasts().isEmpty()) {
@@ -67,17 +64,17 @@ public class WeatherService extends Service {
                     }
 
                     @Override
-                    public void onForecastFailure(ForecastCheckerException exception) {
+                    public void onForecastFailure(ForecastChecker.ForecastCheckerException exception) {
                         throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: set the next alarm a little from now?
                     }
                 });
             }
 
             @Override
-            public void onLocationFailure(UserLocationException exception) {
+            public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 throw new IllegalStateException("Failed to get the location", exception); // FIXME: set the next alarm a little from now?
             }
-        }.connect();
+        }).connect();
 
         return super.onStartCommand(intent, flags, startId);
     }

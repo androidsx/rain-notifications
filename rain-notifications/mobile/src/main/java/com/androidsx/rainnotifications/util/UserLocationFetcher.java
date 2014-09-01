@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications;
+package com.androidsx.rainnotifications.util;
 
 import android.content.Context;
 import android.location.Address;
@@ -15,22 +15,22 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Class that determine de user location in coordinates and text.
+ * Helper class to fetch the current location of the user.
  */
-public abstract class UserLocation implements UserLocationResultListener {
+public class UserLocationFetcher {
 
-    private LocationClient mLocationClient;
+    private final LocationClient mLocationClient;
 
-    public UserLocation(final Context context) {
+    public UserLocationFetcher(final Context context, final UserLocationResultListener userLocationResultListener) {
         mLocationClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
             @Override
             public void onConnected(Bundle bundle) {
                 if (mLocationClient.isConnected()) {
                     Location loc = mLocationClient.getLastLocation();
                     if (loc != null) {
-                        onLocationSuccess(loc);
+                        userLocationResultListener.onLocationSuccess(loc);
                     } else {
-                        onLocationFailure(new UserLocationException());
+                        userLocationResultListener.onLocationFailure(new UserLocationException());
                     }
                 }
             }
@@ -77,5 +77,13 @@ public abstract class UserLocation implements UserLocationResultListener {
         }
 
         return address;
+    }
+
+    public static interface UserLocationResultListener {
+        public void onLocationSuccess(Location location);
+        public void onLocationFailure(UserLocationException exception);
+    }
+
+    public static class UserLocationException extends Exception {
     }
 }

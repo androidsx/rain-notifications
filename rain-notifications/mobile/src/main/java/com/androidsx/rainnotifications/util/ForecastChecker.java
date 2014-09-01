@@ -1,9 +1,8 @@
-package com.androidsx.rainnotifications;
+package com.androidsx.rainnotifications.util;
 
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.util.LocationHelper;
 
 /**
  * Class that calls for obtain the weather forecast.
@@ -27,5 +26,13 @@ public class ForecastChecker {
                 }
             }.execute(new ForecastIoRequest(latitude, longitude).getRequest());
         }
+    }
+
+    public static interface ForecastCheckerResultListener {
+        public void onForecastSuccess(ForecastTable forecastTable);
+        public void onForecastFailure(ForecastCheckerException exception);
+    }
+
+    public static class ForecastCheckerException extends Exception {
     }
 }
