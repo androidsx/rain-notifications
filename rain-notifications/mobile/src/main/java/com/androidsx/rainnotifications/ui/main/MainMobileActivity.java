@@ -24,6 +24,7 @@ import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
+import com.crashlytics.android.Crashlytics;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 
@@ -46,6 +47,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Crashlytics.start(this);
         setContentView(R.layout.activity_forecast_mobile);
 
         setupUI();
