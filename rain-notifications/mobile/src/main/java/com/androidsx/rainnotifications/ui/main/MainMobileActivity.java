@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.DebugActivity;
-import com.androidsx.rainnotifications.UserLocationFetcher;
+import com.androidsx.rainnotifications.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
