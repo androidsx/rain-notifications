@@ -7,10 +7,8 @@ import android.location.Location;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.UserLocation;
-import com.androidsx.rainnotifications.UserLocationResultListener;
+import com.androidsx.rainnotifications.UserLocationFetcher;
 import com.androidsx.rainnotifications.util.ForecastChecker;
-import com.androidsx.rainnotifications.UserLocationException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
@@ -42,7 +40,7 @@ public class WeatherService extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         // FIXME: we do exactly the same in the mobile activity!
-        new UserLocation(this, new UserLocationResultListener() {
+        new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(Location location) {
                 ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
@@ -73,7 +71,7 @@ public class WeatherService extends Service {
             }
 
             @Override
-            public void onLocationFailure(UserLocationException exception) {
+            public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 throw new IllegalStateException("Failed to get the location", exception); // FIXME: set the next alarm a little from now?
             }
         }).connect();

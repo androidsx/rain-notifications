@@ -15,13 +15,13 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Class that determine de user location in coordinates and text.
+ * Helper class to fetch the current location of the user.
  */
-public class UserLocation {
+public class UserLocationFetcher {
 
     private final LocationClient mLocationClient;
 
-    public UserLocation(final Context context, final UserLocationResultListener userLocationResultListener) {
+    public UserLocationFetcher(final Context context, final UserLocationResultListener userLocationResultListener) {
         mLocationClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
             @Override
             public void onConnected(Bundle bundle) {
@@ -77,5 +77,13 @@ public class UserLocation {
         }
 
         return address;
+    }
+
+    public static interface UserLocationResultListener {
+        public void onLocationSuccess(Location location);
+        public void onLocationFailure(UserLocationException exception);
+    }
+
+    public static class UserLocationException extends Exception {
     }
 }
