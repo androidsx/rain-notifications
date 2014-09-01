@@ -17,20 +17,20 @@ import java.util.Locale;
 /**
  * Class that determine de user location in coordinates and text.
  */
-public abstract class UserLocation implements UserLocationResultListener {
+public class UserLocation {
 
-    private LocationClient mLocationClient;
+    private final LocationClient mLocationClient;
 
-    public UserLocation(final Context context) {
+    public UserLocation(final Context context, final UserLocationResultListener userLocationResultListener) {
         mLocationClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
             @Override
             public void onConnected(Bundle bundle) {
                 if (mLocationClient.isConnected()) {
                     Location loc = mLocationClient.getLastLocation();
                     if (loc != null) {
-                        onLocationSuccess(loc);
+                        userLocationResultListener.onLocationSuccess(loc);
                     } else {
-                        onLocationFailure(new UserLocationException());
+                        userLocationResultListener.onLocationFailure(new UserLocationException());
                     }
                 }
             }

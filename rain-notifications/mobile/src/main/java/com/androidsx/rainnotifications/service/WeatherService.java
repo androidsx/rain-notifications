@@ -7,7 +7,7 @@ import android.location.Location;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.UserLocationFetcher;
+import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.UserLocationResultListener;
 import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.UserLocationException;
@@ -42,11 +42,11 @@ public class WeatherService extends Service {
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
         // FIXME: we do exactly the same in the mobile activity!
-        new UserLocation(this) {
+        new UserLocation(this, new UserLocationResultListener() {
             @Override
             public void onLocationSuccess(Location location) {
                 ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
-                        new ForecastCheckerResultListener() {
+                        new ForecastChecker.ForecastCheckerResultListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
                         if (forecastTable.getForecasts().isEmpty()) {
@@ -66,7 +66,7 @@ public class WeatherService extends Service {
                     }
 
                     @Override
-                    public void onForecastFailure(ForecastCheckerException exception) {
+                    public void onForecastFailure(ForecastChecker.ForecastCheckerException exception) {
                         throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: set the next alarm a little from now?
                     }
                 });
@@ -76,7 +76,7 @@ public class WeatherService extends Service {
             public void onLocationFailure(UserLocationException exception) {
                 throw new IllegalStateException("Failed to get the location", exception); // FIXME: set the next alarm a little from now?
             }
-        }.connect();
+        }).connect();
 
         return super.onStartCommand(intent, flags, startId);
     }

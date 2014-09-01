@@ -15,11 +15,10 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.DebugActivity;
-import com.androidsx.rainnotifications.UserLocationFetcher;
+import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.UserLocationResultListener;
 import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.R;
-import com.androidsx.rainnotifications.UserLocation;
 import com.androidsx.rainnotifications.UserLocationException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
@@ -49,11 +48,11 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setupUI();
 
         // FIXME: we do exactly the same in the weather service. grr..
-        new UserLocation(this) {
+        new UserLocation(this, new UserLocationResultListener() {
             @Override
             public void onLocationSuccess(final Location location) {
                 ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
-                        new ForecastCheckerResultListener() {
+                        new ForecastChecker.ForecastCheckerResultListener() {
                             @Override
                             public void onForecastSuccess(ForecastTable forecastTable) {
                                 final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
@@ -68,7 +67,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                             }
 
                             @Override
-                            public void onForecastFailure(ForecastCheckerException exception) {
+                            public void onForecastFailure(ForecastChecker.ForecastCheckerException exception) {
                                 throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
                             }
                         });
@@ -78,7 +77,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
             public void onLocationFailure(UserLocationException exception) {
                 throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
             }
-        }.connect();
+        }).connect();
     }
 
     private void setupUI() {
