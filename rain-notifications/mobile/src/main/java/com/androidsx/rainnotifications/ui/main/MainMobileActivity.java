@@ -36,6 +36,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     private TextView locationTextView;
     private TextView cardMessageTextView;
     private LinearLayout loadingContainer;
+    private LinearLayout cardContainer;
 
     /** Image of the mascot that represents the current weather. */
     private ImageView mascotImageView;
@@ -87,6 +88,11 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
         mascotImageView = (ImageView) findViewById(R.id.owl_image_view);
         loadingContainer = (LinearLayout) findViewById(R.id.loading_container);
+        cardContainer = (LinearLayout) findViewById(R.id.card_layout);
+
+        cardContainer.setVisibility(View.GONE);
+        loadingContainer.setVisibility(View.VISIBLE);
+
         mascotImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -112,12 +118,10 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                 .playOn(mascotImageView);
 
         loadingContainer.setVisibility(View.GONE);
-
-        final View cardMessageContainer = findViewById(R.id.card_message_container);
-        cardMessageContainer.setVisibility(View.VISIBLE);
+        cardContainer.setVisibility(View.VISIBLE);
         YoYo.with(Techniques.BounceInUp)
                 .duration(800)
-                .playOn(cardMessageContainer);
+                .playOn(cardContainer);
     }
 
     @Override
