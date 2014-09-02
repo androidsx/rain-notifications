@@ -1,0 +1,25 @@
+<resources>
+    <string-array name="stays_sunny">
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+        <item>What a nice sunny day, and it looks like it\'s gonna stay for the day</item>
+        <item>Sun is shining, and will continue for the day</item>
+    </string-array>
+
+    <string-array name="stays_rainy">
+        <item>No luck, it\'ll keep raining for a while</item>
+        <item>Looks like it\'s gonna be raining for the rest of the day</item>
+        <item>Hopefully you have your umbrella with you, it won\'t stop raining for a while</item>
+    </string-array>
+
+    <string-array name="sun_to_rain">
+        <item>It\'s gonna start raining in %d minutes</item>
+        <item>Luck is over, rain is coming in %d minutes</item>
+        <item>Take your umbrella, it looks like it\'s gonna rain in %d minutes</item>
+    </string-array>
+
+    <string-array name="rain_to_sun">
+        <item>Nice, sun is coming back in %d minutes</item>
+        <item>Looks promising! Sun will shine again in % minutes</item>
+        <item>Get ready to drop your umbrella in over %d minutes</item>
+    </string-array>
+</resources>

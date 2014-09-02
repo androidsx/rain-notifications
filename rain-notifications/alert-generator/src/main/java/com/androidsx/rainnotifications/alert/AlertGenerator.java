@@ -1,5 +1,8 @@
 package com.androidsx.rainnotifications.alert;
 
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.AlertMessage;
@@ -10,8 +13,12 @@ import com.androidsx.rainnotifications.model.util.UiUtil;
 
 import org.joda.time.Period;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Generates weather alerts that are relevant to the user.
@@ -21,6 +28,12 @@ import java.util.Map;
  * independently or what alert level they have.
  */
 public class AlertGenerator {
+    private final Random random = new Random();
+    private final Resources resources;
+
+    public AlertGenerator(Resources resources) {
+        this.resources = resources;
+    }
 
     /**
      * Generates a weather alert.
@@ -52,13 +65,16 @@ public class AlertGenerator {
     public int generateMascot(Weather weather) {
         final Map<WeatherType, Integer> owlieVariations = new HashMap<WeatherType, Integer>() {
             {
-                put(WeatherType.RAIN, R.drawable.owlie_rainy);
-                put(WeatherType.SUNNY, R.drawable.owlie_sunny);
-                put(WeatherType.UNKNOWN, R.drawable.owlie_default);
+                put(WeatherType.RAIN, R.array.rainy);
+                put(WeatherType.SUNNY, R.array.sunny);
+                put(WeatherType.UNKNOWN, R.array.default_weather);
             }
         };
 
-        return owlieVariations.get(weather.getType());
+        final int mascotArray = owlieVariations.get(weather.getType());
+        final TypedArray mascotTypedArray = resources.obtainTypedArray(mascotArray);
+        final int mascotIndex = random.nextInt(mascotTypedArray.length());
+        return mascotTypedArray.getResourceId(mascotIndex, -1);
     }
 
     /**
@@ -91,15 +107,42 @@ public class AlertGenerator {
      * @return message for the user
      */
     private AlertMessage generateAlertMessage(Weather currentWeather, Forecast forecast) {
-        if (forecast == null) {
-            return new AlertMessage("No changes expected for a while." //TODO: message that refers to no forecast expected in a few hours
-                + " At the moment, it is " + currentWeather);
-        }
-        final Period periodFromNow = forecast.getTimeFromNow().toPeriod();
+        if (forecast == null || forecast.getForecastedWeather().equals(currentWeather)) {
+            if (currentWeather.getType().equals(WeatherType.SUNNY)) {
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_sunny));
+            } else if (currentWeather.getType().equals(WeatherType.RAIN)) {
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_rainy));
+            } else {
+                return new AlertMessage("(Fallback) No changes expected for a while." //TODO: message that refers to no forecast expected in a few hours
+                        + " At the moment, it is " + currentWeather);
+            }
+        } else {
+            final Period periodFromNow = forecast.getTimeFromNow().toPeriod();
 
-        return new AlertMessage("It's gonna be " + forecast.getForecastedWeather()
-                + " in " + UiUtil.getDebugOnlyPeriodFormatter().print(periodFromNow) + " from now"
-                + " (with a precision of +/- 1 " + forecast.getGranularity() + ")."
-                + " At the moment, it is " + currentWeather);
+            if (currentWeather.getType().equals(WeatherType.SUNNY)
+                    && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.sun_to_rain, periodFromNow.getMinutes()));
+            } else if (currentWeather.getType().equals(WeatherType.RAIN)
+                    && forecast.getForecastedWeather().getType().equals(WeatherType.SUNNY)) {
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.rain_to_sun, periodFromNow.getMinutes()));
+            } else {
+                return new AlertMessage("(Fallback) It's gonna be " + forecast.getForecastedWeather()
+                        + " in " + UiUtil.getDebugOnlyPeriodFormatter().print(periodFromNow) + " from now"
+                        + " (with a precision of +/- 1 " + forecast.getGranularity() + ")."
+                        + " At the moment, it is " + currentWeather);
+            }
+        }
+    }
+
+    private String resourceToToRandomAlertMessage(int arrayResource) {
+        return pickRandom(Arrays.asList(resources.getStringArray(arrayResource)), random);
+    }
+
+    private String resourceToToRandomAlertMessage(int arrayResource, int minutes) {
+        return String.format(resourceToToRandomAlertMessage(arrayResource), minutes);
+    }
+
+    private static <T> T pickRandom(List<T> list, Random random) {
+        return new ArrayList<T>(list).get(random.nextInt(list.size()));
     }
 }
