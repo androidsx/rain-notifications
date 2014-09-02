@@ -25,6 +25,7 @@ import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
+import com.androidsx.rainnotifications.wunderground.WundergroundConnection;
 import com.crashlytics.android.Crashlytics;
 
 /**
@@ -59,7 +60,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(final Location location) {
-                ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
+                /*ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
                         new ForecastChecker.ForecastCheckerResultListener() {
                             @Override
                             public void onForecastSuccess(ForecastTable forecastTable) {
@@ -78,7 +79,18 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                             public void onForecastFailure(ForecastChecker.ForecastCheckerException exception) {
                                 throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
                             }
-                        });
+                        });*/
+                new WundergroundConnection(MainMobileActivity.this) {
+                    @Override
+                    public void onSuccess(ForecastTable forecastTable) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Throwable e) {
+
+                    }
+                }.getForecast(location.getLatitude(), location.getLongitude());
             }
 
             @Override
