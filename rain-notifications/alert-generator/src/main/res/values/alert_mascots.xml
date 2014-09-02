@@ -1,0 +1,18 @@
+<resources>
+    <string-array name="sunny">
+        <item>@drawable/owlie_sunny_01</item>
+        <item>@drawable/owlie_sunny_02</item>
+        <item>@drawable/owlie_sunny_03</item>
+        <item>@drawable/owlie_sunny_04</item>
+    </string-array>
+
+    <string-array name="rainy">
+        <item>@drawable/owlie_rainy_01</item>
+        <item>@drawable/owlie_rainy_02</item>
+        <item>@drawable/owlie_rainy_03</item>
+    </string-array>
+
+    <string-array name="default_weather">
+        <item>@drawable/owlie_default</item>
+    </string-array>
+</resources>

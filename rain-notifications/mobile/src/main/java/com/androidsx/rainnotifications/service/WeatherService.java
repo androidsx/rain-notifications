@@ -31,6 +31,14 @@ import timber.log.Timber;
 
 public class WeatherService extends Service {
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
+    private AlertGenerator alertGenerator;
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        alertGenerator = new AlertGenerator(getResources());
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -51,7 +59,7 @@ public class WeatherService extends Service {
                             Timber.d("No transitions are expected, so there's no notifications to generate");
                         } else {
                             final Forecast forecast = forecastTable.getForecasts().get(0);
-                            final Alert alert = new AlertGenerator().generateAlert(forecastTable.getBaselineWeather(), forecast);
+                            final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
                             if (shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
                                 Timber.i("Will display notification for " + alert);
                                 NotificationHelper.displayCustomNotification(WeatherService.this, alert);

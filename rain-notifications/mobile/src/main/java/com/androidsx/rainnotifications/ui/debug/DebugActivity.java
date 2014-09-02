@@ -45,6 +45,8 @@ import timber.log.Timber;
  * from shared preferences
  */
 public class DebugActivity extends Activity {
+    private AlertGenerator alertGenerator;
+
     private WeatherType weatherTypeNow;
     private WeatherType weatherTypeLater;
     private DateTime timeNow;
@@ -55,6 +57,7 @@ public class DebugActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.debug_layout);
+        alertGenerator = new AlertGenerator(getResources());
 
         final TextView nowTextView = (TextView) findViewById(R.id.now_time_text_view);
         final Spinner nowSpinner = (Spinner) findViewById(R.id.weather_now_spinner);
@@ -133,17 +136,17 @@ public class DebugActivity extends Activity {
     }
 
     private String timeToString(DateTime dateTime) {
-        final DecimalFormat df = new DecimalFormat("##");
-        return df.format(dateTime.getHourOfDay()) + ":" + df.format(dateTime.getMinuteOfHour());
+        return timeToString(dateTime.getHourOfDay(), dateTime.getMinuteOfHour());
     }
 
     private String timeToString(int hourOfDay, int minuteOfHour) {
-        return hourOfDay + ":" + minuteOfHour;
+        final DecimalFormat df = new DecimalFormat("##");
+        return df.format(hourOfDay) + ":" + df.format(minuteOfHour);
     }
 
     public void generateAlert(View view) {
         final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
-        final Alert alert = new AlertGenerator().generateAlert(new Weather(weatherTypeNow), new Forecast(new Weather(weatherTypeLater), intervalUntilWeatherChange, Forecast.Granularity.MINUTE));
+        final Alert alert = alertGenerator.generateAlert(new Weather(weatherTypeNow), new Forecast(new Weather(weatherTypeLater), intervalUntilWeatherChange, Forecast.Granularity.MINUTE));
 
         findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
 

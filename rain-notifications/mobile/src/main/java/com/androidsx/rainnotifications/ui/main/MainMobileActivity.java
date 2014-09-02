@@ -33,6 +33,8 @@ import com.crashlytics.android.Crashlytics;
 public class MainMobileActivity extends BaseWelcomeActivity {
     private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
 
+    private AlertGenerator alertGenerator;
+
     private TextView locationTextView;
     private TextView cardMessageTextView;
     private LinearLayout loadingContainer;
@@ -49,6 +51,8 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         Crashlytics.start(this);
         setContentView(R.layout.activity_forecast_mobile);
 
+        alertGenerator = new AlertGenerator(getResources());
+
         setupUI();
 
         // FIXME: we do exactly the same in the weather service. grr..
@@ -60,7 +64,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                             @Override
                             public void onForecastSuccess(ForecastTable forecastTable) {
                                 final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
-                                final Alert alert = new AlertGenerator().generateAlert(forecastTable.getBaselineWeather(), forecast);
+                                final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
                                 final String locationAddress = UserLocationFetcher.getLocationAddress(
                                         MainMobileActivity.this,
                                         location.getLatitude(),
