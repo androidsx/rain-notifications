@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
+import com.androidsx.rainnotifications.util.AnimationHelper;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.R;
@@ -24,8 +25,6 @@ import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
 
 /**
  * Main activity.
@@ -113,15 +112,11 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         cardMessageTextView.setText(message);
 
         mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), mascot_icon));
-        YoYo.with(Techniques.Pulse)
-                .duration(300)
-                .playOn(mascotImageView);
+        AnimationHelper.applyMascotAnimation(mascotImageView);
 
         loadingContainer.setVisibility(View.GONE);
         cardContainer.setVisibility(View.VISIBLE);
-        YoYo.with(Techniques.BounceInUp)
-                .duration(800)
-                .playOn(cardContainer);
+        AnimationHelper.applyCardAnimation(cardContainer);
     }
 
     @Override

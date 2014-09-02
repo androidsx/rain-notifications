@@ -6,4 +6,5 @@
     <dimen name="sliding_menu_entry_text_size">16sp</dimen>
     <dimen name="owl_size">60dp</dimen>
     <dimen name="owl_margin">0dp</dimen>
+    <dimen name="text_size_debug_screen">18sp</dimen>
 </resources>
