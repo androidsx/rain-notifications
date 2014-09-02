@@ -85,7 +85,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     private void setupUI() {
         locationTextView = (TextView) findViewById(R.id.location_text_view);
         cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
-        mascotImageView = (ImageView) findViewById(R.id.owl_image_view);
+        mascotImageView = (ImageView) findViewById(R.id.mascot_image_view);
         loadingContainer = (LinearLayout) findViewById(R.id.loading_container);
         cardContainer = (LinearLayout) findViewById(R.id.card_layout);
 
