@@ -38,6 +38,7 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="fbc96569a645a75be279b1b89b6c97b91043a12a"/>
     </application>
 
 </manifest>
