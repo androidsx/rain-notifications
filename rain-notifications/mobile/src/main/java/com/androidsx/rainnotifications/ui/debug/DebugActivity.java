@@ -1,19 +1,42 @@
 package com.androidsx.rainnotifications.ui.debug;
 
 import android.app.Activity;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
+import com.androidsx.rainnotifications.alert.AlertGenerator;
+import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.Weather;
+import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
+import com.androidsx.rainnotifications.util.AlarmHelper;
+import com.androidsx.rainnotifications.util.AnimationHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.google.android.gms.wearable.NodeApi;
+
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
+import org.joda.time.Minutes;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -22,12 +45,118 @@ import timber.log.Timber;
  * from shared preferences
  */
 public class DebugActivity extends Activity {
+    private WeatherType weatherTypeNow;
+    private WeatherType weatherTypeLater;
+    private DateTime timeNow;
+    private DateTime timeLater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.debug_layout);
+
+        final TextView nowTextView = (TextView) findViewById(R.id.now_time_text_view);
+        final Spinner nowSpinner = (Spinner) findViewById(R.id.weather_now_spinner);
+
+        final Button laterButton = (Button) findViewById(R.id.later_time_button);
+        final Spinner laterSpinner = (Spinner) findViewById(R.id.weather_later_spinner);
+
+        configureNowTime(nowTextView);
+        configureLaterTime(laterButton);
+        configureWeatherSpinners(nowSpinner, laterSpinner);
+    }
+
+    private void configureNowTime(TextView nowTextView) {
+        timeNow = DateTime.now();
+        nowTextView.setText(timeToString(timeNow));
+    }
+
+    private void configureLaterTime(final Button laterButton) {
+        timeLater = new DateTime(timeNow).plus(Minutes.minutes(15));
+        laterButton.setText(timeToString(timeLater));
+
+        final TimePickerDialog tpd = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view,
+                                          int newHourOfDay,
+                                          int newMinuteOfHour) {
+                        timeLater = new DateTime(
+                                timeNow.getYear(),
+                                timeNow.getMonthOfYear(),
+                                timeNow.getDayOfMonth(),
+                                newHourOfDay,
+                                newMinuteOfHour);
+                        laterButton.setText(timeToString(newHourOfDay, newMinuteOfHour));
+                    }
+                }, timeNow.getHourOfDay(), timeNow.getMinuteOfHour(), false);
+
+        laterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tpd.show();
+            }
+        });
+    }
+
+    private void configureWeatherSpinners(Spinner nowSpinner, Spinner laterSpinner) {
+        final List<String> weatherTypeNames = new ArrayList<String>();
+        for (WeatherType weatherType : WeatherType.values()) {
+            weatherTypeNames.add(weatherType.toString());
+        }
+
+        nowSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                weatherTypeNow = WeatherType.values()[position];
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+        laterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                weatherTypeLater = WeatherType.values()[position];
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.debug_spinner_row, weatherTypeNames);
+        nowSpinner.setAdapter(adapter);
+        laterSpinner.setAdapter(adapter);
+
+        laterSpinner.setSelection(1); // Just any other than 0 so that they start with different values
+    }
+
+    private String timeToString(DateTime dateTime) {
+        final DecimalFormat df = new DecimalFormat("##");
+        return df.format(dateTime.getHourOfDay()) + ":" + df.format(dateTime.getMinuteOfHour());
+    }
+
+    private String timeToString(int hourOfDay, int minuteOfHour) {
+        return hourOfDay + ":" + minuteOfHour;
+    }
+
+    public void generateAlert(View view) {
+        final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
+        final Alert alert = new AlertGenerator().generateAlert(new Weather(weatherTypeNow), new Forecast(new Weather(weatherTypeLater), intervalUntilWeatherChange, Forecast.Granularity.MINUTE));
+
+        findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
+
+        final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
+        cardMessageTextView.setText(alert.getAlertMessage().getNotificationMessage());
+        AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
+
+        final ImageView mascotImageView = (ImageView) findViewById(R.id.mascot_image_view);
+        mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), alert.getDressedMascot()));
+        AnimationHelper.applyMascotAnimation(mascotImageView);
+
+        ((TextView) findViewById(R.id.alert_level_text_view)).setText("Alert level: " + alert.getAlertLevel());
+        ((TextView) findViewById(R.id.next_alarm_text_view)).setText("Next alarm: " + AlarmHelper.nextWeatherCallAlarmTime(intervalUntilWeatherChange).toPeriod().getMinutes() + " minutes from now");
     }
 
     public void startWeatherService(View view) {

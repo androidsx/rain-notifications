@@ -1,27 +1,145 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="@color/main_background"
     tools:context=".forecast_mobile" >
 
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Start weather service"
-        android:onClick="startWeatherService" />
+        android:orientation="vertical" >
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Standard notification"
-        android:onClick="showStandardNotification" />
+        <!-- Old buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:visibility="gone"> <!-- Temporarily disabled. We may move this to a different debug activity -->
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Wear-only notification"
-        android:onClick="showWearOnlyNotification" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start weather service"
+                android:onClick="startWeatherService" />
 
-</LinearLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Standard notification"
+                android:onClick="showStandardNotification" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wear-only notification"
+                android:onClick="showWearOnlyNotification" />
+         </LinearLayout>
+
+        <!-- Current weather -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/now_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text_size_debug_screen"
+                android:text="Now, at"/>
+
+            <TextView
+                android:id="@+id/now_time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/now_text_view"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:textStyle="bold"
+                android:textSize="@dimen/text_size_debug_screen"/>
+
+            <Spinner
+                android:id="@+id/weather_now_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:spinnerMode="dropdown" />
+        </RelativeLayout>
+
+        <!-- Next weather transition -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/later_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:textSize="@dimen/text_size_debug_screen"
+                android:text="Later, at"/>
+
+            <Button
+                android:id="@+id/later_time_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_toRightOf="@id/later_text_view"
+                android:layout_centerVertical="true" />
+
+            <Spinner
+                android:id="@+id/weather_later_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:spinnerMode="dropdown" />
+        </RelativeLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/highlighted"
+            android:layout_margin="15dp"
+            android:text="Generate alert"
+            android:textSize="@dimen/text_size_debug_screen"
+            android:textColor="@android:color/white"
+            android:onClick="generateAlert"/>
+
+        <LinearLayout
+            android:id="@+id/card_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/mascot_image_view"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:layout_margin="@dimen/owl_margin"
+                    android:layout_alignParentRight="true"/>
+
+                <include layout="@layout/card_layout"/>
+
+                <TextView
+                    android:id="@+id/alert_level_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/next_alarm_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
