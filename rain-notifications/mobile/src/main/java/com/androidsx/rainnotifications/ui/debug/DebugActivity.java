@@ -136,12 +136,12 @@ public class DebugActivity extends Activity {
     }
 
     private String timeToString(DateTime dateTime) {
-        final DecimalFormat df = new DecimalFormat("##");
-        return df.format(dateTime.getHourOfDay()) + ":" + df.format(dateTime.getMinuteOfHour());
+        return timeToString(dateTime.getHourOfDay(), dateTime.getMinuteOfHour());
     }
 
     private String timeToString(int hourOfDay, int minuteOfHour) {
-        return hourOfDay + ":" + minuteOfHour;
+        final DecimalFormat df = new DecimalFormat("##");
+        return df.format(hourOfDay) + ":" + df.format(minuteOfHour);
     }
 
     public void generateAlert(View view) {
