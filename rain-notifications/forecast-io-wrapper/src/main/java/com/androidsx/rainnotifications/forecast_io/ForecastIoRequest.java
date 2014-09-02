@@ -8,7 +8,7 @@ public class ForecastIoRequest {
     private double latitude;
     private double longitude;
 
-    public ForecastIoRequest(double longitude, double latitude) {
+    public ForecastIoRequest(double latitude, double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
