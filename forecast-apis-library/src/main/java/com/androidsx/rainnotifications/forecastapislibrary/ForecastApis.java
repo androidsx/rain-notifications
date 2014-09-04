@@ -10,11 +10,11 @@ public interface ForecastApis {
      *
      * @param forecastTable table of forecasts
      */
-    public void onForecastSuccess(ForecastTable forecastTable);
+    public void onRequestSuccess(ForecastTable forecastTable);
 
     /**
      * The network call to Forecast.io failed, or the results failed to parse. The actual reason is,
      * unfortunately, unknown. So... good luck!
      */
-    public void onForecastFailure();
+    public void onRequestFailure();
 }

@@ -1,7 +1,5 @@
 package com.androidsx.rainnotifications.model;
 
-import android.util.Log;
-
 import com.forecast.io.v2.network.services.ForecastService;
 import com.forecast.io.v2.transfer.DataBlock;
 import com.forecast.io.v2.transfer.DataPoint;

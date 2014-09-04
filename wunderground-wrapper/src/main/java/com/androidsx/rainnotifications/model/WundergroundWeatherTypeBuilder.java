@@ -3,7 +3,6 @@ package com.androidsx.rainnotifications.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.androidsx.rainnotifications.model.WeatherType.*;
 import static com.androidsx.rainnotifications.model.WeatherType.RAIN;
 import static com.androidsx.rainnotifications.model.WeatherType.SUNNY;
 
@@ -13,9 +12,10 @@ import static com.androidsx.rainnotifications.model.WeatherType.SUNNY;
  * <p/>
  * Should not be used from outside of this project.
  */
-public class WeatherTypeBuilder {
+public class WundergroundWeatherTypeBuilder {
     final static private Map<String, WeatherType> ICON_TO_WEATHER_TYPE = new HashMap<String, WeatherType>() {{
-        put("clear-day", SUNNY);
+        put("clear", SUNNY);
+        put("sunny", SUNNY);
         //put("clear-night", CLEAR_NIGHT); // Exists in Forecast.io. Not supported by us yet
         put("rain", RAIN);
         //put("snow", SNOW); // Exists in Forecast.io. Not supported by us yet

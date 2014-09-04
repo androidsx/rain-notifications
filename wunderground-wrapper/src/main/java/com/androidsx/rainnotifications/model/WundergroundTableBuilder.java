@@ -14,17 +14,17 @@ import java.util.List;
  * <p>
  * Should not be used from outside of this project.
  */
-public class ForecastTableBuilder {
+public class WundergroundTableBuilder {
 
     public static ForecastTable buildFromForecastIo(JSONObject response) throws JSONException {
         if (response.has("current_observation") && response.has("hourly_forecast")) {
             final JSONObject currently = (JSONObject) response.get("current_observation");
             final JSONArray hourly = (JSONArray) response.get("hourly_forecast");
-            final DateTime currentTime = new DateTime(Long.getLong(currently.get("epoch").toString()) * 1000);
+            final DateTime currentTime = new DateTime(Long.parseLong(currently.get("local_epoch").toString()) * 1000);
             final List<Forecast> allForecasts = new ArrayList<Forecast>();
             allForecasts.addAll(extractAllValidForecast(currentTime, hourly, Forecast.Granularity.HOUR));
 
-            final Weather currentWeather = WeatherBuilder.buildFromForecastIo(currently.get("icon").toString());
+            final Weather currentWeather = WundergroundWeatherBuilder.buildFromForecastIo(currently.get("icon").toString());
             final List<Forecast> transitions = extractTransitions(currentWeather, allForecasts);
 
             return new ForecastTable(currentWeather, currentTime, transitions);
@@ -51,8 +51,9 @@ public class ForecastTableBuilder {
     private static Forecast extractForecastIfValid(DateTime fromTime,
                                                    JSONObject dataPoint,
                                                    Forecast.Granularity granularity) throws JSONException {
-        final Weather forecastedWeather = WeatherBuilder.buildFromForecastIo(dataPoint.get("icon").toString());
-        final DateTime forecastTime = new DateTime(Long.getLong(dataPoint.get("epoch").toString()) * 1000);
+        final Weather forecastedWeather = WundergroundWeatherBuilder.buildFromForecastIo(dataPoint.get("icon").toString());
+        JSONObject time = (JSONObject)dataPoint.get("FCTTIME");
+        final DateTime forecastTime = new DateTime(Long.parseLong(time.get("epoch").toString()) * 1000);
 
         if (forecastTime.isBefore(fromTime.toInstant())) {
             //Log.v(TAG, "Skip the forecast for the present interval at " + forecastTime);

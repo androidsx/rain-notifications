@@ -5,10 +5,10 @@ package com.androidsx.rainnotifications.model;
  * <p/>
  * Should not be used from outside of this project.
  */
-public class WeatherBuilder {
+public class WundergroundWeatherBuilder {
 
     public static Weather buildFromForecastIo(String icon) {
         return new Weather(
-                WeatherTypeBuilder.buildFromForecastIo(icon));
+                WundergroundWeatherTypeBuilder.buildFromForecastIo(icon));
     }
 }

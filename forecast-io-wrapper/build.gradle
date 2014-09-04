@@ -20,6 +20,6 @@ android {
 }
 
 dependencies {
-    compile project(':model')
+    compile project(':forecast-apis-library')
     compile project(':Forecast')
 }

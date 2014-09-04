@@ -59,7 +59,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(final Location location) {
-                ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
+                ForecastChecker.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(),
                         new ForecastChecker.ForecastCheckerResultListener() {
                             @Override
                             public void onForecastSuccess(ForecastTable forecastTable) {

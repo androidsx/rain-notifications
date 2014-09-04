@@ -5,7 +5,6 @@ import android.util.Log;
 import com.androidsx.rainnotifications.forecastapislibrary.ForecastApis;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.ForecastTableBuilder;
-import com.forecast.io.network.requests.INetworkRequest;
 import com.forecast.io.network.responses.INetworkResponse;
 import com.forecast.io.network.responses.NetworkResponse;
 import com.forecast.io.toolbox.NetworkServiceTask;
@@ -23,7 +22,7 @@ public abstract class ForecastIoNetworkServiceTask extends NetworkServiceTask im
     @Override
     protected void onPostExecute(INetworkResponse rawNetworkResponse) {
         if (rawNetworkResponse == null || rawNetworkResponse.getStatus() == NetworkResponse.Status.FAIL) {
-            onForecastFailure();
+            onRequestFailure();
         } else {
             final ForecastService.Response response = (ForecastService.Response) rawNetworkResponse;
             Log.v(TAG, "Raw response from Forecast.io:\n" + response);
@@ -31,7 +30,7 @@ public abstract class ForecastIoNetworkServiceTask extends NetworkServiceTask im
             final ForecastTable forecastTable = ForecastTableBuilder.buildFromForecastIo(response);
             Log.d(TAG, "Transition table: " + forecastTable);
 
-            onForecastSuccess(forecastTable);
+            onRequestSuccess(forecastTable);
         }
     }
 }
