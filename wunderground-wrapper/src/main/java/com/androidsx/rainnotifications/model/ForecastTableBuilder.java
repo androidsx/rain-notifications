@@ -17,17 +17,20 @@ import java.util.List;
 public class ForecastTableBuilder {
 
     public static ForecastTable buildFromForecastIo(JSONObject response) throws JSONException {
-        final JSONObject currently = (JSONObject)response.get("hourly_forecast");
-        final JSONArray hourly = (JSONArray)response.get("hourly_forecast");
-        final DateTime currentTime = new DateTime(Long.getLong(currently.get("epoch").toString()) * 1000);
+        if (response.has("current_observation") && response.has("hourly_forecast")) {
+            final JSONObject currently = (JSONObject) response.get("current_observation");
+            final JSONArray hourly = (JSONArray) response.get("hourly_forecast");
+            final DateTime currentTime = new DateTime(Long.getLong(currently.get("epoch").toString()) * 1000);
+            final List<Forecast> allForecasts = new ArrayList<Forecast>();
+            allForecasts.addAll(extractAllValidForecast(currentTime, hourly, Forecast.Granularity.HOUR));
 
-        final List<Forecast> allForecasts = new ArrayList<Forecast>();
-        allForecasts.addAll(extractAllValidForecast(currentTime, hourly, Forecast.Granularity.HOUR));
+            final Weather currentWeather = WeatherBuilder.buildFromForecastIo(currently.get("icon").toString());
+            final List<Forecast> transitions = extractTransitions(currentWeather, allForecasts);
 
-        final Weather currentWeather = WeatherBuilder.buildFromForecastIo(currently.get("icon").toString());
-        final List<Forecast> transitions = extractTransitions(currentWeather, allForecasts);
-
-        return new ForecastTable(currentWeather, currentTime, transitions);
+            return new ForecastTable(currentWeather, currentTime, transitions);
+        } else {
+            return null;
+        }
     }
 
     private static List<Forecast> extractAllValidForecast(DateTime fromTime,
