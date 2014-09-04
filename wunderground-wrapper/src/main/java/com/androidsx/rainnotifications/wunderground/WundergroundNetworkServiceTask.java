@@ -1,6 +1,9 @@
 package com.androidsx.rainnotifications.wunderground;
 
-public class WundergroundNetworkServiceTask {
+import com.androidsx.rainnotifications.forecastapislibrary.ForecastApis;
 
-    
+public abstract class WundergroundNetworkServiceTask implements ForecastApis{
+
+
+
 }

@@ -17,11 +17,11 @@ public class ForecastChecker {
         if (LocationHelper.rightCoordinates(latitude, longitude)) {
             new ForecastIoNetworkServiceTask() {
                 @Override
-                protected void onSuccess(ForecastTable forecastTable) {
+                public void onForecastSuccess(ForecastTable forecastTable) {
                     forecastCheckerResultListener.onForecastSuccess(forecastTable);
                 }
                 @Override
-                protected void onFailure() {
+                public void onForecastFailure() {
                     forecastCheckerResultListener.onForecastFailure(new ForecastCheckerException());
                 }
             }.execute(new ForecastIoRequest(latitude, longitude).getRequest());

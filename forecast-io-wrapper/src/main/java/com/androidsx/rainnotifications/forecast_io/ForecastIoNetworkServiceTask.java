@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications.forecast_io;
 
 import android.util.Log;
 
+import com.androidsx.rainnotifications.forecastapislibrary.ForecastApis;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.ForecastTableBuilder;
 import com.forecast.io.network.requests.INetworkRequest;
@@ -16,13 +17,13 @@ import com.forecast.io.v2.network.services.ForecastService;
  * <p/>
  * Just execute this async task and implement the abstract methods to get your results.
  */
-public abstract class ForecastIoNetworkServiceTask extends NetworkServiceTask {
+public abstract class ForecastIoNetworkServiceTask extends NetworkServiceTask implements ForecastApis {
     private static final String TAG = ForecastIoNetworkServiceTask.class.getSimpleName();
 
     @Override
     protected void onPostExecute(INetworkResponse rawNetworkResponse) {
         if (rawNetworkResponse == null || rawNetworkResponse.getStatus() == NetworkResponse.Status.FAIL) {
-            onFailure();
+            onForecastFailure();
         } else {
             final ForecastService.Response response = (ForecastService.Response) rawNetworkResponse;
             Log.v(TAG, "Raw response from Forecast.io:\n" + response);
@@ -30,21 +31,7 @@ public abstract class ForecastIoNetworkServiceTask extends NetworkServiceTask {
             final ForecastTable forecastTable = ForecastTableBuilder.buildFromForecastIo(response);
             Log.d(TAG, "Transition table: " + forecastTable);
 
-            onSuccess(forecastTable);
+            onForecastSuccess(forecastTable);
         }
     }
-
-    /**
-     * The network call was successful, and the response is ready to be used. Note that this method
-     * is executed in the UI thread.
-     *
-     * @param forecastTable table of forecasts
-     */
-    protected abstract void onSuccess(ForecastTable forecastTable);
-
-    /**
-     * The network call to Forecast.io failed, or the results failed to parse. The actual reason is,
-     * unfortunately, unknown. So... good luck!
-     */
-    protected abstract void onFailure();
 }
