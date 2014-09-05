@@ -35,7 +35,7 @@ public abstract class WundergroundNetworkServiceTask implements ForecastApis {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
-                    Log.v(TAG, "Raw response from Wunderground:\n" + response.toString(2));
+                    //Log.v(TAG, "Raw response from Wunderground:\n" + response.toString(1));
                     final ForecastTable forecastTable = WundergroundTableBuilder.buildFromForecastIo(response);
                     if (forecastTable != null) {
                         Log.d(TAG, "Transition table: " + forecastTable);

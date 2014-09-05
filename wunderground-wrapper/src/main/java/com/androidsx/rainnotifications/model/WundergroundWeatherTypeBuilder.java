@@ -15,7 +15,7 @@ import static com.androidsx.rainnotifications.model.WeatherType.UNKNOWN;
  */
 public class WundergroundWeatherTypeBuilder {
     final static private Map<String, WeatherType> ICON_TO_WEATHER_TYPE = new HashMap<String, WeatherType>() {{
-        //put("clear", ); // Exists in Wunderground. Not supported by us yet
+        put("clear", SUNNY);
         put("sunny", SUNNY);
         put("rain", RAIN);
         //put("snow", SNOW); // Exists in Wunderground. Not supported by us yet
@@ -29,7 +29,7 @@ public class WundergroundWeatherTypeBuilder {
         put("unknown", UNKNOWN);
     }};
 
-    public static WeatherType buildFromForecastIo(String icon) {
+    public static WeatherType buildFromWunderground(String icon) {
         if (ICON_TO_WEATHER_TYPE.containsKey(icon)) {
             return ICON_TO_WEATHER_TYPE.get(icon);
         } else {

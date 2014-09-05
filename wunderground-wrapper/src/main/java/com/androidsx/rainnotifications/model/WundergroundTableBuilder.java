@@ -1,5 +1,7 @@
 package com.androidsx.rainnotifications.model;
 
+import android.util.Log;
+
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.json.JSONArray;
@@ -24,7 +26,7 @@ public class WundergroundTableBuilder {
             final List<Forecast> allForecasts = new ArrayList<Forecast>();
             allForecasts.addAll(extractAllValidForecast(currentTime, hourly, Forecast.Granularity.HOUR));
 
-            final Weather currentWeather = WundergroundWeatherBuilder.buildFromForecastIo(currently.get("icon").toString());
+            final Weather currentWeather = WundergroundWeatherBuilder.buildFromWunderground(currently.get("icon").toString());
             final List<Forecast> transitions = extractTransitions(currentWeather, allForecasts);
 
             return new ForecastTable(currentWeather, currentTime, transitions);
@@ -51,7 +53,7 @@ public class WundergroundTableBuilder {
     private static Forecast extractForecastIfValid(DateTime fromTime,
                                                    JSONObject dataPoint,
                                                    Forecast.Granularity granularity) throws JSONException {
-        final Weather forecastedWeather = WundergroundWeatherBuilder.buildFromForecastIo(dataPoint.get("icon").toString());
+        final Weather forecastedWeather = WundergroundWeatherBuilder.buildFromWunderground(dataPoint.get("icon").toString());
         JSONObject time = (JSONObject)dataPoint.get("FCTTIME");
         final DateTime forecastTime = new DateTime(Long.parseLong(time.get("epoch").toString()) * 1000);
 
