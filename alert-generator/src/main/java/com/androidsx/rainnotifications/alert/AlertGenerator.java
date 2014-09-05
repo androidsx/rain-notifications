@@ -107,7 +107,7 @@ public class AlertGenerator {
      * @return message for the user
      */
     private AlertMessage generateAlertMessage(Weather currentWeather, Forecast forecast) {
-        if (forecast == null || forecast.getForecastedWeather().equals(currentWeather)) {
+        if (forecast == null || forecast.getForecastedWeather().getType().equals(currentWeather.getType())) {
             if (currentWeather.getType().equals(WeatherType.SUNNY)) {
                 return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_sunny));
             } else if (currentWeather.getType().equals(WeatherType.RAIN)) {
@@ -125,6 +125,12 @@ public class AlertGenerator {
             } else if (currentWeather.getType().equals(WeatherType.RAIN)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.SUNNY)) {
                 return new AlertMessage(resourceToToRandomAlertMessage(R.array.rain_to_sun, periodFromNow.getMinutes()));
+            } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
+                    && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_rain, periodFromNow.getMinutes()));
+            } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
+                    && forecast.getForecastedWeather().getType().equals(WeatherType.SUNNY)) {
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_sun, periodFromNow.getMinutes()));
             } else {
                 return new AlertMessage("(Fallback) It's gonna be " + forecast.getForecastedWeather()
                         + " in " + UiUtil.getDebugOnlyPeriodFormatter().print(periodFromNow) + " from now"
