@@ -19,7 +19,7 @@
 
     <string-array name="rain_to_sun">
         <item>Nice, sun is coming back in %d minutes</item>
-        <item>Looks promising! Sun will shine again in % minutes</item>
+        <item>Looks promising! Sun will shine again in %d minutes</item>
         <item>Get ready to drop your umbrella in over %d minutes</item>
     </string-array>
 
@@ -31,6 +31,6 @@
 
     <string-array name="unknown_to_sun">
         <item>Nice, sun is coming back in %d minutes</item>
-        <item>Looks promising! Sun will shine again in % minutes</item>
+        <item>Looks promising! Sun will shine again in %d minutes</item>
     </string-array>
 </resources>
