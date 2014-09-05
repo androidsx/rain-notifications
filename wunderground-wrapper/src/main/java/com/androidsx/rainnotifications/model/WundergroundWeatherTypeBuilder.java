@@ -15,7 +15,7 @@ import static com.androidsx.rainnotifications.model.WeatherType.UNKNOWN;
  */
 public class WundergroundWeatherTypeBuilder {
     final static private Map<String, WeatherType> ICON_TO_WEATHER_TYPE = new HashMap<String, WeatherType>() {{
-        put("clear", SUNNY);
+        //put("clear", ); // Exists in Wunderground. Not supported by us yet
         put("sunny", SUNNY);
         put("rain", RAIN);
         //put("snow", SNOW); // Exists in Wunderground. Not supported by us yet
