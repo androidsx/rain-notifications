@@ -19,7 +19,7 @@ public class ForecastIoRequest {
                 .setLongitude(longitude)
                 .build();
         LatLng latlng = new LatLng(builderL);
-        ForecastService.Builder builderF = ForecastService.Request.newBuilder(Constants.API_KEY);
+        ForecastService.Builder builderF = ForecastService.Request.newBuilder(Constants.FORECAST_IO_API_KEY);
         builderF.setLatLng(latlng).build();
 
         return new ForecastService.Request(builderF);

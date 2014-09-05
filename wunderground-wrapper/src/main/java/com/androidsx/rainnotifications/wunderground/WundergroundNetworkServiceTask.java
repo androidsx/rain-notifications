@@ -17,12 +17,14 @@ public abstract class WundergroundNetworkServiceTask implements ForecastResponse
 
     private static final String TAG = WundergroundNetworkServiceTask.class.getSimpleName();
 
-    private static final String WUNDERGROUND_BASE_URL = "http://api.wunderground.com/api/" + Constants.API_KEY;
-    private static final String[] features = {"conditions","hourly"};
+    private static final String WUNDERGROUND_BASE_URL = "http://api.wunderground.com/api/" + Constants.WUNDERGROUND_API_KEY;
+    private static final String[] FEATURES = {
+            "conditions", // Current time, http://www.wunderground.com/weather/api/d/docs?d=data/conditions
+            "hourly"}; // Hourly forecast, http://www.wunderground.com/weather/api/d/docs?d=data/hourly
 
     public void execute(Context context, double latitude, double longitude){
         String url = WUNDERGROUND_BASE_URL;
-        for(String f : features) {
+        for(String f : FEATURES) {
             url += "/" + f;
         }
         url += "/q/" + latitude + "," + longitude + ".json";
