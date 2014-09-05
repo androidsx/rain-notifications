@@ -15,6 +15,7 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
+import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
@@ -51,8 +52,7 @@ public class WeatherService extends Service {
         new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(Location location) {
-                ForecastChecker.requestForecastForLocation(WeatherService.this, ForecastChecker.FORECAST_IO, location.getLatitude(), location.getLongitude(),
-                        new ForecastChecker.ForecastCheckerResultListener() {
+                new ForecastChecker() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
                         if (forecastTable.getForecasts().isEmpty()) {
@@ -72,10 +72,10 @@ public class WeatherService extends Service {
                     }
 
                     @Override
-                    public void onForecastFailure(ForecastChecker.ForecastCheckerException exception) {
+                    public void onForecastFailure(WeatherClientFactory.ForecastCheckerException exception) {
                         throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: set the next alarm a little from now?
                     }
-                });
+                }.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude());
             }
 
             @Override

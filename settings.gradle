@@ -1,1 +1,1 @@
-include ':mobile', ':wear', ':Forecast', ':model', ':forecast-io-wrapper', ':common-library', ':wunderground-wrapper', ':forecast-apis-library', 'alert-generator'
+include ':mobile', ':wear', ':Forecast', ':model', ':forecast-io-wrapper', ':common-library', ':wunderground-wrapper', ':forecast-apis-library', ':weather-client-factory', 'alert-generator'

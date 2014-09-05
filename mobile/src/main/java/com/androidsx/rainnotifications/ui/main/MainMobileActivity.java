@@ -25,6 +25,7 @@ import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
+import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.crashlytics.android.Crashlytics;
 
 /**
@@ -59,26 +60,25 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(final Location location) {
-                ForecastChecker.requestForecastForLocation(MainMobileActivity.this, ForecastChecker.WUNDERGROUND, location.getLatitude(), location.getLongitude(),
-                        new ForecastChecker.ForecastCheckerResultListener() {
-                            @Override
-                            public void onForecastSuccess(ForecastTable forecastTable) {
-                                final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
-                                final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
-                                final String locationAddress = UserLocationFetcher.getLocationAddress(
-                                        MainMobileActivity.this,
-                                        location.getLatitude(),
-                                        location.getLongitude());
-                                updateUI(locationAddress,
-                                        alert.getDressedMascot(),
-                                        alert.getAlertMessage().getNotificationMessage());
-                            }
+                new ForecastChecker() {
+                    @Override
+                    public void onForecastSuccess(ForecastTable forecastTable) {
+                        final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
+                        final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
+                        final String locationAddress = UserLocationFetcher.getLocationAddress(
+                                MainMobileActivity.this,
+                                location.getLatitude(),
+                                location.getLongitude());
+                        updateUI(locationAddress,
+                                alert.getDressedMascot(),
+                                alert.getAlertMessage().getNotificationMessage());
+                    }
 
-                            @Override
-                            public void onForecastFailure(ForecastChecker.ForecastCheckerException exception) {
-                                throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
-                            }
-                        });
+                    @Override
+                    public void onForecastFailure(WeatherClientFactory.ForecastCheckerException exception) {
+                        throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
+                    }
+                }.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude());
             }
 
             @Override

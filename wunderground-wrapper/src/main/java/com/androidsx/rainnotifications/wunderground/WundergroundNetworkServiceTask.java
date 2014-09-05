@@ -1,6 +1,7 @@
 package com.androidsx.rainnotifications.wunderground;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.androidsx.rainnotifications.forecastapislibrary.ForecastApis;
 import com.androidsx.rainnotifications.model.ForecastTable;
@@ -14,7 +15,9 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public abstract class WundergroundNetworkServiceTask implements ForecastApis{
+public abstract class WundergroundNetworkServiceTask implements ForecastApis {
+
+    private static final String TAG = WundergroundNetworkServiceTask.class.getSimpleName();
 
     private static final String WUNDERGROUND_BASE_URL = "http://api.wunderground.com/api/" + Constants.API_KEY;
     private static final String[] features = {"conditions","hourly"};
@@ -31,9 +34,11 @@ public abstract class WundergroundNetworkServiceTask implements ForecastApis{
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
+                Log.v(TAG, "Raw response from Wunderground:\n" + response.toString());
                 try {
                     final ForecastTable forecastTable = WundergroundTableBuilder.buildFromForecastIo(response);
                     if (forecastTable != null) {
+                        Log.d(TAG, "Transition table: " + forecastTable);
                         onRequestSuccess(WundergroundTableBuilder.buildFromForecastIo(response));
                     } else {
                         onRequestFailure();
