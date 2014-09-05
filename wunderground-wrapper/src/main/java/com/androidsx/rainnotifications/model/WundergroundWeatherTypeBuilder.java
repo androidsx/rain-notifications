@@ -5,6 +5,7 @@ import java.util.Map;
 
 import static com.androidsx.rainnotifications.model.WeatherType.RAIN;
 import static com.androidsx.rainnotifications.model.WeatherType.SUNNY;
+import static com.androidsx.rainnotifications.model.WeatherType.UNKNOWN;
 
 /**
  * Builder for {@link WeatherType}, where the mapping of "icon"s to our weather types is made. Try
@@ -16,15 +17,16 @@ public class WundergroundWeatherTypeBuilder {
     final static private Map<String, WeatherType> ICON_TO_WEATHER_TYPE = new HashMap<String, WeatherType>() {{
         put("clear", SUNNY);
         put("sunny", SUNNY);
-        //put("clear-night", CLEAR_NIGHT); // Exists in Forecast.io. Not supported by us yet
         put("rain", RAIN);
-        //put("snow", SNOW); // Exists in Forecast.io. Not supported by us yet
-        //put("sleet", SLEET); // Exists in Forecast.io. Not supported by us yet
-        //put("wind", WIND); // Exists in Forecast.io. Not supported by us yet
-        //put("fog", FOG); // Exists in Forecast.io. Not supported by us yet
-        //put("cloudy", CLOUDY); // Exists in Forecast.io. Not supported by us yet
-        //put("partly-cloudy-day", PARTLY_CLOUDY_DAY); // Exists in Forecast.io. Not supported by us yet
-        //put("partly-cloudy-night", PARTLY_CLOUDY_NIGHT); // Exists in Forecast.io. Not supported by us yet
+        //put("snow", SNOW); // Exists in Wunderground. Not supported by us yet
+        //put("sleet", SLEET); // Exists in Wunderground. Not supported by us yet
+        //put("fog", FOG); // Exists in Wunderground. Not supported by us yet
+        //put("cloudy", CLOUDY); // Exists in Wunderground. Not supported by us yet
+        //put("partlycloudy", ); // Exists in Wunderground. Not supported by us yet
+        //put("partlysunny", ); // Exists in Wunderground. Not supported by us yet
+        //put("mostlycloudy", ); // Exists in Wunderground. Not supported by us yet
+        //put("mostlysunny", ); // Exists in Wunderground. Not supported by us yet
+        put("unknown", UNKNOWN);
     }};
 
     public static WeatherType buildFromForecastIo(String icon) {
