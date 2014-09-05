@@ -1,0 +1,1 @@
+Client API that weather data providers must implement in order to translate their custom data structures into our model objects
