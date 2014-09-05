@@ -43,6 +43,7 @@ dependencies {
     compile project(':weather-client-factory')
     compile project(':alert-generator')
     compile project(':common-library')
+    compile project(':model')
 
     // Animations framework: https://github.com/daimajia/AndroidViewAnimations
     compile 'com.nineoldandroids:library:2.4.0'

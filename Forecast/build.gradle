@@ -25,5 +25,5 @@ android {
 }
 
 dependencies {
-    compile project(':model')
+    compile "joda-time:joda-time:2.3" // (Added by Androidsx)
 }
