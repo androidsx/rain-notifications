@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.wunderground;
+package com.androidsx.rainnotifications.weatherclientfactory;
 
 /**
  * Weather clients for obtain the weather forecast.

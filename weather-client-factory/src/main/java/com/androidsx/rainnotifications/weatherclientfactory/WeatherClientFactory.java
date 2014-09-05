@@ -6,12 +6,11 @@ import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
 import com.androidsx.rainnotifications.forecastapislibrary.ForecastApis;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.wunderground.WeatherClients;
 import com.androidsx.rainnotifications.wunderground.WundergroundNetworkServiceTask;
 
 public abstract class WeatherClientFactory {
 
-    private static final WeatherClients CLIENT = WeatherClients.WUNDERGROUND;
+    private static final WeatherClients CLIENT = WeatherClients.FORECAST_IO;
 
     public static ForecastApis getWeatherApiClient(final ForecastCheckerResultListener forecastCheckerResultListener) {
         if (CLIENT.equals(WeatherClients.FORECAST_IO)) {
