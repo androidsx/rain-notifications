@@ -72,15 +72,13 @@ public class WundergroundTableBuilder {
         Weather latestWeather = currentWeather;
         for (Forecast forecast : allForecasts) {
             final Weather forecastedWeather = forecast.getForecastedWeather();
-            if (currentWeather.getType() == WeatherType.UNKNOWN && !(forecastedWeather.getType() == WeatherType.UNKNOWN)) {
-                transitions.add(forecast);
-                latestWeather = forecastedWeather;
-            }
-            else if (latestWeather.equals(forecastedWeather)) {
+            if (latestWeather.equals(forecastedWeather)) {
                 // Skip it
             } else {
                 transitions.add(forecast);
-                latestWeather = forecastedWeather;
+                if(!forecastedWeather.getType().equals(WeatherType.UNKNOWN)) {
+                    latestWeather = forecastedWeather;
+                }
             }
         }
         return transitions;
