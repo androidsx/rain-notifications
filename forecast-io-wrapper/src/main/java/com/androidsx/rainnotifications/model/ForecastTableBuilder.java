@@ -28,9 +28,8 @@ public class ForecastTableBuilder {
         allForecasts.addAll(extractAllValidForecast(currentTime, hourly, Forecast.Granularity.HOUR));
 
         final Weather currentWeather = WeatherBuilder.buildFromForecastIo(currently);
-        final List<Forecast> transitions = extractTransitions(currentWeather, allForecasts);
 
-        return new ForecastTable(currentWeather, currentTime, transitions);
+        return ForecastTable.create(currentWeather, currentTime, allForecasts);
     }
 
     private static List<Forecast> extractAllValidForecast(DateTime fromTime,
@@ -61,23 +60,5 @@ public class ForecastTableBuilder {
             final Interval timeFromNow = new Interval(fromTime, forecastTime);
             return new Forecast(forecastedWeather, timeFromNow, granularity);
         }
-    }
-
-    private static List<Forecast> extractTransitions(Weather currentWeather, List<Forecast> allForecasts) {
-        final List<Forecast> transitions = new ArrayList<Forecast>();
-
-        Weather latestWeather = currentWeather;
-        for (Forecast forecast : allForecasts) {
-            final Weather forecastedWeather = forecast.getForecastedWeather();
-            if (latestWeather.equals(forecastedWeather)) {
-                // Skip it
-            } else {
-                transitions.add(forecast);
-                if(!forecastedWeather.getType().equals(WeatherType.UNKNOWN)) {
-                    latestWeather = forecastedWeather;
-                }
-            }
-        }
-        return transitions;
     }
 }

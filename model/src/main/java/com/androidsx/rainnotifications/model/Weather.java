@@ -14,6 +14,10 @@ public class Weather {
         return type;
     }
 
+    public boolean isUnknownWeather() {
+        return getType().equals(WeatherType.UNKNOWN);
+    }
+
     @Override
     public String toString() {
         return type.toString();
