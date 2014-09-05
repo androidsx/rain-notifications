@@ -73,7 +73,9 @@ public class ForecastTableBuilder {
                 // Skip it
             } else {
                 transitions.add(forecast);
-                latestWeather = forecastedWeather;
+                if(!forecastedWeather.getType().equals(WeatherType.UNKNOWN)) {
+                    latestWeather = forecastedWeather;
+                }
             }
         }
         return transitions;
