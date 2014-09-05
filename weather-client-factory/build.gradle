@@ -4,13 +4,6 @@ android {
     compileSdkVersion 19
     buildToolsVersion '19.1.0'
 
-    defaultConfig {
-        applicationId "com.androidsx.rainnotifications.weatherclientfactory"
-        minSdkVersion 19
-        targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
-    }
     buildTypes {
         release {
             runProguard false
@@ -20,6 +13,6 @@ android {
 }
 
 dependencies {
-    compile project(':forecast-io-wrapper')
-    compile project(':wunderground-wrapper')
+    compile project(':weather-client-forecast-io')
+    compile project(':weather-client-wunderground')
 }

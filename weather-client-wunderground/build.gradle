@@ -13,6 +13,6 @@ android {
 }
 
 dependencies {
-    compile project(':forecast-apis-library')
+    compile project(':weather-client-api')
     compile project(':model')
 }

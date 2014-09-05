@@ -3,7 +3,7 @@
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
-        <option name="GRADLE_PROJECT_PATH" value=":forecast-io-wrapper" />
+        <option name="GRADLE_PROJECT_PATH" value=":weather-client-forecast-io" />
       </configuration>
     </facet>
     <facet type="android" name="Android">
@@ -83,8 +83,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="joda-time-2.3" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
+    <orderEntry type="module" module-name="weather-client-api" exported="" />
     <orderEntry type="module" module-name="Forecast" exported="" />
-    <orderEntry type="module" module-name="forecast-apis-library" exported="" />
     <orderEntry type="module" module-name="model" exported="" />
   </component>
 </module>

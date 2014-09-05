@@ -83,8 +83,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="joda-time-2.3" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
-    <orderEntry type="module" module-name="wunderground-wrapper" exported="" />
-    <orderEntry type="module" module-name="forecast-io-wrapper" exported="" />
+    <orderEntry type="module" module-name="weather-client-wunderground" exported="" />
+    <orderEntry type="module" module-name="weather-client-forecast-io" exported="" />
     <orderEntry type="module" module-name="model" exported="" />
   </component>
 </module>
