@@ -3,7 +3,7 @@ package com.androidsx.rainnotifications.wunderground;
 import android.content.Context;
 import android.util.Log;
 
-import com.androidsx.rainnotifications.forecastapislibrary.ForecastApis;
+import com.androidsx.rainnotifications.forecastapislibrary.ForecastResponseListener;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WundergroundTableBuilder;
 import com.loopj.android.http.AsyncHttpClient;
@@ -13,9 +13,7 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
-public abstract class WundergroundNetworkServiceTask implements ForecastApis {
+public abstract class WundergroundNetworkServiceTask implements ForecastResponseListener {
 
     private static final String TAG = WundergroundNetworkServiceTask.class.getSimpleName();
 

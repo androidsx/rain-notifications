@@ -4,15 +4,15 @@ import android.content.Context;
 
 import com.androidsx.rainnotifications.forecast_io.ForecastIoNetworkServiceTask;
 import com.androidsx.rainnotifications.forecast_io.ForecastIoRequest;
-import com.androidsx.rainnotifications.forecastapislibrary.ForecastApis;
+import com.androidsx.rainnotifications.forecastapislibrary.ForecastResponseListener;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.wunderground.WundergroundNetworkServiceTask;
 
 public abstract class WeatherClientFactory {
 
-    private static final WeatherClients CLIENT = WeatherClients.FORECAST_IO;
+    private static final WeatherClients CLIENT = WeatherClients.WUNDERGROUND;
 
-    public static ForecastApis getWeatherApiClient(final ForecastCheckerResultListener forecastCheckerResultListener) {
+    public static ForecastResponseListener getWeatherApiClient(final ForecastCheckerResultListener forecastCheckerResultListener) {
         if (CLIENT.equals(WeatherClients.FORECAST_IO)) {
             return new ForecastIoNetworkServiceTask() {
                 @Override
@@ -47,6 +47,7 @@ public abstract class WeatherClientFactory {
         }
     }
 
+    // TODO: merge with ForecastResponseListener
     public static interface ForecastCheckerResultListener {
         public void onForecastSuccess(ForecastTable forecastTable);
         public void onForecastFailure(ForecastCheckerException exception);

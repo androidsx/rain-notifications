@@ -2,7 +2,7 @@ package com.androidsx.rainnotifications.forecast_io;
 
 import android.util.Log;
 
-import com.androidsx.rainnotifications.forecastapislibrary.ForecastApis;
+import com.androidsx.rainnotifications.forecastapislibrary.ForecastResponseListener;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.ForecastTableBuilder;
 import com.forecast.io.network.responses.INetworkResponse;
@@ -16,7 +16,7 @@ import com.forecast.io.v2.network.services.ForecastService;
  * <p/>
  * Just execute this async task and implement the abstract methods to get your results.
  */
-public abstract class ForecastIoNetworkServiceTask extends NetworkServiceTask implements ForecastApis {
+public abstract class ForecastIoNetworkServiceTask extends NetworkServiceTask implements ForecastResponseListener {
     private static final String TAG = ForecastIoNetworkServiceTask.class.getSimpleName();
 
     @Override

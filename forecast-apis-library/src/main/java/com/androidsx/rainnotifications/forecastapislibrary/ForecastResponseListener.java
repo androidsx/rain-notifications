@@ -4,7 +4,10 @@ import android.content.Context;
 
 import com.androidsx.rainnotifications.model.ForecastTable;
 
-public interface ForecastApis {
+/**
+ * Listener for a response from a forecast service.
+ */
+public interface ForecastResponseListener {
 
     public void execute(Context context, double latitude, double longitude);
 
