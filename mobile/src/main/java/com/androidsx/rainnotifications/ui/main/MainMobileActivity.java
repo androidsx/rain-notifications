@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.forecastapislibrary.ForecastCheckerException;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
@@ -25,7 +26,6 @@ import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
-import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.crashlytics.android.Crashlytics;
 
 /**
@@ -75,7 +75,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                     }
 
                     @Override
-                    public void onForecastFailure(WeatherClientFactory.ForecastCheckerException exception) {
+                    public void onForecastFailure(ForecastCheckerException exception) {
                         throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
                     }
                 }.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude());

@@ -3,6 +3,8 @@ package com.androidsx.rainnotifications.wunderground;
 import android.content.Context;
 import android.util.Log;
 
+import com.androidsx.rainnotifications.forecastapislibrary.ForecastCheckerException;
+import com.androidsx.rainnotifications.forecastapislibrary.ForecastExecutor;
 import com.androidsx.rainnotifications.forecastapislibrary.ForecastResponseListener;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WundergroundTableBuilder;
@@ -13,7 +15,7 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public abstract class WundergroundNetworkServiceTask implements ForecastResponseListener {
+public final class WundergroundNetworkServiceTask implements ForecastExecutor {
 
     private static final String TAG = WundergroundNetworkServiceTask.class.getSimpleName();
 
@@ -22,6 +24,13 @@ public abstract class WundergroundNetworkServiceTask implements ForecastResponse
             "conditions", // Current time, http://www.wunderground.com/weather/api/d/docs?d=data/conditions
             "hourly"}; // Hourly forecast, http://www.wunderground.com/weather/api/d/docs?d=data/hourly
 
+    private final ForecastResponseListener responseListener;
+
+    public WundergroundNetworkServiceTask(ForecastResponseListener responseListener) {
+        this.responseListener = responseListener;
+    }
+
+    @Override
     public void execute(Context context, double latitude, double longitude){
         String url = WUNDERGROUND_BASE_URL;
         for(String f : FEATURES) {
@@ -39,20 +48,20 @@ public abstract class WundergroundNetworkServiceTask implements ForecastResponse
                     final ForecastTable forecastTable = WundergroundTableBuilder.buildFromForecastIo(response);
                     if (forecastTable != null) {
                         Log.d(TAG, "Transition table: " + forecastTable);
-                        onRequestSuccess(WundergroundTableBuilder.buildFromForecastIo(response));
+                        responseListener.onForecastSuccess(WundergroundTableBuilder.buildFromForecastIo(response));
                     } else {
-                        onRequestFailure();
+                        responseListener.onForecastFailure(new ForecastCheckerException());
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    onRequestFailure();
+                    responseListener.onForecastFailure(new ForecastCheckerException());
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                onRequestFailure();
+                responseListener.onForecastFailure(new ForecastCheckerException());
             }
         });
     }

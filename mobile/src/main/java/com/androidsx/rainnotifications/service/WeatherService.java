@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.forecastapislibrary.ForecastCheckerException;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
@@ -15,7 +16,6 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
-import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
@@ -72,7 +72,7 @@ public class WeatherService extends Service {
                     }
 
                     @Override
-                    public void onForecastFailure(WeatherClientFactory.ForecastCheckerException exception) {
+                    public void onForecastFailure(ForecastCheckerException exception) {
                         throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: set the next alarm a little from now?
                     }
                 }.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude());
