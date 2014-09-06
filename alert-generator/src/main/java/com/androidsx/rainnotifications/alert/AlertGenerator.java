@@ -12,11 +12,14 @@ import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 
 import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
@@ -121,16 +124,16 @@ public class AlertGenerator {
 
             if (currentWeather.getType().equals(WeatherType.SUNNY)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.sun_to_rain, periodFromNow.getMinutes()));
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.sun_to_rain, periodFromNow));
             } else if (currentWeather.getType().equals(WeatherType.RAIN)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.SUNNY)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.rain_to_sun, periodFromNow.getMinutes()));
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.rain_to_sun, periodFromNow));
             } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_rain, periodFromNow.getMinutes()));
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_rain, periodFromNow));
             } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.SUNNY)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_sun, periodFromNow.getMinutes()));
+                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_sun, periodFromNow));
             } else {
                 return new AlertMessage("(Fallback) It's gonna be " + forecast.getForecastedWeather()
                         + " in " + UiUtil.getDebugOnlyPeriodFormatter().print(periodFromNow) + " from now"
@@ -144,8 +147,26 @@ public class AlertGenerator {
         return pickRandom(Arrays.asList(resources.getStringArray(arrayResource)), random);
     }
 
-    private String resourceToToRandomAlertMessage(int arrayResource, int minutes) {
-        return String.format(resourceToToRandomAlertMessage(arrayResource), minutes);
+    private String resourceToToRandomAlertMessage(int arrayResource, Period periodFromNow) {
+        final Locale locale = Locale.getDefault(); // TODO: use the real one
+        return String.format(resourceToToRandomAlertMessage(arrayResource), periodToString(
+                periodFromNow,
+                resources.getString(R.string.unit_hours),
+                resources.getString(R.string.unit_minutes),
+                locale));
+    }
+
+    /** Visibility raised from private for testing purposes. */
+    String periodToString(Period period, String hours, String minutes, Locale locale) {
+        final PeriodFormatter durationFormatter = new PeriodFormatterBuilder()
+                .appendHours()
+                .appendSeparatorIfFieldsBefore(" " + hours + " and ")
+                .appendMinutes()
+                .appendSeparatorIfFieldsBefore(" " + minutes)
+                .toFormatter()
+                .withLocale(locale);
+
+        return durationFormatter.print(period);
     }
 
     private static <T> T pickRandom(List<T> list, Random random) {

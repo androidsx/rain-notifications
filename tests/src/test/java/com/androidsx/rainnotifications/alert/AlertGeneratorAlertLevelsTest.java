@@ -12,9 +12,12 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
+/**
+ * Tests for the alert levels within {@link com.androidsx.rainnotifications.alert.AlertGenerator}.
+ */
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
-public class AlertGeneratorTest {
+public class AlertGeneratorAlertLevelsTest {
     private AlertGenerator generator;
 
     @Before
