@@ -10,7 +10,7 @@ import com.androidsx.rainnotifications.wunderground.WundergroundNetworkServiceTa
 
 public abstract class WeatherClientFactory {
 
-    private static final WeatherClients CLIENT = WeatherClients.WUNDERGROUND;
+    private static final WeatherClients CLIENT = WeatherClients.FORECAST_IO;
 
     public static ForecastResponseListener getWeatherApiClient(final ForecastCheckerResultListener forecastCheckerResultListener) {
         if (CLIENT.equals(WeatherClients.FORECAST_IO)) {
