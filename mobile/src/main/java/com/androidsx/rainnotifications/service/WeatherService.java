@@ -7,8 +7,8 @@ import android.location.Location;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.forecastapislibrary.ForecastCheckerException;
-import com.androidsx.rainnotifications.forecastapislibrary.ForecastResponseListener;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
@@ -53,7 +53,7 @@ public class WeatherService extends Service {
         new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(Location location) {
-                WeatherClientFactory.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude(), new ForecastResponseListener() {
+                WeatherClientFactory.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess (ForecastTable forecastTable){
                         if (forecastTable.getForecasts().isEmpty()) {
@@ -73,7 +73,7 @@ public class WeatherService extends Service {
                     }
 
                     @Override
-                    public void onForecastFailure (ForecastCheckerException exception){
+                    public void onForecastFailure (WeatherClientException exception){
                         throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: set the next alarm a little from now?
                     }
                 });
