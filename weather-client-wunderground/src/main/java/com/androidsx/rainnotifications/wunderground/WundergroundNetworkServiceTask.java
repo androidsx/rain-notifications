@@ -3,9 +3,9 @@ package com.androidsx.rainnotifications.wunderground;
 import android.content.Context;
 import android.util.Log;
 
-import com.androidsx.rainnotifications.forecastapislibrary.ForecastCheckerException;
-import com.androidsx.rainnotifications.forecastapislibrary.ForecastExecutor;
-import com.androidsx.rainnotifications.forecastapislibrary.ForecastResponseListener;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientExecutor;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WundergroundTableBuilder;
 import com.loopj.android.http.AsyncHttpClient;
@@ -15,7 +15,7 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public final class WundergroundNetworkServiceTask implements ForecastExecutor {
+public final class WundergroundNetworkServiceTask implements WeatherClientExecutor {
 
     private static final String TAG = WundergroundNetworkServiceTask.class.getSimpleName();
 
@@ -25,7 +25,7 @@ public final class WundergroundNetworkServiceTask implements ForecastExecutor {
             "hourly"}; // Hourly forecast, http://www.wunderground.com/weather/api/d/docs?d=data/hourly
 
     @Override
-    public void execute(Context context, double latitude, double longitude, final ForecastResponseListener responseListener) {
+    public void execute(Context context, double latitude, double longitude, final WeatherClientResponseListener responseListener) {
         String url = WUNDERGROUND_BASE_URL;
         for(String f : FEATURES) {
             url += "/" + f;
@@ -44,18 +44,18 @@ public final class WundergroundNetworkServiceTask implements ForecastExecutor {
                         Log.d(TAG, "Transition table: " + forecastTable);
                         responseListener.onForecastSuccess(WundergroundTableBuilder.buildFromForecastIo(response));
                     } else {
-                        responseListener.onForecastFailure(new ForecastCheckerException());
+                        responseListener.onForecastFailure(new WeatherClientException());
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    responseListener.onForecastFailure(new ForecastCheckerException());
+                    responseListener.onForecastFailure(new WeatherClientException());
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                responseListener.onForecastFailure(new ForecastCheckerException());
+                responseListener.onForecastFailure(new WeatherClientException());
             }
         });
     }
