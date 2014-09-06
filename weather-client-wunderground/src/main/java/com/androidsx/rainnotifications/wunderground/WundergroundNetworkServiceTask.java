@@ -16,7 +16,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public final class WundergroundNetworkServiceTask implements WeatherClientExecutor {
-
     private static final String TAG = WundergroundNetworkServiceTask.class.getSimpleName();
 
     private static final String WUNDERGROUND_BASE_URL = "http://api.wunderground.com/api/" + Constants.WUNDERGROUND_API_KEY;
@@ -44,20 +43,19 @@ public final class WundergroundNetworkServiceTask implements WeatherClientExecut
                         Log.d(TAG, "Transition table: " + forecastTable);
                         responseListener.onForecastSuccess(WundergroundTableBuilder.buildFromForecastIo(response));
                     } else {
-                        responseListener.onForecastFailure(new WeatherClientException());
+                        responseListener.onForecastFailure(new WeatherClientException(
+                                "The forecast table is null for the WUnderground response " + response));
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
-                    responseListener.onForecastFailure(new WeatherClientException());
+                    responseListener.onForecastFailure(new WeatherClientException("Failed to process WUnderground response", e));
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                responseListener.onForecastFailure(new WeatherClientException());
+                responseListener.onForecastFailure(new WeatherClientException(
+                        "Failed to read from WUnderground: " + statusCode, throwable));
             }
         });
     }
-
 }

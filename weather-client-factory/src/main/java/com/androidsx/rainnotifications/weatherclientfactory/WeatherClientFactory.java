@@ -18,7 +18,7 @@ public abstract class WeatherClientFactory {
             case WUNDERGROUND: weatherClientExecutor = new WundergroundNetworkServiceTask(); break;
             default: throw new IllegalArgumentException("Unsupported client: " + CLIENT);
         }
-        
+
         weatherClientExecutor.execute(context, latitude, longitude, responseListener);
     }
 }

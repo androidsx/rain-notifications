@@ -32,7 +32,7 @@ public final class ForecastIoNetworkServiceTask extends NetworkServiceTask imple
     @Override
     protected void onPostExecute(INetworkResponse rawNetworkResponse) {
         if (rawNetworkResponse == null || rawNetworkResponse.getStatus() == NetworkResponse.Status.FAIL) {
-            responseListener.onForecastFailure(new WeatherClientException());
+            responseListener.onForecastFailure(new WeatherClientException("Failed to read data from Forecast.io: " + rawNetworkResponse));
         } else {
             final ForecastService.Response response = (ForecastService.Response) rawNetworkResponse;
             Log.v(TAG, "Raw response from Forecast.io:\n" + response);
