@@ -43,10 +43,10 @@ dependencies {
     compile 'com.google.android.gms:play-services-wearable:+'
     compile 'com.jakewharton.timber:timber:2.4.+'
     compile 'com.android.support:support-v4:20.0.+'
-    compile project(':model')
-    compile project(':forecast-io-wrapper')
+    compile project(':weather-client-factory')
     compile project(':alert-generator')
     compile project(':common-library')
+    compile project(':model')
 
     // Animations framework: https://github.com/daimajia/AndroidViewAnimations
     compile 'com.nineoldandroids:library:2.4.0'
