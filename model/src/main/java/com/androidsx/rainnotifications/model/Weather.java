@@ -2,6 +2,8 @@ package com.androidsx.rainnotifications.model;
 
 /**
  * Status of the weather at a particular point in time (past, present of future).
+ *
+ * @see #equals
  */
 public class Weather {
     private final WeatherType type;
@@ -26,9 +28,13 @@ public class Weather {
     /**
      * {@inheritDoc}
      * <p/>
-     * Important note: Unknown weather types are ignored, that means, cloudy-unknown-unknown-cloudy
-     * is not considered a weather transition.
-     * If currentWeather is Unknown weather, the first checking is for prevent it and make a good forecastTable.
+     * Important note about unknown transitions:
+     * <p>
+     * Transitions like UNKNOWN -> KNOWN are considered transitions.
+     * Transitions like KNOWN -> UNKNOWN are NOT considered transitions.
+     * <p>
+     * That implies UNKNOWN -> sunny will end up being "It's gonna be sunny again", but sunny -> UNKNOWN won't trigger
+     * a change. Then, sunny -> UNKNOWN -> rain will essentially be considered a sunny -> rain transition.
      */
     @Override
     public boolean equals(Object other) {

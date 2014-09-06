@@ -107,7 +107,7 @@ public class AlertGenerator {
      * @return message for the user
      */
     private AlertMessage generateAlertMessage(Weather currentWeather, Forecast forecast) {
-        if (forecast == null || forecast.getForecastedWeather().getType().equals(currentWeather.getType())) {
+        if (forecast == null || forecast.getForecastedWeather().equals(currentWeather)) {
             if (currentWeather.getType().equals(WeatherType.SUNNY)) {
                 return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_sunny));
             } else if (currentWeather.getType().equals(WeatherType.RAIN)) {
