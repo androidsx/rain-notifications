@@ -19,18 +19,12 @@ apply plugin: 'android'
 apply plugin: 'robolectric'
 
 android {
-    packagingOptions {
-        exclude 'LICENSE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/NOTICE'
-    }
     compileSdkVersion 19
     buildToolsVersion "19.1.0"
 
     defaultConfig {
-        minSdkVersion 18
-        targetSdkVersion 18
+        minSdkVersion 19
+        targetSdkVersion 19
         versionCode 2
         versionName "1.0.0-SNAPSHOT"
         testInstrumentationRunner "com.google.android.apps.common.testing.testrunner.GoogleInstrumentationTestRunner"
@@ -39,6 +33,10 @@ android {
         release {
             runProguard false
         }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
     sourceSets {
@@ -86,6 +84,10 @@ dependencies {
         exclude module: 'wagon-provider-api'
     }
     androidTestCompile 'com.squareup:fest-android:1.0.+'
+
+    // Projects of our app
+    compile project (':alert-generator')
+    compile project (':model')
 }
 
 apply plugin: 'idea'

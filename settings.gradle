@@ -10,4 +10,4 @@ include ':weather-client-wunderground'
 include ':model'
 include ':common-library'
 
-include ':deckard-gradle-master'
+include ':tests'

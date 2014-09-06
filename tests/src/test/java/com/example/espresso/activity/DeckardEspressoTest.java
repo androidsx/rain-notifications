@@ -10,6 +10,9 @@ import static com.google.android.apps.common.testing.ui.espresso.assertion.ViewA
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withId;
 import static com.google.android.apps.common.testing.ui.espresso.matcher.ViewMatchers.withText;
 
+/**
+ * Oritinally from https://github.com/robolectric/deckard-gradle. Let's keep this around just in case.
+ */
 @LargeTest
 public class DeckardEspressoTest extends ActivityInstrumentationTestCase2<DeckardActivity> {
 
