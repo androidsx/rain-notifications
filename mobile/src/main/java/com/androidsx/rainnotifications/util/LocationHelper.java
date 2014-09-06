@@ -66,12 +66,4 @@ public class LocationHelper {
         }
         return provider1.equals(provider2);
     }
-
-    public static boolean rightCoordinates(double latitude, double longitude) {
-        if (latitude >= -90 && latitude <= 90 && longitude >= -180 && longitude <= 180) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

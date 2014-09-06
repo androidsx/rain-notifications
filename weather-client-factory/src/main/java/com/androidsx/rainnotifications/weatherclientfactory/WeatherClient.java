@@ -1,9 +1,9 @@
 package com.androidsx.rainnotifications.weatherclientfactory;
 
 /**
- * Weather clients for obtain the weather forecast.
+ * Weather clients to get current weather and forecast data.
  */
-public enum WeatherClients {
+public enum WeatherClient {
     FORECAST_IO,
     WUNDERGROUND;
 }

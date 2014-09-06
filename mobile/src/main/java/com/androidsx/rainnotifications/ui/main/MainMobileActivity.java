@@ -15,10 +15,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
-import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
@@ -60,7 +61,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(final Location location) {
-                new ForecastChecker() {
+                WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
                         final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
@@ -75,10 +76,10 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                     }
 
                     @Override
-                    public void onForecastFailure(WeatherClientFactory.ForecastCheckerException exception) {
+                    public void onForecastFailure(WeatherClientException exception) {
                         throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
                     }
-                }.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude());
+                });
             }
 
             @Override

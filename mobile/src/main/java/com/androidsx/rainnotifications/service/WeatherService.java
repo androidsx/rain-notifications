@@ -7,8 +7,9 @@ import android.location.Location;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
-import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
@@ -52,9 +53,9 @@ public class WeatherService extends Service {
         new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(Location location) {
-                new ForecastChecker() {
+                WeatherClientFactory.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
-                    public void onForecastSuccess(ForecastTable forecastTable) {
+                    public void onForecastSuccess (ForecastTable forecastTable){
                         if (forecastTable.getForecasts().isEmpty()) {
                             Timber.d("No transitions are expected, so there's no notifications to generate");
                         } else {
@@ -72,10 +73,10 @@ public class WeatherService extends Service {
                     }
 
                     @Override
-                    public void onForecastFailure(WeatherClientFactory.ForecastCheckerException exception) {
+                    public void onForecastFailure (WeatherClientException exception){
                         throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: set the next alarm a little from now?
                     }
-                }.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude());
+                });
             }
 
             @Override

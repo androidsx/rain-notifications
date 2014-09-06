@@ -3,7 +3,9 @@ package com.androidsx.rainnotifications.wunderground;
 import android.content.Context;
 import android.util.Log;
 
-import com.androidsx.rainnotifications.forecastapislibrary.ForecastResponseListener;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientExecutor;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WundergroundTableBuilder;
 import com.loopj.android.http.AsyncHttpClient;
@@ -13,8 +15,7 @@ import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public abstract class WundergroundNetworkServiceTask implements ForecastResponseListener {
-
+public final class WundergroundNetworkServiceTask implements WeatherClientExecutor {
     private static final String TAG = WundergroundNetworkServiceTask.class.getSimpleName();
 
     private static final String WUNDERGROUND_BASE_URL = "http://api.wunderground.com/api/" + Constants.WUNDERGROUND_API_KEY;
@@ -22,7 +23,8 @@ public abstract class WundergroundNetworkServiceTask implements ForecastResponse
             "conditions", // Current time, http://www.wunderground.com/weather/api/d/docs?d=data/conditions
             "hourly"}; // Hourly forecast, http://www.wunderground.com/weather/api/d/docs?d=data/hourly
 
-    public void execute(Context context, double latitude, double longitude){
+    @Override
+    public void execute(Context context, double latitude, double longitude, final WeatherClientResponseListener responseListener) {
         String url = WUNDERGROUND_BASE_URL;
         for(String f : FEATURES) {
             url += "/" + f;
@@ -39,22 +41,21 @@ public abstract class WundergroundNetworkServiceTask implements ForecastResponse
                     final ForecastTable forecastTable = WundergroundTableBuilder.buildFromForecastIo(response);
                     if (forecastTable != null) {
                         Log.d(TAG, "Transition table: " + forecastTable);
-                        onRequestSuccess(WundergroundTableBuilder.buildFromForecastIo(response));
+                        responseListener.onForecastSuccess(WundergroundTableBuilder.buildFromForecastIo(response));
                     } else {
-                        onRequestFailure();
+                        responseListener.onForecastFailure(new WeatherClientException(
+                                "The forecast table is null for the WUnderground response " + response));
                     }
                 } catch (JSONException e) {
-                    e.printStackTrace();
-                    onRequestFailure();
+                    responseListener.onForecastFailure(new WeatherClientException("Failed to process WUnderground response", e));
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-                onRequestFailure();
+                responseListener.onForecastFailure(new WeatherClientException(
+                        "Failed to read from WUnderground: " + statusCode, throwable));
             }
         });
     }
-
 }
