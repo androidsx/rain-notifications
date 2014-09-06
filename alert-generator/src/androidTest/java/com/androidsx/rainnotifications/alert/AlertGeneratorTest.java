@@ -16,7 +16,7 @@ public class AlertGeneratorTest extends InstrumentationTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        generator = new AlertGenerator();
+        generator = new AlertGenerator(null);
     }
 
     public void testFromRainToNonRainNotifies() {
