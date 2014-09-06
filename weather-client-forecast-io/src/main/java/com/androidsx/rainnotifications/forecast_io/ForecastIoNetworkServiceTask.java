@@ -21,14 +21,11 @@ import com.forecast.io.v2.network.services.ForecastService;
  */
 public final class ForecastIoNetworkServiceTask extends NetworkServiceTask implements ForecastExecutor {
     private static final String TAG = ForecastIoNetworkServiceTask.class.getSimpleName();
-    private final ForecastResponseListener responseListener;
-
-    public ForecastIoNetworkServiceTask(ForecastResponseListener responseListener) {
-        this.responseListener = responseListener;
-    }
+    private ForecastResponseListener responseListener;
 
     @Override
-    public void execute(Context context, double latitude, double longitude) {
+    public void execute(Context context, double latitude, double longitude, ForecastResponseListener responseListener) {
+        this.responseListener = responseListener;
         this.execute(new ForecastIoRequest(latitude, longitude).getRequest());
     }
 

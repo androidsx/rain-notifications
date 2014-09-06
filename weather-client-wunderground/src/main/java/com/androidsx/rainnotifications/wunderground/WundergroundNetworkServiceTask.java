@@ -24,14 +24,8 @@ public final class WundergroundNetworkServiceTask implements ForecastExecutor {
             "conditions", // Current time, http://www.wunderground.com/weather/api/d/docs?d=data/conditions
             "hourly"}; // Hourly forecast, http://www.wunderground.com/weather/api/d/docs?d=data/hourly
 
-    private final ForecastResponseListener responseListener;
-
-    public WundergroundNetworkServiceTask(ForecastResponseListener responseListener) {
-        this.responseListener = responseListener;
-    }
-
     @Override
-    public void execute(Context context, double latitude, double longitude){
+    public void execute(Context context, double latitude, double longitude, final ForecastResponseListener responseListener) {
         String url = WUNDERGROUND_BASE_URL;
         for(String f : FEATURES) {
             url += "/" + f;
