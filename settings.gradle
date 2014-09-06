@@ -1,1 +1,12 @@
-include ':mobile', ':wear', ':Forecast', ':model', ':forecast-io-wrapper', ':common-library', 'alert-generator'
+include ':mobile'
+include ':wear'
+include 'alert-generator'
+
+include ':weather-client-api'
+include ':weather-client-factory'
+include ':weather-client-forecast-io', ':Forecast'
+include ':weather-client-wunderground'
+
+include ':model'
+include ':common-library'
+

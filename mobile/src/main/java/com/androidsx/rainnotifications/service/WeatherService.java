@@ -7,14 +7,16 @@ import android.location.Location;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
-import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
+import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
@@ -51,10 +53,9 @@ public class WeatherService extends Service {
         new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(Location location) {
-                ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
-                        new ForecastChecker.ForecastCheckerResultListener() {
+                WeatherClientFactory.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
-                    public void onForecastSuccess(ForecastTable forecastTable) {
+                    public void onForecastSuccess (ForecastTable forecastTable){
                         if (forecastTable.getForecasts().isEmpty()) {
                             Timber.d("No transitions are expected, so there's no notifications to generate");
                         } else {
@@ -72,7 +73,7 @@ public class WeatherService extends Service {
                     }
 
                     @Override
-                    public void onForecastFailure(ForecastChecker.ForecastCheckerException exception) {
+                    public void onForecastFailure (WeatherClientException exception){
                         throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: set the next alarm a little from now?
                     }
                 });

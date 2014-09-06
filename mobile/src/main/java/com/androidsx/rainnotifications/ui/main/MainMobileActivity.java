@@ -15,16 +15,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
-import com.androidsx.rainnotifications.util.ForecastChecker;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
+import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.crashlytics.android.Crashlytics;
 
 /**
@@ -59,26 +61,25 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(final Location location) {
-                ForecastChecker.requestForecastForLocation(location.getLatitude(), location.getLongitude(),
-                        new ForecastChecker.ForecastCheckerResultListener() {
-                            @Override
-                            public void onForecastSuccess(ForecastTable forecastTable) {
-                                final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
-                                final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
-                                final String locationAddress = UserLocationFetcher.getLocationAddress(
-                                        MainMobileActivity.this,
-                                        location.getLatitude(),
-                                        location.getLongitude());
-                                updateUI(locationAddress,
-                                        alert.getDressedMascot(),
-                                        alert.getAlertMessage().getNotificationMessage());
-                            }
+                WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
+                    @Override
+                    public void onForecastSuccess(ForecastTable forecastTable) {
+                        final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
+                        final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
+                        final String locationAddress = UserLocationFetcher.getLocationAddress(
+                                MainMobileActivity.this,
+                                location.getLatitude(),
+                                location.getLongitude());
+                        updateUI(locationAddress,
+                                alert.getDressedMascot(),
+                                alert.getAlertMessage().getNotificationMessage());
+                    }
 
-                            @Override
-                            public void onForecastFailure(ForecastChecker.ForecastCheckerException exception) {
-                                throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
-                            }
-                        });
+                    @Override
+                    public void onForecastFailure(WeatherClientException exception) {
+                        throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
+                    }
+                });
             }
 
             @Override

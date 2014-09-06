@@ -1,0 +1,1 @@
+Factory that builds instances of the response handlers for the different weather data providers

@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications.model;
 
 import org.joda.time.DateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ForecastTable {
@@ -9,7 +10,7 @@ public class ForecastTable {
     private final DateTime baselineTime;
     private final List<Forecast> forecasts;
 
-    ForecastTable(Weather baselineWeather, DateTime baselineTime, List<Forecast> forecasts) {
+    private ForecastTable(Weather baselineWeather, DateTime baselineTime, List<Forecast> forecasts) {
         this.baselineWeather = baselineWeather;
         this.baselineTime = baselineTime;
         this.forecasts = forecasts;
@@ -33,6 +34,24 @@ public class ForecastTable {
      */
     public List<Forecast> getForecasts() {
         return forecasts;
+    }
+
+    public static ForecastTable create(Weather currentWeather, DateTime baselineTime, List<Forecast> allForecasts) {
+        final List<Forecast> transitions = new ArrayList<Forecast>();
+
+        Weather latestWeather = currentWeather;
+        for (Forecast forecast : allForecasts) {
+            final Weather forecastedWeather = forecast.getForecastedWeather();
+            if (latestWeather.equals(forecastedWeather)) {
+                // Skip it
+            } else {
+                transitions.add(forecast);
+                if(!forecastedWeather.isUnknownWeather()) {
+                    latestWeather = forecastedWeather;
+                }
+            }
+        }
+        return new ForecastTable(currentWeather, baselineTime, transitions);
     }
 
     @Override
