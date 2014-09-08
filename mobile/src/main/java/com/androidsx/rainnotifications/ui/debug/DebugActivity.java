@@ -294,14 +294,23 @@ public class DebugActivity extends Activity {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(R.layout.debug_item_list, parent, false);
+            Button delete = (Button) rowView.findViewById(R.id.delete_item_button);
             Button button = (Button) rowView.findViewById(R.id.later_time_button);
             Spinner spinner = (Spinner) rowView.findViewById(R.id.weather_later_spinner);
 
-            WeatherItemRow item = getItem(position);
+            final WeatherItemRow item = getItem(position);
+
             configureLaterTime(button, item);
             configureLaterWeatherSpinner(spinner, item);
             button.setText(timeToString(item.getTime()));
             spinner.setSelection(item.getWeatherType());
+
+            delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    remove(item);
+                }
+            });
 
             return rowView;
         }
