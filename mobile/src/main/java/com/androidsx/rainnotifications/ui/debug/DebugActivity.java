@@ -2,14 +2,19 @@ package com.androidsx.rainnotifications.ui.debug;
 
 import android.app.Activity;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -36,6 +41,8 @@ import org.joda.time.Minutes;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
@@ -48,9 +55,11 @@ public class DebugActivity extends Activity {
     private AlertGenerator alertGenerator;
 
     private WeatherType weatherTypeNow;
-    private WeatherType weatherTypeLater;
     private DateTime timeNow;
     private DateTime timeLater;
+
+    private ListView transitionsListView;
+    private List<WeatherItemRow> weatherTransitionsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,13 +70,23 @@ public class DebugActivity extends Activity {
 
         final Button now_time_button = (Button) findViewById(R.id.now_time_button);
         final Spinner nowSpinner = (Spinner) findViewById(R.id.weather_now_spinner);
+        transitionsListView = (ListView) findViewById(R.id.rows_weather_list);
 
         configureNowTime(now_time_button);
         configureNowWeatherSpinner(nowSpinner);
+        configureWeatherTransitionsList(transitionsListView);
     }
 
     public void addNewRow(View view) {
+        weatherTransitionsList.add(new WeatherItemRow(0, new DateTime(System.currentTimeMillis())));
+        WeatherListAdapter adapter = (WeatherListAdapter)transitionsListView.getAdapter();
+        adapter.notifyDataSetChanged();
+    }
 
+    private void configureWeatherTransitionsList(ListView list) {
+        weatherTransitionsList = new ArrayList<WeatherItemRow>();
+        WeatherListAdapter adapter = new WeatherListAdapter(this, R.layout.debug_item_list, weatherTransitionsList);
+        list.setAdapter(adapter);
     }
 
     private void configureNowTime(final Button nowButton) {
@@ -98,10 +117,7 @@ public class DebugActivity extends Activity {
         });
     }
 
-    private void configureLaterTime(final Button laterButton) {
-        timeLater = new DateTime(timeNow).plus(Minutes.minutes(15));
-        laterButton.setText(timeToString(timeLater));
-
+    private void configureLaterTime(final Button laterButton, final WeatherItemRow weatherItemRow) {
         final TimePickerDialog tpd = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
                     @Override
@@ -115,6 +131,7 @@ public class DebugActivity extends Activity {
                                 newHourOfDay,
                                 newMinuteOfHour);
                         laterButton.setText(timeToString(newHourOfDay, newMinuteOfHour));
+                        weatherItemRow.setTime(timeLater);
                     }
                 }, timeNow.getHourOfDay(), timeNow.getMinuteOfHour(), false);
 
@@ -146,6 +163,26 @@ public class DebugActivity extends Activity {
         nowSpinner.setAdapter(adapter);
     }
 
+    private void configureLaterWeatherSpinner(Spinner laterSpinner, final WeatherItemRow weatherItemRow) {
+        final List<String> weatherTypeNames = new ArrayList<String>();
+        for (WeatherType weatherType : WeatherType.values()) {
+            weatherTypeNames.add(weatherType.toString());
+        }
+        laterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                weatherItemRow.setWeatherType(position);
+                Log.i(DebugActivity.class.getSimpleName(), "Selection saved: " + weatherItemRow.getWeatherType());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.debug_spinner_row, weatherTypeNames);
+        laterSpinner.setAdapter(adapter);
+    }
+
     private String timeToString(DateTime dateTime) {
         return timeToString(dateTime.getHourOfDay(), dateTime.getMinuteOfHour());
     }
@@ -156,7 +193,7 @@ public class DebugActivity extends Activity {
     }
 
     public void generateAlert(View view) {
-        final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
+        /*final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
         final Alert alert = alertGenerator.generateAlert(new Weather(weatherTypeNow), new Forecast(new Weather(weatherTypeLater), intervalUntilWeatherChange, Forecast.Granularity.MINUTE));
 
         findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
@@ -171,7 +208,7 @@ public class DebugActivity extends Activity {
 
         ((TextView) findViewById(R.id.alert_level_text_view)).setText("Alert level: " + alert.getAlertLevel());
         ((TextView) findViewById(R.id.next_alarm_text_view)).setText("Next alarm: " + AlarmHelper.nextWeatherCallAlarmTime(intervalUntilWeatherChange).toPeriod().getMinutes() + " minutes from now");
-    }
+    */}
 
     public void startWeatherService(View view) {
         startService(new Intent(this, WeatherService.class));
@@ -211,5 +248,62 @@ public class DebugActivity extends Activity {
                 MainMobileActivity.class,
                 getString(R.string.notif_long_text_fake),
                 BitmapFactory.decodeResource(getResources(), R.drawable.owlie_debug));
+    }
+
+    private class WeatherItemRow {
+        private int weatherType;
+        private DateTime dateTime;
+
+        public WeatherItemRow(int weatherType, DateTime dateTime) {
+            this.weatherType = weatherType;
+            this.dateTime = dateTime;
+        }
+
+        public int getWeatherType() {
+            return weatherType;
+        }
+
+        public void setWeatherType(int weatherType) {
+            this.weatherType = weatherType;
+        }
+
+        public DateTime getTime() {
+            return dateTime;
+        }
+
+        public void setTime(DateTime dateTime) {
+            this.dateTime = dateTime;
+        }
+    }
+
+    private class WeatherListAdapter extends ArrayAdapter<WeatherItemRow> {
+
+        Context context;
+        int layoutResId;
+        List<WeatherItemRow> weatherItemRows;
+
+        public WeatherListAdapter(Context context, int layoutResId, List<WeatherItemRow> weatherItemRows) {
+            super(context, layoutResId, weatherItemRows);
+            this.context = context;
+            this.layoutResId = layoutResId;
+            this.weatherItemRows = weatherItemRows;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.debug_item_list, parent, false);
+            Button button = (Button) rowView.findViewById(R.id.later_time_button);
+            Spinner spinner = (Spinner) rowView.findViewById(R.id.weather_later_spinner);
+
+            WeatherItemRow item = getItem(position);
+            configureLaterTime(button, item);
+            configureLaterWeatherSpinner(spinner, item);
+            button.setText(timeToString(item.getTime()));
+            spinner.setSelection(item.getWeatherType());
+
+            return rowView;
+        }
     }
 }
