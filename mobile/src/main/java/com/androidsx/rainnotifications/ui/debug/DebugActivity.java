@@ -171,8 +171,8 @@ public class DebugActivity extends Activity {
         laterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                weatherItemRow.setWeatherType(position);
-                Log.i(DebugActivity.class.getSimpleName(), "Selection saved: " + weatherItemRow.getWeatherType());
+                weatherItemRow.setWeatherTypeSpinnerPosition(position);
+                weatherItemRow.setWeatherType(WeatherType.values()[position]);
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
@@ -251,20 +251,29 @@ public class DebugActivity extends Activity {
     }
 
     private class WeatherItemRow {
-        private int weatherType;
+        private WeatherType weatherType;
+        private int weatherTypeSpinnerPosition;
         private DateTime dateTime;
 
-        public WeatherItemRow(int weatherType, DateTime dateTime) {
-            this.weatherType = weatherType;
+        public WeatherItemRow(int weatherTypeSpinnerPosition, DateTime dateTime) {
+            this.weatherTypeSpinnerPosition = weatherTypeSpinnerPosition;
             this.dateTime = dateTime;
         }
 
-        public int getWeatherType() {
+        public WeatherType getWeatherType() {
             return weatherType;
         }
 
-        public void setWeatherType(int weatherType) {
+        public void setWeatherType(WeatherType weatherType) {
             this.weatherType = weatherType;
+        }
+
+        public int getWeatherTypeSpinnerPosition() {
+            return weatherTypeSpinnerPosition;
+        }
+
+        public void setWeatherTypeSpinnerPosition(int weatherTypeSpinnerPosition) {
+            this.weatherTypeSpinnerPosition = weatherTypeSpinnerPosition;
         }
 
         public DateTime getTime() {
@@ -303,7 +312,7 @@ public class DebugActivity extends Activity {
             configureLaterTime(button, item);
             configureLaterWeatherSpinner(spinner, item);
             button.setText(timeToString(item.getTime()));
-            spinner.setSelection(item.getWeatherType());
+            spinner.setSelection(item.getWeatherTypeSpinnerPosition());
 
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
