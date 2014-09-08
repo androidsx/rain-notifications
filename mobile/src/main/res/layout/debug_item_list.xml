@@ -6,10 +6,10 @@
 
     <Button
         android:id="@+id/delete_item_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/delete_button"
+        android:background="@drawable/ic_action_delete"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true" />
 
