@@ -59,20 +59,43 @@ public class DebugActivity extends Activity {
         setContentView(R.layout.debug_layout);
         alertGenerator = new AlertGenerator(getResources());
 
-        final TextView nowTextView = (TextView) findViewById(R.id.now_time_text_view);
+        final Button now_time_button = (Button) findViewById(R.id.now_time_button);
         final Spinner nowSpinner = (Spinner) findViewById(R.id.weather_now_spinner);
 
-        final Button laterButton = (Button) findViewById(R.id.later_time_button);
-        final Spinner laterSpinner = (Spinner) findViewById(R.id.weather_later_spinner);
-
-        configureNowTime(nowTextView);
-        configureLaterTime(laterButton);
-        configureWeatherSpinners(nowSpinner, laterSpinner);
+        configureNowTime(now_time_button);
+        configureNowWeatherSpinner(nowSpinner);
     }
 
-    private void configureNowTime(TextView nowTextView) {
+    public void addNewRow(View view) {
+
+    }
+
+    private void configureNowTime(final Button nowButton) {
         timeNow = DateTime.now();
-        nowTextView.setText(timeToString(timeNow));
+        nowButton.setText(timeToString(timeNow));
+
+        final TimePickerDialog tpd = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view,
+                                          int newHourOfDay,
+                                          int newMinuteOfHour) {
+                        timeLater = new DateTime(
+                                timeNow.getYear(),
+                                timeNow.getMonthOfYear(),
+                                timeNow.getDayOfMonth(),
+                                newHourOfDay,
+                                newMinuteOfHour);
+                        nowButton.setText(timeToString(newHourOfDay, newMinuteOfHour));
+                    }
+                }, timeNow.getHourOfDay(), timeNow.getMinuteOfHour(), false);
+
+        nowButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tpd.show();
+            }
+        });
     }
 
     private void configureLaterTime(final Button laterButton) {
@@ -103,7 +126,7 @@ public class DebugActivity extends Activity {
         });
     }
 
-    private void configureWeatherSpinners(Spinner nowSpinner, Spinner laterSpinner) {
+    private void configureNowWeatherSpinner(Spinner nowSpinner) {
         final List<String> weatherTypeNames = new ArrayList<String>();
         for (WeatherType weatherType : WeatherType.values()) {
             weatherTypeNames.add(weatherType.toString());
@@ -118,21 +141,9 @@ public class DebugActivity extends Activity {
             public void onNothingSelected(AdapterView<?> parentView) {
             }
         });
-        laterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                weatherTypeLater = WeatherType.values()[position];
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.debug_spinner_row, weatherTypeNames);
         nowSpinner.setAdapter(adapter);
-        laterSpinner.setAdapter(adapter);
-
-        laterSpinner.setSelection(1); // Just any other than 0 so that they start with different values
     }
 
     private String timeToString(DateTime dateTime) {
