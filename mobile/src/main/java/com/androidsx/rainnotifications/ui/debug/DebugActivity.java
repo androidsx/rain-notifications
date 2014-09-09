@@ -164,30 +164,53 @@ public class DebugActivity extends Activity {
     }
 
     public void generateAlert(View view) {
+        if (weatherTransitionsList.isEmpty()) {
+            Toast.makeText(this, "Add a row to simulate some weather transition", Toast.LENGTH_LONG).show();
+            closeCard(view);
+        } else {
+            final DateTime timeLater = weatherTransitionsList.get(0).getTime();
+
+            final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
+            final ImageView mascotImageView = (ImageView) findViewById(R.id.mascot_image_view);
+            final TextView alertLevelTextView = (TextView) findViewById(R.id.alert_level_text_view);
+            final TextView nextAlarmTextView = (TextView) findViewById(R.id.next_alarm_text_view);
+
+            final DateTime timeNow = nowWeatherItemRow.getTime();
+            final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
+            final Alert alert = alertGenerator.generateAlert(new Weather(nowWeatherItemRow.getWeatherType()),
+                    new Forecast(new Weather(weatherTransitionsList.get(0).getWeatherType()),
+                            intervalUntilWeatherChange,
+                            Forecast.Granularity.MINUTE));
+            cardMessageTextView.setText(alert.getAlertMessage().getNotificationMessage());
+
+            alertLevelTextView.setText("Alert level: " + alert.getAlertLevel());
+            alertLevelTextView.setVisibility(View.VISIBLE);
+            nextAlarmTextView.setText("Next alarm: " + AlarmHelper.nextWeatherCallAlarmTime(intervalUntilWeatherChange).toPeriod().getMinutes() + " minutes from now");
+            nextAlarmTextView.setVisibility(View.VISIBLE);
+
+            findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
+            AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
+
+            mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), alert.getDressedMascot()));
+            mascotImageView.setVisibility(View.VISIBLE);
+            AnimationHelper.applyMascotAnimation(mascotImageView);
+        }
+    }
+
+    public void generateMessageOfTheDay(View v) {
+        final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
+        findViewById(R.id.mascot_image_view).setVisibility(View.GONE);
+        findViewById(R.id.alert_level_text_view).setVisibility(View.GONE);
+        findViewById(R.id.next_alarm_text_view).setVisibility(View.GONE);
+
         List<Forecast> mockForecasts = new ArrayList<Forecast>();
         for(WeatherItemRow w : weatherTransitionsList) {
-            mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(new DateTime().now(), w.getTime()), Forecast.Granularity.MINUTE));
+            mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
         }
         ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), mockForecasts);
-        //Timber.d(forecastTable.toString());
 
-
-        /*final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
-        final Alert alert = alertGenerator.generateAlert(new Weather(weatherTypeNow), new Forecast(new Weather(weatherTypeLater), intervalUntilWeatherChange, Forecast.Granularity.MINUTE));
-        */
         findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
-
-        final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
-        //cardMessageTextView.setText(alert.getAlertMessage().getNotificationMessage());
         cardMessageTextView.setText(forecastTable.toString());
-        AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
-
-        final ImageView mascotImageView = (ImageView) findViewById(R.id.mascot_image_view);
-        //mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), alert.getDressedMascot()));
-        AnimationHelper.applyMascotAnimation(mascotImageView);
-
-        //((TextView) findViewById(R.id.alert_level_text_view)).setText("Alert level: " + alert.getAlertLevel());
-        //((TextView) findViewById(R.id.next_alarm_text_view)).setText("Next alarm: " + AlarmHelper.nextWeatherCallAlarmTime(intervalUntilWeatherChange).toPeriod().getMinutes() + " minutes from now");
     }
 
     public void startWeatherService(View view) {
