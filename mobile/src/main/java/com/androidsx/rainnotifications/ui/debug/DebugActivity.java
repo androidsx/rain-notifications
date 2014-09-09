@@ -161,7 +161,7 @@ public class DebugActivity extends Activity {
     public void generateAlert(View view) {
         List<Forecast> mockForecasts = new ArrayList<Forecast>();
         for(WeatherItemRow w : weatherTransitionsList) {
-            mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(new DateTime().now(), w.getTime()), Forecast.Granularity.MOCK));
+            mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(new DateTime().now(), w.getTime()), Forecast.Granularity.MINUTE));
         }
         ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), mockForecasts);
         Timber.d(forecastTable.toString());
