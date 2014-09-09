@@ -84,6 +84,11 @@ public class DebugActivity extends Activity {
         nowTimeButton.setText(timeToString(nowWeatherItemRow.getTime()));
     }
 
+    public void resetDay(View view) {
+        weatherTransitionsList.clear();
+        findViewById(R.id.card_wrapper).setVisibility(View.GONE);
+    }
+
     public void addNewRow(View view) {
         DateTime newTime;
         if(weatherTransitionsList.isEmpty()) {
