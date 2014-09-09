@@ -120,14 +120,13 @@ tools:context=".forecast_mobile" >
     <LinearLayout
         android:id="@+id/card_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="50"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/mascot_image_view"
-            android:layout_width="120dp"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:layout_gravity="center"
