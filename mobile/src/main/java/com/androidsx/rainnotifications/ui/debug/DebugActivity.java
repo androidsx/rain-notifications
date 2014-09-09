@@ -26,6 +26,8 @@ import com.androidsx.rainnotifications.WearNotificationManagerException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.ForecastTableBuilder;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
@@ -157,6 +159,14 @@ public class DebugActivity extends Activity {
     }
 
     public void generateAlert(View view) {
+        List<Forecast> mockForecasts = new ArrayList<Forecast>();
+        for(WeatherItemRow w : weatherTransitionsList) {
+            mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(new DateTime().now(), w.getTime()), Forecast.Granularity.MOCK));
+        }
+        ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), mockForecasts);
+        Timber.d(forecastTable.toString());
+
+
         /*final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
         final Alert alert = alertGenerator.generateAlert(new Weather(weatherTypeNow), new Forecast(new Weather(weatherTypeLater), intervalUntilWeatherChange, Forecast.Granularity.MINUTE));
 

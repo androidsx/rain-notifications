@@ -45,7 +45,8 @@ public class Forecast {
      */
     public enum Granularity {
         MINUTE,
-        HOUR;
+        HOUR,
+        MOCK;
 
         @Override
         public String toString() {
