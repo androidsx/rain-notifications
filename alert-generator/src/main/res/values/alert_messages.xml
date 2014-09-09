@@ -11,6 +11,11 @@
         <item>Hopefully you have your umbrella with you, it won\'t stop raining for a while</item>
     </string-array>
 
+    <string-array name="stays_cloudy">
+        <item>No luck, it\'ll keep cloudy for a while</item>
+        <item>Looks like it\'s gonna be cloudy for the rest of the day</item>
+    </string-array>
+
     <string-array name="sun_to_rain">
         <item>It\'s gonna start raining in %s</item>
         <item>Luck is over, rain is coming in %s</item>
