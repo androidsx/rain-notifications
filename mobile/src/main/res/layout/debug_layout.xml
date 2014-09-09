@@ -14,9 +14,8 @@ tools:context=".forecast_mobile" >
     <!-- Old buttons -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="0"
         android:visibility="gone"> <!-- Temporarily disabled. We may move this to a different debug activity -->
 
         <Button
@@ -70,11 +69,13 @@ tools:context=".forecast_mobile" >
             android:spinnerMode="dropdown" />
     </RelativeLayout>
 
+    <!-- List of weather transitions. It has its own scroll. -->
     <ListView
         android:id="@+id/rows_weather_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="13" >
+        android:layout_weight="1"
+        android:orientation="vertical" >
     </ListView>
 
     <LinearLayout
@@ -140,8 +141,7 @@ tools:context=".forecast_mobile" >
     <LinearLayout
         android:id="@+id/card_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="40"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone">
 
