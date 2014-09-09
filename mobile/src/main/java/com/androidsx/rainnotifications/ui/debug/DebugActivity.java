@@ -164,25 +164,27 @@ public class DebugActivity extends Activity {
             mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(new DateTime().now(), w.getTime()), Forecast.Granularity.MINUTE));
         }
         ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), mockForecasts);
-        Timber.d(forecastTable.toString());
+        //Timber.d(forecastTable.toString());
 
 
         /*final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
         final Alert alert = alertGenerator.generateAlert(new Weather(weatherTypeNow), new Forecast(new Weather(weatherTypeLater), intervalUntilWeatherChange, Forecast.Granularity.MINUTE));
-
+        */
         findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
 
         final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
-        cardMessageTextView.setText(alert.getAlertMessage().getNotificationMessage());
+        //cardMessageTextView.setText(alert.getAlertMessage().getNotificationMessage());
+        cardMessageTextView.setText(forecastTable.toString());
         AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
 
         final ImageView mascotImageView = (ImageView) findViewById(R.id.mascot_image_view);
-        mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), alert.getDressedMascot()));
+        //mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), alert.getDressedMascot()));
+        mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.owlie_sunny_02));
         AnimationHelper.applyMascotAnimation(mascotImageView);
 
-        ((TextView) findViewById(R.id.alert_level_text_view)).setText("Alert level: " + alert.getAlertLevel());
-        ((TextView) findViewById(R.id.next_alarm_text_view)).setText("Next alarm: " + AlarmHelper.nextWeatherCallAlarmTime(intervalUntilWeatherChange).toPeriod().getMinutes() + " minutes from now");
-    */}
+        //((TextView) findViewById(R.id.alert_level_text_view)).setText("Alert level: " + alert.getAlertLevel());
+        //((TextView) findViewById(R.id.next_alarm_text_view)).setText("Next alarm: " + AlarmHelper.nextWeatherCallAlarmTime(intervalUntilWeatherChange).toPeriod().getMinutes() + " minutes from now");
+    }
 
     public void startWeatherService(View view) {
         startService(new Intent(this, WeatherService.class));

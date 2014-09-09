@@ -73,8 +73,7 @@ tools:context=".forecast_mobile" >
     <ListView
         android:id="@+id/rows_weather_list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="140dp" >
     </ListView>
 
     <LinearLayout
@@ -108,21 +107,24 @@ tools:context=".forecast_mobile" >
     <LinearLayout
         android:id="@+id/card_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical"
+        android:layout_marginTop="-20dp"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/mascot_image_view"
-            android:layout_width="200dp"
+            android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            android:layout_gravity="right"
             android:layout_margin="@dimen/owl_margin"
             android:layout_alignParentRight="true"/>
 
         <include layout="@layout/card_layout"/>
 
-        <TextView
+        <!--<TextView
             android:id="@+id/alert_level_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -130,7 +132,7 @@ tools:context=".forecast_mobile" >
         <TextView
             android:id="@+id/next_alarm_text_view"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"/>-->
 
     </LinearLayout>
 </LinearLayout>
