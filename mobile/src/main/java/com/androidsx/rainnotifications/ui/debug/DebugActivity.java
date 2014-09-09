@@ -55,6 +55,7 @@ import timber.log.Timber;
  */
 public class DebugActivity extends Activity {
 
+    /** Additional minutes that we add on top of the previous row, for the new one. */
     private static final int DEFAULT_MINUTES_NEW_ROW = 15;
     private static final int DEFAULT_SPINNER_POSITION = 0;
 
