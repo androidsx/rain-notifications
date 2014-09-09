@@ -183,7 +183,6 @@ public class DebugActivity extends Activity {
 
         final ImageView mascotImageView = (ImageView) findViewById(R.id.mascot_image_view);
         //mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), alert.getDressedMascot()));
-        mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.owlie_sunny_02));
         AnimationHelper.applyMascotAnimation(mascotImageView);
 
         //((TextView) findViewById(R.id.alert_level_text_view)).setText("Alert level: " + alert.getAlertLevel());

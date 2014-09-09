@@ -131,7 +131,6 @@ tools:context=".forecast_mobile" >
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:layout_gravity="center"
-            android:src="@drawable/owlie_sunny_01"
             android:layout_margin="@dimen/owl_margin"
             android:layout_alignParentRight="true"/>
 
