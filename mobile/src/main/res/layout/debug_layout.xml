@@ -8,7 +8,7 @@ tools:context=".forecast_mobile" >
 
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <!-- Old buttons -->
@@ -16,7 +16,7 @@ tools:context=".forecast_mobile" >
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
-        android:layout_weight="1"
+        android:layout_weight="0"
         android:visibility="gone"> <!-- Temporarily disabled. We may move this to a different debug activity -->
 
         <Button
@@ -41,7 +41,7 @@ tools:context=".forecast_mobile" >
     <!-- Current weather -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" >
 
         <TextView
             android:id="@+id/now_text_view"
@@ -73,7 +73,8 @@ tools:context=".forecast_mobile" >
     <ListView
         android:id="@+id/rows_weather_list"
         android:layout_width="match_parent"
-        android:layout_height="140dp" >
+        android:layout_height="0dp"
+        android:layout_weight="20" >
     </ListView>
 
     <LinearLayout
@@ -108,17 +109,17 @@ tools:context=".forecast_mobile" >
         android:id="@+id/card_wrapper"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight="50"
         android:orientation="vertical"
-        android:layout_marginTop="-20dp"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/mascot_image_view"
-            android:layout_width="160dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
-            android:layout_gravity="right"
+            android:layout_gravity="center"
+            android:src="@drawable/owlie_sunny_01"
             android:layout_margin="@dimen/owl_margin"
             android:layout_alignParentRight="true"/>
 
