@@ -54,9 +54,7 @@ import timber.log.Timber;
 public class DebugActivity extends Activity {
     private AlertGenerator alertGenerator;
 
-    private WeatherType weatherTypeNow;
-    private DateTime timeNow;
-    private DateTime timeLater;
+    private WeatherItemRow nowWeatherItemRow;
 
     private ListView transitionsListView;
     private List<WeatherItemRow> weatherTransitionsList;
@@ -68,13 +66,16 @@ public class DebugActivity extends Activity {
         setContentView(R.layout.debug_layout);
         alertGenerator = new AlertGenerator(getResources());
 
-        final Button now_time_button = (Button) findViewById(R.id.now_time_button);
+        final Button nowTimeButton = (Button) findViewById(R.id.now_time_button);
         final Spinner nowSpinner = (Spinner) findViewById(R.id.weather_now_spinner);
         transitionsListView = (ListView) findViewById(R.id.rows_weather_list);
+        nowWeatherItemRow = new WeatherItemRow(0, new DateTime().now());
 
-        configureNowTime(now_time_button);
-        configureNowWeatherSpinner(nowSpinner);
+        configureTimeButton(nowTimeButton, nowWeatherItemRow);
+        configureWeatherSpinner(nowSpinner, nowWeatherItemRow);
         configureWeatherTransitionsList(transitionsListView);
+
+        nowTimeButton.setText(timeToString(nowWeatherItemRow.getTime()));
     }
 
     public void addNewRow(View view) {
@@ -89,27 +90,26 @@ public class DebugActivity extends Activity {
         list.setAdapter(adapter);
     }
 
-    private void configureNowTime(final Button nowButton) {
-        timeNow = DateTime.now();
-        nowButton.setText(timeToString(timeNow));
-
+    private void configureTimeButton(final Button timeButton, final WeatherItemRow weatherItemRow) {
         final TimePickerDialog tpd = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
+                    DateTime changedTime;
                     @Override
                     public void onTimeSet(TimePicker view,
                                           int newHourOfDay,
                                           int newMinuteOfHour) {
-                        timeLater = new DateTime(
-                                timeNow.getYear(),
-                                timeNow.getMonthOfYear(),
-                                timeNow.getDayOfMonth(),
+                        changedTime = new DateTime(
+                                weatherItemRow.getTime().getYear(),
+                                weatherItemRow.getTime().getMonthOfYear(),
+                                weatherItemRow.getTime().getDayOfMonth(),
                                 newHourOfDay,
                                 newMinuteOfHour);
-                        nowButton.setText(timeToString(newHourOfDay, newMinuteOfHour));
+                        timeButton.setText(timeToString(newHourOfDay, newMinuteOfHour));
+                        weatherItemRow.setTime(changedTime);
                     }
-                }, timeNow.getHourOfDay(), timeNow.getMinuteOfHour(), false);
+                }, weatherItemRow.getTime().getHourOfDay(), weatherItemRow.getTime().getMinuteOfHour(), false);
 
-        nowButton.setOnClickListener(new View.OnClickListener() {
+        timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tpd.show();
@@ -117,53 +117,7 @@ public class DebugActivity extends Activity {
         });
     }
 
-    private void configureLaterTime(final Button laterButton, final WeatherItemRow weatherItemRow) {
-        final TimePickerDialog tpd = new TimePickerDialog(this,
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view,
-                                          int newHourOfDay,
-                                          int newMinuteOfHour) {
-                        timeLater = new DateTime(
-                                timeNow.getYear(),
-                                timeNow.getMonthOfYear(),
-                                timeNow.getDayOfMonth(),
-                                newHourOfDay,
-                                newMinuteOfHour);
-                        laterButton.setText(timeToString(newHourOfDay, newMinuteOfHour));
-                        weatherItemRow.setTime(timeLater);
-                    }
-                }, timeNow.getHourOfDay(), timeNow.getMinuteOfHour(), false);
-
-        laterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                tpd.show();
-            }
-        });
-    }
-
-    private void configureNowWeatherSpinner(Spinner nowSpinner) {
-        final List<String> weatherTypeNames = new ArrayList<String>();
-        for (WeatherType weatherType : WeatherType.values()) {
-            weatherTypeNames.add(weatherType.toString());
-        }
-
-        nowSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                weatherTypeNow = WeatherType.values()[position];
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
-
-        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.debug_spinner_row, weatherTypeNames);
-        nowSpinner.setAdapter(adapter);
-    }
-
-    private void configureLaterWeatherSpinner(Spinner laterSpinner, final WeatherItemRow weatherItemRow) {
+    private void configureWeatherSpinner(Spinner laterSpinner, final WeatherItemRow weatherItemRow) {
         final List<String> weatherTypeNames = new ArrayList<String>();
         for (WeatherType weatherType : WeatherType.values()) {
             weatherTypeNames.add(weatherType.toString());
@@ -251,6 +205,7 @@ public class DebugActivity extends Activity {
     }
 
     private class WeatherItemRow {
+
         private WeatherType weatherType;
         private int weatherTypeSpinnerPosition;
         private DateTime dateTime;
@@ -258,6 +213,7 @@ public class DebugActivity extends Activity {
         public WeatherItemRow(int weatherTypeSpinnerPosition, DateTime dateTime) {
             this.weatherTypeSpinnerPosition = weatherTypeSpinnerPosition;
             this.dateTime = dateTime;
+            this.weatherType = WeatherType.values()[weatherTypeSpinnerPosition];
         }
 
         public WeatherType getWeatherType() {
@@ -309,8 +265,8 @@ public class DebugActivity extends Activity {
 
             final WeatherItemRow item = getItem(position);
 
-            configureLaterTime(button, item);
-            configureLaterWeatherSpinner(spinner, item);
+            configureTimeButton(button, item);
+            configureWeatherSpinner(spinner, item);
             button.setText(timeToString(item.getTime()));
             spinner.setSelection(item.getWeatherTypeSpinnerPosition());
 
