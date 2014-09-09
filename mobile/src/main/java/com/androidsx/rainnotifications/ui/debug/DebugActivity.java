@@ -52,6 +52,10 @@ import timber.log.Timber;
  * from shared preferences
  */
 public class DebugActivity extends Activity {
+
+    private static final int DEFAULT_MINUTES_NEW_ROW = 15;
+    private static final int DEFAULT_SPINNER_POSITION = 0;
+
     private AlertGenerator alertGenerator;
 
     private WeatherItemRow nowWeatherItemRow;
@@ -79,7 +83,13 @@ public class DebugActivity extends Activity {
     }
 
     public void addNewRow(View view) {
-        weatherTransitionsList.add(new WeatherItemRow(0, new DateTime(System.currentTimeMillis())));
+        DateTime newTime;
+        if(weatherTransitionsList.isEmpty()) {
+            newTime = nowWeatherItemRow.getTime().plus(Minutes.minutes(DEFAULT_MINUTES_NEW_ROW));
+        } else {
+            newTime = weatherTransitionsList.get(weatherTransitionsList.size() - 1).getTime().plus(Minutes.minutes(DEFAULT_MINUTES_NEW_ROW));
+        }
+        weatherTransitionsList.add(new WeatherItemRow(DEFAULT_SPINNER_POSITION, newTime));
         WeatherListAdapter adapter = (WeatherListAdapter)transitionsListView.getAdapter();
         adapter.notifyDataSetChanged();
     }
@@ -258,7 +268,7 @@ public class DebugActivity extends Activity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.debug_item_list, parent, false);
+            View rowView = inflater.inflate(layoutResId, parent, false);
             Button delete = (Button) rowView.findViewById(R.id.delete_item_button);
             Button button = (Button) rowView.findViewById(R.id.later_time_button);
             Spinner spinner = (Spinner) rowView.findViewById(R.id.weather_later_spinner);
