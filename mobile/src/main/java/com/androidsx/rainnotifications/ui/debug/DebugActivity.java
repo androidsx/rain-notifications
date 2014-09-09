@@ -27,7 +27,6 @@ import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.ForecastTableBuilder;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
@@ -43,8 +42,6 @@ import org.joda.time.Minutes;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import timber.log.Timber;
