@@ -120,6 +120,14 @@ public class DebugActivity extends Activity {
                                 weatherItemRow.getTime().getDayOfMonth(),
                                 newHourOfDay,
                                 newMinuteOfHour);
+                        if(!weatherItemRow.equals(nowWeatherItemRow)) {
+                            if (changedTime.getDayOfMonth() - 1 == nowWeatherItemRow.getTime().getDayOfMonth()) {
+                                changedTime = changedTime.plusDays(-1);
+                            }
+                            if (changedTime.isBefore(nowWeatherItemRow.getTime())) {
+                                changedTime = changedTime.plusDays(1);
+                            }
+                        }
                         timeButton.setText(timeToString(newHourOfDay, newMinuteOfHour));
                         weatherItemRow.setTime(changedTime);
                     }
