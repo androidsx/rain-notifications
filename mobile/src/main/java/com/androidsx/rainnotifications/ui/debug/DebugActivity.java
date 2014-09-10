@@ -96,6 +96,8 @@ public class DebugActivity extends Activity {
         weatherTransitionsList.add(new WeatherItemRow(DEFAULT_SPINNER_POSITION, newTime));
         WeatherListAdapter adapter = (WeatherListAdapter)transitionsListView.getAdapter();
         adapter.notifyDataSetChanged();
+
+        closeCard(view);
     }
 
     private void configureWeatherTransitionsList(ListView list) {
@@ -206,8 +208,9 @@ public class DebugActivity extends Activity {
         }
         ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), mockForecasts);
 
-        findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
         cardMessageTextView.setText(forecastTable.toString());
+        findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
+        AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
     }
 
     public void startWeatherService(View view) {
