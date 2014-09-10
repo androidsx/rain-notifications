@@ -96,6 +96,8 @@ public class DebugActivity extends Activity {
         weatherTransitionsList.add(new WeatherItemRow(DEFAULT_SPINNER_POSITION, newTime));
         WeatherListAdapter adapter = (WeatherListAdapter)transitionsListView.getAdapter();
         adapter.notifyDataSetChanged();
+
+        closeCard(view);
     }
 
     private void configureWeatherTransitionsList(ListView list) {
