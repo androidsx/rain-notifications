@@ -53,7 +53,7 @@ import timber.log.Timber;
 public class DebugActivity extends Activity {
 
     /** Additional minutes that we add on top of the previous row, for the new one. */
-    private static final int DEFAULT_MINUTES_NEW_ROW = 15;
+    private static final int DEFAULT_MINUTES_NEW_ROW = 60;
     private static final int DEFAULT_SPINNER_POSITION = 0;
 
     private AlertGenerator alertGenerator;
@@ -70,12 +70,13 @@ public class DebugActivity extends Activity {
         setContentView(R.layout.debug_layout);
         alertGenerator = new AlertGenerator(getResources());
 
+        final TextView nowTimeText = (TextView) findViewById(R.id.now_text_view);
         final Button nowTimeButton = (Button) findViewById(R.id.now_time_button);
         final Spinner nowSpinner = (Spinner) findViewById(R.id.weather_now_spinner);
         transitionsListView = (ListView) findViewById(R.id.rows_weather_list);
         nowWeatherItemRow = new WeatherItemRow(0, new DateTime().now());
 
-        configureTimeButton(nowTimeButton, nowWeatherItemRow);
+        configureTimeButton(nowTimeButton, nowTimeText, nowWeatherItemRow);
         configureWeatherSpinner(nowSpinner, nowWeatherItemRow);
         configureWeatherTransitionsList(transitionsListView);
 
@@ -91,7 +92,7 @@ public class DebugActivity extends Activity {
         if(weatherTransitionsList.isEmpty()) {
             newTime = nowWeatherItemRow.getTime().plus(Minutes.minutes(DEFAULT_MINUTES_NEW_ROW));
         } else {
-            newTime = weatherTransitionsList.get(weatherTransitionsList.size() - 1).getTime().plus(Minutes.minutes(DEFAULT_MINUTES_NEW_ROW));
+            newTime = nowWeatherItemRow.getTime().plus(Minutes.minutes((weatherTransitionsList.size() + 1) * DEFAULT_MINUTES_NEW_ROW));
         }
         weatherTransitionsList.add(new WeatherItemRow(DEFAULT_SPINNER_POSITION, newTime));
         WeatherListAdapter adapter = (WeatherListAdapter)transitionsListView.getAdapter();
@@ -106,7 +107,7 @@ public class DebugActivity extends Activity {
         list.setAdapter(adapter);
     }
 
-    private void configureTimeButton(final Button timeButton, final WeatherItemRow weatherItemRow) {
+    private void configureTimeButton(final Button timeButton, final TextView laterText, final WeatherItemRow weatherItemRow) {
         final TimePickerDialog tpd = new TimePickerDialog(this,
                 new TimePickerDialog.OnTimeSetListener() {
                     DateTime changedTime;
@@ -123,9 +124,11 @@ public class DebugActivity extends Activity {
                         if(!weatherItemRow.equals(nowWeatherItemRow)) {
                             if (changedTime.getDayOfMonth() - 1 == nowWeatherItemRow.getTime().getDayOfMonth()) {
                                 changedTime = changedTime.plusDays(-1);
+                                laterText.setText("Later, at");
                             }
                             if (changedTime.isBefore(nowWeatherItemRow.getTime())) {
                                 changedTime = changedTime.plusDays(1);
+                                laterText.setText("Tomorrow, at");
                             }
                         }
                         timeButton.setText(timeToString(newHourOfDay, newMinuteOfHour));
@@ -205,20 +208,29 @@ public class DebugActivity extends Activity {
     }
 
     public void generateMessageOfTheDay(View v) {
-        final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
-        findViewById(R.id.mascot_image_view).setVisibility(View.GONE);
-        findViewById(R.id.alert_level_text_view).setVisibility(View.GONE);
-        findViewById(R.id.next_alarm_text_view).setVisibility(View.GONE);
-
-        List<Forecast> mockForecasts = new ArrayList<Forecast>();
-        for(WeatherItemRow w : weatherTransitionsList) {
-            mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
+        if (weatherTransitionsList.isEmpty()) {
+            Toast.makeText(this, "Add a row to simulate some weather transition", Toast.LENGTH_LONG).show();
+            closeCard(v);
+        } else {
+            final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
+            findViewById(R.id.mascot_image_view).setVisibility(View.GONE);
+            findViewById(R.id.alert_level_text_view).setVisibility(View.GONE);
+            findViewById(R.id.next_alarm_text_view).setVisibility(View.GONE);
+            List<Forecast> mockForecasts = new ArrayList<Forecast>();
+            WeatherItemRow lastMockTransition = weatherTransitionsList.get(0);
+            for (WeatherItemRow w : weatherTransitionsList) {
+                if (lastMockTransition.getTime().isBefore(w.getTime())) {
+                    mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
+                    lastMockTransition = w;
+                } else if (lastMockTransition.getTime().equals(w.getTime())) {
+                    mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
+                }
+            }
+            ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), mockForecasts);
+            cardMessageTextView.setText(forecastTable.toString());
+            findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
+            AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
         }
-        ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), mockForecasts);
-
-        cardMessageTextView.setText(forecastTable.toString());
-        findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
-        AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
     }
 
     public void startWeatherService(View view) {
@@ -316,17 +328,22 @@ public class DebugActivity extends Activity {
             LayoutInflater inflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View rowView = inflater.inflate(layoutResId, parent, false);
+            TextView text = (TextView) rowView.findViewById(R.id.later_text_view);
             Button delete = (Button) rowView.findViewById(R.id.delete_item_button);
             Button button = (Button) rowView.findViewById(R.id.later_time_button);
             Spinner spinner = (Spinner) rowView.findViewById(R.id.weather_later_spinner);
 
             final WeatherItemRow item = getItem(position);
 
-            configureTimeButton(button, item);
+            configureTimeButton(button, text, item);
             configureWeatherSpinner(spinner, item);
             button.setText(timeToString(item.getTime()));
             spinner.setSelection(item.getWeatherTypeSpinnerPosition());
-
+            if (nowWeatherItemRow.getTime().getDayOfMonth() + 1 == item.getTime().getDayOfMonth()) {
+                text.setText("Tomorrow, at");
+            } else {
+                text.setText("Later, at");
+            }
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
