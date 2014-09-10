@@ -92,7 +92,7 @@ public class DebugActivity extends Activity {
         if(weatherTransitionsList.isEmpty()) {
             newTime = nowWeatherItemRow.getTime().plus(Minutes.minutes(DEFAULT_MINUTES_NEW_ROW));
         } else {
-            newTime = nowWeatherItemRow.getTime().plus(Minutes.minutes((weatherTransitionsList.size() + 1) * DEFAULT_MINUTES_NEW_ROW));
+            newTime = weatherTransitionsList.get(weatherTransitionsList.size() -1 ).getTime().plus(Minutes.minutes((DEFAULT_MINUTES_NEW_ROW)));
         }
         weatherTransitionsList.add(new WeatherItemRow(DEFAULT_SPINNER_POSITION, newTime));
         WeatherListAdapter adapter = (WeatherListAdapter)transitionsListView.getAdapter();
