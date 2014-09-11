@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class WundergroundTableBuilder {
 
-    public static ForecastTable buildFromForecastIo(JSONObject response) throws JSONException {
+    public static ForecastTable buildFromWunderground(JSONObject response) throws JSONException {
         if (response.has("current_observation") && response.has("hourly_forecast")) {
             final JSONObject currently = (JSONObject) response.get("current_observation");
             final JSONArray hourly = (JSONArray) response.get("hourly_forecast");
