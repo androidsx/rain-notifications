@@ -26,7 +26,7 @@ public final class WundergroundNetworkServiceTask implements WeatherClientExecut
     private static final String[] FEATURES = {
             "conditions", // Current time, http://www.wunderground.com/weather/api/d/docs?d=data/conditions
             "hourly", // Hourly forecast, http://www.wunderground.com/weather/api/d/docs?d=data/hourly
-            "astronomy"}; // Sunrise/Sunset, http://www.wunderground.com/weather/api/d/docs?d=data/astronomy
+            "astronomy"}; // Sunrise/Sunset time, http://www.wunderground.com/weather/api/d/docs?d=data/astronomy
 
     @Override
     public void execute(Context context, double latitude, double longitude, final WeatherClientResponseListener responseListener) {
