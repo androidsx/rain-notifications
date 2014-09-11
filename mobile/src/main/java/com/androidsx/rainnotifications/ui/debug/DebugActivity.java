@@ -121,15 +121,10 @@ public class DebugActivity extends Activity {
                                 weatherItemRow.getTime().getDayOfMonth(),
                                 newHourOfDay,
                                 newMinuteOfHour);
-                        if(!weatherItemRow.equals(nowWeatherItemRow)) {
-                            if (changedTime.getDayOfMonth() - 1 == nowWeatherItemRow.getTime().getDayOfMonth()) {
-                                changedTime = changedTime.plusDays(-1);
-                                laterText.setText("Later, at");
-                            }
-                            if (changedTime.isBefore(nowWeatherItemRow.getTime())) {
-                                changedTime = changedTime.plusDays(1);
-                                laterText.setText("Tomorrow, at");
-                            }
+                        if (!weatherItemRow.equals(nowWeatherItemRow)) {
+                            changedTime = fixCorrectDay(changedTime, laterText);
+                        } else {
+                            //Nothing because is nowWeatherItemRow and always marks today's hours
                         }
                         timeButton.setText(timeToString(newHourOfDay, newMinuteOfHour));
                         weatherItemRow.setTime(changedTime);
@@ -142,6 +137,24 @@ public class DebugActivity extends Activity {
                 tpd.show();
             }
         });
+    }
+
+    private DateTime fixCorrectDay(DateTime changedTime, TextView laterText) {
+        changedTime = changedTime.minusDays(1);
+        if (changedTime.getDayOfMonth() == nowWeatherItemRow.getTime().getDayOfMonth()) {
+            //Nothing because changedTime was tomorrow and now is today
+        } else {
+            changedTime = changedTime.plusDays(1);
+            //Revert changedTime to today because it was today
+        }
+        if (changedTime.isBefore(nowWeatherItemRow.getTime())) {
+            changedTime = changedTime.plusDays(1);
+            laterText.setText("Tomorrow, at");
+        } else {
+            laterText.setText("Later, at");
+            //Don't change changedTime because is today after time now
+        }
+        return changedTime;
     }
 
     private void configureWeatherSpinner(Spinner laterSpinner, final WeatherItemRow weatherItemRow) {
@@ -216,21 +229,31 @@ public class DebugActivity extends Activity {
             findViewById(R.id.mascot_image_view).setVisibility(View.GONE);
             findViewById(R.id.alert_level_text_view).setVisibility(View.GONE);
             findViewById(R.id.next_alarm_text_view).setVisibility(View.GONE);
-            List<Forecast> mockForecasts = new ArrayList<Forecast>();
-            WeatherItemRow lastMockTransition = weatherTransitionsList.get(0);
-            for (WeatherItemRow w : weatherTransitionsList) {
-                if (lastMockTransition.getTime().isBefore(w.getTime())) {
-                    mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
-                    lastMockTransition = w;
-                } else if (lastMockTransition.getTime().equals(w.getTime())) {
-                    mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
-                }
-            }
-            ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), mockForecasts);
+
+            ForecastTable forecastTable = ForecastTable.create(
+                    new Weather(nowWeatherItemRow.getWeatherType()),
+                    nowWeatherItemRow.getTime(),
+                    removeWrongForecasts(weatherTransitionsList));
+
             cardMessageTextView.setText(forecastTable.toString());
             findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
             AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
         }
+    }
+
+    private List<Forecast> removeWrongForecasts(List<WeatherItemRow> weatherTransitionsList) {
+        List<Forecast> mockForecasts = new ArrayList<Forecast>();
+        WeatherItemRow lastMockTransition = weatherTransitionsList.get(0);
+        mockForecasts.add(new Forecast(new Weather(lastMockTransition.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), lastMockTransition.getTime()), Forecast.Granularity.MINUTE));
+        for (WeatherItemRow w : weatherTransitionsList) {
+            if (lastMockTransition.getTime().isBefore(w.getTime())) {
+                mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
+                lastMockTransition = w;
+            } else {
+                //Skip
+            }
+        }
+        return mockForecasts;
     }
 
     public void startWeatherService(View view) {
@@ -339,10 +362,10 @@ public class DebugActivity extends Activity {
             configureWeatherSpinner(spinner, item);
             button.setText(timeToString(item.getTime()));
             spinner.setSelection(item.getWeatherTypeSpinnerPosition());
-            if (nowWeatherItemRow.getTime().getDayOfMonth() + 1 == item.getTime().getDayOfMonth()) {
-                text.setText("Tomorrow, at");
-            } else {
+            if (nowWeatherItemRow.getTime().getDayOfMonth() == item.getTime().getDayOfMonth()) {
                 text.setText("Later, at");
+            } else {
+                text.setText("Tomorrow, at");
             }
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
