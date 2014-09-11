@@ -35,6 +35,10 @@
         <item>@drawable/owlie_partlycloudy_night_01</item>
     </string-array>
 
+    <string-array name="rainy_night">
+        <item>@drawable/owlie_rainy_night_01</item>
+    </string-array>
+
     <string-array name="default_weather">
         <item>@drawable/owlie_default</item>
     </string-array>
