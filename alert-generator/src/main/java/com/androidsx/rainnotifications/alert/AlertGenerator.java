@@ -51,35 +51,19 @@ public class AlertGenerator {
      * @return an alert for the provided weather transition
      * @see #generateAlertLevel
      * @see #generateAlertMessage
-     * @see #generateMascot
      */
     public Alert generateAlert(Weather currentWeather, Forecast forecast) {
         if (forecast == null) {
             return new Alert(AlertLevel.NEVER_MIND,
                     generateAlertMessage(currentWeather, null),
-                    generateMascot(currentWeather));
+                    ResourcesHelper.generateMascot(currentWeather, resources, random));
         } else {
             return new Alert(
                     generateAlertLevel(currentWeather, forecast.getForecastedWeather()),
                     generateAlertMessage(currentWeather, forecast),
-                    generateMascot(forecast.getForecastedWeather())
+                    ResourcesHelper.generateMascot(forecast.getForecastedWeather(), resources, random)
             );
         }
-    }
-
-    public int generateMascot(Weather weather) {
-        final Map<WeatherType, Integer> owlieVariations = new HashMap<WeatherType, Integer>() {
-            {
-                put(WeatherType.RAIN, R.array.rainy);
-                put(WeatherType.SUNNY, R.array.sunny);
-                put(WeatherType.UNKNOWN, R.array.default_weather);
-            }
-        };
-
-        final int mascotArray = owlieVariations.get(weather.getType());
-        final TypedArray mascotTypedArray = resources.obtainTypedArray(mascotArray);
-        final int mascotIndex = random.nextInt(mascotTypedArray.length());
-        return mascotTypedArray.getResourceId(mascotIndex, -1);
     }
 
     /**

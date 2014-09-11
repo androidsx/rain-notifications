@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sunny_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="rainy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="cloudy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="partly_cloudy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="sunny_to_rainy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="sunny_to_cloudy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="sunny_to_partly_cloudy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="rainy_to_sunny_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="rainy_to_cloudy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="rainy_to_partly_cloudy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="cloudy_to_sunny_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="cloudy_to_rainy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="cloudy_to_partly_cloudy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="partly_cloudy_to_sunny_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="partly_cloudy_to_cloudy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+
+    <string-array name="partly_cloudy_to_rainy_day">
+        <!-- FIXME: Write funny phrases -->
+        <item>It\'s gonna stay sunny for a while, enjoy!</item>
+    </string-array>
+</resources>
