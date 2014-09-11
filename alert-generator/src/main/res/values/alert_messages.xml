@@ -16,6 +16,7 @@
         <item>Looks like it\'s gonna be cloudy for the rest of the day</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="stays_partlycloudy">
         <item>No luck, it\'ll keep partly cloudy for a while</item>
         <item>Looks like it\'s gonna be partly cloudy for the rest of the day</item>
@@ -27,10 +28,12 @@
         <item>Take your umbrella, it looks like it\'s gonna rain in %s</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="sun_to_cloudy">
         <item>Sun to cloudy</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="sun_to_partlycloudy">
         <item>Sun to partly cloudy</item>
     </string-array>
@@ -41,34 +44,42 @@
         <item>Get ready to drop your umbrella in over %s</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="rain_to_cloudy">
         <item>Rain to cloudy</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="rain_to_partlycloudy">
         <item>Rain to partly cloudy</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="partlycloudy_to_sun">
         <item>Partly cloudy to sun</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="partlycloudy_to_rain">
         <item>Partly cloudy to rain</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="partlycloudy_to_cloudy">
         <item>Partly cloudy to cloudy</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="cloudy_to_sun">
         <item>Cloudy to sun</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="cloudy_to_rain">
         <item>Cloudy to rain</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="cloudy_to_partlycloudy">
         <item>Cloudy to partly cloudy</item>
     </string-array>
@@ -84,10 +95,12 @@
         <item>Looks promising! Sun will shine again in %s</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="unknown_to_cloudy">
         <item>Unknown to cloudy</item>
     </string-array>
 
+    <!-- FIXME: write funny phrases -->
     <string-array name="unknown_to_partlycloudy">
         <item>Unknown to partly cloudy</item>
     </string-array>
