@@ -7,7 +7,6 @@ package com.androidsx.rainnotifications.model;
  * </p>
  */
 public enum WeatherType {
-    SUNNY,
     CLEAR,
     RAIN,
     CLOUDY,

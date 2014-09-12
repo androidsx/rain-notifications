@@ -6,7 +6,7 @@ import java.util.Map;
 import static com.androidsx.rainnotifications.model.WeatherType.CLOUDY;
 import static com.androidsx.rainnotifications.model.WeatherType.PARTLY_CLOUDY;
 import static com.androidsx.rainnotifications.model.WeatherType.RAIN;
-import static com.androidsx.rainnotifications.model.WeatherType.SUNNY;
+import static com.androidsx.rainnotifications.model.WeatherType.CLEAR;
 import static com.androidsx.rainnotifications.model.WeatherType.UNKNOWN;
 
 /**
@@ -17,9 +17,9 @@ import static com.androidsx.rainnotifications.model.WeatherType.UNKNOWN;
  */
 public class WundergroundWeatherTypeBuilder {
     final static private Map<String, WeatherType> ICON_TO_WEATHER_TYPE = new HashMap<String, WeatherType>() {{
-        put("clear", SUNNY);
-        put("sunny", SUNNY);
-        put("mostlysunny", SUNNY);
+        put("clear", CLEAR);
+        put("sunny", CLEAR);
+        put("mostlysunny", CLEAR);
         put("rain", RAIN);
         put("cloudy", CLOUDY);
         put("mostlycloudy", CLOUDY);

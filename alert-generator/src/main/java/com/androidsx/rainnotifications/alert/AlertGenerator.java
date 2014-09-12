@@ -69,7 +69,6 @@ public class AlertGenerator {
         final Map<WeatherType, Integer> owlieVariations = new HashMap<WeatherType, Integer>() {
             {
                 put(WeatherType.RAIN, R.array.rainy);
-                put(WeatherType.SUNNY, R.array.sunny);
                 put(WeatherType.CLEAR, R.array.sunny);
                 put(WeatherType.CLOUDY, R.array.cloudy);
                 put(WeatherType.PARTLY_CLOUDY, R.array.partlycloudy);
@@ -114,7 +113,7 @@ public class AlertGenerator {
      */
     private AlertMessage generateAlertMessage(Weather currentWeather, Forecast forecast) {
         if (forecast == null || forecast.getForecastedWeather().equals(currentWeather)) {
-            if (currentWeather.getType().equals(WeatherType.SUNNY)) {
+            if (currentWeather.getType().equals(WeatherType.CLEAR)) {
                 return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_sunny));
             } else if (currentWeather.getType().equals(WeatherType.RAIN)) {
                 return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_rainy));
@@ -125,17 +124,17 @@ public class AlertGenerator {
         } else {
             final Period periodFromNow = forecast.getTimeFromNow().toPeriod();
 
-            if (currentWeather.getType().equals(WeatherType.SUNNY)
+            if (currentWeather.getType().equals(WeatherType.CLEAR)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
                 return new AlertMessage(resourceToToRandomAlertMessage(R.array.sun_to_rain, periodFromNow));
             } else if (currentWeather.getType().equals(WeatherType.RAIN)
-                    && forecast.getForecastedWeather().getType().equals(WeatherType.SUNNY)) {
+                    && forecast.getForecastedWeather().getType().equals(WeatherType.CLEAR)) {
                 return new AlertMessage(resourceToToRandomAlertMessage(R.array.rain_to_sun, periodFromNow));
             } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
                 return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_rain, periodFromNow));
             } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
-                    && forecast.getForecastedWeather().getType().equals(WeatherType.SUNNY)) {
+                    && forecast.getForecastedWeather().getType().equals(WeatherType.CLEAR)) {
                 return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_sun, periodFromNow));
             } else {
                 return new AlertMessage("(Fallback) It's gonna be " + forecast.getForecastedWeather()

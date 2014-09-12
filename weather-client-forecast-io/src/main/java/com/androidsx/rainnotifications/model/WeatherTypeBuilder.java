@@ -13,8 +13,8 @@ import static com.androidsx.rainnotifications.model.WeatherType.*;
  */
 public class WeatherTypeBuilder {
     final static private Map<String, WeatherType> ICON_TO_WEATHER_TYPE = new HashMap<String, WeatherType>() {{
-        put("clear-day", SUNNY);
-        put("clear-night", SUNNY);
+        put("clear-day", CLEAR);
+        put("clear-night", CLEAR);
         put("rain", RAIN);
         put("cloudy", CLOUDY);
         put("partly-cloudy-day", PARTLY_CLOUDY);
