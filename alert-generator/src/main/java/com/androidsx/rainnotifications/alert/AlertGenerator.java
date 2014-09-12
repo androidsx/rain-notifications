@@ -70,6 +70,7 @@ public class AlertGenerator {
             {
                 put(WeatherType.RAIN, R.array.rainy);
                 put(WeatherType.SUNNY, R.array.sunny);
+                put(WeatherType.CLEAR, R.array.sunny);
                 put(WeatherType.CLOUDY, R.array.cloudy);
                 put(WeatherType.PARTLY_CLOUDY, R.array.partlycloudy);
                 put(WeatherType.UNKNOWN, R.array.default_weather);
