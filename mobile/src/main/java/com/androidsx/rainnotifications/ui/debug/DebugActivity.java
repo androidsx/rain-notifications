@@ -206,7 +206,9 @@ public class DebugActivity extends Activity {
         for(WeatherItemRow w : weatherTransitionsList) {
             mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
         }
-        ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), mockForecasts);
+        DateTime sunriseTime = getSunMockPhaseTime(7, 45);
+        DateTime sunsetTime = getSunMockPhaseTime(20, 30);
+        ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), nowWeatherItemRow.getTime(), sunriseTime, sunsetTime, mockForecasts);
 
         cardMessageTextView.setText(forecastTable.toString());
         findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
@@ -328,5 +330,12 @@ public class DebugActivity extends Activity {
 
             return rowView;
         }
+    }
+
+    private DateTime getSunMockPhaseTime(int hour, int minute) {
+        DateTime sunPhaseTime = DateTime.now();
+        sunPhaseTime = sunPhaseTime.hourOfDay().setCopy(hour);
+        sunPhaseTime = sunPhaseTime.minuteOfHour().setCopy(minute);
+        return sunPhaseTime;
     }
 }
