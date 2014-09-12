@@ -8,7 +8,10 @@ package com.androidsx.rainnotifications.model;
  */
 public enum WeatherType {
     SUNNY,
+    CLEAR,
     RAIN,
+    CLOUDY,
+    PARTLY_CLOUDY,
 
     /**
      * This is a weather type that is unknown for us, but it could be a valid one in the data

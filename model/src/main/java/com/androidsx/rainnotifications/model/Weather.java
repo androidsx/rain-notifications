@@ -7,6 +7,7 @@ package com.androidsx.rainnotifications.model;
  */
 public class Weather {
     private final WeatherType type;
+    private WeatherPhase phase = WeatherPhase.DAY; // By default
 
     public Weather(WeatherType type) {
         this.type = type;
@@ -14,6 +15,14 @@ public class Weather {
 
     public WeatherType getType() {
         return type;
+    }
+
+    public WeatherPhase getPhase() {
+        return phase;
+    }
+
+    public void setPhase(WeatherPhase phase) {
+        this.phase = phase;
     }
 
     public boolean isUnknownWeather() {
