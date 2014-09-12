@@ -12,6 +12,33 @@
         <item>@drawable/owlie_rainy_03</item>
     </string-array>
 
+    <string-array name="cloudy">
+        <item>@drawable/owlie_cloudy_01</item>
+        <item>@drawable/owlie_cloudy_02</item>
+        <item>@drawable/owlie_cloudy_03</item>
+    </string-array>
+
+    <string-array name="partlycloudy">
+        <item>@drawable/owlie_partlycloudy_01</item>
+    </string-array>
+
+    <string-array name="clear_night">
+        <item>@drawable/owlie_clear_night_01</item>
+        <item>@drawable/owlie_clear_night_02</item>
+    </string-array>
+
+    <string-array name="cloudy_night">
+        <item>@drawable/owlie_cloudy_night_01</item>
+    </string-array>
+
+    <string-array name="partlycloudy_night">
+        <item>@drawable/owlie_partlycloudy_night_01</item>
+    </string-array>
+
+    <string-array name="rainy_night">
+        <item>@drawable/owlie_rainy_night_01</item>
+    </string-array>
+
     <string-array name="default_weather">
         <item>@drawable/owlie_default</item>
     </string-array>
