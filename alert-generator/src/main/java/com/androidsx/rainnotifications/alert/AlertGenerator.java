@@ -3,6 +3,7 @@ package com.androidsx.rainnotifications.alert;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 
+import com.androidsx.rainnotifications.alert.util.ResourcesHelper;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.AlertMessage;
@@ -31,6 +32,7 @@ import java.util.Random;
  * independently or what alert level they have.
  */
 public class AlertGenerator {
+
     private final Random random = new Random();
     private final Resources resources;
 
@@ -49,35 +51,19 @@ public class AlertGenerator {
      * @return an alert for the provided weather transition
      * @see #generateAlertLevel
      * @see #generateAlertMessage
-     * @see #generateMascot
      */
     public Alert generateAlert(Weather currentWeather, Forecast forecast) {
         if (forecast == null) {
             return new Alert(AlertLevel.NEVER_MIND,
                     generateAlertMessage(currentWeather, null),
-                    generateMascot(currentWeather));
+                    ResourcesHelper.generateMascot(currentWeather, resources, random));
         } else {
             return new Alert(
                     generateAlertLevel(currentWeather, forecast.getForecastedWeather()),
                     generateAlertMessage(currentWeather, forecast),
-                    generateMascot(forecast.getForecastedWeather())
+                    ResourcesHelper.generateMascot(forecast.getForecastedWeather(), resources, random)
             );
         }
-    }
-
-    public int generateMascot(Weather weather) {
-        final Map<WeatherType, Integer> owlieVariations = new HashMap<WeatherType, Integer>() {
-            {
-                put(WeatherType.RAIN, R.array.rainy);
-                put(WeatherType.SUNNY, R.array.sunny);
-                put(WeatherType.UNKNOWN, R.array.default_weather);
-            }
-        };
-
-        final int mascotArray = owlieVariations.get(weather.getType());
-        final TypedArray mascotTypedArray = resources.obtainTypedArray(mascotArray);
-        final int mascotIndex = random.nextInt(mascotTypedArray.length());
-        return mascotTypedArray.getResourceId(mascotIndex, -1);
     }
 
     /**
@@ -112,9 +98,9 @@ public class AlertGenerator {
     private AlertMessage generateAlertMessage(Weather currentWeather, Forecast forecast) {
         if (forecast == null || forecast.getForecastedWeather().equals(currentWeather)) {
             if (currentWeather.getType().equals(WeatherType.SUNNY)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_sunny));
+                return new AlertMessage(ResourcesHelper.resourceToToRandomAlertMessage(resources, R.array.stays_sunny, random));
             } else if (currentWeather.getType().equals(WeatherType.RAIN)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_rainy));
+                return new AlertMessage(ResourcesHelper.resourceToToRandomAlertMessage(resources, R.array.stays_rainy, random));
             } else {
                 return new AlertMessage("(Fallback) No changes expected for a while." //TODO: message that refers to no forecast expected in a few hours
                         + " At the moment, it is " + currentWeather);
@@ -124,16 +110,16 @@ public class AlertGenerator {
 
             if (currentWeather.getType().equals(WeatherType.SUNNY)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.sun_to_rain, periodFromNow));
+                return new AlertMessage(ResourcesHelper.resourceToToRandomAlertMessage(resources, R.array.sun_to_rain, random, periodFromNow));
             } else if (currentWeather.getType().equals(WeatherType.RAIN)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.SUNNY)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.rain_to_sun, periodFromNow));
+                return new AlertMessage(ResourcesHelper.resourceToToRandomAlertMessage(resources, R.array.rain_to_sun, random, periodFromNow));
             } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_rain, periodFromNow));
+                return new AlertMessage(ResourcesHelper.resourceToToRandomAlertMessage(resources, R.array.unknown_to_rain, random, periodFromNow));
             } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
                     && forecast.getForecastedWeather().getType().equals(WeatherType.SUNNY)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_sun, periodFromNow));
+                return new AlertMessage(ResourcesHelper.resourceToToRandomAlertMessage(resources, R.array.unknown_to_sun, random, periodFromNow));
             } else {
                 return new AlertMessage("(Fallback) It's gonna be " + forecast.getForecastedWeather()
                         + " in " + UiUtil.getDebugOnlyPeriodFormatter().print(periodFromNow) + " from now"
@@ -141,35 +127,5 @@ public class AlertGenerator {
                         + " At the moment, it is " + currentWeather);
             }
         }
-    }
-
-    private String resourceToToRandomAlertMessage(int arrayResource) {
-        return pickRandom(Arrays.asList(resources.getStringArray(arrayResource)), random);
-    }
-
-    private String resourceToToRandomAlertMessage(int arrayResource, Period periodFromNow) {
-        final Locale locale = Locale.getDefault(); // TODO: use the real one
-        return String.format(resourceToToRandomAlertMessage(arrayResource), periodToString(
-                periodFromNow,
-                resources.getString(R.string.unit_hours),
-                resources.getString(R.string.unit_minutes),
-                locale));
-    }
-
-    /** Visibility raised from private for testing purposes. */
-    String periodToString(Period period, String hours, String minutes, Locale locale) {
-        final PeriodFormatter durationFormatter = new PeriodFormatterBuilder()
-                .appendHours()
-                .appendSeparatorIfFieldsBefore(" " + hours + " and ")
-                .appendMinutes()
-                .appendSeparatorIfFieldsBefore(" " + minutes)
-                .toFormatter()
-                .withLocale(locale);
-
-        return durationFormatter.print(period);
-    }
-
-    private static <T> T pickRandom(List<T> list, Random random) {
-        return new ArrayList<T>(list).get(random.nextInt(list.size()));
     }
 }
