@@ -8,11 +8,15 @@ import java.util.List;
 public class ForecastTable {
     private final Weather baselineWeather;
     private final DateTime baselineTime;
+    private final DateTime sunriseTime;
+    private final DateTime sunsetTime;
     private final List<Forecast> forecasts;
 
-    private ForecastTable(Weather baselineWeather, DateTime baselineTime, List<Forecast> forecasts) {
+    private ForecastTable(Weather baselineWeather, DateTime baselineTime, DateTime sunriseTime, DateTime sunsetTime, List<Forecast> forecasts) {
         this.baselineWeather = baselineWeather;
         this.baselineTime = baselineTime;
+        this.sunriseTime = sunriseTime;
+        this.sunsetTime = sunsetTime;
         this.forecasts = forecasts;
     }
 
@@ -26,6 +30,14 @@ public class ForecastTable {
         return baselineWeather;
     }
 
+    public DateTime getSunriseTime() {
+        return sunriseTime;
+    }
+
+    public DateTime getSunsetTime() {
+        return sunsetTime;
+    }
+
     /**
      * Returns a filtered list of forecasts to show only the weather transitions. For instance, 5
      * hours of sun followed by 2 hours of rain would just return 2 forecasts.
@@ -36,7 +48,7 @@ public class ForecastTable {
         return forecasts;
     }
 
-    public static ForecastTable create(Weather currentWeather, DateTime baselineTime, List<Forecast> allForecasts) {
+    public static ForecastTable create(Weather currentWeather, DateTime baselineTime, DateTime sunriseTime, DateTime sunsetTime, List<Forecast> allForecasts) {
         final List<Forecast> transitions = new ArrayList<Forecast>();
 
         Weather latestWeather = currentWeather;
@@ -51,7 +63,7 @@ public class ForecastTable {
                 }
             }
         }
-        return new ForecastTable(currentWeather, baselineTime, transitions);
+        return new ForecastTable(currentWeather, baselineTime, sunriseTime, sunsetTime, transitions);
     }
 
     @Override
