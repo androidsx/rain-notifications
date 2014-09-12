@@ -69,7 +69,13 @@ public class AlertGenerator {
         final Map<WeatherType, Integer> owlieVariations = new HashMap<WeatherType, Integer>() {
             {
                 put(WeatherType.RAIN, R.array.rainy);
+                put(WeatherType.RAIN_NIGHT, R.array.rainy_night);
                 put(WeatherType.SUNNY, R.array.sunny);
+                put(WeatherType.CLEAR_NIGHT, R.array.clear_night);
+                put(WeatherType.CLOUDY, R.array.cloudy);
+                put(WeatherType.CLOUDY_NIGHT, R.array.cloudy_night);
+                put(WeatherType.PARTLY_CLOUDY, R.array.partlycloudy);
+                put(WeatherType.PARTLY_CLOUDY_NIGHT, R.array.partlycloudy_night);
                 put(WeatherType.UNKNOWN, R.array.default_weather);
             }
         };
