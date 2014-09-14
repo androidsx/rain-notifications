@@ -118,21 +118,43 @@ public class ForecastService {
 		
 		private DataPoint getDataPoint( JSONObject data ) {
 			if ( data != null ) {
-				return DataPoint.newPointBuilder()
-					.setTime( data.optLong( "time" ) )
-					.setSummary( data.optString( "summary" ) )
-					.setIcon( data.optString( "icon" ) )
-					.setPrecipIntensity( data.optDouble( "precipIntensity" ) )
-					.setTemperature( data.optDouble( "temperature" ) )
-					.setWindSpeed( data.optDouble( "windSpeed" ) )
-					.setWindBearing( data.optDouble( "windBearing" ) )
-					.setCloudCover( data.optDouble( "cloudCover" ) )
-					.setHumidity( data.optDouble( "humidity" ) )
-					.setPressure( data.optDouble( "pressure" ) )
-					.setPrecipIntensityError( data.optDouble( "precipIntensityError" ) )
-					.setWindSpeedError( data.optDouble( "windSpeedError" ) )
-					.setPressureError( data.optDouble( "pressureError" ) )
-					.setVisibility( data.optDouble( "visibility" ) ).build();
+                if (data.has( "sunriseTime" ) && data.has( "sunsetTime" )) {
+                    return DataPoint.newPointBuilder()
+                            .setTime(data.optLong("time"))
+                            .setSummary(data.optString("summary"))
+                            .setIcon(data.optString("icon"))
+                            /* (Added by Androidsx.) */
+                            .setSunriseTime(data.optLong("sunriseTime"))
+                            .setSunsetTime(data.optLong("sunsetTime"))
+                            /* --------------------- */
+                            .setPrecipIntensity(data.optDouble("precipIntensity"))
+                            .setTemperature(data.optDouble("temperature"))
+                            .setWindSpeed(data.optDouble("windSpeed"))
+                            .setWindBearing(data.optDouble("windBearing"))
+                            .setCloudCover(data.optDouble("cloudCover"))
+                            .setHumidity(data.optDouble("humidity"))
+                            .setPressure(data.optDouble("pressure"))
+                            .setPrecipIntensityError(data.optDouble("precipIntensityError"))
+                            .setWindSpeedError(data.optDouble("windSpeedError"))
+                            .setPressureError(data.optDouble("pressureError"))
+                            .setVisibility(data.optDouble("visibility")).build();
+                } else {
+                    return DataPoint.newPointBuilder()
+                            .setTime(data.optLong("time"))
+                            .setSummary(data.optString("summary"))
+                            .setIcon(data.optString("icon"))
+                            .setPrecipIntensity(data.optDouble("precipIntensity"))
+                            .setTemperature(data.optDouble("temperature"))
+                            .setWindSpeed(data.optDouble("windSpeed"))
+                            .setWindBearing(data.optDouble("windBearing"))
+                            .setCloudCover(data.optDouble("cloudCover"))
+                            .setHumidity(data.optDouble("humidity"))
+                            .setPressure(data.optDouble("pressure"))
+                            .setPrecipIntensityError(data.optDouble("precipIntensityError"))
+                            .setWindSpeedError(data.optDouble("windSpeedError"))
+                            .setPressureError(data.optDouble("pressureError"))
+                            .setVisibility(data.optDouble("visibility")).build();
+                }
 			}
 			
 			return null;

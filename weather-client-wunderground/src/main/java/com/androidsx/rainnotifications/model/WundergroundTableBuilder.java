@@ -18,17 +18,22 @@ import java.util.List;
  */
 public class WundergroundTableBuilder {
 
-    public static ForecastTable buildFromForecastIo(JSONObject response) throws JSONException {
-        if (response.has("current_observation") && response.has("hourly_forecast")) {
+    public static ForecastTable buildFromWunderground(JSONObject response) throws JSONException {
+        if (response.has("current_observation") && response.has("hourly_forecast") && response.has("sun_phase")) {
             final JSONObject currently = (JSONObject) response.get("current_observation");
             final JSONArray hourly = (JSONArray) response.get("hourly_forecast");
+            final JSONObject sunPhase = (JSONObject) response.get("sun_phase");
+
             final DateTime currentTime = new DateTime(Long.parseLong(currently.get("local_epoch").toString()) * 1000);
+            final DateTime sunriseTime = getSunPhaseTime(sunPhase, "sunrise");
+            final DateTime sunsetTime = getSunPhaseTime(sunPhase, "sunset");
+            
             final List<Forecast> allForecasts = new ArrayList<Forecast>();
             allForecasts.addAll(extractAllValidForecast(currentTime, hourly, Forecast.Granularity.HOUR));
 
-            final Weather currentWeather = WundergroundWeatherBuilder.buildFromWunderground(currently.get("icon").toString());
+            final Weather currentWeather = WundergroundWeatherBuilder.buildFromWunderground(currently.getString("icon"));
 
-            return ForecastTable.create(currentWeather, currentTime, allForecasts);
+            return ForecastTable.create(currentWeather, currentTime, sunriseTime, sunsetTime, allForecasts);
         } else {
             return null;
         }
@@ -52,9 +57,9 @@ public class WundergroundTableBuilder {
     private static Forecast extractForecastIfValid(DateTime fromTime,
                                                    JSONObject dataPoint,
                                                    Forecast.Granularity granularity) throws JSONException {
-        final Weather forecastedWeather = WundergroundWeatherBuilder.buildFromWunderground(dataPoint.get("icon").toString());
         JSONObject time = (JSONObject)dataPoint.get("FCTTIME");
         final DateTime forecastTime = new DateTime(Long.parseLong(time.get("epoch").toString()) * 1000);
+        final Weather forecastedWeather = WundergroundWeatherBuilder.buildFromWunderground(dataPoint.getString("icon"));
 
         if (forecastTime.isBefore(fromTime.toInstant())) {
             //Log.v(TAG, "Skip the forecast for the present interval at " + forecastTime);
@@ -63,5 +68,13 @@ public class WundergroundTableBuilder {
             final Interval timeFromNow = new Interval(fromTime, forecastTime);
             return new Forecast(forecastedWeather, timeFromNow, granularity);
         }
+    }
+
+    private static DateTime getSunPhaseTime(JSONObject sunPhase, String phase) throws JSONException {
+        final JSONObject sunrise = (JSONObject) sunPhase.get(phase);
+        DateTime sunPhaseTime = DateTime.now();
+        sunPhaseTime = sunPhaseTime.hourOfDay().setCopy(sunrise.getString("hour"));
+        sunPhaseTime = sunPhaseTime.minuteOfHour().setCopy(sunrise.getString("minute"));
+        return sunPhaseTime;
     }
 }

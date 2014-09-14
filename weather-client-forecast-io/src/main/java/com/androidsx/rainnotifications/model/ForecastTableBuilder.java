@@ -1,5 +1,7 @@
 package com.androidsx.rainnotifications.model;
 
+import android.util.Log;
+
 import com.forecast.io.v2.network.services.ForecastService;
 import com.forecast.io.v2.transfer.DataBlock;
 import com.forecast.io.v2.transfer.DataPoint;
@@ -23,13 +25,16 @@ public class ForecastTableBuilder {
         final DataBlock hourly = response.getForecast().getHourly();
         final DateTime currentTime = new DateTime(currently.getTime() * 1000);
 
+        final DateTime sunriseTime = new DateTime(response.getForecast().getDaily().getData().get(0).getSunriseTime() * 1000);
+        final DateTime sunsetTime = new DateTime(response.getForecast().getDaily().getData().get(0).getSunsetTime() * 1000);
+
         final List<Forecast> allForecasts = new ArrayList<Forecast>();
         allForecasts.addAll(extractAllValidForecast(currentTime, minutely, Forecast.Granularity.MINUTE));
         allForecasts.addAll(extractAllValidForecast(currentTime, hourly, Forecast.Granularity.HOUR));
 
         final Weather currentWeather = WeatherBuilder.buildFromForecastIo(currently);
 
-        return ForecastTable.create(currentWeather, currentTime, allForecasts);
+        return ForecastTable.create(currentWeather, currentTime, sunriseTime, sunsetTime, allForecasts);
     }
 
     private static List<Forecast> extractAllValidForecast(DateTime fromTime,
@@ -52,7 +57,6 @@ public class ForecastTableBuilder {
                                                    Forecast.Granularity granularity) {
         final Weather forecastedWeather = WeatherBuilder.buildFromForecastIo(dataPoint);
         final DateTime forecastTime = new DateTime(dataPoint.getTime() * 1000);
-
         if (forecastTime.isBefore(fromTime.toInstant())) {
             //Log.v(TAG, "Skip the forecast for the present interval at " + forecastTime);
             return null;

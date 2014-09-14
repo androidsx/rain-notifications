@@ -31,6 +31,8 @@ public class DataPoint implements Parcelable {
 	private String mIcon;
 	
 	private long mSunriseTime;
+
+    private long mSunsetTime; /* (Added by Androidsx.) */
 	
 	private double mPrecipIntensity;
 	
@@ -78,6 +80,8 @@ public class DataPoint implements Parcelable {
 		mIcon = builder.icon;
 		
 		mSunriseTime = builder.sunriseTime;
+
+        mSunsetTime = builder.sunsetTime; /* (Added by Androidsx.) */
 		
 		mPrecipIntensity = builder.precipIntensity;
 		
@@ -127,6 +131,8 @@ public class DataPoint implements Parcelable {
 		mIcon = source.readString();
 		
 		mSunriseTime = source.readLong();
+
+        mSunsetTime = source.readLong(); /* (Added by Androidsx.) */
 		
 		mPrecipIntensity = source.readDouble();
 		
@@ -179,6 +185,8 @@ public class DataPoint implements Parcelable {
 		dest.writeString( mIcon );
 		
 		dest.writeLong( mSunriseTime );
+
+        dest.writeLong( mSunsetTime ); /* (Added by Androidsx.) */
 		
 		dest.writeDouble( mPrecipIntensity );
 		
@@ -245,6 +253,10 @@ public class DataPoint implements Parcelable {
 	public long getSunriseTime() {
 		return mSunriseTime;
 	}
+
+    public long getSunsetTime() {
+        return mSunsetTime;
+    } /* (Added by Androidsx.) */
 
 	public double getPrecipIntensity() {
 		return mPrecipIntensity;
@@ -330,6 +342,8 @@ public class DataPoint implements Parcelable {
 		private String icon;
 		
 		private long sunriseTime;
+
+        private long sunsetTime; /* (Added by Androidsx.) */
 		
 		private double precipIntensity;
 		
@@ -404,6 +418,12 @@ public class DataPoint implements Parcelable {
 			
 			return this;
 		}
+
+        public Builder setSunsetTime( long sunsetTime ) {
+            this.sunsetTime = sunsetTime;
+
+            return this;
+        }
 
 		public Builder setPrecipIntensity( double precipIntensity ) {
 			this.precipIntensity = precipIntensity;

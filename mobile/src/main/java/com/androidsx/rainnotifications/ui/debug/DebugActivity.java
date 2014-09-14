@@ -230,9 +230,13 @@ public class DebugActivity extends Activity {
             findViewById(R.id.alert_level_text_view).setVisibility(View.GONE);
             findViewById(R.id.next_alarm_text_view).setVisibility(View.GONE);
 
+            DateTime sunriseTime = getSunMockPhaseTime(7, 45);
+            DateTime sunsetTime = getSunMockPhaseTime(20, 30);
             ForecastTable forecastTable = ForecastTable.create(
                     new Weather(nowWeatherItemRow.getWeatherType()),
                     nowWeatherItemRow.getTime(),
+                    sunriseTime,
+                    sunsetTime,                    
                     removeWrongForecasts(weatherTransitionsList));
 
             cardMessageTextView.setText(forecastTable.toString());
@@ -376,5 +380,12 @@ public class DebugActivity extends Activity {
 
             return rowView;
         }
+    }
+
+    private DateTime getSunMockPhaseTime(int hour, int minute) {
+        DateTime sunPhaseTime = DateTime.now();
+        sunPhaseTime = sunPhaseTime.hourOfDay().setCopy(hour);
+        sunPhaseTime = sunPhaseTime.minuteOfHour().setCopy(minute);
+        return sunPhaseTime;
     }
 }
