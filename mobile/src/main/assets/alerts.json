@@ -8,11 +8,6 @@
 									"sun is coming out soon", 
 									"it'll stop raining in %d"
 								]
-						,
-						"es" : [
-									"el sol saldrá pronto", 
-									"dejará de llover en %d"
-								]
 						}
 	},
 	{
@@ -24,11 +19,6 @@
 									"sun is coming out soon", 
 									"it'll stop raining in %d"
 								]
-						,
-						"es" : [
-									"el sol saldrá pronto", 
-									"dejará de llover en %d"
-								]
 						}
 	},
 	{
@@ -39,11 +29,6 @@
 						"en" : [
 									"sun is coming out soon", 
 									"it'll stop raining in %d"
-								]
-						,
-						"es" : [
-									"el sol saldrá pronto", 
-									"dejará de llover en %d"
 								]
 						}
 	}
