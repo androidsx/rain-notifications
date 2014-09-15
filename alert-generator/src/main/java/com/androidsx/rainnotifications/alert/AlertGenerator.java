@@ -1,7 +1,9 @@
 package com.androidsx.rainnotifications.alert;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.util.Log;
 
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
@@ -9,6 +11,7 @@ import com.androidsx.rainnotifications.model.AlertMessage;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
+import com.androidsx.rainnotifications.model.WeatherTypeMascots;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,18 +40,26 @@ import java.util.Random;
  */
 public class AlertGenerator {
     private final Random random = new Random();
-    private final Resources resources;
+    private final Context context;
 
-    public AlertGenerator(Resources resources) {
-        this.resources = resources;
+    public AlertGenerator(Context context) {
+        this.context = context;
     }
 
     public List<Alert> getAlertsList() throws IOException {
-        Reader jsonReader = new InputStreamReader(resources.getAssets().open("alerts.json"));
+        Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("alerts.json"));
         Gson gson = new GsonBuilder().create();
         Alert[] jsonAlerts = gson.fromJson(jsonReader, Alert[].class);
 
         return Arrays.asList(jsonAlerts);
+    }
+
+    public List<WeatherTypeMascots> getWeatherTypeMascotsList() throws  IOException {
+        Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("weatherTypeMascots.json"));
+        Gson gson = new GsonBuilder().create();
+        WeatherTypeMascots[] jsonWeatherTypesMascots = gson.fromJson(jsonReader, WeatherTypeMascots[].class);
+
+        return Arrays.asList(jsonWeatherTypesMascots);
     }
 
     /**
@@ -85,20 +96,22 @@ public class AlertGenerator {
     }
 
     public int generateMascot(Weather weather) {
-        final Map<WeatherType, Integer> owlieVariations = new HashMap<WeatherType, Integer>() {
-            {
-                put(WeatherType.RAIN, R.array.rainy);
-                put(WeatherType.CLEAR, R.array.sunny);
-                put(WeatherType.CLOUDY, R.array.cloudy);
-                put(WeatherType.PARTLY_CLOUDY, R.array.partlycloudy);
-                put(WeatherType.UNKNOWN, R.array.default_weather);
-            }
-        };
 
-        final int mascotArray = owlieVariations.get(weather.getType());
-        final TypedArray mascotTypedArray = resources.obtainTypedArray(mascotArray);
-        final int mascotIndex = random.nextInt(mascotTypedArray.length());
-        return mascotTypedArray.getResourceId(mascotIndex, -1);
+        List<Integer> mascots = new ArrayList<Integer>();
+        try {
+            for(WeatherTypeMascots wtm : getWeatherTypeMascotsList()) {
+                if (wtm.getType().equals(weather.getType())) {
+                    for (String s : wtm.getDressedMascots()) {
+                        mascots.add(context.getResources().getIdentifier(s, "drawable", context.getPackageName()));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        final int mascotIndex = random.nextInt(mascots.size());
+        return mascots.get(mascotIndex);
     }
 
     /**

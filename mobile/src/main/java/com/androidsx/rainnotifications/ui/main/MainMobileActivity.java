@@ -53,7 +53,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         Crashlytics.start(this);
         setContentView(R.layout.activity_forecast_mobile);
 
-        alertGenerator = new AlertGenerator(getResources());
+        alertGenerator = new AlertGenerator(this);
 
         setupUI();
 

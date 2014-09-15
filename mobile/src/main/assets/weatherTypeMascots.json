@@ -1,0 +1,39 @@
+[
+	{
+		"type" : "RAIN",
+		"dressedMascots" : [
+								"owlie_rainy_01",
+								"owlie_rainy_02",
+								"owlie_rainy_03"
+							]
+	},
+	{
+		"type" : "CLEAR",
+		"dressedMascots" : [
+								"owlie_sunny_01",
+								"owlie_sunny_02",
+								"owlie_sunny_03",
+								"owlie_sunny_04"
+							]
+	},
+	{
+		"type" : "CLOUDY",
+		"dressedMascots" : [
+								"owlie_cloudy_01",
+								"owlie_cloudy_02",
+								"owlie_cloudy_03"
+							]
+	},
+	{
+		"type" : "PARTLY_CLOUDY",
+		"dressedMascots" : [
+								"owlie_partlycloudy_01"
+							]
+	},
+	{
+		"type" : "UNKNOWN",
+		"dressedMascots" : [
+								"owlie_default"
+							]
+	}
+]
