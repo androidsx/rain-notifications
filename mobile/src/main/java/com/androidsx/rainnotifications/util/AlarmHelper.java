@@ -32,12 +32,11 @@ public class AlarmHelper {
     }
 
     /**
-     * Method that set alarm next, depending on weather forecasts list.
+     * Sets the following alarm for the weather service, that depends on the time to the first
+     * expected weather transition. If there are no weather transitions, it's set an hour from now.
      *
-     * @param context
-     * @param weatherAlarmIntent
-     * @param currentWeather
-     * @param forecastList
+     * TODO: the "an hour from now" should be encapsulated in the {@link #nextWeatherCallAlarmTime}
+     * @see #nextWeatherCallAlarmTime
      */
     public static void setAlarm(Context context, PendingIntent weatherAlarmIntent, Weather currentWeather, List<Forecast> forecastList) {
         Interval nextIntervalAlarmTime;
@@ -84,11 +83,21 @@ public class AlarmHelper {
     }
 
     /**
-     * This method is for determine the next alarm hour,
-     * depending on the interval from now to expected hour passed as a param.
+     * Returns an appropriate time for the next alarm, given the interval to the next relevant
+     * event (usually a weather transition we care about). The logic is:
      *
-     * @param interval
-     * @return long - next alarm hour in millis
+     * <ol>
+     * <li>Less than 10 minutes away: set it at the exact time of the event</li>
+     * <li>Less than 2 hours away: set it at 70% of the time between now and the event</li>
+     * <li>Other cases: set it an hour from now</li>
+     * </ol>
+     *
+     * TODO: Review this logic. Especially for the first condition
+     * TODO: Make this method private
+     * TODO: Return the time in a different format. It's not an interval, it's really a time differential
+     *
+     * @param interval interval of time between now and the next relevant event
+     * @return interval between now and the time that the caller should set for the next alarm
      */
     public static Interval nextWeatherCallAlarmTime(Interval interval) {
         if (interval.toDurationMillis() < TEN_MINUTES_MILLIS) {
