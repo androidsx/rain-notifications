@@ -5,8 +5,8 @@
 		"alertLevel" : "INFO",
 		"alertMessages" : 	{ 
 						"en" : [
-									"It\'s gonna stay sunny for a while, enjoy!", 
-									"What a nice sunny day, and it looks like it\'s gonna stay for the day",
+									"It's gonna stay sunny for a while, enjoy!", 
+									"What a nice sunny day, and it looks like it's gonna stay for the day",
 									"Sun is shining, and will continue for the day"
 								]
 						}
@@ -37,9 +37,9 @@
 		"alertLevel" : "INFO",
 		"alertMessages" : 	{ 
 						"en" : [
-									"It\'s gonna start raining in %s", 
+									"It's gonna start raining in %s", 
 									"Luck is over, rain is coming in %s",
-									"Take your umbrella, it looks like it\'s gonna rain in %s"
+									"Take your umbrella, it looks like it's gonna rain in %s"
 								]
 						}
 	},
@@ -49,8 +49,8 @@
 		"alertLevel" : "INFO",
 		"alertMessages" : { 
 						"en" : [
-									"No luck, it\'ll keep partly cloudy for a while", 
-									"Looks like it\'s gonna be partly cloudy for the rest of the day"
+									"No luck, it'll keep partly cloudy for a while", 
+									"Looks like it's gonna be partly cloudy for the rest of the day"
 								]
 						}
 	},
@@ -90,8 +90,8 @@
 		"alertLevel" : "INFO",
 		"alertMessages" : { 
 						"en" : [
-									"No luck, it\'ll keep cloudy for a while", 
-									"Looks like it\'s gonna be cloudy for the rest of the day"
+									"No luck, it'll keep cloudy for a while", 
+									"Looks like it's gonna be cloudy for the rest of the day"
 								]
 						}
 	},
@@ -131,9 +131,9 @@
 		"alertLevel" : "INFO",
 		"alertMessages" : { 
 						"en" : [
-									"No luck, it\'ll keep raining for a while", 
-									"Looks like it\'s gonna be raining for the rest of the day",
-									"Hopefully you have your umbrella with you, it won\'t stop raining for a while"
+									"No luck, it'll keep raining for a while", 
+									"Looks like it's gonna be raining for the rest of the day",
+									"Hopefully you have your umbrella with you, it won't stop raining for a while"
 								]
 						}
 	},
@@ -206,9 +206,9 @@
 		"alertLevel" : "INFO",
 		"alertMessages" : { 
 						"en" : [
-									"It\'s gonna start raining in %s", 
+									"It's gonna start raining in %s", 
 									"Luck is over, rain is coming in %s",
-									"Take your umbrella, it looks like it\'s gonna rain in %s"
+									"Take your umbrella, it looks like it's gonna rain in %s"
 								]
 						}
 	}
