@@ -61,7 +61,6 @@ public class AlertGenerator {
      *
      * @return an alert for the provided weather transition
      * @see #generateAlertLevel
-     * @see #generateAlertMessage
      * @see #generateMascot
      */
     public Alert generateAlert(Weather currentWeather, Forecast forecast) {
@@ -119,49 +118,6 @@ public class AlertGenerator {
             return AlertLevel.INFO;
         } else {
             return AlertLevel.NEVER_MIND;
-        }
-    }
-
-    /**
-     * Generates a message for the provided weather transition, to be shown to the user as a
-     * notification.
-     * <p/>
-     * Note that we don't know here whether the message will end up being shown to the user. That's
-     * not for us here to decide.
-     *
-     * @return message for the user
-     */
-    private AlertMessage generateAlertMessage(Weather currentWeather, Forecast forecast) {
-        if (forecast == null || forecast.getForecastedWeather().equals(currentWeather)) {
-            if (currentWeather.getType().equals(WeatherType.CLEAR)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_sunny));
-            } else if (currentWeather.getType().equals(WeatherType.RAIN)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.stays_rainy));
-            } else {
-                return new AlertMessage("(Fallback) No changes expected for a while." //TODO: message that refers to no forecast expected in a few hours
-                        + " At the moment, it is " + currentWeather);
-            }
-        } else {
-            final Period periodFromNow = forecast.getTimeFromNow().toPeriod();
-
-            if (currentWeather.getType().equals(WeatherType.CLEAR)
-                    && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.sun_to_rain, periodFromNow));
-            } else if (currentWeather.getType().equals(WeatherType.RAIN)
-                    && forecast.getForecastedWeather().getType().equals(WeatherType.CLEAR)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.rain_to_sun, periodFromNow));
-            } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
-                    && forecast.getForecastedWeather().getType().equals(WeatherType.RAIN)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_rain, periodFromNow));
-            } else if (currentWeather.getType().equals(WeatherType.UNKNOWN)
-                    && forecast.getForecastedWeather().getType().equals(WeatherType.CLEAR)) {
-                return new AlertMessage(resourceToToRandomAlertMessage(R.array.unknown_to_sun, periodFromNow));
-            } else {
-                return new AlertMessage("(Fallback) It's gonna be " + forecast.getForecastedWeather()
-                        + " in " + UiUtil.getDebugOnlyPeriodFormatter().print(periodFromNow) + " from now"
-                        + " (with a precision of +/- 1 " + forecast.getGranularity() + ")."
-                        + " At the moment, it is " + currentWeather);
-            }
         }
     }
 
