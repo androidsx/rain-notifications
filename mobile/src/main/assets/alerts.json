@@ -1,0 +1,50 @@
+[
+	{
+		"fromType" 	 : "RAIN",
+		"toType" 	 : "CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : 	{ 
+						"en" : [
+									"sun is coming out soon", 
+									"it'll stop raining in %d"
+								]
+						,
+						"es" : [
+									"el sol saldrá pronto", 
+									"dejará de llover en %d"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "CLEAR",
+		"toType" 	 : "PARTLY_CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"sun is coming out soon", 
+									"it'll stop raining in %d"
+								]
+						,
+						"es" : [
+									"el sol saldrá pronto", 
+									"dejará de llover en %d"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "PARTLY_CLOUDY",
+		"toType" 	 : "RAIN",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"sun is coming out soon", 
+									"it'll stop raining in %d"
+								]
+						,
+						"es" : [
+									"el sol saldrá pronto", 
+									"dejará de llover en %d"
+								]
+						}
+	}
+]

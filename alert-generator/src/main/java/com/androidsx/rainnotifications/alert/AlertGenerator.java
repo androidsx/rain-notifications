@@ -10,11 +10,16 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.util.UiUtil;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -38,6 +43,14 @@ public class AlertGenerator {
         this.resources = resources;
     }
 
+    public List<Alert> getAlertsList() throws IOException {
+        Reader jsonReader = new InputStreamReader(resources.getAssets().open("alerts.json"));
+        Gson gson = new GsonBuilder().create();
+        Alert[] jsonAlerts = gson.fromJson(jsonReader, Alert[].class);
+
+        return Arrays.asList(jsonAlerts);
+    }
+
     /**
      * Generates a weather alert.
      *
@@ -52,17 +65,24 @@ public class AlertGenerator {
      * @see #generateMascot
      */
     public Alert generateAlert(Weather currentWeather, Forecast forecast) {
-        if (forecast == null) {
-            return new Alert(AlertLevel.NEVER_MIND,
-                    generateAlertMessage(currentWeather, null),
-                    generateMascot(currentWeather));
-        } else {
-            return new Alert(
-                    generateAlertLevel(currentWeather, forecast.getForecastedWeather()),
-                    generateAlertMessage(currentWeather, forecast),
-                    generateMascot(forecast.getForecastedWeather())
-            );
+        try {
+            for(Alert a : getAlertsList()) {
+                if (forecast != null) {
+                    if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(forecast.getForecastedWeather().getType())) {
+                        a.setDressedMascot(generateMascot(forecast.getForecastedWeather()));
+                        return a;
+                    }
+                } else {
+                    if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals("*")) {
+                        a.setDressedMascot(generateMascot(currentWeather));
+                        return a;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     public int generateMascot(Weather weather) {
