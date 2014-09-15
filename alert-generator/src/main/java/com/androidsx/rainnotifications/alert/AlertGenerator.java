@@ -41,22 +41,6 @@ public class AlertGenerator {
         this.context = context;
     }
 
-    public List<Alert> getAlertsList() throws IOException {
-        Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("alerts.json"));
-        Gson gson = new GsonBuilder().create();
-        Alert[] jsonAlerts = gson.fromJson(jsonReader, Alert[].class);
-
-        return Arrays.asList(jsonAlerts);
-    }
-
-    public List<WeatherTypeMascots> getWeatherTypeMascotsList() throws  IOException {
-        Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("weatherTypeMascots.json"));
-        Gson gson = new GsonBuilder().create();
-        WeatherTypeMascots[] jsonWeatherTypesMascots = gson.fromJson(jsonReader, WeatherTypeMascots[].class);
-
-        return Arrays.asList(jsonWeatherTypesMascots);
-    }
-
     /**
      * Generates a weather alert.
      *
@@ -70,22 +54,18 @@ public class AlertGenerator {
      * @see #generateMascot
      */
     public Alert generateAlert(Weather currentWeather, Forecast forecast) {
-        try {
-            for(Alert a : getAlertsList()) {
-                if (forecast != null) {
-                    if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(forecast.getForecastedWeather().getType())) {
-                        a.setDressedMascot(generateMascot(forecast.getForecastedWeather()));
-                        return a;
-                    }
-                } else {
-                    if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(currentWeather.getType())) {
-                        a.setDressedMascot(generateMascot(currentWeather));
-                        return a;
-                    }
+        for(Alert a : getAlertsList()) {
+            if (forecast != null) {
+                if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(forecast.getForecastedWeather().getType())) {
+                    a.setDressedMascot(generateMascot(forecast.getForecastedWeather()));
+                    return a;
+                }
+            } else {
+                if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(currentWeather.getType())) {
+                    a.setDressedMascot(generateMascot(currentWeather));
+                    return a;
                 }
             }
-        } catch (IOException e) {
-            new IllegalArgumentException("Can't find a alert for " + currentWeather + " - " + forecast.getForecastedWeather(), e);
         }
 
         throw new IllegalArgumentException("Didn't find an alert for " + currentWeather + " -> " + forecast);
@@ -97,22 +77,16 @@ public class AlertGenerator {
     }
 
     public int generateMascot(Weather weather) {
-
-        List<Integer> mascots = new ArrayList<Integer>();
-        try {
-            for(WeatherTypeMascots wtm : getWeatherTypeMascotsList()) {
-                if (wtm.getType().equals(weather.getType())) {
-                    for (String s : wtm.getDressedMascots()) {
-                        mascots.add(context.getResources().getIdentifier(s, "drawable", context.getPackageName()));
-                    }
+        final List<Integer> mascots = new ArrayList<Integer>();
+        for (WeatherTypeMascots wtm : getWeatherTypeMascotsList()) {
+            if (wtm.getType().equals(weather.getType())) {
+                for (String s : wtm.getDressedMascots()) {
+                    mascots.add(context.getResources().getIdentifier(s, "drawable", context.getPackageName()));
                 }
             }
-        } catch (IOException e) {
-            new IllegalArgumentException("Can't find a mascot drawable for " + weather, e);
         }
 
-        final int mascotIndex = random.nextInt(mascots.size());
-        return mascots.get(mascotIndex);
+        return mascots.get(random.nextInt(mascots.size()));
     }
 
     /**
@@ -146,5 +120,29 @@ public class AlertGenerator {
                 .withLocale(locale);
 
         return durationFormatter.print(period);
+    }
+
+    // TODO: Avoid I/O for every call by caching the results
+    private List<Alert> getAlertsList() {
+        try {
+            final Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("alerts.json"));
+            final Alert[] jsonAlerts = new GsonBuilder().create().fromJson(jsonReader, Alert[].class);
+
+            return Arrays.asList(jsonAlerts);
+        } catch (IOException e) {
+            throw new IllegalStateException("Can't parse the alerts JSON file", e);
+        }
+    }
+
+    // TODO: Avoid I/O for every call by caching the results
+    private List<WeatherTypeMascots> getWeatherTypeMascotsList() {
+        try {
+            final Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("weatherTypeMascots.json"));
+            final WeatherTypeMascots[] jsonWeatherTypesMascots = new GsonBuilder().create().fromJson(jsonReader, WeatherTypeMascots[].class);
+
+            return Arrays.asList(jsonWeatherTypesMascots);
+        } catch (IOException e) {
+            throw new IllegalStateException("Can't parse the weather type mascots JSON file", e);
+        }
     }
 }
