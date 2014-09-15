@@ -133,8 +133,4 @@ public class AlertGenerator {
 
         return durationFormatter.print(period);
     }
-
-    private static <T> T pickRandom(List<T> list, Random random) {
-        return new ArrayList<T>(list).get(random.nextInt(list.size()));
-    }
 }
