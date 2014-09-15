@@ -71,12 +71,7 @@ public class AlertGenerator {
         throw new IllegalArgumentException("Didn't find an alert for " + currentWeather + " -> " + forecast);
     }
 
-    public String getAlertMessage(Alert alert, Interval interval) {
-        return interval == null ? alert.getAlertMessage().toString() : String.format(alert.getAlertMessage().toString(),
-                UiUtil.getDebugOnlyPeriodFormatter().print(new Period(interval)));
-    }
-
-    public int generateMascot(Weather weather) {
+    private int generateMascot(Weather weather) {
         final List<Integer> mascots = new ArrayList<Integer>();
         for (WeatherTypeMascots wtm : getWeatherTypeMascotsList()) {
             if (wtm.getType().equals(weather.getType())) {

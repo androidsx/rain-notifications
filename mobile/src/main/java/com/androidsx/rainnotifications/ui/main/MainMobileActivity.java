@@ -72,10 +72,11 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                                 MainMobileActivity.this,
                                 location.getLatitude(),
                                 location.getLongitude());
-                        Interval interval = forecast == null ? null : forecast.getTimeFromNow();
+                        final Interval interval = forecast == null ? null : forecast.getTimeFromNow();
+
                         updateUI(locationAddress,
                                 alert.getDressedMascot(),
-                                alertGenerator.getAlertMessage(alert, interval));
+                                alert.getAlertMessage().getNotificationMessage(interval));
                     }
 
                     @Override

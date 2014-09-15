@@ -30,7 +30,7 @@ public class NotificationHelper {
     /**
      * If wear is connected, only to wear. Otherwise, standard one.
      */
-    public static void displayCustomNotification(final Context context, final Alert alert, final AlertGenerator alertGenerator, final Interval interval) {
+    public static void displayCustomNotification(final Context context, final Alert alert, final Interval interval) {
         new WearNotificationManager(context) {
             @Override
             public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
@@ -38,14 +38,14 @@ public class NotificationHelper {
                     if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
                                 context,
-                                alertGenerator.getAlertMessage(alert, interval),
+                                alert.getAlertMessage().getNotificationMessage(interval),
                                 alert.getDressedMascot()
                         );
                     } else {
                         NotificationHelper.displayStandardNotification(
                                 context,
                                 MainMobileActivity.class,
-                                alert.getAlertMessage().getNotificationMessage(),
+                                alert.getAlertMessage().getNotificationMessage(interval),
                                 BitmapFactory.decodeResource(context.getResources(), alert.getDressedMascot())
                         );
                     }
@@ -53,7 +53,7 @@ public class NotificationHelper {
                     NotificationHelper.displayStandardNotification(
                             context,
                             MainMobileActivity.class,
-                            alert.getAlertMessage().getNotificationMessage(),
+                            alert.getAlertMessage().getNotificationMessage(interval),
                             BitmapFactory.decodeResource(context.getResources(), alert.getDressedMascot())
                     );
                 }

@@ -204,7 +204,7 @@ public class DebugActivity extends Activity {
                     new Forecast(new Weather(weatherTransitionsList.get(0).getWeatherType()),
                             intervalUntilWeatherChange,
                             Forecast.Granularity.MINUTE));
-            cardMessageTextView.setText(alertGenerator.getAlertMessage(alert, intervalUntilWeatherChange));
+            cardMessageTextView.setText(alert.getAlertMessage().getNotificationMessage(intervalUntilWeatherChange));
 
             alertLevelTextView.setText("Alert level: " + alert.getAlertLevel());
             alertLevelTextView.setVisibility(View.VISIBLE);
