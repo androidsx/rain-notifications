@@ -1,12 +1,13 @@
 [
 	{
-		"fromType" 	 : "RAIN",
-		"toType" 	 : "CLOUDY",
+		"fromType" 	 : "CLEAR",
+		"toType" 	 : "CLEAR",
 		"alertLevel" : "INFO",
 		"alertMessages" : 	{ 
 						"en" : [
-									"sun is coming out soon", 
-									"it'll stop raining in %d"
+									"It\'s gonna stay sunny for a while, enjoy!", 
+									"What a nice sunny day, and it looks like it\'s gonna stay for the day",
+									"Sun is shining, and will continue for the day"
 								]
 						}
 	},
@@ -14,10 +15,52 @@
 		"fromType" 	 : "CLEAR",
 		"toType" 	 : "PARTLY_CLOUDY",
 		"alertLevel" : "INFO",
+		"alertMessages" : 	{ 
+						"en" : [
+									"Sun to partly cloudy"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "CLEAR",
+		"toType" 	 : "CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : 	{ 
+						"en" : [
+									"Sun to cloudy"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "CLEAR",
+		"toType" 	 : "RAIN",
+		"alertLevel" : "INFO",
+		"alertMessages" : 	{ 
+						"en" : [
+									"It\'s gonna start raining in %s", 
+									"Luck is over, rain is coming in %s",
+									"Take your umbrella, it looks like it\'s gonna rain in %s"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "PARTLY_CLOUDY",
+		"toType" 	 : "PARTLY_CLOUDY",
+		"alertLevel" : "INFO",
 		"alertMessages" : { 
 						"en" : [
-									"sun is coming out soon", 
-									"it'll stop raining in %d"
+									"No luck, it\'ll keep partly cloudy for a while", 
+									"Looks like it\'s gonna be partly cloudy for the rest of the day"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "PARTLY_CLOUDY",
+		"toType" 	 : "CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Partly cloudy to cloudy"
 								]
 						}
 	},
@@ -27,8 +70,145 @@
 		"alertLevel" : "INFO",
 		"alertMessages" : { 
 						"en" : [
-									"sun is coming out soon", 
-									"it'll stop raining in %d"
+									"Partly cloudy to rain"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "PARTLY_CLOUDY",
+		"toType" 	 : "CLEAR",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Partly cloudy to sun"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "CLOUDY",
+		"toType" 	 : "CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"No luck, it\'ll keep cloudy for a while", 
+									"Looks like it\'s gonna be cloudy for the rest of the day"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "CLOUDY",
+		"toType" 	 : "RAIN",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Cloudy to rain"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "CLOUDY",
+		"toType" 	 : "PARTLY_CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Cloudy to partly cloudy"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "CLOUDY",
+		"toType" 	 : "CLEAR",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Cloudy to sun"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "RAIN",
+		"toType" 	 : "RAIN",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"No luck, it\'ll keep raining for a while", 
+									"Looks like it\'s gonna be raining for the rest of the day",
+									"Hopefully you have your umbrella with you, it won\'t stop raining for a while"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "RAIN",
+		"toType" 	 : "CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Rain to cloudy"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "RAIN",
+		"toType" 	 : "PARTLY_CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Rain to partly cloudy"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "RAIN",
+		"toType" 	 : "CLEAR",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Nice, sun is coming back in %s", 
+									"Looks promising! Sun will shine again in %s",
+									"Get ready to drop your umbrella in over %s"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "UNKNOWN",
+		"toType" 	 : "CLEAR",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Nice, sun is coming back in %s", 
+									"Looks promising! Sun will shine again in %s"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "UNKNOWN",
+		"toType" 	 : "PARTLY_CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Unknown to partly cloudy"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "UNKNOWN",
+		"toType" 	 : "CLOUDY",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"Unknown to cloudy"
+								]
+						}
+	},
+	{
+		"fromType" 	 : "UNKNOWN",
+		"toType" 	 : "RAIN",
+		"alertLevel" : "INFO",
+		"alertMessages" : { 
+						"en" : [
+									"It\'s gonna start raining in %s", 
+									"Luck is over, rain is coming in %s",
+									"Take your umbrella, it looks like it\'s gonna rain in %s"
 								]
 						}
 	}

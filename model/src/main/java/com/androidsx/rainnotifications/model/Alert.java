@@ -1,5 +1,10 @@
 package com.androidsx.rainnotifications.model;
 
+import com.androidsx.rainnotifications.model.util.UiUtil;
+
+import org.joda.time.Interval;
+import org.joda.time.Period;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +20,7 @@ public class Alert {
     private WeatherType toType;
     private HashMap<String,List<String>> alertMessages;
     private int dressedMascot;
+    private Interval interval;
 
     public AlertLevel getAlertLevel() {
         return alertLevel;
@@ -40,8 +46,13 @@ public class Alert {
         this.dressedMascot = dressedMascot;
     }
 
+    public void setInterval(Interval interval) {
+        this.interval = interval;
+    }
+
     public AlertMessage getAlertMessage() {
-        return new AlertMessage(pickRandom(getAlertMessages().get("en"), random));
+        return new AlertMessage(String.format(pickRandom(getAlertMessages().get("en"), random),
+                UiUtil.getDebugOnlyPeriodFormatter().print(new Period(interval))));
     }
 
     @Override

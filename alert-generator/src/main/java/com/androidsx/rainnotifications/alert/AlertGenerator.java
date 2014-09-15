@@ -73,10 +73,11 @@ public class AlertGenerator {
                 if (forecast != null) {
                     if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(forecast.getForecastedWeather().getType())) {
                         a.setDressedMascot(generateMascot(forecast.getForecastedWeather()));
+                        a.setInterval(forecast.getTimeFromNow());
                         return a;
                     }
                 } else {
-                    if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals("*")) {
+                    if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(currentWeather.getType())) {
                         a.setDressedMascot(generateMascot(currentWeather));
                         return a;
                     }
