@@ -125,15 +125,6 @@ public class AlertGenerator {
         return pickRandom(Arrays.asList(resources.getStringArray(arrayResource)), random);
     }
 
-    private String resourceToToRandomAlertMessage(int arrayResource, Period periodFromNow) {
-        final Locale locale = Locale.getDefault(); // TODO: use the real one
-        return String.format(resourceToToRandomAlertMessage(arrayResource), periodToString(
-                periodFromNow,
-                resources.getString(R.string.unit_hours),
-                resources.getString(R.string.unit_minutes),
-                locale));
-    }
-
     /** Visibility raised from private for testing purposes. */
     String periodToString(Period period, String hours, String minutes, Locale locale) {
         final PeriodFormatter durationFormatter = new PeriodFormatterBuilder()
