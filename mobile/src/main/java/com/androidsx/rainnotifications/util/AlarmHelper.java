@@ -22,10 +22,6 @@ import timber.log.Timber;
 public class AlarmHelper {
     private static final String TAG = AlarmHelper.class.getSimpleName();
 
-    private static final long WEATHER_REPEATING_TIME_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
-    public static final long TEN_MINUTES_MILLIS = 10 * DateTimeConstants.MILLIS_PER_MINUTE;
-    private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
-    private static final long DEFAULT_EXTRA_TIME_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
 
     private AlarmHelper() {
         //No-instantiate
@@ -41,7 +37,7 @@ public class AlarmHelper {
     public static void setAlarm(Context context, PendingIntent weatherAlarmIntent, Weather currentWeather, List<Forecast> forecastList) {
         Interval nextIntervalAlarmTime;
         if (forecastList.isEmpty()) {
-            nextIntervalAlarmTime = new Interval(System.currentTimeMillis(), System.currentTimeMillis() + DEFAULT_EXTRA_TIME_MILLIS);
+            nextIntervalAlarmTime = new Interval(System.currentTimeMillis(), System.currentTimeMillis() + DateTimeConstants.MILLIS_PER_HOUR);
         } else {
             nextIntervalAlarmTime = forecastList.get(0).getTimeFromNow();
         }
@@ -59,7 +55,7 @@ public class AlarmHelper {
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
                     nextAlarmTimePeriod.getEndMillis(),
-                    WEATHER_REPEATING_TIME_MILLIS,
+                    10 * DateTimeConstants.MILLIS_PER_MINUTE,
                     weatherAlarmIntent);
             if (!forecastList.isEmpty()) {
                 Timber.tag(TAG).i("Next transition is %s -> %s in %s.",
@@ -100,13 +96,13 @@ public class AlarmHelper {
      * @return interval between now and the time that the caller should set for the next alarm
      */
     public static Interval nextWeatherCallAlarmTime(Interval interval) {
-        if (interval.toDurationMillis() < TEN_MINUTES_MILLIS) {
+        if (interval.toDurationMillis() < 10 * DateTimeConstants.MILLIS_PER_MINUTE) {
             return interval;
-        } else if (interval.toDurationMillis() < 2 * ONE_HOUR_MILLIS){
+        } else if (interval.toDurationMillis() < 2 * DateTimeConstants.MILLIS_PER_HOUR){
             return new Interval(interval.getStartMillis(),
                     interval.getStartMillis() + getTimePeriodPercentage(interval.toDurationMillis(), 70));
         } else {
-            return new Interval(interval.getStartMillis(), interval.getStartMillis() + ONE_HOUR_MILLIS);
+            return new Interval(interval.getStartMillis(), interval.getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
         }
     }
 
