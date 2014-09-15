@@ -87,7 +87,8 @@ public class AlertGenerator {
         } catch (IOException e) {
             new IllegalArgumentException("Can't find a alert for " + currentWeather + " - " + forecast.getForecastedWeather(), e);
         }
-        return null;
+
+        throw new IllegalArgumentException("Didn't find an alert for " + currentWeather + " -> " + forecast);
     }
 
     public String getAlertMessage(Alert alert, Interval interval) {
