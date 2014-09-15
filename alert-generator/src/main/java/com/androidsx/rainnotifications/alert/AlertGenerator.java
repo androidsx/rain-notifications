@@ -1,18 +1,13 @@
 package com.androidsx.rainnotifications.alert;
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.util.Log;
 
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
-import com.androidsx.rainnotifications.model.AlertMessage;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherTypeMascots;
-import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -25,10 +20,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -90,7 +83,7 @@ public class AlertGenerator {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            new IllegalArgumentException("Can't find a alert for " + currentWeather + " - " + forecast.getForecastedWeather(), e);
         }
         return null;
     }
@@ -107,7 +100,7 @@ public class AlertGenerator {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            new IllegalArgumentException("Can't find a mascot drawable for " + weather, e);
         }
 
         final int mascotIndex = random.nextInt(mascots.size());
