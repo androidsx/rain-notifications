@@ -2,7 +2,7 @@
   {
     "fromType":"CLEAR",
     "toType":"CLEAR",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "It's gonna stay sunny for a while, enjoy!",
@@ -14,7 +14,7 @@
   {
     "fromType":"CLEAR",
     "toType":"PARTLY_CLOUDY",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "Sun to partly cloudy"
@@ -24,7 +24,7 @@
   {
     "fromType":"CLEAR",
     "toType":"CLOUDY",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "Sun to cloudy"
@@ -46,7 +46,7 @@
   {
     "fromType":"PARTLY_CLOUDY",
     "toType":"PARTLY_CLOUDY",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "No luck, it'll keep partly cloudy for a while",
@@ -57,7 +57,7 @@
   {
     "fromType":"PARTLY_CLOUDY",
     "toType":"CLOUDY",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "Partly cloudy to cloudy"
@@ -77,7 +77,7 @@
   {
     "fromType":"PARTLY_CLOUDY",
     "toType":"CLEAR",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "Partly cloudy to sun"
@@ -87,7 +87,7 @@
   {
     "fromType":"CLOUDY",
     "toType":"CLOUDY",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "No luck, it'll keep cloudy for a while",
@@ -108,7 +108,7 @@
   {
     "fromType":"CLOUDY",
     "toType":"PARTLY_CLOUDY",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "Cloudy to partly cloudy"
@@ -118,7 +118,7 @@
   {
     "fromType":"CLOUDY",
     "toType":"CLEAR",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "Cloudy to sun"
@@ -128,7 +128,7 @@
   {
     "fromType":"RAIN",
     "toType":"RAIN",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "No luck, it'll keep raining for a while",
@@ -172,7 +172,7 @@
   {
     "fromType":"UNKNOWN",
     "toType":"CLEAR",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "Nice, sun is coming back in %s",
@@ -183,7 +183,7 @@
   {
     "fromType":"UNKNOWN",
     "toType":"PARTLY_CLOUDY",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "Unknown to partly cloudy"
@@ -193,7 +193,7 @@
   {
     "fromType":"UNKNOWN",
     "toType":"CLOUDY",
-    "alertLevel":"INFO",
+    "alertLevel":"NEVER_MIND",
     "alertMessages":{
       "en":[
         "Unknown to cloudy"
