@@ -33,7 +33,6 @@ public class AlertGeneratorAlertMessagesTest {
 
         final String periodMessage = generator.periodToString(new Interval(now, later).toPeriod(), "hours", "minutes", Locale.US);
 
-        System.out.println("pablo - message A: " + periodMessage);
         Assert.assertTrue(periodMessage.contains("20 minutes"));
         Assert.assertFalse(periodMessage.contains("hour"));
     }
@@ -45,7 +44,6 @@ public class AlertGeneratorAlertMessagesTest {
 
         final String periodMessage = generator.periodToString(new Interval(now, later).toPeriod(), "hours", "minutes", Locale.US);
 
-        System.out.println("pablo - message B: " + periodMessage);
         Assert.assertTrue(periodMessage.contains("2 hours"));
         Assert.assertTrue(periodMessage.contains("35 minutes"));
         Assert.assertTrue(periodMessage.contains("2 hours and 35 minutes"));

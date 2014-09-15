@@ -50,7 +50,6 @@ public class AlertGenerator {
      *                 weather than the current one.
      *
      * @return an alert for the provided weather transition
-     * @see #generateAlertLevel
      * @see #generateMascot
      */
     public Alert generateAlert(Weather currentWeather, Forecast forecast) {
@@ -82,26 +81,6 @@ public class AlertGenerator {
         }
 
         return mascots.get(random.nextInt(mascots.size()));
-    }
-
-    /**
-     * Generates the alert level for the provided weather transition.
-     * <p/>
-     * See the tests to understand the different transitions. And keep them updated with any
-     * changes.
-     * <p/>
-     * Visibility raised from private for testing purposes.
-     *
-     * @return alert level that this weather transition deserves
-     */
-    AlertLevel generateAlertLevel(Weather current, Weather future) {
-        if (current.getType() != WeatherType.RAIN && future.getType() == WeatherType.RAIN) {
-            return AlertLevel.INFO;
-        } else if (current.getType() == WeatherType.RAIN && future.getType() != WeatherType.RAIN) {
-            return AlertLevel.INFO;
-        } else {
-            return AlertLevel.NEVER_MIND;
-        }
     }
 
     /** Visibility raised from private for testing purposes. */
