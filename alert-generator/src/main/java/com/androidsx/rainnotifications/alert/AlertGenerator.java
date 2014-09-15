@@ -121,10 +121,6 @@ public class AlertGenerator {
         }
     }
 
-    private String resourceToToRandomAlertMessage(int arrayResource) {
-        return pickRandom(Arrays.asList(resources.getStringArray(arrayResource)), random);
-    }
-
     /** Visibility raised from private for testing purposes. */
     String periodToString(Period period, String hours, String minutes, Locale locale) {
         final PeriodFormatter durationFormatter = new PeriodFormatterBuilder()
