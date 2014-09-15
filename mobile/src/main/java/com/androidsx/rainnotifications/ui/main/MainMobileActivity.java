@@ -29,6 +29,8 @@ import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.crashlytics.android.Crashlytics;
 
+import org.joda.time.Interval;
+
 /**
  * Main activity.
  */
@@ -70,9 +72,10 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                                 MainMobileActivity.this,
                                 location.getLatitude(),
                                 location.getLongitude());
+                        Interval interval = forecast == null ? null : forecast.getTimeFromNow();
                         updateUI(locationAddress,
                                 alert.getDressedMascot(),
-                                alertGenerator.getAlertMessage(alert, forecast.getTimeFromNow()));
+                                alertGenerator.getAlertMessage(alert, interval));
                     }
 
                     @Override

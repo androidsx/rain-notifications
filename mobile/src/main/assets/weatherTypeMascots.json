@@ -35,5 +35,11 @@
 		"dressedMascots" : [
 								"owlie_default"
 							]
+	},
+	{
+		"type" : "UNKNOWN",
+		"dressedMascots" : [
+								"owlie_default"
+							]
 	}
 ]
