@@ -72,7 +72,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                                 location.getLongitude());
                         updateUI(locationAddress,
                                 alert.getDressedMascot(),
-                                alert.getAlertMessage().getNotificationMessage());
+                                alertGenerator.getAlertMessage(alert, forecast.getTimeFromNow()));
                     }
 
                     @Override

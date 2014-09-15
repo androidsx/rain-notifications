@@ -8,9 +8,11 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherTypeMascots;
+import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -73,7 +75,6 @@ public class AlertGenerator {
                 if (forecast != null) {
                     if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(forecast.getForecastedWeather().getType())) {
                         a.setDressedMascot(generateMascot(forecast.getForecastedWeather()));
-                        a.setInterval(forecast.getTimeFromNow());
                         return a;
                     }
                 } else {
@@ -87,6 +88,11 @@ public class AlertGenerator {
             new IllegalArgumentException("Can't find a alert for " + currentWeather + " - " + forecast.getForecastedWeather(), e);
         }
         return null;
+    }
+
+    public String getAlertMessage(Alert alert, Interval interval) {
+        return interval == null ? alert.getAlertMessage().toString() : String.format(alert.getAlertMessage().toString(),
+                UiUtil.getDebugOnlyPeriodFormatter().print(new Period(interval)));
     }
 
     public int generateMascot(Weather weather) {
