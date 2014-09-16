@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
+import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
@@ -239,7 +239,7 @@ public class DebugActivity extends Activity {
                     sunsetTime,                    
                     removeWrongForecasts(weatherTransitionsList));
 
-            cardMessageTextView.setText(forecastTable.toString());
+            cardMessageTextView.setText(new DaySummaryGenerator(this).getDaySummary(forecastTable).getDayMessage());
             findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
             AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
         }
