@@ -41,7 +41,7 @@ public class AlarmHelper {
         } else {
             nextIntervalAlarmTime = forecastList.get(0).getTimeFromNow();
         }
-        Interval nextAlarmTimePeriod = nextWeatherCallAlarmTime(nextIntervalAlarmTime);
+        long nextAlarmTimePeriod = nextWeatherCallAlarmTime(nextIntervalAlarmTime);
 
         weatherAlarmIntent.cancel();
         weatherAlarmIntent = PendingIntent.getService(
@@ -54,7 +54,7 @@ public class AlarmHelper {
             am.cancel(weatherAlarmIntent);
             am.setInexactRepeating(
                     AlarmManager.RTC_WAKEUP,
-                    nextAlarmTimePeriod.getEndMillis(),
+                    nextAlarmTimePeriod,
                     10 * DateTimeConstants.MILLIS_PER_MINUTE,
                     weatherAlarmIntent);
             if (!forecastList.isEmpty()) {
@@ -66,12 +66,12 @@ public class AlarmHelper {
                 );
                 Timber.tag(TAG).i("Schedule an alarm for %s from now. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
-                                new Period(nextAlarmTimePeriod))
+                                new Period(new Interval(System.currentTimeMillis(), nextAlarmTimePeriod)))
                 );
             } else {
                 Timber.tag(TAG).i("Schedule an alarm for %s from now, we don't expect changes. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
-                                new Period(nextAlarmTimePeriod))
+                                new Period(new Interval(System.currentTimeMillis(), nextAlarmTimePeriod)))
                 );
             }
         }
@@ -83,26 +83,19 @@ public class AlarmHelper {
      * event (usually a weather transition we care about). The logic is:
      *
      * <ol>
-     * <li>Less than 10 minutes away: set it at the exact time of the event</li>
+     * <li>Less than 20 minutes away: set it an hour from now</li>
      * <li>Less than 2 hours away: set it at 70% of the time between now and the event</li>
      * <li>Other cases: set it an hour from now</li>
      * </ol>
      *
-     * TODO: Review this logic. Especially for the first condition
-     * TODO: Make this method private
-     * TODO: Return the time in a different format. It's not an interval, it's really a time differential
-     *
      * @param interval interval of time between now and the next relevant event
      * @return interval between now and the time that the caller should set for the next alarm
      */
-    public static Interval nextWeatherCallAlarmTime(Interval interval) {
-        if (interval.toDurationMillis() < 10 * DateTimeConstants.MILLIS_PER_MINUTE) {
-            return interval;
-        } else if (interval.toDurationMillis() < 2 * DateTimeConstants.MILLIS_PER_HOUR){
-            return new Interval(interval.getStartMillis(),
-                    interval.getStartMillis() + getTimePeriodPercentage(interval.toDurationMillis(), 70));
+    private static long nextWeatherCallAlarmTime(Interval interval) {
+        if (interval.toDurationMillis() < 90 * DateTimeConstants.MILLIS_PER_MINUTE) {
+            return interval.getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR;
         } else {
-            return new Interval(interval.getStartMillis(), interval.getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
+            return interval.getStartMillis() + getTimePeriodPercentage(interval.toDurationMillis(), 70);
         }
     }
 

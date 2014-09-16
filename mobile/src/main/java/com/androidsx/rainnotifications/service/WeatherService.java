@@ -61,7 +61,7 @@ public class WeatherService extends Service {
                         } else {
                             final Forecast forecast = forecastTable.getForecasts().get(0);
                             final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
-                            if (shouldLaunchNotification(AlarmHelper.nextWeatherCallAlarmTime(forecast.getTimeFromNow()))) {
+                            if (shouldLaunchNotification(forecast.getTimeFromNow().getEndMillis() - System.currentTimeMillis())) {
                                 Timber.i("Will display notification for " + alert);
                                 NotificationHelper.displayCustomNotification(WeatherService.this, alert);
                             } else {
@@ -108,8 +108,8 @@ public class WeatherService extends Service {
      *
      * @param nextAlarmTimePeriod
      */
-    private boolean shouldLaunchNotification(Interval nextAlarmTimePeriod) {
-        if (nextAlarmTimePeriod.toDurationMillis() < ONE_HOUR_MILLIS) {
+    private boolean shouldLaunchNotification(long nextAlarmTimePeriod) {
+        if (nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
             return true;
         } else {
             return false;

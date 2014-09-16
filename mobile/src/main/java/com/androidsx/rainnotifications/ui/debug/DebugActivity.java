@@ -37,6 +37,7 @@ import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
 import org.joda.time.Minutes;
 
@@ -208,7 +209,8 @@ public class DebugActivity extends Activity {
 
             alertLevelTextView.setText("Alert level: " + alert.getAlertLevel());
             alertLevelTextView.setVisibility(View.VISIBLE);
-            nextAlarmTextView.setText("Next alarm: " + AlarmHelper.nextWeatherCallAlarmTime(intervalUntilWeatherChange).toPeriod().getMinutes() + " minutes from now");
+            Interval alarmTime = new Interval(timeNow.getMillis(), nextWeatherCallAlarmTime(intervalUntilWeatherChange));
+            nextAlarmTextView.setText("Next alarm: " + alarmTime.toPeriod().getHours() + " hours and " + alarmTime.toPeriod().getMinutes() + " minutes from now");
             nextAlarmTextView.setVisibility(View.VISIBLE);
 
             findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
@@ -387,5 +389,24 @@ public class DebugActivity extends Activity {
         sunPhaseTime = sunPhaseTime.hourOfDay().setCopy(hour);
         sunPhaseTime = sunPhaseTime.minuteOfHour().setCopy(minute);
         return sunPhaseTime;
+    }
+
+    private static long nextWeatherCallAlarmTime(Interval interval) {
+        if (interval.toDurationMillis() < 90 * DateTimeConstants.MILLIS_PER_MINUTE) {
+            return interval.getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR;
+        } else {
+            return interval.getStartMillis() + getTimePeriodPercentage(interval.toDurationMillis(), 70);
+        }
+    }
+
+    /**
+     * Method for obtain a percentage time in milliseconds of an interval.
+     *
+     * @param time
+     * @param percentage
+     * @return long - period in milliseconds
+     */
+    private static long getTimePeriodPercentage(long time, int percentage) {
+        return time * percentage / 100;
     }
 }
