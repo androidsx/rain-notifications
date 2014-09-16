@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class DayMessage {
+public class DaySummary {
     private final Random random = new Random();
     private WeatherType morningWeather;
     private WeatherType afternoonWeather;
