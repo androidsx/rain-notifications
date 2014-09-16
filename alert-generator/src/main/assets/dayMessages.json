@@ -1,0 +1,146 @@
+[
+  {
+	"morningWeather" : "CLEAR",
+	"afternoonWeather" : "CLEAR",
+	"dayMessages" : { 
+		"en" : [
+			"Good luck! Today will shine the sun all the day."
+			]
+	}
+  },
+  {
+	"morningWeather" : "CLEAR",
+	"afternoonWeather" : "PARTLY_CLOUDY",
+	"dayMessages" : { 
+		"en" : [
+		"Ouch! This afternoon you probably have to take your umbrella."
+		]
+	}
+  },
+  {
+	"morningWeather" : "CLEAR",
+	"afternoonWeather" : "CLOUDY",
+	"dayMessages" : { 
+		"en" : [
+		"Looks like it will be cloudy in the afternoon, enjoy the morning sun."
+		]
+	}
+  },
+  {
+	"morningWeather" : "CLEAR",
+	"afternoonWeather" : "RAIN",
+	"dayMessages" : { 
+		"en" : [
+		"Ouch! This afternoon you probably have to take your umbrella."
+		]
+	}
+  },
+  {
+	"morningWeather" : "PARTLY_CLOUDY",
+	"afternoonWeather" : "PARTLY_CLOUDY",
+	"dayMessages" : { 
+		"en" : [
+			"Today will be partly cloudy all the day."
+			]
+	}
+  },
+  {
+	"morningWeather" : "PARTLY_CLOUDY",
+	"afternoonWeather" : "CLOUDY",
+	"dayMessages" : { 
+		"en" : [
+		"Parly cloudy to cloudy."
+		]
+	}
+  },
+  {
+	"morningWeather" : "PARTLY_CLOUDY",
+	"afternoonWeather" : "RAIN",
+	"dayMessages" : { 
+		"en" : [
+		"Partly cloudy to rain."
+		]
+	}
+  },
+  {
+	"morningWeather" : "PARTLY_CLOUDY",
+	"afternoonWeather" : "CLEAR",
+	"dayMessages" : { 
+		"en" : [
+		"Partly cloudy to clear."
+		]
+	}
+  },
+  {
+	"morningWeather" : "CLOUDY",
+	"afternoonWeather" : "CLOUDY",
+	"dayMessages" : { 
+		"en" : [
+			"Today will be cloudy all the day."
+			]
+	}
+  },
+  {
+	"morningWeather" : "CLOUDY",
+	"afternoonWeather" : "RAIN",
+	"dayMessages" : { 
+		"en" : [
+		"Parly cloudy to cloudy."
+		]
+	}
+  },
+  {
+	"morningWeather" : "CLOUDY",
+	"afternoonWeather" : "PARTLY_CLOUDY",
+	"dayMessages" : { 
+		"en" : [
+		"Partly cloudy to rain."
+		]
+	}
+  },
+  {
+	"morningWeather" : "CLOUDY",
+	"afternoonWeather" : "CLEAR",
+	"dayMessages" : { 
+		"en" : [
+		"Partly cloudy to clear."
+		]
+	}
+  },
+  {
+	"morningWeather" : "RAIN",
+	"afternoonWeather" : "RAIN",
+	"dayMessages" : { 
+		"en" : [
+			"Today will be rainy all the day."
+			]
+	}
+  },
+  {
+	"morningWeather" : "RAIN",
+	"afternoonWeather" : "CLOUDY",
+	"dayMessages" : { 
+		"en" : [
+		"Parly cloudy to cloudy."
+		]
+	}
+  },
+  {
+	"morningWeather" : "RAIN",
+	"afternoonWeather" : "PARTLY_CLOUDY",
+	"dayMessages" : { 
+		"en" : [
+		"Partly cloudy to rain."
+		]
+	}
+  },
+  {
+	"morningWeather" : "RAIN",
+	"afternoonWeather" : "CLEAR",
+	"dayMessages" : { 
+		"en" : [
+		"Partly cloudy to clear."
+		]
+	}
+  }
+]
