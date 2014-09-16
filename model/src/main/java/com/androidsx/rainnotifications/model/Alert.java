@@ -20,10 +20,6 @@ public class Alert {
         return alertLevel;
     }
 
-    public HashMap<String,List<String>> getAlertMessages() {
-        return alertMessages;
-    }
-
     public WeatherType getFromType() {
         return this.fromType;
     }
@@ -41,20 +37,19 @@ public class Alert {
     }
 
     public AlertMessage getAlertMessage() {
-        return new AlertMessage(pickRandom(getAlertMessages().get("en"), random));
+        return new AlertMessage(pickRandom(alertMessages.get("en"), random));
     }
 
     @Override
     public String toString() {
-        String output = "";
-        output += "Alert Level: " + alertLevel + "\nfrom: " + fromType + "\nto: " + toType + "\n";
-        if(getAlertMessages().containsKey("en")) {
-            for(String s : getAlertMessages().get("en")) {
+        String output = "Alert Level: " + alertLevel + "\nfrom: " + fromType + "\nto: " + toType + "\n";
+        if(alertMessages.containsKey("en")) {
+            for(String s : alertMessages.get("en")) {
                 output += "Message (en): " + s + "\n";
             }
         }
-        if(getAlertMessages().containsKey("es")) {
-            for (String s : getAlertMessages().get("es")) {
+        if(alertMessages.containsKey("es")) {
+            for (String s : alertMessages.get("es")) {
                 output += "Message (es): " + s + "\n";
             }
         }
