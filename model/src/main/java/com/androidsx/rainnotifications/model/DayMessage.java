@@ -19,8 +19,8 @@ public class DayMessage {
         return afternoonWeather;
     }
 
-    public AlertMessage getDayMessage() {
-        return new AlertMessage(pickRandom(dayMessages.get("en"), random));
+    public String getDayMessage() {
+        return pickRandom(dayMessages.get("en"), random);
     }
 
     @Override
