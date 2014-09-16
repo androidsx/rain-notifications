@@ -83,9 +83,8 @@ public class AlarmHelper {
      * event (usually a weather transition we care about). The logic is:
      *
      * <ol>
-     * <li>Less than 20 minutes away: set it an hour from now</li>
-     * <li>Less than 2 hours away: set it at 70% of the time between now and the event</li>
-     * <li>Other cases: set it an hour from now</li>
+     * <li>Less than 90 minutes away: set it an hour from now</li>
+     * <li>Other cases: set it at 70% of the time between now and the event</li>
      * </ol>
      *
      * @param interval interval of time between now and the next relevant event
