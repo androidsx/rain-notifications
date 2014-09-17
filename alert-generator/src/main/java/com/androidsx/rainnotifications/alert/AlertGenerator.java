@@ -37,8 +37,42 @@ public class AlertGenerator {
     private final Random random = new Random();
     private final Context context;
 
+    private List<Alert> alerts;
+    private List<WeatherTypeMascots> mascots;
+
+    /**
+     * You must call the {@link #init} method after the constructor.
+     */
     public AlertGenerator(Context context) {
         this.context = context;
+    }
+
+    public void init() {
+        // Read the alerts from its JSON file
+        try {
+            final Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("alerts.json"));
+            final Alert[] jsonAlerts = new GsonBuilder().create().fromJson(jsonReader, Alert[].class);
+
+            this.alerts = Arrays.asList(jsonAlerts);
+        } catch (IOException e) {
+            throw new IllegalStateException("Can't parse the alerts JSON file", e);
+        }
+
+        // Read the mascots from its JSON file
+        try {
+            final Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("weatherTypeMascots.json"));
+            final WeatherTypeMascots[] jsonWeatherTypesMascots = new GsonBuilder().create().fromJson(jsonReader, WeatherTypeMascots[].class);
+
+            this.mascots = Arrays.asList(jsonWeatherTypesMascots);
+        } catch (IOException e) {
+            throw new IllegalStateException("Can't parse the weather type mascots JSON file", e);
+        }
+    }
+
+    /** For testing purposes only. */
+    void init(List<Alert> alerts, List<WeatherTypeMascots> mascots) {
+        this.alerts = alerts;
+        this.mascots = mascots;
     }
 
     /**
@@ -53,7 +87,11 @@ public class AlertGenerator {
      * @see #generateMascot
      */
     public Alert generateAlert(Weather currentWeather, Forecast forecast) {
-        for(Alert a : getAlertsList()) {
+        if (alerts == null || mascots == null) {
+            throw new IllegalStateException("Did you forget to call the init() method?");
+        }
+
+        for(Alert a : alerts) {
             if (forecast != null) {
                 if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(forecast.getForecastedWeather().getType())) {
                     a.setDressedMascot(generateMascot(forecast.getForecastedWeather()));
@@ -71,16 +109,16 @@ public class AlertGenerator {
     }
 
     private int generateMascot(Weather weather) {
-        final List<Integer> mascots = new ArrayList<Integer>();
-        for (WeatherTypeMascots wtm : getWeatherTypeMascotsList()) {
+        final List<Integer> mascotsForThisWeather = new ArrayList<Integer>();
+        for (WeatherTypeMascots wtm : mascots) {
             if (wtm.getType().equals(weather.getType())) {
                 for (String s : wtm.getDressedMascots()) {
-                    mascots.add(context.getResources().getIdentifier(s, "drawable", context.getPackageName()));
+                    mascotsForThisWeather.add(context.getResources().getIdentifier(s, "drawable", context.getPackageName()));
                 }
             }
         }
 
-        return mascots.get(random.nextInt(mascots.size()));
+        return mascotsForThisWeather.get(random.nextInt(mascotsForThisWeather.size()));
     }
 
     /** Visibility raised from private for testing purposes. */
@@ -94,29 +132,5 @@ public class AlertGenerator {
                 .withLocale(locale);
 
         return durationFormatter.print(period);
-    }
-
-    // TODO: Avoid I/O for every call by caching the results
-    private List<Alert> getAlertsList() {
-        try {
-            final Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("alerts.json"));
-            final Alert[] jsonAlerts = new GsonBuilder().create().fromJson(jsonReader, Alert[].class);
-
-            return Arrays.asList(jsonAlerts);
-        } catch (IOException e) {
-            throw new IllegalStateException("Can't parse the alerts JSON file", e);
-        }
-    }
-
-    // TODO: Avoid I/O for every call by caching the results
-    private List<WeatherTypeMascots> getWeatherTypeMascotsList() {
-        try {
-            final Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("weatherTypeMascots.json"));
-            final WeatherTypeMascots[] jsonWeatherTypesMascots = new GsonBuilder().create().fromJson(jsonReader, WeatherTypeMascots[].class);
-
-            return Arrays.asList(jsonWeatherTypesMascots);
-        } catch (IOException e) {
-            throw new IllegalStateException("Can't parse the weather type mascots JSON file", e);
-        }
     }
 }

@@ -69,6 +69,7 @@ public class DebugActivity extends Activity {
 
         setContentView(R.layout.debug_layout);
         alertGenerator = new AlertGenerator(this);
+        alertGenerator.init();
 
         final TextView nowTimeText = (TextView) findViewById(R.id.now_text_view);
         final Button nowTimeButton = (Button) findViewById(R.id.now_time_button);

@@ -24,6 +24,7 @@ public class AlertGeneratorAlertMessagesTest {
     @Before
     public void setUp() {
         generator = new AlertGenerator(null);
+        generator.init();
     }
 
     @Test
