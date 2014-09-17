@@ -48,7 +48,8 @@ public class AlertGeneratorConfigProcessingTest {
         Assert.assertEquals(alert, generatedAlert);
     }
 
-    @Test(expected = IllegalStateException.class)
+    // Shall we have our own WrongConfigException?
+    @Test(expected = Exception.class)
     public void testTransitionNotDefinedThrowsException() {
         final AlertGenerator alertGenerator = new AlertGenerator(Robolectric.application);
 
