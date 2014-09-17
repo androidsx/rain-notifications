@@ -56,6 +56,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         alertGenerator = new AlertGenerator(this);
+        alertGenerator.init();
 
         setupUI();
 

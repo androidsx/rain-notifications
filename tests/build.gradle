@@ -23,6 +23,7 @@ android {
     buildToolsVersion "19.1.0"
 
     defaultConfig {
+        applicationId "com.androidsx.rain_notifications"
         minSdkVersion 19
         targetSdkVersion 19
         versionCode 2
@@ -49,6 +50,11 @@ android {
 robolectric {
     include '**/*Test.class'
     exclude '**/espresso/**/*.class'
+}
+
+// Temporary fix until https://github.com/robolectric/robolectric/issues/1150 is released
+tasks.withType(Test).whenTaskAdded {
+    it.systemProperty 'android.package', android.defaultConfig.applicationId
 }
 
 dependencies {

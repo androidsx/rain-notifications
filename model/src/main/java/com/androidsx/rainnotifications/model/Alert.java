@@ -10,11 +10,24 @@ import java.util.Random;
  */
 public class Alert {
     private final Random random = new Random();
-    private AlertLevel alertLevel;
     private WeatherType fromType;
     private WeatherType toType;
+    private AlertLevel alertLevel;
     private HashMap<String,List<String>> alertMessages;
     private int dressedMascot;
+
+    /** Empty constructor, for GSON. */
+    public Alert() {
+    }
+
+    /** Fully parameterized constructor, for tests. */
+    public Alert(WeatherType fromType, WeatherType toType, AlertLevel alertLevel, HashMap<String, List<String>> alertMessages, int dressedMascot) {
+        this.fromType = fromType;
+        this.toType = toType;
+        this.alertLevel = alertLevel;
+        this.alertMessages = alertMessages;
+        this.dressedMascot = dressedMascot;
+    }
 
     public AlertLevel getAlertLevel() {
         return alertLevel;
