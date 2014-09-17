@@ -15,11 +15,13 @@ import java.io.FileInputStream;
 import java.util.Locale;
 
 /**
- * Tests for the alert levels within {@link AlertGenerator}. We use the production config.
+ * Tests for the period to string method inside {@link AlertGenerator}.
+ *
+ * TODO: This is a fairly ridiculous suite of tests that should be deleted ASAP
  */
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
-public class AlertGeneratorAlertMessagesTest {
+public class PeriodToStringTest {
     private AlertGenerator generator;
 
     @Before
