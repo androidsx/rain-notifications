@@ -2,7 +2,8 @@ package com.example.robolectric;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.example.R;
+
+import com.androidsx.rain_notifications.R;
 
 public class DeckardActivity extends Activity {
 

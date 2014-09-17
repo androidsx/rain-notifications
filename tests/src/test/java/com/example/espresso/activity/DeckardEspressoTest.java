@@ -2,7 +2,8 @@ package com.example.espresso.activity;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.suitebuilder.annotation.LargeTest;
-import com.example.R;
+
+import com.androidsx.rain_notifications.R;
 import com.example.robolectric.DeckardActivity;
 
 import static com.google.android.apps.common.testing.ui.espresso.Espresso.onView;
@@ -19,7 +20,7 @@ public class DeckardEspressoTest extends ActivityInstrumentationTestCase2<Deckar
     @SuppressWarnings("deprecation")
      public DeckardEspressoTest() {
        // This constructor was deprecated - but we want to support lower API levels.
-       super("com.example.activity", DeckardActivity.class);
+       super("com.androidsx.rain_notifications", DeckardActivity.class);
      }
     @Override
     public void setUp() throws Exception {
