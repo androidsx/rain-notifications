@@ -18,6 +18,7 @@ import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 
+import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
 
@@ -97,8 +98,8 @@ public class WeatherService extends Service {
         AlarmHelper.setAlarm(
                 WeatherService.this,
                 weatherAlarmIntent,
-                forecastTable.getBaselineWeather(),
-                forecastTable.getForecasts()
+                AlarmHelper.computeNextAlarmTime(forecastTable),
+                forecastTable
         );
     }
 
@@ -106,10 +107,10 @@ public class WeatherService extends Service {
      * Method for determine if a notification is launched,
      * depending on the next alarm time period passed as a param.
      *
-     * @param nextAlarmTimePeriod
+     * @param nextForecastTimePeriod
      */
-    private boolean shouldLaunchNotification(long nextAlarmTimePeriod) {
-        if (nextAlarmTimePeriod < ONE_HOUR_MILLIS) {
+    private boolean shouldLaunchNotification(long nextForecastTimePeriod) {
+        if (nextForecastTimePeriod < ONE_HOUR_MILLIS) {
             return true;
         } else {
             return false;

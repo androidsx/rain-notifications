@@ -209,7 +209,8 @@ public class DebugActivity extends Activity {
 
             alertLevelTextView.setText("Alert level: " + alert.getAlertLevel());
             alertLevelTextView.setVisibility(View.VISIBLE);
-            Interval alarmTime = new Interval(timeNow.getMillis(), nextWeatherCallAlarmTime(intervalUntilWeatherChange));
+            ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), timeNow, getSunMockPhaseTime(7, 45), getSunMockPhaseTime(20, 30), removeWrongForecasts(weatherTransitionsList));
+            Interval alarmTime = new Interval(timeNow.getMillis(), AlarmHelper.computeNextAlarmTime(forecastTable).getMillis());
             nextAlarmTextView.setText("Next alarm: " + alarmTime.toPeriod().getHours() + " hours and " + alarmTime.toPeriod().getMinutes() + " minutes from now");
             nextAlarmTextView.setVisibility(View.VISIBLE);
 
@@ -389,24 +390,5 @@ public class DebugActivity extends Activity {
         sunPhaseTime = sunPhaseTime.hourOfDay().setCopy(hour);
         sunPhaseTime = sunPhaseTime.minuteOfHour().setCopy(minute);
         return sunPhaseTime;
-    }
-
-    private static long nextWeatherCallAlarmTime(Interval interval) {
-        if (interval.toDurationMillis() < 90 * DateTimeConstants.MILLIS_PER_MINUTE) {
-            return interval.getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR;
-        } else {
-            return interval.getStartMillis() + getTimePeriodPercentage(interval.toDurationMillis(), 70);
-        }
-    }
-
-    /**
-     * Method for obtain a percentage time in milliseconds of an interval.
-     *
-     * @param time
-     * @param percentage
-     * @return long - period in milliseconds
-     */
-    private static long getTimePeriodPercentage(long time, int percentage) {
-        return time * percentage / 100;
     }
 }
