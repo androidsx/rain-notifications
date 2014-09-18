@@ -30,6 +30,10 @@ public class ForecastTable {
         return baselineWeather;
     }
 
+    public DateTime getBaselineTime() {
+        return baselineTime;
+    }
+
     public DateTime getSunriseTime() {
         return sunriseTime;
     }
