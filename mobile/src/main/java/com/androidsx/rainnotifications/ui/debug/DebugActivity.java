@@ -29,11 +29,13 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
+import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.AnimationHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
+import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTime;
@@ -70,6 +72,10 @@ public class DebugActivity extends Activity {
 
         setContentView(R.layout.debug_layout);
         alertGenerator = new AlertGenerator(getResources());
+
+        final DateTime savedAlarmTime = new DateTime(SharedPrefsHelper.getLongValue(this, AlarmHelper.NEXT_ALARM_TIME));
+        final TextView realAlarmTime = (TextView) findViewById(R.id.real_alarm_time);
+        realAlarmTime.setText("Next alarm at " + savedAlarmTime.getHourOfDay() + ":" + savedAlarmTime.getMinuteOfHour());
 
         final TextView nowTimeText = (TextView) findViewById(R.id.now_text_view);
         final Button nowTimeButton = (Button) findViewById(R.id.now_time_button);
