@@ -23,7 +23,7 @@ import timber.log.Timber;
 
 public class AlarmHelper {
     private static final String TAG = AlarmHelper.class.getSimpleName();
-    private static final String NEXT_ALARM_TIME = "next_alarm_time";
+    public static final String NEXT_ALARM_TIME = "next_alarm_time";
 
     private AlarmHelper() {
         //No-instantiate
