@@ -1,10 +1,14 @@
 package com.androidsx.rainnotifications.alert;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.DaySummary;
+import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.google.gson.GsonBuilder;
 
@@ -28,7 +32,7 @@ public class DaySummaryGenerator {
 
     private final Context context;
 
-    private List<DaySummary> dayMessages;
+    private List<DaySummary> daySummarys;
 
     public DaySummaryGenerator(Context context) {
         this.context = context;
@@ -47,9 +51,11 @@ public class DaySummaryGenerator {
 
     public void init(InputStream dayMessagesJsonInputStream) {
         final Reader jsonReader = new InputStreamReader(dayMessagesJsonInputStream);
-        final DaySummary[] jsonDaySummaries = new GsonBuilder().create().fromJson(jsonReader, DaySummary[].class);
+        final GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(DaySummary.class, new DaySummaryDeserializer());
+        final DaySummary[] jsonDaySummaries = gsonBuilder.create().fromJson(jsonReader, DaySummary[].class);
 
-        dayMessages = Arrays.asList(jsonDaySummaries);
+        daySummarys = Arrays.asList(jsonDaySummaries);
     }
 
     public DaySummary getDaySummary(ForecastTable forecastTable) {
@@ -122,9 +128,12 @@ public class DaySummaryGenerator {
 
     private DaySummary getDaySummary(WeatherType morning, WeatherType afternoon) {
 
-        for (DaySummary daySummary : dayMessages) {
-            if(daySummary.getMorningWeather().equals(morning) && daySummary.getAfternoonWeather().equals(afternoon)) {
-                return daySummary;
+        for (DaySummary daySummary : daySummarys) {
+            if (!daySummary.getMorning().isEmpty() && !daySummary.getAfternoon().isEmpty()) {
+                if (daySummary.getMorning().get(WeatherPriority.primary).getType().equals(morning)
+                        && daySummary.getAfternoon().get(WeatherPriority.primary).getType().equals(afternoon)) {
+                    return daySummary;
+                }
             }
         }
 
