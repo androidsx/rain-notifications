@@ -40,7 +40,7 @@ public class WeatherService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        alertGenerator = new AlertGenerator(getResources());
+        alertGenerator = new AlertGenerator(this);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class WeatherService extends Service {
                             final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
                             if (shouldLaunchNotification(forecast.getTimeFromNow().getEndMillis() - System.currentTimeMillis())) {
                                 Timber.i("Will display notification for " + alert);
-                                NotificationHelper.displayCustomNotification(WeatherService.this, alert);
+                                NotificationHelper.displayCustomNotification(WeatherService.this, alert, forecast.getTimeFromNow());
                             } else {
                                 Timber.d("No notification for now. The alert was " + alert);
                             }

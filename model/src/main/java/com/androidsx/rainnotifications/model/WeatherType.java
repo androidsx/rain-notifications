@@ -11,6 +11,9 @@ public enum WeatherType {
     RAIN,
     CLOUDY,
     PARTLY_CLOUDY,
+    CLEAR_NIGHT,
+    CLOUDY_NIGHT,
+    PARTLY_CLOUDY_NIGHT,
 
     /**
      * This is a weather type that is unknown for us, but it could be a valid one in the data

@@ -11,9 +11,12 @@ import android.support.v4.app.NotificationManagerCompat;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
+import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.google.android.gms.wearable.NodeApi;
+
+import org.joda.time.Interval;
 
 /*
  * Helper to build and display notifications on mobile and wear.
@@ -27,7 +30,7 @@ public class NotificationHelper {
     /**
      * If wear is connected, only to wear. Otherwise, standard one.
      */
-    public static void displayCustomNotification(final Context context, final Alert alert) {
+    public static void displayCustomNotification(final Context context, final Alert alert, final Interval interval) {
         new WearNotificationManager(context) {
             @Override
             public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
@@ -35,14 +38,14 @@ public class NotificationHelper {
                     if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
                                 context,
-                                alert.getAlertMessage().getNotificationMessage(),
+                                alert.getAlertMessage().getNotificationMessage(interval),
                                 alert.getDressedMascot()
                         );
                     } else {
                         NotificationHelper.displayStandardNotification(
                                 context,
                                 MainMobileActivity.class,
-                                alert.getAlertMessage().getNotificationMessage(),
+                                alert.getAlertMessage().getNotificationMessage(interval),
                                 BitmapFactory.decodeResource(context.getResources(), alert.getDressedMascot())
                         );
                     }
@@ -50,7 +53,7 @@ public class NotificationHelper {
                     NotificationHelper.displayStandardNotification(
                             context,
                             MainMobileActivity.class,
-                            alert.getAlertMessage().getNotificationMessage(),
+                            alert.getAlertMessage().getNotificationMessage(interval),
                             BitmapFactory.decodeResource(context.getResources(), alert.getDressedMascot())
                     );
                 }
