@@ -41,6 +41,7 @@ public class WeatherService extends Service {
         super.onCreate();
 
         alertGenerator = new AlertGenerator(this);
+        alertGenerator.init();
     }
 
     @Override
