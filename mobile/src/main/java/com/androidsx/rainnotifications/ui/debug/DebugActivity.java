@@ -240,7 +240,9 @@ public class DebugActivity extends Activity {
                     sunsetTime,                    
                     removeWrongForecasts(weatherTransitionsList));
 
-            cardMessageTextView.setText(new DaySummaryGenerator(this).getDaySummary(forecastTable).getDayMessage());
+            final DaySummaryGenerator daySummaryGenerator = new DaySummaryGenerator(this);
+            daySummaryGenerator.init();
+            cardMessageTextView.setText(daySummaryGenerator.getDaySummary(forecastTable).getDayMessage());
             findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
             AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
         }

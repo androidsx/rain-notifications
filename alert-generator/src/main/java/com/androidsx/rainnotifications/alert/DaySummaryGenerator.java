@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -27,8 +28,28 @@ public class DaySummaryGenerator {
 
     private final Context context;
 
+    private List<DaySummary> dayMessages;
+
     public DaySummaryGenerator(Context context) {
         this.context = context;
+    }
+
+    public void init() {
+        final InputStream dayMessagesJsonInputStream;
+        try {
+            dayMessagesJsonInputStream = context.getResources().getAssets().open("dayMessages.json");
+        } catch (IOException e) {
+            throw new IllegalStateException("Can't parse the day messages JSON file", e);
+        }
+
+        init(dayMessagesJsonInputStream);
+    }
+
+    public void init(InputStream dayMessagesJsonInputStream) {
+        final Reader jsonReader = new InputStreamReader(dayMessagesJsonInputStream);
+        final DaySummary[] jsonDaySummaries = new GsonBuilder().create().fromJson(jsonReader, DaySummary[].class);
+
+        dayMessages = Arrays.asList(jsonDaySummaries);
     }
 
     public DaySummary getDaySummary(ForecastTable forecastTable) {
@@ -101,25 +122,12 @@ public class DaySummaryGenerator {
 
     private DaySummary getDaySummary(WeatherType morning, WeatherType afternoon) {
 
-        for (DaySummary daySummary : getDaySummaryList()) {
+        for (DaySummary daySummary : dayMessages) {
             if(daySummary.getMorningWeather().equals(morning) && daySummary.getAfternoonWeather().equals(afternoon)) {
                 return daySummary;
             }
         }
 
         throw new IllegalStateException("Unable to find a suitable DaySummary for morning " + morning + " and afternoon " + afternoon);
-    }
-
-
-    // TODO: Avoid I/O for every call by caching the results
-    private List<DaySummary> getDaySummaryList() {
-        try {
-            final Reader jsonReader = new InputStreamReader(context.getResources().getAssets().open("dayMessages.json"));
-            final DaySummary[] jsonDaySummaries = new GsonBuilder().create().fromJson(jsonReader, DaySummary[].class);
-
-            return Arrays.asList(jsonDaySummaries);
-        } catch (IOException e) {
-            throw new IllegalStateException("Can't parse the dayMessages JSON file", e);
-        }
     }
 }
