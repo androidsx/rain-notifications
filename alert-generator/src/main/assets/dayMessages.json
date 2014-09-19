@@ -1,146 +1,377 @@
 [
-  {
-	"morningWeather" : "CLEAR",
-	"afternoonWeather" : "CLEAR",
-	"dayMessages" : { 
-		"en" : [
-			"Good luck! Today will shine the sun all the day."
-			]
-	}
-  },
-  {
-	"morningWeather" : "CLEAR",
-	"afternoonWeather" : "PARTLY_CLOUDY",
-	"dayMessages" : { 
-		"en" : [
-		"Ouch! This afternoon you probably have to take your umbrella."
-		]
-	}
-  },
-  {
-	"morningWeather" : "CLEAR",
-	"afternoonWeather" : "CLOUDY",
-	"dayMessages" : { 
-		"en" : [
-		"Looks like it will be cloudy in the afternoon, enjoy the morning sun."
-		]
-	}
-  },
-  {
-	"morningWeather" : "CLEAR",
-	"afternoonWeather" : "RAIN",
-	"dayMessages" : { 
-		"en" : [
-		"Ouch! This afternoon you probably have to take your umbrella."
-		]
-	}
-  },
-  {
-	"morningWeather" : "PARTLY_CLOUDY",
-	"afternoonWeather" : "PARTLY_CLOUDY",
-	"dayMessages" : { 
-		"en" : [
-			"Today will be partly cloudy all the day."
-			]
-	}
-  },
-  {
-	"morningWeather" : "PARTLY_CLOUDY",
-	"afternoonWeather" : "CLOUDY",
-	"dayMessages" : { 
-		"en" : [
-		"Parly cloudy to cloudy."
-		]
-	}
-  },
-  {
-	"morningWeather" : "PARTLY_CLOUDY",
-	"afternoonWeather" : "RAIN",
-	"dayMessages" : { 
-		"en" : [
-		"Partly cloudy to rain."
-		]
-	}
-  },
-  {
-	"morningWeather" : "PARTLY_CLOUDY",
-	"afternoonWeather" : "CLEAR",
-	"dayMessages" : { 
-		"en" : [
-		"Partly cloudy to clear."
-		]
-	}
-  },
-  {
-	"morningWeather" : "CLOUDY",
-	"afternoonWeather" : "CLOUDY",
-	"dayMessages" : { 
-		"en" : [
-			"Today will be cloudy all the day."
-			]
-	}
-  },
-  {
-	"morningWeather" : "CLOUDY",
-	"afternoonWeather" : "RAIN",
-	"dayMessages" : { 
-		"en" : [
-		"Parly cloudy to cloudy."
-		]
-	}
-  },
-  {
-	"morningWeather" : "CLOUDY",
-	"afternoonWeather" : "PARTLY_CLOUDY",
-	"dayMessages" : { 
-		"en" : [
-		"Partly cloudy to rain."
-		]
-	}
-  },
-  {
-	"morningWeather" : "CLOUDY",
-	"afternoonWeather" : "CLEAR",
-	"dayMessages" : { 
-		"en" : [
-		"Partly cloudy to clear."
-		]
-	}
-  },
-  {
-	"morningWeather" : "RAIN",
-	"afternoonWeather" : "RAIN",
-	"dayMessages" : { 
-		"en" : [
-			"Today will be rainy all the day."
-			]
-	}
-  },
-  {
-	"morningWeather" : "RAIN",
-	"afternoonWeather" : "CLOUDY",
-	"dayMessages" : { 
-		"en" : [
-		"Parly cloudy to cloudy."
-		]
-	}
-  },
-  {
-	"morningWeather" : "RAIN",
-	"afternoonWeather" : "PARTLY_CLOUDY",
-	"dayMessages" : { 
-		"en" : [
-		"Partly cloudy to rain."
-		]
-	}
-  },
-  {
-	"morningWeather" : "RAIN",
-	"afternoonWeather" : "CLEAR",
-	"dayMessages" : { 
-		"en" : [
-		"Partly cloudy to clear."
-		]
-	}
-  }
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "messages": {
+            "en": [
+                "Seems today is going to rain in the morning"
+            ]
+        }
+    },
+    {
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "messages": {
+            "en": [
+                "Seems today is going to rain in the afternoon"
+            ]
+        }
+    },
+        {
+        "evening": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "messages": {
+            "en": [
+                "Seems today is going to rain in the evening"
+            ]
+        }
+    },
+    {
+        "morning": {
+            "night": {
+                "weatherType": "RAIN"
+            }
+        },
+        "messages": {
+            "en": [
+                "Seems tonight is going to be rain"
+            ]
+        }
+    },
+
+
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "messages": {
+            "en": [
+                "Take your umbrella, it is going to rain all day"
+            ]
+        }
+    },
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "*"
+            }
+        },
+        "messages": {
+            "en": [
+                "It is going to rain almost all day, it may stop during the night"
+            ]
+        }
+    },
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "*"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "*"
+            }
+        },
+        "messages": {
+            "en": [
+                "It is going to rain almost all day, it may stop during the evening"
+            ]
+        }
+    },
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "*"
+            }
+        },
+        "messages": {
+            "en": [
+                "The rain is not going to stop until late afternoon, with the sun appearing during the evening"
+            ]
+        }
+    },
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "messages": {
+            "en": [
+                "Sunny almost all day, but it may rain a bit in the afternoon"
+            ]
+        }
+    },
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "CLOUDY"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "CLOUDY"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "CLOUDY"
+            }
+        },
+        "messages": {
+            "en": [
+                "Cloudy almost all day, but it may rain in the afternoon"
+            ]
+        }
+    },
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "*"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "*"
+            }
+        },
+        "messages": {
+            "en": [
+                "Sunny in the morning, but take an umbrella just in case as it may rain in the afternoon"
+            ]
+        }
+    }, 
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "*"
+            }
+        },
+        "messages": {
+            "en": [
+                "Sunny weather until late afternoon, but take an umbrella for the evening"
+            ]
+        }
+    },    
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "CLOUDY"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "CLOUDY"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "CLOUDY"
+            }
+        },
+        "messages": {
+            "en": [
+                "Cloudy all day, although it may rain in the afternoon"
+            ]
+        }
+    },    
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "messages": {
+            "en": [
+                "Enjoy your sunny day and watch from home how it rains during the night"
+            ]
+        }
+    },
+
+        {
+        "morning": {
+            "primary": {
+                "weatherType": "CLEAR"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "CLOUDY"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "*"
+            }
+        },
+        "messages": {
+            "en": [
+                "Sunny in the morning, cloudy in the afternoon and then unfortunately rain in the evening."
+            ]
+        }
+    },
+    {
+        "morning": {
+            "primary": {
+                "weatherType": "RAIN"
+            }
+        },
+        "afternoon": {
+            "primary": {
+                "weatherType": "CLOUDY"
+            }
+        },
+        "evening": {
+            "primary": {
+                "weatherType": "CLOUDY"
+            }
+        },
+        "night": {
+            "primary": {
+                "weatherType": "*"
+            }
+        },
+        "messages": {
+            "en": [
+                "Take your umbrella for the morning, as most likely it is going to stop in the afternoon"
+            ]
+        }
+    }
 ]
