@@ -110,10 +110,14 @@ public class DaySummary {
         return new ArrayList<T>(list).get(random.nextInt(list.size()));
     }
 
-    public class WeatherWrapper {
-            private WeatherType weatherType;
+    public static class WeatherWrapper {
+        private WeatherType weatherType;
 
-            public WeatherType getType() {
+        public WeatherWrapper(WeatherType weatherType) {
+            this.weatherType = weatherType;
+        }
+
+        public WeatherType getType() {
                 return weatherType;
             }
     }
