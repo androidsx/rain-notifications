@@ -14,7 +14,6 @@ import timber.log.Timber;
 
 public class RainApplication extends Application {
     private static final int HOUR_OF_THE_DAY = 8;
-    public static final String EXTRA_DAY_ALARM = "extra_day_alarm";
 
     private static RainApplication instance;
 
@@ -91,7 +90,7 @@ public class RainApplication extends Application {
             final PendingIntent dayAlarmIntent = PendingIntent.getService(
                     this,
                     Constants.AlarmId.DAY_ALARM_ID,
-                    new Intent(this, WeatherService.class).putExtra(EXTRA_DAY_ALARM, Constants.AlarmId.DAY_ALARM_ID),
+                    new Intent(this, WeatherService.class).putExtra(Constants.Extras.EXTRA_DAY_ALARM, Constants.AlarmId.DAY_ALARM_ID),
                     0);
             AlarmHelper.setDayAlarm(this, HOUR_OF_THE_DAY, dayAlarmIntent);
         } else {
