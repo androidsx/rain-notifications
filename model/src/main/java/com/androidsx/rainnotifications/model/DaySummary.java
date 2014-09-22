@@ -120,5 +120,10 @@ public class DaySummary {
         public WeatherType getType() {
                 return weatherType;
             }
+
+        @Override
+        public String toString() {
+            return weatherType.toString();
+        }
     }
 }
