@@ -20,6 +20,11 @@ public enum WeatherType {
     WHATEVER,
 
     /**
+     * This is a weather type that is undefined on dayMessages.json
+     */
+    UNDEFINED,
+
+    /**
      * This is a weather type that is unknown for us, but it could be a valid one in the data
      * source, after all.
      */

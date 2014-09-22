@@ -16,59 +16,11 @@ public class DaySummaryDeserializer implements JsonDeserializer {
     @Override
     public DaySummary deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         final JsonObject jsonObject = json.getAsJsonObject();
-
         final DaySummary daySummary = new DaySummary();
-        DaySummary.WeatherWrapper primaryWeatherWrapper;
-        DaySummary.WeatherWrapper secondaryWeatherWrapper;
-        HashMap<WeatherPriority,DaySummary.WeatherWrapper> morning = new HashMap<WeatherPriority,DaySummary.WeatherWrapper>();
-        HashMap<WeatherPriority,DaySummary.WeatherWrapper> afternoon = new HashMap<WeatherPriority,DaySummary.WeatherWrapper>();
-        HashMap<WeatherPriority,DaySummary.WeatherWrapper> evening = new HashMap<WeatherPriority,DaySummary.WeatherWrapper>();
-        HashMap<WeatherPriority,DaySummary.WeatherWrapper> night = new HashMap<WeatherPriority,DaySummary.WeatherWrapper>();
+
         HashMap<String,List<String>> messages = new HashMap<String,List<String>>();
-
-        if(jsonObject.has(DayPeriod.morning.toString())) {
-            JsonObject jsonMorning = (JsonObject) jsonObject.get(DayPeriod.morning.toString());
-            primaryWeatherWrapper = context.deserialize(jsonMorning.get(WeatherPriority.primary.toString()), DaySummary.WeatherWrapper.class);
-            morning.put(WeatherPriority.primary, primaryWeatherWrapper);
-            if (jsonObject.has(WeatherPriority.secondary.toString())) {
-                secondaryWeatherWrapper = context.deserialize(jsonMorning.get(WeatherPriority.secondary.toString()), DaySummary.WeatherWrapper.class);
-                morning.put(WeatherPriority.secondary, secondaryWeatherWrapper);
-            }
-        }
-        if(jsonObject.has(DayPeriod.afternoon.toString())) {
-            JsonObject jsonAfternoon = (JsonObject) jsonObject.get(DayPeriod.afternoon.toString());
-            primaryWeatherWrapper = context.deserialize(jsonAfternoon.get(WeatherPriority.primary.toString()), DaySummary.WeatherWrapper.class);
-            afternoon.put(WeatherPriority.primary, primaryWeatherWrapper);
-            if (jsonObject.has(WeatherPriority.secondary.toString())) {
-                secondaryWeatherWrapper = context.deserialize(jsonAfternoon.get(WeatherPriority.secondary.toString()), DaySummary.WeatherWrapper.class);
-                afternoon.put(WeatherPriority.secondary, secondaryWeatherWrapper);
-            }
-        }
-        if(jsonObject.has(DayPeriod.evening.toString())) {
-            JsonObject jsonEvening = (JsonObject) jsonObject.get(DayPeriod.evening.toString());
-            primaryWeatherWrapper = context.deserialize(jsonEvening.get(WeatherPriority.primary.toString()), DaySummary.WeatherWrapper.class);
-            evening.put(WeatherPriority.primary, primaryWeatherWrapper);
-            if (jsonObject.has(WeatherPriority.secondary.toString())) {
-                secondaryWeatherWrapper = context.deserialize(jsonEvening.get(WeatherPriority.secondary.toString()), DaySummary.WeatherWrapper.class);
-                evening.put(WeatherPriority.secondary, secondaryWeatherWrapper);
-            }
-        }
-        if(jsonObject.has(DayPeriod.night.toString())) {
-            JsonObject jsonNight = (JsonObject) jsonObject.get(DayPeriod.night.toString());
-            primaryWeatherWrapper = context.deserialize(jsonNight.get(WeatherPriority.primary.toString()), DaySummary.WeatherWrapper.class);
-            night.put(WeatherPriority.primary, primaryWeatherWrapper);
-            if (jsonObject.has(WeatherPriority.secondary.toString())) {
-                secondaryWeatherWrapper = context.deserialize(jsonNight.get(WeatherPriority.secondary.toString()), DaySummary.WeatherWrapper.class);
-                night.put(WeatherPriority.secondary, secondaryWeatherWrapper);
-            }
-        }
-
-        daySummary.setMorning(morning);
-        daySummary.setAfternoon(afternoon);
-        daySummary.setEvening(evening);
-        daySummary.setNight(night);
-
         JsonObject jsonMessages = (JsonObject) jsonObject.get("messages");
+
         List<String> mList = new ArrayList<String>();
         if(jsonMessages.has("en")) {
             JsonArray messagesList = (JsonArray) jsonMessages.get("en");
@@ -79,6 +31,30 @@ public class DaySummaryDeserializer implements JsonDeserializer {
         }
         daySummary.setMessages(messages);
 
+        daySummary.setMorning(getWeatherPriorityMap(context, jsonObject, DayPeriod.morning));
+        daySummary.setAfternoon(getWeatherPriorityMap(context, jsonObject, DayPeriod.afternoon));
+        daySummary.setEvening(getWeatherPriorityMap(context, jsonObject, DayPeriod.evening));
+        daySummary.setNight(getWeatherPriorityMap(context, jsonObject, DayPeriod.night));
+
         return daySummary;
+    }
+
+    private HashMap<WeatherPriority,DaySummary.WeatherWrapper> getWeatherPriorityMap(JsonDeserializationContext context, JsonObject jsonObject, DayPeriod period) {
+
+        HashMap<WeatherPriority,DaySummary.WeatherWrapper> periodWeatherPriorityMap = new HashMap<WeatherPriority,DaySummary.WeatherWrapper>();
+        periodWeatherPriorityMap.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+        periodWeatherPriorityMap.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+
+        if(jsonObject.has(period.toString())) {
+            JsonObject jsonPeriod = (JsonObject) jsonObject.get(period.toString());
+
+            periodWeatherPriorityMap.put(WeatherPriority.primary, (DaySummary.WeatherWrapper) context.deserialize(jsonPeriod.get(WeatherPriority.primary.toString()), DaySummary.WeatherWrapper.class));
+
+            if (jsonPeriod.has(WeatherPriority.secondary.toString())) {
+                periodWeatherPriorityMap.put(WeatherPriority.secondary, (DaySummary.WeatherWrapper) context.deserialize(jsonPeriod.get(WeatherPriority.secondary.toString()), DaySummary.WeatherWrapper.class));
+            }
+        }
+
+        return periodWeatherPriorityMap;
     }
 }
