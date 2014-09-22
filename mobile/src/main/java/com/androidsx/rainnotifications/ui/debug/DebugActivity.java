@@ -1,6 +1,7 @@
 package com.androidsx.rainnotifications.ui.debug;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
@@ -74,9 +76,11 @@ public class DebugActivity extends Activity {
         alertGenerator = new AlertGenerator(this);
         alertGenerator.init();
 
-        final DateTime savedAlarmTime = new DateTime(SharedPrefsHelper.getLongValue(this, AlarmHelper.NEXT_ALARM_TIME));
+        final DateTime savedNextAlarmTime = new DateTime(SharedPrefsHelper.getLongValue(this, AlarmHelper.NEXT_ALARM_TIME));
+        final DateTime savedDayAlarmTime = new DateTime(SharedPrefsHelper.getLongValue(this, AlarmHelper.DAY_ALARM_TIME));
         final TextView realAlarmTime = (TextView) findViewById(R.id.real_alarm_time);
-        realAlarmTime.setText("Next alarm at " + savedAlarmTime.getHourOfDay() + ":" + savedAlarmTime.getMinuteOfHour());
+        realAlarmTime.setText("Next alarm time at: " + savedNextAlarmTime.getHourOfDay() + ":" + savedNextAlarmTime.getMinuteOfHour() +
+                " - Day alarm at " + savedDayAlarmTime.getHourOfDay() + ":" + savedDayAlarmTime.getMinuteOfHour());
 
         final TextView nowTimeText = (TextView) findViewById(R.id.now_text_view);
         final Button nowTimeButton = (Button) findViewById(R.id.now_time_button);
