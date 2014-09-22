@@ -91,6 +91,20 @@ public class AlarmHelper {
         SharedPrefsHelper.saveLongValue(context, DAY_ALARM_TIME, alarmTime.getMillis());
     }
 
+    public static void setFirstNextAlarm(Context context, PendingIntent alarmIntent) {
+        DateTime firstAlarm = new DateTime(DateTime.now());
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (am != null) {
+            am.cancel(alarmIntent);
+            am.setInexactRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    firstAlarm.getMillis(),
+                    10 * DateTimeConstants.MILLIS_PER_MINUTE,
+                    alarmIntent);
+        }
+        SharedPrefsHelper.saveLongValue(context, NEXT_ALARM_TIME, firstAlarm.getMillis());
+    }
+
     /**
      * Returns an appropriate time for the next alarm, given the interval to the next relevant
      * event (usually a weather transition we care about). The logic is:
