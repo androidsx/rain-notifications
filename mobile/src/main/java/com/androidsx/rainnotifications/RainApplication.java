@@ -29,7 +29,7 @@ public class RainApplication extends Application {
 
         setupLogging();
         trackAppUsage();
-        startWeatherServiceIfNecessary();
+        startFirstNextAlarmIfNecessary();
         startDayAlarmIfNecessary();
     }
 
@@ -65,14 +65,19 @@ public class RainApplication extends Application {
         ApplicationVersionHelper.saveCurrentVersionCode(this);
     }
 
-    private void startWeatherServiceIfNecessary() {
+    private void startFirstNextAlarmIfNecessary() {
         final PendingIntent ongoingAlarm = PendingIntent.getService(this,
                 Constants.Alarms.WEATHER_ID,
                 new Intent(getApplicationContext(), WeatherService.class),
                 PendingIntent.FLAG_NO_CREATE);
         if (ongoingAlarm == null) {
             Timber.i("The alarm is not set. Let's start the weather service now");
-            startService(new Intent(this, WeatherService.class));
+            final PendingIntent nextAlarmIntent = PendingIntent.getService(
+                    this,
+                    Constants.Alarms.WEATHER_ID,
+                    new Intent(this, WeatherService.class),
+                    0);
+            AlarmHelper.setFirstNextAlarm(this, nextAlarmIntent);
         } else {
             Timber.d("The alarm is already set, so we won't start the weather service");
         }
