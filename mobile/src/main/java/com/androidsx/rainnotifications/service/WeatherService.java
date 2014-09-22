@@ -59,7 +59,7 @@ public class WeatherService extends Service {
                 WeatherClientFactory.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess (ForecastTable forecastTable){
-                        if (intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.AlarmId.DAY_ALARM_ID) {
+                        if (intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {
                             //TODO: getDayMessage and send Notification.
                         } else {
                             if (forecastTable.getForecasts().isEmpty()) {
@@ -98,7 +98,7 @@ public class WeatherService extends Service {
     private void setNextAlarm(ForecastTable forecastTable) {
         final PendingIntent weatherAlarmIntent = PendingIntent.getService(
                 WeatherService.this,
-                Constants.AlarmId.WEATHER_ID,
+                Constants.Alarms.WEATHER_ID,
                 new Intent(WeatherService.this, WeatherService.class),
                 0);
         AlarmHelper.setNextAlarm(

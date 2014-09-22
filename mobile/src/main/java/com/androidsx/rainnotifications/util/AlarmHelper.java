@@ -42,7 +42,7 @@ public class AlarmHelper {
         weatherAlarmIntent.cancel();
         weatherAlarmIntent = PendingIntent.getService(
                 context,
-                Constants.AlarmId.WEATHER_ID,
+                Constants.Alarms.WEATHER_ID,
                 new Intent(context, WeatherService.class),
                 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

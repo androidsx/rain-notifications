@@ -13,9 +13,6 @@ import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import timber.log.Timber;
 
 public class RainApplication extends Application {
-    /** Hour of the day (0-23) to trigger the daily weather digest in the user timezone */
-    public static final int HOUR_OF_THE_DAY_DIGEST_ALARM = 8;
-
     private static RainApplication instance;
 
     public RainApplication() {
@@ -70,7 +67,7 @@ public class RainApplication extends Application {
 
     private void startWeatherServiceIfNecessary() {
         final PendingIntent ongoingAlarm = PendingIntent.getService(this,
-                Constants.AlarmId.WEATHER_ID,
+                Constants.Alarms.WEATHER_ID,
                 new Intent(getApplicationContext(), WeatherService.class),
                 PendingIntent.FLAG_NO_CREATE);
         if (ongoingAlarm == null) {
@@ -83,17 +80,17 @@ public class RainApplication extends Application {
 
     private void startDayAlarmIfNecessary() {
         final PendingIntent ongoingDayAlarm = PendingIntent.getService(this,
-                Constants.AlarmId.DAY_ALARM_ID,
+                Constants.Alarms.DAY_ALARM_ID,
                 new Intent(getApplicationContext(), WeatherService.class),
                 PendingIntent.FLAG_NO_CREATE);
         if (ongoingDayAlarm == null) {
             Timber.i("The day alarm is not set. Let's start the day alarm now");
             final PendingIntent dayAlarmIntent = PendingIntent.getService(
                     this,
-                    Constants.AlarmId.DAY_ALARM_ID,
-                    new Intent(this, WeatherService.class).putExtra(Constants.Extras.EXTRA_DAY_ALARM, Constants.AlarmId.DAY_ALARM_ID),
+                    Constants.Alarms.DAY_ALARM_ID,
+                    new Intent(this, WeatherService.class).putExtra(Constants.Extras.EXTRA_DAY_ALARM, Constants.Alarms.DAY_ALARM_ID),
                     0);
-            AlarmHelper.setDayAlarm(this, HOUR_OF_THE_DAY_DIGEST_ALARM, dayAlarmIntent);
+            AlarmHelper.setDayAlarm(this, Constants.Alarms.HOUR_OF_THE_DAY_DIGEST_ALARM, dayAlarmIntent);
         } else {
             Timber.d("The day alarm is already set, so we won't start the day alarm");
         }
