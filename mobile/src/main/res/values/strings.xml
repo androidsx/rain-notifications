@@ -4,6 +4,8 @@
     <string name="action_share">Share</string>
     <string name="share_dialog_title">Share the app</string>
     <string name="share_text">Meet Mr. Owl, your weather assistant for Google Wear https://play.google.com/store/apps/details?id=com.androidsx.rainnotifications</string>
+    <string name="location_error">Error occurred during obtaining the location.\nPlease check your GPS configuration.</string>
+    <string name="weather_api_error">Error occurred during retrieving weather info.\nPlease check your internet connection.</string>
 
     <string name="welcome_step_1">Meet Mr. Owl, your weather assistant</string>
     <string name="welcome_step_2">He will let you know about weather changes that you care about</string>
