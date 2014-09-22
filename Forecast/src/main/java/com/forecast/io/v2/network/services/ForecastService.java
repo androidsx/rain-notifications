@@ -184,7 +184,7 @@ public class ForecastService {
         /** (Added by Androidsx.) */
         @Override
         public String toString() {
-            return getForecast() != null ? getForecast().toString() : "";
+            return getForecast() != null ? getForecast().toString() : "FORECAST IS NULL";
         }
     }
 	
