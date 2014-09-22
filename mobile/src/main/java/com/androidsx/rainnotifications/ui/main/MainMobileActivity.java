@@ -86,8 +86,8 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                     @Override
                     public void onForecastFailure(WeatherClientException exception) {
                         Timber.e(exception, "Failed to get the forecast");
-                        updateUI("Ouch!",
-                                R.drawable.owlie_error,
+                        updateUI("",
+                                R.drawable.owlie_default,
                                 getString(R.string.weather_api_error));
                     }
                 });
@@ -96,8 +96,8 @@ public class MainMobileActivity extends BaseWelcomeActivity {
             @Override
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 Timber.e(exception, "Failed to get the location");
-                updateUI("Ouch!",
-                        R.drawable.owlie_error,
+                updateUI("",
+                        R.drawable.owlie_default,
                         getString(R.string.location_error));
             }
         }).connect();
