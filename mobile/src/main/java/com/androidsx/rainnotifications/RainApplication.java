@@ -13,6 +13,7 @@ import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import timber.log.Timber;
 
 public class RainApplication extends Application {
+    private static final int HOUR_OF_THE_DAY = 8;
 
     private static RainApplication instance;
 
@@ -91,7 +92,7 @@ public class RainApplication extends Application {
                     Constants.AlarmId.DAY_ALARM_ID,
                     new Intent(this, WeatherService.class),
                     0);
-            AlarmHelper.setDayAlarm(this, 8, dayAlarmIntent);
+            AlarmHelper.setDayAlarm(this, HOUR_OF_THE_DAY, dayAlarmIntent);
         } else {
             Timber.d("The day alarm is already set, so we won't start the day alarm");
         }
