@@ -86,7 +86,7 @@ public class WeatherService extends Service {
                     @Override
                     public void onForecastFailure (WeatherClientException exception){
                         Timber.e(exception, "Failed to get the forecast");
-                        NotificationHelper.displayStandardNotification(WeatherService.this, MainMobileActivity.class, exception.toString(), BitmapFactory.decodeResource(getResources(), R.drawable.owlie_error));
+                        NotificationHelper.displayStandardNotification(WeatherService.this, MainMobileActivity.class, "Failed to get the forecast: " + exception.toString(), BitmapFactory.decodeResource(getResources(), R.drawable.owlie_debug));
                     }
                 });
             }
@@ -94,7 +94,7 @@ public class WeatherService extends Service {
             @Override
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 Timber.e(exception, "Failed to get the location");
-                NotificationHelper.displayStandardNotification(WeatherService.this, MainMobileActivity.class, exception.toString(), BitmapFactory.decodeResource(getResources(), R.drawable.owlie_error));
+                NotificationHelper.displayStandardNotification(WeatherService.this, MainMobileActivity.class, "Failed to get the location" + exception.toString(), BitmapFactory.decodeResource(getResources(), R.drawable.owlie_debug));
             }
         }).connect();
 
