@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.RainApplication;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
@@ -58,20 +59,24 @@ public class WeatherService extends Service {
                 WeatherClientFactory.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess (ForecastTable forecastTable){
-                        if (forecastTable.getForecasts().isEmpty()) {
-                            Timber.d("No transitions are expected, so there's no notifications to generate");
+                        if (intent.getIntExtra(RainApplication.EXTRA_DAY_ALARM, 0) == Constants.AlarmId.DAY_ALARM_ID) {
+                            //TODO: getDayMessage and send Notification.
                         } else {
-                            final Forecast forecast = forecastTable.getForecasts().get(0);
-                            final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
-                            if (shouldLaunchNotification(forecast.getTimeFromNow().getEndMillis() - System.currentTimeMillis())) {
-                                Timber.i("Will display notification for " + alert);
-                                NotificationHelper.displayCustomNotification(WeatherService.this, alert, forecast.getTimeFromNow());
+                            if (forecastTable.getForecasts().isEmpty()) {
+                                Timber.d("No transitions are expected, so there's no notifications to generate");
                             } else {
-                                Timber.d("No notification for now. The alert was " + alert);
+                                final Forecast forecast = forecastTable.getForecasts().get(0);
+                                final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
+                                if (shouldLaunchNotification(forecast.getTimeFromNow().getEndMillis() - System.currentTimeMillis())) {
+                                    Timber.i("Will display notification for " + alert);
+                                    NotificationHelper.displayCustomNotification(WeatherService.this, alert, forecast.getTimeFromNow());
+                                } else {
+                                    Timber.d("No notification for now. The alert was " + alert);
+                                }
                             }
-                        }
 
-                        setNextAlarm(forecastTable);
+                            setNextAlarm(forecastTable);
+                        }
                     }
 
                     @Override
