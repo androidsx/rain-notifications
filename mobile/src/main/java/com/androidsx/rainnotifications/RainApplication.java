@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
@@ -30,6 +31,7 @@ public class RainApplication extends Application {
         setupLogging();
         trackAppUsage();
         startWeatherServiceIfNecessary();
+        startDayAlarmIfNecessary();
     }
 
     /**
@@ -74,6 +76,24 @@ public class RainApplication extends Application {
             startService(new Intent(this, WeatherService.class));
         } else {
             Timber.d("The alarm is already set, so we won't start the weather service");
+        }
+    }
+
+    private void startDayAlarmIfNecessary() {
+        final PendingIntent ongoingDayAlarm = PendingIntent.getService(this,
+                Constants.AlarmId.DAY_ALARM_ID,
+                new Intent(getApplicationContext(), WeatherService.class),
+                PendingIntent.FLAG_NO_CREATE);
+        if (ongoingDayAlarm == null) {
+            Timber.i("The day alarm is not set. Let's start the day alarm now");
+            final PendingIntent dayAlarmIntent = PendingIntent.getService(
+                    this,
+                    Constants.AlarmId.DAY_ALARM_ID,
+                    new Intent(this, WeatherService.class),
+                    0);
+            AlarmHelper.setDayAlarm(this, 8, dayAlarmIntent);
+        } else {
+            Timber.d("The day alarm is already set, so we won't start the day alarm");
         }
     }
 
