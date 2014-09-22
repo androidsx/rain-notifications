@@ -36,8 +36,8 @@
         }
     },
     {
-        "morning": {
-            "night": {
+        "night": {
+            "primary": {
                 "weatherType": "RAIN"
             }
         },
