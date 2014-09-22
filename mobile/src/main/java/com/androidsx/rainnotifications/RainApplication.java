@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
 import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import timber.log.Timber;
 
 public class RainApplication extends Application {
-
     private static RainApplication instance;
 
     public RainApplication() {
@@ -30,6 +30,7 @@ public class RainApplication extends Application {
         setupLogging();
         trackAppUsage();
         startWeatherServiceIfNecessary();
+        startDayAlarmIfNecessary();
     }
 
     /**
@@ -66,7 +67,7 @@ public class RainApplication extends Application {
 
     private void startWeatherServiceIfNecessary() {
         final PendingIntent ongoingAlarm = PendingIntent.getService(this,
-                Constants.AlarmId.WEATHER_ID,
+                Constants.Alarms.WEATHER_ID,
                 new Intent(getApplicationContext(), WeatherService.class),
                 PendingIntent.FLAG_NO_CREATE);
         if (ongoingAlarm == null) {
@@ -74,6 +75,24 @@ public class RainApplication extends Application {
             startService(new Intent(this, WeatherService.class));
         } else {
             Timber.d("The alarm is already set, so we won't start the weather service");
+        }
+    }
+
+    private void startDayAlarmIfNecessary() {
+        final PendingIntent ongoingDayAlarm = PendingIntent.getService(this,
+                Constants.Alarms.DAY_ALARM_ID,
+                new Intent(getApplicationContext(), WeatherService.class),
+                PendingIntent.FLAG_NO_CREATE);
+        if (ongoingDayAlarm == null) {
+            Timber.i("The day alarm is not set. Let's start the day alarm now");
+            final PendingIntent dayAlarmIntent = PendingIntent.getService(
+                    this,
+                    Constants.Alarms.DAY_ALARM_ID,
+                    new Intent(this, WeatherService.class).putExtra(Constants.Extras.EXTRA_DAY_ALARM, Constants.Alarms.DAY_ALARM_ID),
+                    0);
+            AlarmHelper.setDayAlarm(this, Constants.Alarms.HOUR_OF_THE_DAY_DIGEST_ALARM, dayAlarmIntent);
+        } else {
+            Timber.d("The day alarm is already set, so we won't start the day alarm");
         }
     }
 

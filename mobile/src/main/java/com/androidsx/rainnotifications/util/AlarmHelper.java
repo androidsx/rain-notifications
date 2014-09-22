@@ -14,16 +14,19 @@ import com.androidsx.rainnotifications.service.WeatherService;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
+import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.Period;
 
 import java.util.List;
+import java.util.TimeZone;
 
 import timber.log.Timber;
 
 public class AlarmHelper {
     private static final String TAG = AlarmHelper.class.getSimpleName();
     public static final String NEXT_ALARM_TIME = "next_alarm_time";
+    public static final String DAY_ALARM_TIME = "day_alarm_time";
 
     private AlarmHelper() {
         //No-instantiate
@@ -35,11 +38,11 @@ public class AlarmHelper {
      *
      * @see #computeNextAlarmTime(com.androidsx.rainnotifications.model.ForecastTable)
      */
-    public static void setAlarm(Context context, PendingIntent weatherAlarmIntent, DateTime nextAlarmTime, ForecastTable forecastTable) {
+    public static void setNextAlarm(Context context, PendingIntent weatherAlarmIntent, DateTime nextAlarmTime, ForecastTable forecastTable) {
         weatherAlarmIntent.cancel();
         weatherAlarmIntent = PendingIntent.getService(
                 context,
-                Constants.AlarmId.WEATHER_ID,
+                Constants.Alarms.WEATHER_ID,
                 new Intent(context, WeatherService.class),
                 0);
         AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -70,6 +73,22 @@ public class AlarmHelper {
             }
         }
         Timber.tag(TAG).i("***********************");
+    }
+
+    public static void setDayAlarm(Context context, int hour, PendingIntent weatherAlarmIntent) {
+        DateTimeZone.setDefault(DateTimeZone.forTimeZone(TimeZone.getDefault()));
+        DateTime alarmTime = new DateTime();
+        alarmTime = alarmTime.hourOfDay().setCopy(hour).minuteOfHour().setCopy(0).secondOfMinute().setCopy(0).millisOfSecond().setCopy(0);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        if (am != null) {
+            am.cancel(weatherAlarmIntent);
+            am.setInexactRepeating(
+                    AlarmManager.RTC_WAKEUP,
+                    alarmTime.getMillis(),
+                    DateTimeConstants.MILLIS_PER_DAY,
+                    weatherAlarmIntent);
+        }
+        SharedPrefsHelper.saveLongValue(context, DAY_ALARM_TIME, alarmTime.getMillis());
     }
 
     /**
