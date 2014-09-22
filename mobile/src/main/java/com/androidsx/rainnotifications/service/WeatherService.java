@@ -41,6 +41,7 @@ public class WeatherService extends Service {
         super.onCreate();
 
         alertGenerator = new AlertGenerator(this);
+        alertGenerator.init();
     }
 
     @Override
@@ -95,7 +96,7 @@ public class WeatherService extends Service {
                 Constants.AlarmId.WEATHER_ID,
                 new Intent(WeatherService.this, WeatherService.class),
                 0);
-        AlarmHelper.setAlarm(
+        AlarmHelper.setNextAlarm(
                 WeatherService.this,
                 weatherAlarmIntent,
                 AlarmHelper.computeNextAlarmTime(forecastTable),
