@@ -1,14 +1,12 @@
 package com.androidsx.rainnotifications.alert;
 
 import android.content.Context;
-import android.util.Log;
+import android.util.SparseArray;
 
-import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.google.gson.GsonBuilder;
 
@@ -20,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class DaySummaryGenerator {
@@ -31,8 +30,7 @@ public class DaySummaryGenerator {
     private static final int AFTERNOON_END_HOUR = 20;
 
     private final Context context;
-
-    private List<DaySummary> daySummarys;
+    private HashMap<String, DaySummary> sumariesMap;
 
     public DaySummaryGenerator(Context context) {
         this.context = context;
@@ -53,10 +51,36 @@ public class DaySummaryGenerator {
         final Reader jsonReader = new InputStreamReader(dayMessagesJsonInputStream);
         final GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(DaySummary.class, new DaySummaryDeserializer());
-        final DaySummary[] jsonDaySummaries = gsonBuilder.create().fromJson(jsonReader, DaySummary[].class);
 
-        daySummarys = Arrays.asList(jsonDaySummaries);
+        sumariesMap = new HashMap<String, DaySummary>();
+        SparseArray<ArrayList<DaySummary>> dispersedSumaries = disparseSummaries(Arrays.asList(gsonBuilder.create().fromJson(jsonReader, DaySummary[].class)));
+
+        for(int i = 0 ; i < DaySummary.MAX_WEATHER_LEVEL ; i++) {
+            for(DaySummary daySummary : dispersedSumaries.get(i)) {
+                for(String key : daySummary.getSuitableWeathersKeys()) {
+                    if(!sumariesMap.containsKey(key)) {
+                        sumariesMap.put(key,daySummary);
+                    }
+                }
+            }
+        }
     }
+
+    private SparseArray<ArrayList<DaySummary>> disparseSummaries(List<DaySummary> daySummaries) {
+
+        SparseArray<ArrayList<DaySummary>> dispersed = new SparseArray<ArrayList<DaySummary>>();
+
+        for(int i = 0 ; i < DaySummary.MAX_WEATHER_LEVEL ; i++) {
+            dispersed.append(i, new ArrayList<DaySummary>());
+        }
+
+        for(DaySummary daySummary : daySummaries) {
+            dispersed.get(daySummary.getWhateverLevel()).add(daySummary);
+        }
+
+        return dispersed;
+    }
+
 
     public DaySummary getDaySummary(ForecastTable forecastTable) {
         // TODO: This is only a temporary implementation that can and should be improved
@@ -128,15 +152,20 @@ public class DaySummaryGenerator {
 
     private DaySummary getDaySummary(WeatherType morning, WeatherType afternoon) {
 
-        for (DaySummary daySummary : daySummarys) {
-            if (!daySummary.getMorning().isEmpty() && !daySummary.getAfternoon().isEmpty()) {
-                if (daySummary.getMorning().get(WeatherPriority.primary).getType().equals(morning)
-                        && daySummary.getAfternoon().get(WeatherPriority.primary).getType().equals(afternoon)) {
-                    return daySummary;
-                }
-            }
+        String tmpKey = morning.toString() + "_UNDEFINED_" + afternoon.toString() + "_UNDEFINED_UNDEFINED_UNDEFINED_UNDEFINED_UNDEFINED";
+
+        if(sumariesMap.containsKey(tmpKey)) {
+            return sumariesMap.get(tmpKey);
         }
 
-        throw new IllegalStateException("Unable to find a suitable DaySummary for morning " + morning + " and afternoon " + afternoon);
+        //TODO: Remove Workaround
+        DaySummary daySummary = new DaySummary();
+        HashMap<String, List<String>> messages = new HashMap<String, List<String>>();
+        messages.put("en", Arrays.asList("No key for: " + tmpKey));
+        daySummary.setMessages(messages);
+
+        return daySummary;
+
+        //throw new IllegalStateException("Unable to find a suitable DaySummary for morning " + morning + " and afternoon " + afternoon);
     }
 }
