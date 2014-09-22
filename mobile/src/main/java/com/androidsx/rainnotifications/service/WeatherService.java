@@ -3,13 +3,17 @@ package com.androidsx.rainnotifications.service;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.RainApplication;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
@@ -81,14 +85,16 @@ public class WeatherService extends Service {
 
                     @Override
                     public void onForecastFailure (WeatherClientException exception){
-                        throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: set the next alarm a little from now?
+                        Timber.e(exception, "Failed to get the forecast");
+                        NotificationHelper.displayStandardNotification(WeatherService.this, MainMobileActivity.class, exception.toString(), BitmapFactory.decodeResource(getResources(), R.drawable.owlie_error));
                     }
                 });
             }
 
             @Override
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
-                throw new IllegalStateException("Failed to get the location", exception); // FIXME: set the next alarm a little from now?
+                Timber.e(exception, "Failed to get the location");
+                NotificationHelper.displayStandardNotification(WeatherService.this, MainMobileActivity.class, exception.toString(), BitmapFactory.decodeResource(getResources(), R.drawable.owlie_error));
             }
         }).connect();
 

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
@@ -30,6 +31,8 @@ import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory
 import com.crashlytics.android.Crashlytics;
 
 import org.joda.time.Interval;
+
+import timber.log.Timber;
 
 /**
  * Main activity.
@@ -82,14 +85,20 @@ public class MainMobileActivity extends BaseWelcomeActivity {
 
                     @Override
                     public void onForecastFailure(WeatherClientException exception) {
-                        throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
+                        Timber.e(exception, "Failed to get the forecast");
+                        updateUI("",
+                                R.drawable.owlie_default,
+                                getString(R.string.weather_api_error));
                     }
                 });
             }
 
             @Override
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
-                throw new IllegalStateException("Failed to get the forecast", exception); // FIXME: show a nice message
+                Timber.e(exception, "Failed to get the location");
+                updateUI("",
+                        R.drawable.owlie_default,
+                        getString(R.string.location_error));
             }
         }).connect();
     }
