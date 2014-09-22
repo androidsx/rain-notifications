@@ -1,7 +1,6 @@
 package com.androidsx.rainnotifications.ui.debug;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,7 +19,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
@@ -31,7 +29,6 @@ import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
-import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.androidsx.rainnotifications.util.AlarmHelper;
@@ -41,7 +38,6 @@ import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
 import org.joda.time.Minutes;
 
