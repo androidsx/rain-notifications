@@ -96,7 +96,7 @@ public class DaySummaryGenerator {
         HashMap<WeatherPriority,DaySummary.WeatherWrapper> afternoonWeather = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
         afternoonWeather.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(getMoreSignificantWeather(afternoonWeathers)));
         afternoonWeather.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
-        perfectSummary.setMorning(afternoonWeather);
+        perfectSummary.setAfternoon(afternoonWeather);
 
         HashMap<WeatherPriority,DaySummary.WeatherWrapper> undefinedWeather = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
         undefinedWeather.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
