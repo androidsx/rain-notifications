@@ -190,7 +190,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         }
     }
 
-    private Integer getCelsiusFromFahrenheit(int fahrenheit) {
+    private int getCelsiusFromFahrenheit(int fahrenheit) {
         return new Double(((fahrenheit - 32) * 5) / 9).intValue();
     }
 
