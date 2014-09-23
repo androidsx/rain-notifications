@@ -57,7 +57,8 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     private ImageView mascotImageView;
 
     private int numClicksForDebugScreenSoFar = 0;
-    private double actualTemp = 0.0;
+    private int fTemp = 0;
+    private int cTemp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +85,9 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                                 location.getLatitude(),
                                 location.getLongitude());
                         final Interval interval = forecast == null ? null : forecast.getTimeFromNow();
-                        actualTemp = forecastTable.getBaselineWeather().getTemp();
-                        DecimalFormat towDecimalDouble = new DecimalFormat("#.#");
-                        updateUI(towDecimalDouble.format(actualTemp), locationAddress,
+                        fTemp = forecastTable.getBaselineWeather().getTemp();
+                        cTemp = getCelsiusFromFahrenheit(fTemp);
+                        updateUI(String.valueOf(fTemp), locationAddress,
                                 alert.getDressedMascot(),
                                 alert.getAlertMessage().getNotificationMessage(interval));
                     }
@@ -180,27 +181,17 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     }
 
     public void changeDegreeScale(View v) {
-        double changedTemp;
-        DecimalFormat towDecimalDouble = new DecimalFormat("#.#");
         if(degreesTextView.getText().equals(FAHRENHEIT)) {
             degreesTextView.setText(CELSIUS);
-            changedTemp = getCelsiusFromFahrenheit(actualTemp);
-            tempTextView.setText(towDecimalDouble.format(changedTemp));
-            actualTemp = changedTemp;
+            tempTextView.setText(String.valueOf(cTemp));
         } else {
             degreesTextView.setText(FAHRENHEIT);
-            changedTemp = getFahrenheitFromCelsius(actualTemp);
-            tempTextView.setText(towDecimalDouble.format(changedTemp));
-            actualTemp = changedTemp;
+            tempTextView.setText(String.valueOf(fTemp));
         }
     }
 
-    private double getCelsiusFromFahrenheit(double fahrenheit) {
-        return ((fahrenheit - 32) * 5) / 9;
-    }
-
-    private double getFahrenheitFromCelsius(double celsius) {
-        return 9 * celsius / 5 + 32;
+    private Integer getCelsiusFromFahrenheit(double fahrenheit) {
+        return new Double(((fahrenheit - 32) * 5) / 9).intValue();
     }
 
     private Typeface getTypeface(String url) {
