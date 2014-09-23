@@ -59,7 +59,6 @@ public class DaySummary {
     }
 
     public List<String> getSuitableWeathersKeys() {
-
         List<String> keys = Arrays.asList("");
         List<String> keySeparator = Arrays.asList("_");
 
@@ -83,7 +82,6 @@ public class DaySummary {
     }
 
     private List<String> addWeather(List<String> list, WeatherType weather) {
-
         if(weather.equals(WeatherType.WHATEVER)) {
             return addText(list, whateverTypes);
         }
@@ -93,7 +91,6 @@ public class DaySummary {
     }
 
     private List<String> addText(List<String> list, List<String> text) {
-
         List<String> newList = new ArrayList<String>();
 
         for (String current : list) {

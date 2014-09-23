@@ -40,7 +40,6 @@ public class DaySummaryDeserializer implements JsonDeserializer {
     }
 
     private HashMap<WeatherPriority,DaySummary.WeatherWrapper> getWeatherPriorityMap(JsonDeserializationContext context, JsonObject jsonObject, DayPeriod period) {
-
         HashMap<WeatherPriority,DaySummary.WeatherWrapper> periodWeatherPriorityMap = new HashMap<WeatherPriority,DaySummary.WeatherWrapper>();
         periodWeatherPriorityMap.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
         periodWeatherPriorityMap.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));

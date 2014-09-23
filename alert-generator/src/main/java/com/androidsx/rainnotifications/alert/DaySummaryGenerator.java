@@ -67,7 +67,6 @@ public class DaySummaryGenerator {
     }
 
     private SparseArray<ArrayList<DaySummary>> disparseSummaries(List<DaySummary> daySummaries) {
-
         SparseArray<ArrayList<DaySummary>> dispersed = new SparseArray<ArrayList<DaySummary>>();
 
         for(int i = 0 ; i < DaySummary.MAX_WEATHER_LEVEL ; i++) {
@@ -81,10 +80,8 @@ public class DaySummaryGenerator {
         return dispersed;
     }
 
-
     public DaySummary getDaySummary(ForecastTable forecastTable) {
         // TODO: This is only a temporary implementation that can and should be improved
-
         DateTime now = DateTime.now().minuteOfDay().setCopy(0).secondOfDay().setCopy(0).millisOfDay().setCopy(0);
         DateTime morningStart = now.hourOfDay().setCopy(MORNING_START_HOUR);
         DateTime morningEnd = now.hourOfDay().setCopy(MORNING_END_HOUR);
@@ -118,7 +115,6 @@ public class DaySummaryGenerator {
     }
 
     private WeatherType getMoreSignificantWeather(ArrayList<WeatherType> weathers) {
-
         if(weathers.contains(WeatherType.RAIN)) {
             return WeatherType.RAIN;
         }
@@ -151,7 +147,6 @@ public class DaySummaryGenerator {
     }
 
     private DaySummary getDaySummary(WeatherType morning, WeatherType afternoon) {
-
         String tmpKey = morning.toString() + "_UNDEFINED_" + afternoon.toString() + "_UNDEFINED_UNDEFINED_UNDEFINED_UNDEFINED_UNDEFINED";
 
         if(sumariesMap.containsKey(tmpKey)) {
