@@ -32,6 +32,8 @@ import com.crashlytics.android.Crashlytics;
 
 import org.joda.time.Interval;
 
+import java.text.DecimalFormat;
+
 import timber.log.Timber;
 
 /**
@@ -39,9 +41,13 @@ import timber.log.Timber;
  */
 public class MainMobileActivity extends BaseWelcomeActivity {
     private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
+    private static final String FAHRENHEIT = "ºF";
+    private static final String CELSIUS = "ºC";
 
     private AlertGenerator alertGenerator;
 
+    private TextView tempTextView;
+    private TextView degreesTextView;
     private TextView locationTextView;
     private TextView cardMessageTextView;
     private LinearLayout loadingContainer;
@@ -51,6 +57,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     private ImageView mascotImageView;
 
     private int numClicksForDebugScreenSoFar = 0;
+    private double actualTemp = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +84,9 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                                 location.getLatitude(),
                                 location.getLongitude());
                         final Interval interval = forecast == null ? null : forecast.getTimeFromNow();
-
-                        updateUI(locationAddress,
+                        actualTemp = forecastTable.getBaselineWeather().getTemp();
+                        DecimalFormat towDecimalDouble = new DecimalFormat("#.#");
+                        updateUI(towDecimalDouble.format(actualTemp), locationAddress,
                                 alert.getDressedMascot(),
                                 alert.getAlertMessage().getNotificationMessage(interval));
                     }
@@ -86,7 +94,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                     @Override
                     public void onForecastFailure(WeatherClientException exception) {
                         Timber.e(exception, "Failed to get the forecast");
-                        updateUI("",
+                        updateUI("", "",
                                 R.drawable.owlie_default,
                                 getString(R.string.weather_api_error));
                     }
@@ -96,7 +104,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
             @Override
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 Timber.e(exception, "Failed to get the location");
-                updateUI("",
+                updateUI("", "",
                         R.drawable.owlie_default,
                         getString(R.string.location_error));
             }
@@ -104,6 +112,8 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     }
 
     private void setupUI() {
+        tempTextView = (TextView) findViewById(R.id.temp_text_view);
+        degreesTextView = (TextView) findViewById(R.id.degrees_text_view);
         locationTextView = (TextView) findViewById(R.id.location_text_view);
         cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
         mascotImageView = (ImageView) findViewById(R.id.mascot_image_view);
@@ -124,11 +134,15 @@ public class MainMobileActivity extends BaseWelcomeActivity {
             }
         });
 
+        tempTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_SLAB_REGULAR_URL));
+        degreesTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_SLAB_REGULAR_URL));
         locationTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_SLAB_REGULAR_URL));
         cardMessageTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
     }
 
-    private void updateUI(String address, int mascot_icon, String message) {
+    private void updateUI(String temp, String address, int mascot_icon, String message) {
+        tempTextView.setText(temp);
+        degreesTextView.setText(FAHRENHEIT); // By default
         locationTextView.setText(address);
         cardMessageTextView.setText(message);
 
@@ -165,6 +179,29 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         startActivity(Intent.createChooser(intent, getResources().getString(R.string.share_dialog_title)));
     }
 
+    public void changeDegreeScale(View v) {
+        double changedTemp;
+        DecimalFormat towDecimalDouble = new DecimalFormat("#.#");
+        if(degreesTextView.getText().equals(FAHRENHEIT)) {
+            degreesTextView.setText(CELSIUS);
+            changedTemp = getCelsiusFromFahrenheit(actualTemp);
+            tempTextView.setText(towDecimalDouble.format(changedTemp));
+            actualTemp = changedTemp;
+        } else {
+            degreesTextView.setText(FAHRENHEIT);
+            changedTemp = getFahrenheitFromCelsius(actualTemp);
+            tempTextView.setText(towDecimalDouble.format(changedTemp));
+            actualTemp = changedTemp;
+        }
+    }
+
+    private double getCelsiusFromFahrenheit(double fahrenheit) {
+        return ((fahrenheit - 32) * 5) / 9;
+    }
+
+    private double getFahrenheitFromCelsius(double celsius) {
+        return 9 * celsius / 5 + 32;
+    }
 
     private Typeface getTypeface(String url) {
         return Typeface.createFromAsset(getAssets(), url);
