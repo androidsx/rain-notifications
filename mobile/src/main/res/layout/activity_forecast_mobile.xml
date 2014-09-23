@@ -20,14 +20,14 @@
             android:layout_width="0dp"
             android:layout_weight="50"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:onClick="changeDegreeScale" >
 
             <TextView
                 android:id="@+id/temp_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:onClick="changeDegreeScale"
                 android:singleLine="true"
                 android:gravity="left"
                 android:textSize="25sp"
