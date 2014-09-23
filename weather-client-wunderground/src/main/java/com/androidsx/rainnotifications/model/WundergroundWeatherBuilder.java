@@ -7,8 +7,8 @@ package com.androidsx.rainnotifications.model;
  */
 public class WundergroundWeatherBuilder {
 
-    public static Weather buildFromWunderground(String icon, Integer temp) {
-        return new Weather(
-                WundergroundWeatherTypeBuilder.buildFromWunderground(icon), temp);
+    public static Weather buildFromWunderground(String icon, int temp) {
+        return new Weather(WundergroundWeatherTypeBuilder.buildFromWunderground(icon))
+                .setMetaData(new WeatherMetaData.Builder().temp(temp).build());
     }
 }

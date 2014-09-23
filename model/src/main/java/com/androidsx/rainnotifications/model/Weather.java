@@ -7,19 +7,23 @@ package com.androidsx.rainnotifications.model;
  */
 public class Weather {
     private final WeatherType type;
-    private final int temp;
+    private WeatherMetaData metaData;
 
-    public Weather(WeatherType type, int temp) {
+    public Weather(WeatherType type) {
         this.type = type;
-        this.temp = temp;
     }
 
     public WeatherType getType() {
         return type;
     }
 
-    public int getTemp() {
-        return temp;
+    public WeatherMetaData getMetaData() {
+        return metaData;
+    }
+
+    public Weather setMetaData(WeatherMetaData metaData) {
+        this.metaData = metaData;
+        return this;
     }
 
     public boolean isUnknownWeather() {

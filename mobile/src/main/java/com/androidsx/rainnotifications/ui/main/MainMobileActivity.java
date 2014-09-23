@@ -82,7 +82,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                                 location.getLatitude(),
                                 location.getLongitude());
                         final Interval interval = forecast == null ? null : forecast.getTimeFromNow();
-                        fTemp = forecastTable.getBaselineWeather().getTemp();
+                        fTemp = forecastTable.getBaselineWeather().getMetaData().getTemp();
                         cTemp = getCelsiusFromFahrenheit(fTemp);
                         updateUI(String.valueOf(fTemp), locationAddress,
                                 alert.getDressedMascot(),
