@@ -1,17 +1,12 @@
 package com.androidsx.rainnotifications.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public class DaySummary {
-    public static final int MAX_WEATHER_LEVEL = 9;
-
-    private List<String> whateverTypes = Arrays.asList(WeatherType.CLEAR.toString(), WeatherType.RAIN.toString(), WeatherType.CLOUDY.toString(), WeatherType.PARTLY_CLOUDY.toString());
     private final Random random = new Random();
-
     private HashMap<WeatherPriority,WeatherWrapper> morning;
     private HashMap<WeatherPriority,WeatherWrapper> afternoon;
     private HashMap<WeatherPriority,WeatherWrapper> evening;
@@ -56,65 +51,6 @@ public class DaySummary {
 
     public HashMap<WeatherPriority,WeatherWrapper> getNight() {
         return night;
-    }
-
-    public List<String> getSuitableWeathersKeys() {
-        List<String> keys = Arrays.asList("");
-        List<String> keySeparator = Arrays.asList("_");
-
-        keys = addWeather(keys, morning.get(WeatherPriority.primary).getType());
-        keys = addText(keys, keySeparator);
-        keys = addWeather(keys, morning.get(WeatherPriority.secondary).getType());
-        keys = addText(keys, keySeparator);
-        keys = addWeather(keys, afternoon.get(WeatherPriority.primary).getType());
-        keys = addText(keys, keySeparator);
-        keys = addWeather(keys, afternoon.get(WeatherPriority.secondary).getType());
-        keys = addText(keys, keySeparator);
-        keys = addWeather(keys, evening.get(WeatherPriority.primary).getType());
-        keys = addText(keys, keySeparator);
-        keys = addWeather(keys, evening.get(WeatherPriority.secondary).getType());
-        keys = addText(keys, keySeparator);
-        keys = addWeather(keys, night.get(WeatherPriority.primary).getType());
-        keys = addText(keys, keySeparator);
-        keys = addWeather(keys, night.get(WeatherPriority.secondary).getType());
-
-        return keys;
-    }
-
-    private List<String> addWeather(List<String> list, WeatherType weather) {
-        if(weather.equals(WeatherType.WHATEVER)) {
-            return addText(list, whateverTypes);
-        }
-        else {
-            return addText(list, Arrays.asList(weather.toString()));
-        }
-    }
-
-    private List<String> addText(List<String> list, List<String> text) {
-        List<String> newList = new ArrayList<String>();
-
-        for (String current : list) {
-            for (String add : text) {
-                newList.add(current + add);
-            }
-        }
-
-        return newList;
-    }
-
-    public int getWhateverLevel() {
-        int level = 0;
-
-        if(morning.get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
-        if(morning.get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
-        if(afternoon.get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
-        if(afternoon.get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
-        if(evening.get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
-        if(evening.get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
-        if(night.get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
-        if(night.get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
-
-        return level;
     }
 
     public String getDayMessage() {

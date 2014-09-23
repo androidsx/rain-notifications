@@ -2,6 +2,9 @@ package com.androidsx.rainnotifications.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Main weather type, such as cloudy or snow.
  * <p>
@@ -29,4 +32,8 @@ public enum WeatherType {
      * source, after all.
      */
     UNKNOWN;
+
+    public static List<String> getMeaningfulWeatherTypeNames() {
+        return Arrays.asList(WeatherType.CLEAR.toString(), WeatherType.RAIN.toString(), WeatherType.CLOUDY.toString(), WeatherType.PARTLY_CLOUDY.toString());
+    }
 }

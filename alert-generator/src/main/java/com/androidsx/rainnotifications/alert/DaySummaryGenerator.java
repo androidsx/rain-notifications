@@ -7,6 +7,7 @@ import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.google.gson.GsonBuilder;
 
@@ -22,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class DaySummaryGenerator {
-
     private static final int MORNING_START_HOUR = 7;
     private static final int MORNING_END_HOUR = 12;
 
@@ -30,7 +30,7 @@ public class DaySummaryGenerator {
     private static final int AFTERNOON_END_HOUR = 20;
 
     private final Context context;
-    private HashMap<String, DaySummary> sumariesMap;
+    private DaySummaryPostProcessor daySummaryPostProcessor;
 
     public DaySummaryGenerator(Context context) {
         this.context = context;
@@ -51,33 +51,7 @@ public class DaySummaryGenerator {
         final Reader jsonReader = new InputStreamReader(dayMessagesJsonInputStream);
         final GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(DaySummary.class, new DaySummaryDeserializer());
-
-        sumariesMap = new HashMap<String, DaySummary>();
-        SparseArray<ArrayList<DaySummary>> dispersedSumaries = disparseSummaries(Arrays.asList(gsonBuilder.create().fromJson(jsonReader, DaySummary[].class)));
-
-        for(int i = 0 ; i < DaySummary.MAX_WEATHER_LEVEL ; i++) {
-            for(DaySummary daySummary : dispersedSumaries.get(i)) {
-                for(String key : daySummary.getSuitableWeathersKeys()) {
-                    if(!sumariesMap.containsKey(key)) {
-                        sumariesMap.put(key,daySummary);
-                    }
-                }
-            }
-        }
-    }
-
-    private SparseArray<ArrayList<DaySummary>> disparseSummaries(List<DaySummary> daySummaries) {
-        SparseArray<ArrayList<DaySummary>> dispersed = new SparseArray<ArrayList<DaySummary>>();
-
-        for(int i = 0 ; i < DaySummary.MAX_WEATHER_LEVEL ; i++) {
-            dispersed.append(i, new ArrayList<DaySummary>());
-        }
-
-        for(DaySummary daySummary : daySummaries) {
-            dispersed.get(daySummary.getWhateverLevel()).add(daySummary);
-        }
-
-        return dispersed;
+        daySummaryPostProcessor = new DaySummaryPostProcessor(Arrays.asList(gsonBuilder.create().fromJson(jsonReader, DaySummary[].class)));
     }
 
     public DaySummary getDaySummary(ForecastTable forecastTable) {
@@ -111,7 +85,36 @@ public class DaySummaryGenerator {
             }
         }
 
-        return getDaySummary(getMoreSignificantWeather(morningWeathers), getMoreSignificantWeather(afternoonWeathers));
+        //TODO: Remove Workaround
+        DaySummary perfectSummary = new DaySummary();
+
+        HashMap<WeatherPriority,DaySummary.WeatherWrapper> morningWeather = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
+        morningWeather.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(getMoreSignificantWeather(morningWeathers)));
+        morningWeather.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+        perfectSummary.setMorning(morningWeather);
+
+        HashMap<WeatherPriority,DaySummary.WeatherWrapper> afternoonWeather = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
+        afternoonWeather.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(getMoreSignificantWeather(afternoonWeathers)));
+        afternoonWeather.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+        perfectSummary.setMorning(afternoonWeather);
+
+        HashMap<WeatherPriority,DaySummary.WeatherWrapper> undefinedWeather = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
+        undefinedWeather.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+        undefinedWeather.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+        perfectSummary.setEvening(undefinedWeather);
+        perfectSummary.setNight(undefinedWeather);
+
+        DaySummary daySummary = daySummaryPostProcessor.getEquivalentDaySummary(perfectSummary);
+
+        if(daySummary != null) {
+            return daySummary;
+        }
+        else {
+            HashMap<String, List<String>> messages = new HashMap<String, List<String>>();
+            messages.put("en", Arrays.asList("Default"));
+            perfectSummary.setMessages(messages);
+            return perfectSummary;
+        }
     }
 
     private WeatherType getMoreSignificantWeather(ArrayList<WeatherType> weathers) {
@@ -146,21 +149,118 @@ public class DaySummaryGenerator {
         return WeatherType.CLEAR;
     }
 
-    private DaySummary getDaySummary(WeatherType morning, WeatherType afternoon) {
-        String tmpKey = morning.toString() + "_UNDEFINED_" + afternoon.toString() + "_UNDEFINED_UNDEFINED_UNDEFINED_UNDEFINED_UNDEFINED";
+    private class DaySummaryPostProcessor {
+        private static final int MAX_WHATEVER_LEVEL = 8; // This the maximum number of "Whatever" a DaySummary can have (4 DayPeriod * 2 DaySummary).
+        private static final String KEY_SEPARATOR = "_";
+        private List<String> keySeparatorList = Arrays.asList(KEY_SEPARATOR);
+        private List<String> meaningfulWeatherTypeNames;
+        private HashMap<String, DaySummary> sumariesMap;
 
-        if(sumariesMap.containsKey(tmpKey)) {
-            return sumariesMap.get(tmpKey);
+        public DaySummaryPostProcessor(List<DaySummary> daySummaries) {
+            sumariesMap = new HashMap<String, DaySummary>();
+            meaningfulWeatherTypeNames = WeatherType.getMeaningfulWeatherTypeNames();
+
+            SparseArray<ArrayList<DaySummary>> dispersedSumaries = getDispersedSummaries(daySummaries);
+
+            for(int i = 0 ; i <= MAX_WHATEVER_LEVEL ; i++) {
+                for(DaySummary daySummary : dispersedSumaries.get(i)) {
+                    for(String key : getSuitableWeathersKeys(daySummary)) {
+                        if(!sumariesMap.containsKey(key)) {
+                            sumariesMap.put(key,daySummary);
+                        }
+                    }
+                }
+            }
         }
 
-        //TODO: Remove Workaround
-        DaySummary daySummary = new DaySummary();
-        HashMap<String, List<String>> messages = new HashMap<String, List<String>>();
-        messages.put("en", Arrays.asList("No key for: " + tmpKey));
-        daySummary.setMessages(messages);
+        public DaySummary getEquivalentDaySummary(DaySummary daySummary) {
+            return sumariesMap.get(getDaySummaryWeatherKey(daySummary));
+        }
 
-        return daySummary;
+        private String getDaySummaryWeatherKey(DaySummary daySummary) {
+            StringBuilder builder = new StringBuilder();
+            builder.append(daySummary.getMorning().get(WeatherPriority.primary) + KEY_SEPARATOR);
+            builder.append(daySummary.getMorning().get(WeatherPriority.secondary) + KEY_SEPARATOR);
+            builder.append(daySummary.getAfternoon().get(WeatherPriority.primary) + KEY_SEPARATOR);
+            builder.append(daySummary.getAfternoon().get(WeatherPriority.secondary) + KEY_SEPARATOR);
+            builder.append(daySummary.getEvening().get(WeatherPriority.primary) + KEY_SEPARATOR);
+            builder.append(daySummary.getEvening().get(WeatherPriority.secondary) + KEY_SEPARATOR);
+            builder.append(daySummary.getNight().get(WeatherPriority.primary) + KEY_SEPARATOR);
+            builder.append(daySummary.getNight().get(WeatherPriority.secondary));
 
-        //throw new IllegalStateException("Unable to find a suitable DaySummary for morning " + morning + " and afternoon " + afternoon);
+            return builder.toString();
+        }
+
+        private List<String> getSuitableWeathersKeys(DaySummary daySummary) {
+            List<String> keys = Arrays.asList("");
+
+            keys = addWeatherNamesToList(keys, daySummary.getMorning().get(WeatherPriority.primary).getType());
+            keys = addTextToList(keys, keySeparatorList);
+            keys = addWeatherNamesToList(keys, daySummary.getMorning().get(WeatherPriority.secondary).getType());
+            keys = addTextToList(keys, keySeparatorList);
+            keys = addWeatherNamesToList(keys, daySummary.getAfternoon().get(WeatherPriority.primary).getType());
+            keys = addTextToList(keys, keySeparatorList);
+            keys = addWeatherNamesToList(keys, daySummary.getAfternoon().get(WeatherPriority.secondary).getType());
+            keys = addTextToList(keys, keySeparatorList);
+            keys = addWeatherNamesToList(keys, daySummary.getEvening().get(WeatherPriority.primary).getType());
+            keys = addTextToList(keys, keySeparatorList);
+            keys = addWeatherNamesToList(keys, daySummary.getEvening().get(WeatherPriority.secondary).getType());
+            keys = addTextToList(keys, keySeparatorList);
+            keys = addWeatherNamesToList(keys, daySummary.getNight().get(WeatherPriority.primary).getType());
+            keys = addTextToList(keys, keySeparatorList);
+            keys = addWeatherNamesToList(keys, daySummary.getNight().get(WeatherPriority.secondary).getType());
+
+            return keys;
+        }
+
+        private int getWhateverLevel(DaySummary daySummary) {
+            int level = 0;
+
+            if(daySummary.getMorning().get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
+            if(daySummary.getMorning().get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
+            if(daySummary.getAfternoon().get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
+            if(daySummary.getAfternoon().get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
+            if(daySummary.getEvening().get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
+            if(daySummary.getEvening().get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
+            if(daySummary.getNight().get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
+            if(daySummary.getNight().get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
+
+            return level;
+        }
+
+        private SparseArray<ArrayList<DaySummary>> getDispersedSummaries(List<DaySummary> daySummaries) {
+            SparseArray<ArrayList<DaySummary>> dispersed = new SparseArray<ArrayList<DaySummary>>();
+
+            for(int i = 0 ; i <= MAX_WHATEVER_LEVEL ; i++) {
+                dispersed.append(i, new ArrayList<DaySummary>());
+            }
+
+            for(DaySummary daySummary : daySummaries) {
+                dispersed.get(getWhateverLevel(daySummary)).add(daySummary);
+            }
+
+            return dispersed;
+        }
+
+        private List<String> addWeatherNamesToList(List<String> list, WeatherType weather) {
+            if(weather.equals(WeatherType.WHATEVER)) {
+                return addTextToList(list, meaningfulWeatherTypeNames);
+            }
+            else {
+                return addTextToList(list, Arrays.asList(weather.toString()));
+            }
+        }
+
+        private List<String> addTextToList(List<String> list, List<String> text) {
+            List<String> newList = new ArrayList<String>();
+
+            for (String current : list) {
+                for (String add : text) {
+                    newList.add(current + add);
+                }
+            }
+
+            return newList;
+        }
     }
 }
