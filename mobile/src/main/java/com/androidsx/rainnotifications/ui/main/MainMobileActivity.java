@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
@@ -31,8 +30,6 @@ import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory
 import com.crashlytics.android.Crashlytics;
 
 import org.joda.time.Interval;
-
-import java.text.DecimalFormat;
 
 import timber.log.Timber;
 
