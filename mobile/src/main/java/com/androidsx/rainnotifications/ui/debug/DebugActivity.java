@@ -57,7 +57,7 @@ public class DebugActivity extends Activity {
     private static final int DEFAULT_MINUTES_NEW_ROW = 60;
     private static final int DEFAULT_SPINNER_POSITION = 0;
 
-    private static final double MOCK_TEMP_F = 66.3; //FIXME: random param.
+    private static final int MOCK_TEMP_F = 66; //FIXME: random param.
 
     private AlertGenerator alertGenerator;
 

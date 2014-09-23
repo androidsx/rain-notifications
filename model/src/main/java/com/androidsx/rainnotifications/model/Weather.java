@@ -7,9 +7,9 @@ package com.androidsx.rainnotifications.model;
  */
 public class Weather {
     private final WeatherType type;
-    private final double temp;
+    private final int temp;
 
-    public Weather(WeatherType type, double temp) {
+    public Weather(WeatherType type, int temp) {
         this.type = type;
         this.temp = temp;
     }
@@ -18,7 +18,7 @@ public class Weather {
         return type;
     }
 
-    public double getTemp() {
+    public int getTemp() {
         return temp;
     }
 
