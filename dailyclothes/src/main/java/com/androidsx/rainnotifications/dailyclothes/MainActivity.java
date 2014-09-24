@@ -65,7 +65,7 @@ public class MainActivity extends FragmentActivity {
 
         TextView forecastMessage = (TextView) findViewById(R.id.forecast_message);
         TextView alertMessage = (TextView) findViewById(R.id.alert_message);
-        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_message), maxTemp) + " at " + hourMaxTemp + "."));
+        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_message), maxTemp, hourMaxTemp)));
         alertMessage.setText(Html.fromHtml(String.format(getString(R.string.alert_message))));
 
         // Instantiate a ViewPager and a PagerAdapter.
