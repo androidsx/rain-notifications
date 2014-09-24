@@ -24,6 +24,7 @@
                 android:layout_marginTop="-10dp">
 
                 <TextView
+                    android:id="@+id/now_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="56º"
@@ -89,6 +90,7 @@
             android:gravity="center">
 
             <TextView
+                android:id="@+id/forecast_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="A cool fall morning heating up later in the day, reaching a high of 68."
@@ -162,6 +164,7 @@
                 android:gravity="center">
 
                 <TextView
+                    android:id="@+id/alert_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="it's going to rain in 30 MINUTES."
