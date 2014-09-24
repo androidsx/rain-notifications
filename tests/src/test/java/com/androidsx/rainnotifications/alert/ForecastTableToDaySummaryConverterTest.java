@@ -3,17 +3,12 @@ package com.androidsx.rainnotifications.alert;
 import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherPriority;
-import com.androidsx.rainnotifications.model.WeatherType;
-
-import junit.framework.Assert;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
@@ -46,6 +41,7 @@ public class ForecastTableToDaySummaryConverterTest {
         ShadowLog.stream = System.out;
     }
 
+    /*
     @Test
     public void testEasyCases() {
         final DateTime today9am = new DateTime(2014, 9, 17, 9, 0);
@@ -82,6 +78,7 @@ public class ForecastTableToDaySummaryConverterTest {
 
         return daySummary;
     }
+    */
 
     private List<Forecast> filterForecasts(List<Forecast> forecasts, int startHourOfDayLimit, int endHourOfDayLimit) {
         ArrayList<Forecast> filteredForecasts = new ArrayList<Forecast>();

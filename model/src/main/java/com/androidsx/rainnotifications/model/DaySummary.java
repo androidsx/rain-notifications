@@ -7,50 +7,16 @@ import java.util.Random;
 
 public class DaySummary {
     private final Random random = new Random();
-    private HashMap<WeatherPriority,WeatherWrapper> morning;
-    private HashMap<WeatherPriority,WeatherWrapper> afternoon;
-    private HashMap<WeatherPriority,WeatherWrapper> evening;
-    private HashMap<WeatherPriority,WeatherWrapper> night;
+    private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherWrapper>> weatherMap;
     private HashMap<String, List<String>> messages;
 
-    public void setMorning(HashMap<WeatherPriority, WeatherWrapper> morning) {
-        this.morning = morning;
+    private DaySummary(DaySummaryBuilder builder) {
+        this.weatherMap = builder.weatherMap;
+        this.messages = builder.messages;
     }
 
-    public void setAfternoon(HashMap<WeatherPriority, WeatherWrapper> afternoon) {
-        this.afternoon = afternoon;
-    }
-
-    public void setEvening(HashMap<WeatherPriority, WeatherWrapper> evening) {
-        this.evening = evening;
-    }
-
-    public void setNight(HashMap<WeatherPriority, WeatherWrapper> night) {
-        this.night = night;
-    }
-
-    public HashMap<String, List<String>> getMessages() {
-        return messages;
-    }
-
-    public void setMessages(HashMap<String, List<String>> messages) {
-        this.messages = messages;
-    }
-
-    public HashMap<WeatherPriority,WeatherWrapper> getMorning() {
-        return morning;
-    }
-
-    public HashMap<WeatherPriority,WeatherWrapper> getAfternoon() {
-        return afternoon;
-    }
-
-    public HashMap<WeatherPriority,WeatherWrapper> getEvening() {
-        return evening;
-    }
-
-    public HashMap<WeatherPriority,WeatherWrapper> getNight() {
-        return night;
+    public WeatherWrapper getWeather(DayPeriod period, WeatherPriority priority) {
+        return weatherMap.get(period).get(priority);
     }
 
     public String getDayMessage() {
@@ -61,46 +27,17 @@ public class DaySummary {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("Day Messages for: ");
-        builder.append("\n");
-        if (morning != null) {
-            builder.append("Morning Primary Weather: " + morning.get(WeatherPriority.primary));
-            builder.append("\n");
-            if (morning.containsKey(WeatherPriority.secondary)) {
-                builder.append("Morning Secondary Weather: " + morning.get(WeatherPriority.secondary));
-                builder.append("\n");
+
+        for(DayPeriod period : DayPeriod.values()) {
+            for (WeatherPriority priority : WeatherPriority.values()) {
+                builder.append("\n" + period + " " + priority + " weather: " + getWeather(period, priority));
             }
         }
-        if (afternoon != null) {
-            builder.append("Afternoon Primary Weather: " + afternoon.get(WeatherPriority.primary));
-            builder.append("\n");
-            if (afternoon.containsKey(WeatherPriority.secondary)) {
-                builder.append("Afternoon Secondary Weather: " + afternoon.get(WeatherPriority.secondary));
-                builder.append("\n");
-            }
-        }
-        if (evening != null) {
-            builder.append("Evening Primary Weather:" + evening.get(WeatherPriority.primary));
-            builder.append("\n");
-            if (evening.containsKey(WeatherPriority.secondary)) {
-                builder.append("Evening Secondary Weather: " + evening.get(WeatherPriority.secondary));
-                builder.append("\n");
-            }
-        }
-        if (night != null) {
-            builder.append("Night Primary Weather:" + night.get(WeatherPriority.primary));
-            builder.append("\n");
-            if (night.containsKey(WeatherPriority.secondary)) {
-                builder.append("Night Secondary Weather: " + night.get(WeatherPriority.secondary));
-                builder.append("\n");
-            }
-        }
+
         if(messages.containsKey("en")) {
-            builder.append("\n");
-            builder.append("Messages:");
-            builder.append("\n");
+            builder.append("\n\nMessages:");
             for(String s : messages.get("en")) {
-                builder.append(String.format("Message (en): %s", s));
-                builder.append("\n");
+                builder.append(String.format("Message (en): %s", s) + "\n");
             }
         }
         return builder.toString();
@@ -108,6 +45,40 @@ public class DaySummary {
 
     private static <T> T pickRandom(List<T> list, Random random) {
         return new ArrayList<T>(list).get(random.nextInt(list.size()));
+    }
+
+    public static class DaySummaryBuilder {
+        private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherWrapper>> weatherMap;
+        private HashMap<String, List<String>> messages;
+
+        public DaySummaryBuilder() {
+            weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherWrapper>>();
+            messages = new HashMap<String, List<String>>();
+
+            for(DayPeriod period : DayPeriod.values()) {
+                HashMap<WeatherPriority, WeatherWrapper> periodMap = new HashMap<WeatherPriority, WeatherWrapper>();
+
+                for (WeatherPriority priority : WeatherPriority.values()) {
+                    periodMap.put(priority, new WeatherWrapper(WeatherType.UNDEFINED));
+                }
+
+                weatherMap.put(period, periodMap);
+            }
+        }
+
+        public DaySummaryBuilder setWeatherWrapper(DayPeriod period, WeatherPriority priority, WeatherWrapper wrapper) {
+            weatherMap.get(period).put(priority, wrapper);
+            return this;
+        }
+
+        public DaySummaryBuilder setMessages(HashMap<String, List<String>> messages) {
+            this.messages = messages;
+            return this;
+        }
+
+        public DaySummary build() {
+            return new DaySummary(this);
+        }
     }
 
     public static class WeatherWrapper {

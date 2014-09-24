@@ -3,6 +3,7 @@ package com.androidsx.rainnotifications.alert;
 import android.content.Context;
 import android.util.SparseArray;
 
+import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
@@ -86,34 +87,28 @@ public class DaySummaryGenerator {
         }
 
         //TODO: Remove Workaround
-        DaySummary perfectSummary = new DaySummary();
+        DaySummary.DaySummaryBuilder builder = new DaySummary.DaySummaryBuilder();
 
-        HashMap<WeatherPriority,DaySummary.WeatherWrapper> morningWeather = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
-        morningWeather.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(getMoreSignificantWeather(morningWeathers)));
-        morningWeather.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
-        perfectSummary.setMorning(morningWeather);
+        builder.setWeatherWrapper(DayPeriod.morning, WeatherPriority.primary, new DaySummary.WeatherWrapper(getMoreSignificantWeather(morningWeathers)));
+        builder.setWeatherWrapper(DayPeriod.afternoon, WeatherPriority.primary, new DaySummary.WeatherWrapper(getMoreSignificantWeather(afternoonWeathers)));
 
-        HashMap<WeatherPriority,DaySummary.WeatherWrapper> afternoonWeather = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
-        afternoonWeather.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(getMoreSignificantWeather(afternoonWeathers)));
-        afternoonWeather.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
-        perfectSummary.setAfternoon(afternoonWeather);
+        builder.setWeatherWrapper(DayPeriod.evening, WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.CLEAR));
+        builder.setWeatherWrapper(DayPeriod.night, WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.CLEAR));
 
-        HashMap<WeatherPriority,DaySummary.WeatherWrapper> undefinedWeather = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
-        undefinedWeather.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
-        undefinedWeather.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
-        perfectSummary.setEvening(undefinedWeather);
-        perfectSummary.setNight(undefinedWeather);
+        HashMap<String, List<String>> messages = new HashMap<String, List<String>>();
+        messages.put("en", Arrays.asList("Default"));
 
-        DaySummary daySummary = daySummaryPostProcessor.getEquivalentDaySummary(perfectSummary);
+        builder.setMessages(messages);
+
+        DaySummary targetDaySummary = builder.build();
+
+        DaySummary daySummary = daySummaryPostProcessor.getEquivalentDaySummary(targetDaySummary);
 
         if(daySummary != null) {
             return daySummary;
         }
         else {
-            HashMap<String, List<String>> messages = new HashMap<String, List<String>>();
-            messages.put("en", Arrays.asList("Default"));
-            perfectSummary.setMessages(messages);
-            return perfectSummary;
+            return targetDaySummary;
         }
     }
 
@@ -150,11 +145,13 @@ public class DaySummaryGenerator {
     }
 
     private class DaySummaryPostProcessor {
-        private static final int MAX_WHATEVER_LEVEL = 8; // This the maximum number of "Whatever" a DaySummary can have (4 DayPeriod * 2 DaySummary).
-        private static final String KEY_SEPARATOR = "_";
-        private List<String> keySeparatorList = Arrays.asList(KEY_SEPARATOR);
         private List<String> meaningfulWeatherTypeNames;
         private HashMap<String, DaySummary> sumariesMap;
+
+        /**
+         * This the maximum number of "Whatever" a DaySummary can have.
+         */
+        private final int MAX_WHATEVER_LEVEL = DayPeriod.values().length * WeatherPriority.values().length;
 
         public DaySummaryPostProcessor(List<DaySummary> daySummaries) {
             sumariesMap = new HashMap<String, DaySummary>();
@@ -179,14 +176,12 @@ public class DaySummaryGenerator {
 
         private String getDaySummaryWeatherKey(DaySummary daySummary) {
             StringBuilder builder = new StringBuilder();
-            builder.append(daySummary.getMorning().get(WeatherPriority.primary) + KEY_SEPARATOR);
-            builder.append(daySummary.getMorning().get(WeatherPriority.secondary) + KEY_SEPARATOR);
-            builder.append(daySummary.getAfternoon().get(WeatherPriority.primary) + KEY_SEPARATOR);
-            builder.append(daySummary.getAfternoon().get(WeatherPriority.secondary) + KEY_SEPARATOR);
-            builder.append(daySummary.getEvening().get(WeatherPriority.primary) + KEY_SEPARATOR);
-            builder.append(daySummary.getEvening().get(WeatherPriority.secondary) + KEY_SEPARATOR);
-            builder.append(daySummary.getNight().get(WeatherPriority.primary) + KEY_SEPARATOR);
-            builder.append(daySummary.getNight().get(WeatherPriority.secondary));
+
+            for(DayPeriod period : DayPeriod.values()) {
+                for (WeatherPriority priority : WeatherPriority.values()) {
+                    builder.append(daySummary.getWeather(period, priority).getType());
+                }
+            }
 
             return builder.toString();
         }
@@ -194,21 +189,11 @@ public class DaySummaryGenerator {
         private List<String> getSuitableWeathersKeys(DaySummary daySummary) {
             List<String> keys = Arrays.asList("");
 
-            keys = addWeatherNamesToList(keys, daySummary.getMorning().get(WeatherPriority.primary).getType());
-            keys = addTextToList(keys, keySeparatorList);
-            keys = addWeatherNamesToList(keys, daySummary.getMorning().get(WeatherPriority.secondary).getType());
-            keys = addTextToList(keys, keySeparatorList);
-            keys = addWeatherNamesToList(keys, daySummary.getAfternoon().get(WeatherPriority.primary).getType());
-            keys = addTextToList(keys, keySeparatorList);
-            keys = addWeatherNamesToList(keys, daySummary.getAfternoon().get(WeatherPriority.secondary).getType());
-            keys = addTextToList(keys, keySeparatorList);
-            keys = addWeatherNamesToList(keys, daySummary.getEvening().get(WeatherPriority.primary).getType());
-            keys = addTextToList(keys, keySeparatorList);
-            keys = addWeatherNamesToList(keys, daySummary.getEvening().get(WeatherPriority.secondary).getType());
-            keys = addTextToList(keys, keySeparatorList);
-            keys = addWeatherNamesToList(keys, daySummary.getNight().get(WeatherPriority.primary).getType());
-            keys = addTextToList(keys, keySeparatorList);
-            keys = addWeatherNamesToList(keys, daySummary.getNight().get(WeatherPriority.secondary).getType());
+            for(DayPeriod period : DayPeriod.values()) {
+                for (WeatherPriority priority : WeatherPriority.values()) {
+                    keys = addWeatherNamesToList(keys, daySummary.getWeather(period, priority).getType());
+                }
+            }
 
             return keys;
         }
@@ -216,14 +201,11 @@ public class DaySummaryGenerator {
         private int getWhateverLevel(DaySummary daySummary) {
             int level = 0;
 
-            if(daySummary.getMorning().get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
-            if(daySummary.getMorning().get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
-            if(daySummary.getAfternoon().get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
-            if(daySummary.getAfternoon().get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
-            if(daySummary.getEvening().get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
-            if(daySummary.getEvening().get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
-            if(daySummary.getNight().get(WeatherPriority.primary).getType().equals(WeatherType.WHATEVER)) level++;
-            if(daySummary.getNight().get(WeatherPriority.secondary).getType().equals(WeatherType.WHATEVER)) level++;
+            for(DayPeriod period : DayPeriod.values()) {
+                for (WeatherPriority priority : WeatherPriority.values()) {
+                   if(daySummary.getWeather(period, priority).getType().equals(WeatherType.WHATEVER)) level++;
+                }
+            }
 
             return level;
         }
