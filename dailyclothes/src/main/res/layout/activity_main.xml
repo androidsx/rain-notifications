@@ -93,9 +93,7 @@
                 android:id="@+id/forecast_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="A cool fall morning heating up later in the day, reaching a high of 68."
                 android:textSize="16sp"
-                android:textStyle="bold"
                 android:textColor="#3c5f6e"/>
 
         </LinearLayout>
@@ -167,7 +165,6 @@
                     android:id="@+id/alert_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="it's going to rain in 30 MINUTES."
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#8e7f3a"/>

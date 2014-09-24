@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +43,9 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        int maxTemp = 0;
+        String hourMaxTemp = "";
+
         ViewGroup viewGroup = (ViewGroup)findViewById(R.id.hourly_forecast);
         for(int i=8; i<24; i++) {
             View view = LayoutInflater.from(this).inflate(R.layout.hourly_forecast_item, null);
@@ -48,10 +53,20 @@ public class MainActivity extends FragmentActivity {
             TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
             icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
-            temp.setText(random.nextInt(80) + "º");
+            int auxTemp = random.nextInt(67 - 60) + 60;
+            temp.setText(auxTemp + "º");
             hour.setText(i+"am");
             viewGroup.addView(view);
+            if(auxTemp > maxTemp) {
+                maxTemp = auxTemp;
+                hourMaxTemp = i+"am";
+            }
         }
+
+        TextView forecastMessage = (TextView) findViewById(R.id.forecast_message);
+        TextView alertMessage = (TextView) findViewById(R.id.alert_message);
+        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_message), maxTemp) + " at " + hourMaxTemp + "."));
+        alertMessage.setText(Html.fromHtml(String.format(getString(R.string.alert_message))));
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
