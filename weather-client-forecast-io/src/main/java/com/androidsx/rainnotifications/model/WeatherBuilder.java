@@ -11,6 +11,7 @@ public class WeatherBuilder {
 
     public static Weather buildFromForecastIo(DataPoint dataPoint) {
         return new Weather(
-                WeatherTypeBuilder.buildFromForecastIo(dataPoint.getIcon()));
+                WeatherTypeBuilder.buildFromForecastIo(dataPoint.getIcon()))
+                .setMetaData(new WeatherMetaData.Builder().temp(new Double(dataPoint.getTemperature()).intValue()).build());
     }
 }

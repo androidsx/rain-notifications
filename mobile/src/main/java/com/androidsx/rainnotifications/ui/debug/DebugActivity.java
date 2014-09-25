@@ -28,6 +28,7 @@ import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.Weather;
+import com.androidsx.rainnotifications.model.WeatherMetaData;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
@@ -56,6 +57,8 @@ public class DebugActivity extends Activity {
     /** Additional minutes that we add on top of the previous row, for the new one. */
     private static final int DEFAULT_MINUTES_NEW_ROW = 60;
     private static final int DEFAULT_SPINNER_POSITION = 0;
+
+    private static final int MOCK_TEMP_F = 66; //FIXME: random param.
 
     private AlertGenerator alertGenerator;
 
@@ -208,15 +211,18 @@ public class DebugActivity extends Activity {
 
             final DateTime timeNow = nowWeatherItemRow.getTime();
             final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
-            final Alert alert = alertGenerator.generateAlert(new Weather(nowWeatherItemRow.getWeatherType()),
-                    new Forecast(new Weather(weatherTransitionsList.get(0).getWeatherType()),
+            final Alert alert = alertGenerator.generateAlert(new Weather(nowWeatherItemRow.getWeatherType()).setMetaData(
+                            new WeatherMetaData.Builder().temp(MOCK_TEMP_F).build()),
+                    new Forecast(new Weather(weatherTransitionsList.get(0).getWeatherType()).setMetaData(
+                            new WeatherMetaData.Builder().temp(MOCK_TEMP_F).build()),
                             intervalUntilWeatherChange,
                             Forecast.Granularity.MINUTE));
             cardMessageTextView.setText(alert.getAlertMessage().getNotificationMessage(intervalUntilWeatherChange));
 
             alertLevelTextView.setText("Alert level: " + alert.getAlertLevel());
             alertLevelTextView.setVisibility(View.VISIBLE);
-            ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), timeNow, getSunMockPhaseTime(7, 45), getSunMockPhaseTime(20, 30), removeWrongForecasts(weatherTransitionsList));
+            ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()).setMetaData(
+                    new WeatherMetaData.Builder().temp(MOCK_TEMP_F).build()), timeNow, getSunMockPhaseTime(7, 45), getSunMockPhaseTime(20, 30), removeWrongForecasts(weatherTransitionsList));
             Interval alarmTime = new Interval(timeNow.getMillis(), AlarmHelper.computeNextAlarmTime(forecastTable).getMillis());
             nextAlarmTextView.setText("Next alarm: " + alarmTime.toPeriod().getHours() + " hours and " + alarmTime.toPeriod().getMinutes() + " minutes from now");
             nextAlarmTextView.setVisibility(View.VISIBLE);
@@ -243,7 +249,8 @@ public class DebugActivity extends Activity {
             DateTime sunriseTime = getSunMockPhaseTime(7, 45);
             DateTime sunsetTime = getSunMockPhaseTime(20, 30);
             ForecastTable forecastTable = ForecastTable.create(
-                    new Weather(nowWeatherItemRow.getWeatherType()),
+                    new Weather(nowWeatherItemRow.getWeatherType()).setMetaData(
+                            new WeatherMetaData.Builder().temp(MOCK_TEMP_F).build()),
                     nowWeatherItemRow.getTime(),
                     sunriseTime,
                     sunsetTime,                    
@@ -260,10 +267,12 @@ public class DebugActivity extends Activity {
     private List<Forecast> removeWrongForecasts(List<WeatherItemRow> weatherTransitionsList) {
         List<Forecast> mockForecasts = new ArrayList<Forecast>();
         WeatherItemRow lastMockTransition = weatherTransitionsList.get(0);
-        mockForecasts.add(new Forecast(new Weather(lastMockTransition.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), lastMockTransition.getTime()), Forecast.Granularity.MINUTE));
+        mockForecasts.add(new Forecast(new Weather(lastMockTransition.getWeatherType()).setMetaData(
+                new WeatherMetaData.Builder().temp(MOCK_TEMP_F).build()), new Interval(nowWeatherItemRow.getTime(), lastMockTransition.getTime()), Forecast.Granularity.MINUTE));
         for (WeatherItemRow w : weatherTransitionsList) {
             if (lastMockTransition.getTime().isBefore(w.getTime())) {
-                mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
+                mockForecasts.add(new Forecast(new Weather(w.getWeatherType()).setMetaData(
+                        new WeatherMetaData.Builder().temp(MOCK_TEMP_F).build()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
                 lastMockTransition = w;
             } else {
                 //Skip

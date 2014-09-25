@@ -31,7 +31,7 @@ public class WundergroundTableBuilder {
             final List<Forecast> allForecasts = new ArrayList<Forecast>();
             allForecasts.addAll(extractAllValidForecast(currentTime, hourly, Forecast.Granularity.HOUR));
 
-            final Weather currentWeather = WundergroundWeatherBuilder.buildFromWunderground(currently.getString("icon"));
+            final Weather currentWeather = WundergroundWeatherBuilder.buildFromWunderground(currently.getString("icon"), new Double(currently.getDouble("temp_f")).intValue());
 
             return ForecastTable.create(currentWeather, currentTime, sunriseTime, sunsetTime, allForecasts);
         } else {
@@ -58,8 +58,9 @@ public class WundergroundTableBuilder {
                                                    JSONObject dataPoint,
                                                    Forecast.Granularity granularity) throws JSONException {
         JSONObject time = (JSONObject)dataPoint.get("FCTTIME");
+        JSONObject temp = (JSONObject)dataPoint.get("temp");
         final DateTime forecastTime = new DateTime(Long.parseLong(time.get("epoch").toString()) * 1000);
-        final Weather forecastedWeather = WundergroundWeatherBuilder.buildFromWunderground(dataPoint.getString("icon"));
+        final Weather forecastedWeather = WundergroundWeatherBuilder.buildFromWunderground(dataPoint.getString("icon"), new Double(temp.getDouble("english")).intValue());
 
         if (forecastTime.isBefore(fromTime.toInstant())) {
             //Log.v(TAG, "Skip the forecast for the present interval at " + forecastTime);

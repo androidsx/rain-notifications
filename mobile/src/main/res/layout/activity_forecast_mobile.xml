@@ -13,17 +13,49 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:minHeight="40dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="50"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:onClick="changeDegreeScale" >
+
+            <TextView
+                android:id="@+id/temp_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                android:gravity="left"
+                android:textSize="25sp"
+                android:textColor="@color/location"
+                android:fontFamily="sans-serif"/>
+
+            <TextView
+                android:id="@+id/degrees_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:singleLine="true"
+                android:gravity="left"
+                android:layout_marginLeft="5dp"
+                android:textSize="25sp"
+                android:textColor="@color/location"
+                android:fontFamily="sans-serif"/>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/location_text_view"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="50"
             android:layout_height="match_parent"
             android:singleLine="true"
             android:gravity="right"
             android:textSize="25sp"
             android:textColor="@color/location"
-            android:fontFamily="sans-serif-"/>
+            android:fontFamily="sans-serif" />
 
     </LinearLayout>
 
