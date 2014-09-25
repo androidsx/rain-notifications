@@ -23,22 +23,10 @@ import java.util.Random;
 
 public class MainActivity extends FragmentActivity {
 
-    Random random = new Random();
-
-    /**
-     * The number of pages (wizard steps) to show in this demo.
-     */
     private static final int NUM_PAGES = 3;
 
-    /**
-     * The pager widget, which handles animation and allows swiping horizontally to access previous
-     * and next wizard steps.
-     */
+    private Random random = new Random();
     private ViewPager mPager;
-
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
     private PagerAdapter mPagerAdapter;
 
     @Override
@@ -46,28 +34,11 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        int maxTemp = 0;
+        updateUI();
+    }
 
-        ViewGroup viewGroup = (ViewGroup)findViewById(R.id.hourly_forecast);
-        for(int i=8; i<24; i++) {
-            View view = LayoutInflater.from(this).inflate(R.layout.hourly_forecast_item, null);
-            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
-            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
-            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
-            icon.setImageDrawable(getResources().getDrawable(getRandomWeatherIcon()));
-            int auxTemp = random.nextInt(67 - 60) + 60;
-            temp.setText(auxTemp + "º");
-            hour.setText(i+"am");
-            viewGroup.addView(view);
-            if(auxTemp > maxTemp) {
-                maxTemp = auxTemp;
-            }
-        }
-
-        TextView forecastMessage = (TextView) findViewById(R.id.forecast_message);
-        TextView alertMessage = (TextView) findViewById(R.id.alert_message);
-        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_message), maxTemp)));
-        alertMessage.setText(Html.fromHtml(String.format(getString(R.string.alert_message))));
+    private void updateUI() {
+        fillForecastView((ViewGroup)findViewById(R.id.hourly_forecast), 8, 24);
 
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -75,7 +46,33 @@ public class MainActivity extends FragmentActivity {
         mPager.setAdapter(mPagerAdapter);
     }
 
-    public int getRandomWeatherIcon() {
+    private void fillForecastView(ViewGroup forecastView, int startHour, int endHour) {
+        int maxTemp = 0;
+        for(int i=startHour; i < endHour; i++) {
+            View view = LayoutInflater.from(this).inflate(R.layout.hourly_forecast_item, null);
+            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
+            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
+            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
+            icon.setImageDrawable(getResources().getDrawable(getRandomWeatherIcon()));
+            int auxTemp = getRandomBetweenNumbers(60, 67);
+            temp.setText(auxTemp + "º");
+            hour.setText(i+"am");
+            forecastView.addView(view);
+            if(auxTemp > maxTemp) {
+                maxTemp = auxTemp;
+            }
+        }
+        TextView forecastMessage = (TextView) findViewById(R.id.forecast_message);
+        TextView alertMessage = (TextView) findViewById(R.id.alert_message);
+        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_message), maxTemp)));
+        alertMessage.setText(Html.fromHtml(String.format(getString(R.string.alert_message))));
+    }
+
+    private int getRandomBetweenNumbers(int minValue, int maxValue) {
+        return random.nextInt((maxValue + 1) - minValue) + minValue;
+    }
+
+    private int getRandomWeatherIcon() {
         final TypedArray mascotTypedArray = getResources().obtainTypedArray(R.array.weatherIcons);
         final int mascotIndex = random.nextInt(mascotTypedArray.length());
         return mascotTypedArray.getResourceId(mascotIndex, -1);
