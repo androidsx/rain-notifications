@@ -1,13 +1,17 @@
 package com.androidsx.rainnotifications.alert;
 
+import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherPriority;
+import com.androidsx.rainnotifications.model.WeatherType;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.joda.time.Period;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +49,7 @@ public class ForecastTableToDaySummaryConverterTest {
     // TODO: Reimplement as soon as we create the real DayMessageGenerator
     @Test
     public void testEasyCases() {
-        /*final DateTime today9am = new DateTime(2014, 9, 17, 9, 0);
+        final DateTime today9am = new DateTime(2014, 9, 17, 9, 0);
         final Weather currentWeather = new Weather(WeatherType.CLEAR);
         final List<Forecast> forecasts = new ArrayList<Forecast>();
         forecasts.add(new Forecast(new Weather(WeatherType.CLOUDY), new Interval(today9am.plus(Period.minutes(30)), today9am.plus(Period.hours(2))), Forecast.Granularity.HOUR));
@@ -54,11 +58,11 @@ public class ForecastTableToDaySummaryConverterTest {
 
         DaySummary daySummary = getDaySummary(forecastTable);
 
-        Assert.assertEquals(daySummary.getMorning().get(WeatherPriority.primary).getType(), WeatherType.RAIN);
-        Assert.assertEquals(daySummary.getMorning().get(WeatherPriority.secondary).getType(), WeatherType.CLOUDY);
+        Assert.assertEquals(daySummary.getWeather(DayPeriod.morning, WeatherPriority.primary).getType(), WeatherType.RAIN);
+        Assert.assertEquals(daySummary.getWeather(DayPeriod.morning, WeatherPriority.secondary).getType(), WeatherType.CLOUDY);
 
-        Assert.assertEquals(daySummary.getAfternoon().get(WeatherPriority.primary).getType(), WeatherType.RAIN);
-        Assert.assertEquals(daySummary.getAfternoon().get(WeatherPriority.secondary), null);
+        Assert.assertEquals(daySummary.getWeather(DayPeriod.afternoon, WeatherPriority.primary).getType(), WeatherType.RAIN);
+        Assert.assertEquals(daySummary.getWeather(DayPeriod.afternoon, WeatherPriority.secondary).getType(), WeatherType.UNDEFINED);
     }
 
     public DaySummary getDaySummary(ForecastTable forecastTable) {
@@ -73,11 +77,13 @@ public class ForecastTableToDaySummaryConverterTest {
         List<Forecast> afternoonForecasts = filterForecasts(forecastTable.getForecasts(), AFTERNOON_START_HOUR, AFTERNOON_END_HOUR);
         HashMap<WeatherPriority, DaySummary.WeatherWrapper> afternoonSummary = summarizeForecasts(afternoonForecasts);
 
-        final DaySummary daySummary = new DaySummary();
-        daySummary.setMorning(morningSummary);
-        daySummary.setAfternoon(afternoonSummary);
+        DaySummary.DaySummaryBuilder builder = new DaySummary.DaySummaryBuilder();
+        builder.setWeatherWrapper(DayPeriod.morning, WeatherPriority.primary, morningSummary.get(WeatherPriority.primary));
+        builder.setWeatherWrapper(DayPeriod.morning, WeatherPriority.secondary, morningSummary.get(WeatherPriority.secondary));
+        builder.setWeatherWrapper(DayPeriod.afternoon, WeatherPriority.primary, afternoonSummary.get(WeatherPriority.primary));
+        builder.setWeatherWrapper(DayPeriod.afternoon, WeatherPriority.secondary, afternoonSummary.get(WeatherPriority.secondary));
 
-        return daySummary;*/
+        return builder.build();
     }
     
 
@@ -100,6 +106,8 @@ public class ForecastTableToDaySummaryConverterTest {
 
     private HashMap<WeatherPriority, DaySummary.WeatherWrapper> summarizeForecasts(List<Forecast> forecasts) {
         HashMap<WeatherPriority, DaySummary.WeatherWrapper> priorityWeathers = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
+        priorityWeathers.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+        priorityWeathers.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
 
         if (forecasts.size() == 0) {
             return priorityWeathers;
