@@ -15,8 +15,16 @@ public class DaySummary {
         this.messages = builder.messages;
     }
 
-    public WeatherWrapper getWeather(DayPeriod period, WeatherPriority priority) {
+    public void setWeatherWrapper(DayPeriod period, WeatherPriority priority, WeatherWrapper wrapper) {
+        weatherMap.get(period).put(priority, wrapper);
+    }
+
+    public WeatherWrapper getWeatherWrapper(DayPeriod period, WeatherPriority priority) {
         return weatherMap.get(period).get(priority);
+    }
+
+    public void setMessages(HashMap<String, List<String>> messages) {
+        this.messages = messages;
     }
 
     public String getDayMessage() {
@@ -28,15 +36,15 @@ public class DaySummary {
         StringBuilder builder = new StringBuilder();
         builder.append("Day Messages for: ");
 
-        for(DayPeriod period : DayPeriod.values()) {
+        for (DayPeriod period : DayPeriod.values()) {
             for (WeatherPriority priority : WeatherPriority.values()) {
-                builder.append("\n" + period + " " + priority + " weather: " + getWeather(period, priority));
+                builder.append("\n" + period + " " + priority + " weather: " + getWeatherWrapper(period, priority));
             }
         }
 
-        if(messages.containsKey("en")) {
+        if (messages.containsKey("en")) {
             builder.append("\n\nMessages:");
-            for(String s : messages.get("en")) {
+            for (String s : messages.get("en")) {
                 builder.append(String.format("Message (en): %s", s) + "\n");
             }
         }
@@ -55,7 +63,7 @@ public class DaySummary {
             weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherWrapper>>();
             messages = new HashMap<String, List<String>>();
 
-            for(DayPeriod period : DayPeriod.values()) {
+            for (DayPeriod period : DayPeriod.values()) {
                 HashMap<WeatherPriority, WeatherWrapper> periodMap = new HashMap<WeatherPriority, WeatherWrapper>();
 
                 for (WeatherPriority priority : WeatherPriority.values()) {

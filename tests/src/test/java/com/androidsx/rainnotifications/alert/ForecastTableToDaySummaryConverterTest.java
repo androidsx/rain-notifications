@@ -58,11 +58,11 @@ public class ForecastTableToDaySummaryConverterTest {
 
         DaySummary daySummary = getDaySummary(forecastTable);
 
-        Assert.assertEquals(daySummary.getWeather(DayPeriod.morning, WeatherPriority.primary).getType(), WeatherType.RAIN);
-        Assert.assertEquals(daySummary.getWeather(DayPeriod.morning, WeatherPriority.secondary).getType(), WeatherType.CLOUDY);
+        Assert.assertEquals(daySummary.getWeatherWrapper(DayPeriod.morning, WeatherPriority.primary).getType(), WeatherType.RAIN);
+        Assert.assertEquals(daySummary.getWeatherWrapper(DayPeriod.morning, WeatherPriority.secondary).getType(), WeatherType.CLOUDY);
 
-        Assert.assertEquals(daySummary.getWeather(DayPeriod.afternoon, WeatherPriority.primary).getType(), WeatherType.RAIN);
-        Assert.assertEquals(daySummary.getWeather(DayPeriod.afternoon, WeatherPriority.secondary).getType(), WeatherType.UNDEFINED);
+        Assert.assertEquals(daySummary.getWeatherWrapper(DayPeriod.afternoon, WeatherPriority.primary).getType(), WeatherType.RAIN);
+        Assert.assertEquals(daySummary.getWeatherWrapper(DayPeriod.afternoon, WeatherPriority.secondary).getType(), WeatherType.UNDEFINED);
     }
 
     public DaySummary getDaySummary(ForecastTable forecastTable) {
