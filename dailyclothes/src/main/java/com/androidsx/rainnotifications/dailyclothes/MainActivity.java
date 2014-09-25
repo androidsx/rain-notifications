@@ -1,5 +1,6 @@
 package com.androidsx.rainnotifications.dailyclothes;
 
+import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -15,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -44,7 +47,6 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         int maxTemp = 0;
-        String hourMaxTemp = "";
 
         ViewGroup viewGroup = (ViewGroup)findViewById(R.id.hourly_forecast);
         for(int i=8; i<24; i++) {
@@ -52,20 +54,19 @@ public class MainActivity extends FragmentActivity {
             ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
             TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
-            icon.setImageDrawable(getResources().getDrawable(R.drawable.ic_launcher));
+            icon.setImageDrawable(getResources().getDrawable(getRandomWeatherIcon()));
             int auxTemp = random.nextInt(67 - 60) + 60;
             temp.setText(auxTemp + "º");
             hour.setText(i+"am");
             viewGroup.addView(view);
             if(auxTemp > maxTemp) {
                 maxTemp = auxTemp;
-                hourMaxTemp = i+"am";
             }
         }
 
         TextView forecastMessage = (TextView) findViewById(R.id.forecast_message);
         TextView alertMessage = (TextView) findViewById(R.id.alert_message);
-        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_message), maxTemp, hourMaxTemp)));
+        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_message), maxTemp)));
         alertMessage.setText(Html.fromHtml(String.format(getString(R.string.alert_message))));
 
         // Instantiate a ViewPager and a PagerAdapter.
@@ -74,17 +75,10 @@ public class MainActivity extends FragmentActivity {
         mPager.setAdapter(mPagerAdapter);
     }
 
-
-    @Override
-    public void onBackPressed() {
-        if (mPager.getCurrentItem() == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
-            super.onBackPressed();
-        } else {
-            // Otherwise, select the previous step.
-            mPager.setCurrentItem(mPager.getCurrentItem() - 1);
-        }
+    public int getRandomWeatherIcon() {
+        final TypedArray mascotTypedArray = getResources().obtainTypedArray(R.array.weatherIcons);
+        final int mascotIndex = random.nextInt(mascotTypedArray.length());
+        return mascotTypedArray.getResourceId(mascotIndex, -1);
     }
 
     /**
