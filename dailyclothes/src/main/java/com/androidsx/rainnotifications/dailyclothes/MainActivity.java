@@ -1,33 +1,36 @@
 package com.androidsx.rainnotifications.dailyclothes;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.text.Html;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 
-public class MainActivity extends FragmentActivity {
-
-    private static final int NUM_PAGES = 3;
-
+public class MainActivity extends Activity {
     private Random random = new Random();
-    private ViewPager mPager;
-    private PagerAdapter mPagerAdapter;
+    private List<Clothes> clothesList = new ArrayList<Clothes>();
+    private CustomListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,11 +42,7 @@ public class MainActivity extends FragmentActivity {
 
     private void updateUI() {
         fillForecastView((ViewGroup)findViewById(R.id.hourly_forecast), 8, 24);
-
-        // Instantiate a ViewPager and a PagerAdapter.
-        mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
-        mPager.setAdapter(mPagerAdapter);
+        fillClothesListView((ListView)findViewById(R.id.clothes_list_view));
     }
 
     private void fillForecastView(ViewGroup forecastView, int startHour, int endHour) {
@@ -68,6 +67,25 @@ public class MainActivity extends FragmentActivity {
         alertMessage.setText(Html.fromHtml(String.format(getString(R.string.alert_message))));
     }
 
+    private void fillClothesListView(ListView listView) {
+        adapter = new CustomListAdapter(this, clothesList);
+        listView.setAdapter(adapter);
+
+        clothesList.add(new Clothes(
+                "Vogue",
+                "Magazine",
+                "Moda y belleza; todas las pasarelas internacionales; tendencias, diseñadores, modelos y fotógrafos de moda; joyas, moda en la calle.",
+                R.drawable.vogue_logo,
+                R.drawable.model));
+        clothesList.add(new Clothes(
+                "Vogue",
+                "Magazine",
+                "Moda y belleza; todas las pasarelas internacionales; tendencias, diseñadores, modelos y fotógrafos de moda; joyas, moda en la calle.",
+                R.drawable.vogue_logo,
+                R.drawable.model));
+        adapter.notifyDataSetChanged();
+    }
+
     private int getRandomBetweenNumbers(int minValue, int maxValue) {
         return random.nextInt((maxValue + 1) - minValue) + minValue;
     }
@@ -78,37 +96,76 @@ public class MainActivity extends FragmentActivity {
         return mascotTypedArray.getResourceId(mascotIndex, -1);
     }
 
-    /**
-     * A simple pager adapter that represents 3 ScreenSlidePageFragment objects, in
-     * sequence.
-     */
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
+        Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
 
-        @Override
-        public Fragment getItem(int position) {
-            return new ScreenSlidePageFragment();
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+        final float roundPx = 30;
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        return output;
+    }
+
+    public static class CustomListAdapter extends BaseAdapter {
+        private Context context;
+        private LayoutInflater inflater;
+        private List<Clothes> clothesItems;
+
+        public CustomListAdapter(Context context, List<Clothes> clothesItems) {
+            this.context = context;
+            this.clothesItems = clothesItems;
         }
 
         @Override
         public int getCount() {
-            return NUM_PAGES;
+            return clothesItems.size();
         }
-    }
-
-    public static class ScreenSlidePageFragment extends Fragment {
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            ViewGroup rootView = (ViewGroup) inflater.inflate(
-                    R.layout.clothes_image, container, false);
+        public Object getItem(int location) {
+            return clothesItems.get(location);
+        }
 
-            ImageView image = (ImageView) rootView.findViewById(R.id.photo);
-            image.setImageDrawable(getResources().getDrawable(R.drawable.model));
-            return rootView;
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+
+            if (inflater == null)
+                inflater = (LayoutInflater) context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            if (convertView == null)
+                convertView = inflater.inflate(R.layout.clothes_list_item, null);
+
+            TextView magazine = (TextView)convertView.findViewById(R.id.magazine);
+            TextView mSubtitle = (TextView)convertView.findViewById(R.id.magazine_subtitle);
+            TextView description = (TextView)convertView.findViewById(R.id.text_description);
+            ImageView logo = (ImageView)convertView.findViewById(R.id.magazine_logo);
+            ImageView photo = (ImageView)convertView.findViewById(R.id.photo);
+
+            Clothes c = clothesItems.get(position);
+            magazine.setText(c.getMagazine());
+            mSubtitle.setText(c.getmSubtitle());
+            description.setText(c.getDescription());
+            logo.setImageDrawable(context.getResources().getDrawable(c.getLogo()));
+            photo.setImageDrawable(context.getResources().getDrawable(c.getPhoto()));
+
+            return convertView;
         }
     }
 }
