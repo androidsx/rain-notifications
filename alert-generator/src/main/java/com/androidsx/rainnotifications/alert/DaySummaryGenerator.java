@@ -6,15 +6,10 @@ import android.util.SparseArray;
 import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
-import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.google.gson.GsonBuilder;
-
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.joda.time.Period;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,8 +17,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,77 +48,8 @@ public class DaySummaryGenerator {
         daySummaryPostProcessor = new DaySummaryPostProcessor(Arrays.asList(gsonBuilder.create().fromJson(jsonReader, DaySummary[].class)));
     }
 
-
     public DaySummary getDaySummary(ForecastTable forecastTable) {
-        forecastTable.getForecasts().add(createForecastFromBaseline(forecastTable));
-        DaySummary.DaySummaryBuilder builder = new DaySummary.DaySummaryBuilder();
-
-        for (DayPeriod period : DayPeriod.values()) {
-            HashMap<WeatherPriority, DaySummary.WeatherWrapper> periodSummary = summarizeForecasts(filterForecasts(forecastTable.getForecasts(), period));
-            for (WeatherPriority priority : periodSummary.keySet()) {
-                builder.setWeatherWrapper(period, priority, periodSummary.get(priority));
-            }
-        }
-
-        return daySummaryPostProcessor.getClosestDaySummary(builder.build());
-    }
-
-    private List<Forecast> filterForecasts(List<Forecast> forecasts, DayPeriod period) {
-        ArrayList<Forecast> filteredForecasts = new ArrayList<Forecast>();
-        for (Forecast forecast : forecasts) {
-            int startHourOfDayForecast = new DateTime(forecast.getTimeFromNow().getStartMillis()).getHourOfDay();
-            int endHourOfDayForecast = new DateTime(forecast.getTimeFromNow().getEndMillis()).getHourOfDay();
-
-            // The start or end hour within the limits, or overlapping across outside the limits
-            if ((startHourOfDayForecast >= period.getStartHour() && startHourOfDayForecast <= period.getEndHour()) ||
-                    (endHourOfDayForecast >= period.getStartHour() && endHourOfDayForecast <= period.getEndHour()) ||
-                    (endHourOfDayForecast >= period.getEndHour() && startHourOfDayForecast <= period.getEndHour())) {
-                filteredForecasts.add(forecast);
-            }
-        }
-
-        return filteredForecasts;
-    }
-
-    private HashMap<WeatherPriority, DaySummary.WeatherWrapper> summarizeForecasts(List<Forecast> forecasts) {
-        HashMap<WeatherPriority, DaySummary.WeatherWrapper> priorityWeathers = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
-
-        if (forecasts.size() == 0) {
-            return priorityWeathers;
-        } else if (forecasts.size() == 1) {
-            priorityWeathers.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(forecasts.get(0).getForecastedWeather().getType()));
-            return priorityWeathers;
-        } else {
-            // Sort by the bigger interval of time
-            Collections.sort(forecasts, new Comparator<Forecast>() {
-                @Override
-                public int compare(Forecast o1, Forecast o2) {
-                    if (o1.getTimeFromNow().isBefore(o2.getTimeFromNow())) {
-                        return 1;
-                    } else if (o1.getTimeFromNow().isEqual(o2.getTimeFromNow())) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
-                }
-            });
-            // TODO: if there are more than 2, check if the last forecast has more importance (such as rain)
-            priorityWeathers.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(forecasts.get(0).getForecastedWeather().getType()));
-            priorityWeathers.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(forecasts.get(1).getForecastedWeather().getType()));
-        }
-
-        return priorityWeathers;
-    }
-
-    private Forecast createForecastFromBaseline(ForecastTable forecastTable) {
-        final Interval baselineInterval;
-        if (forecastTable.getForecasts().size() > 0) {
-            Interval firstForecastInterval = forecastTable.getForecasts().get(0).getTimeFromNow();
-            baselineInterval = new Interval(forecastTable.getBaselineTime(), new DateTime(firstForecastInterval.getStartMillis()));
-        } else {
-            baselineInterval = new Interval(forecastTable.getBaselineTime(), forecastTable.getBaselineTime().plus(Period.days(1)));
-        }
-        return new Forecast(forecastTable.getBaselineWeather(), baselineInterval, Forecast.Granularity.HOUR);
+        return daySummaryPostProcessor.getClosestDaySummary(DaySummary.fromForecastTable(forecastTable));
     }
 
     private class DaySummaryPostProcessor {
