@@ -82,7 +82,8 @@
                 android:id="@+id/close_forecast_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/btn_dialog"/>
+                android:src="@android:drawable/btn_dialog"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/forecast_message"
@@ -90,7 +91,6 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/close_forecast_icon"
                 android:padding="5dp"
-                android:text="hola que talhola que talhola que talhola que talhola que talhola que talhola que talhola que talhola que tal"
                 android:textSize="16sp"
                 android:textColor="#3c5f6e"/>
         </LinearLayout>

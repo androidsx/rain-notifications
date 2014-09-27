@@ -4,23 +4,23 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:background="@color/feed_bg"
-    android:padding="8dp">
+    android:padding="5dp">
 
     <RelativeLayout
+        android:id="@+id/card_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/feed_item_margin"
         android:layout_marginRight="@dimen/feed_item_margin"
-        android:layout_marginTop="@dimen/feed_item_margin"
         android:background="@drawable/bg_parent_rounded_corner"
-        android:paddingBottom="@dimen/feed_item_padding_top_bottom"
-        android:paddingTop="@dimen/feed_item_padding_top_bottom">
+        android:padding="3dp">
 
         <RelativeLayout
             android:id="@+id/title_section"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp">
+            android:padding="16dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:id="@+id/clothes_info"
@@ -33,7 +33,8 @@
                     android:id="@+id/magazine_logo"
                     android:layout_width="70dp"
                     android:layout_height="30dp"
-                    android:src="@drawable/vogue_logo" android:scaleType="fitXY"/>
+                    android:scaleType="fitXY"
+                    android:src="@drawable/vogue_logo" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -46,8 +47,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Vogue"
-                        android:textSize="20sp"
-                        android:textColor="#000000"
+                        android:textSize="24sp"
                         android:textStyle="bold"/>
 
                     <TextView
@@ -67,20 +67,17 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/clothes_info"
                 android:layout_marginTop="5dp"
-                android:text="Moda y belleza; todas las pasarelas internacionales; tendencias, diseñadores, modelos y fotógrafos de moda; joyas, moda en la calle."/>
+                android:text="Moda y belleza; todas las pasarelas internacionales; tendencias, diseñadores, modelos y fotógrafos de moda; joyas, moda en la calle."
+                android:textSize="13sp" />
         </RelativeLayout>
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/title_section">
+            android:scaleType="centerCrop"
+            android:layout_below="@+id/title_section"
+            android:src="@drawable/model"/>
 
-            <ImageView
-                android:id="@+id/photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/model"/>
-        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

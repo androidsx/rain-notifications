@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -78,11 +79,23 @@ public class MainActivity extends Activity {
                 R.drawable.vogue_logo,
                 R.drawable.model));
         clothesList.add(new Clothes(
-                "Vogue",
-                "Magazine",
-                "Moda y belleza; todas las pasarelas internacionales; tendencias, diseñadores, modelos y fotógrafos de moda; joyas, moda en la calle.",
+                "",
+                "",
+                "",
                 R.drawable.vogue_logo,
-                R.drawable.model));
+                R.drawable.a));
+        clothesList.add(new Clothes(
+                "",
+                "",
+                "",
+                R.drawable.vogue_logo,
+                R.drawable.b));
+        clothesList.add(new Clothes(
+                "",
+                "",
+                "",
+                R.drawable.vogue_logo,
+                R.drawable.c));
         adapter.notifyDataSetChanged();
     }
 
@@ -105,7 +118,7 @@ public class MainActivity extends Activity {
         final Paint paint = new Paint();
         final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         final RectF rectF = new RectF(rect);
-        final float roundPx = 30;
+        final float roundPx = 15;
 
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
@@ -160,10 +173,10 @@ public class MainActivity extends Activity {
 
             Clothes c = clothesItems.get(position);
             magazine.setText(c.getMagazine());
-            mSubtitle.setText(c.getmSubtitle());
+            mSubtitle.setText(c.getSubtitle());
             description.setText(c.getDescription());
             logo.setImageDrawable(context.getResources().getDrawable(c.getLogo()));
-            photo.setImageDrawable(context.getResources().getDrawable(c.getPhoto()));
+            photo.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), c.getPhoto())));
 
             return convertView;
         }

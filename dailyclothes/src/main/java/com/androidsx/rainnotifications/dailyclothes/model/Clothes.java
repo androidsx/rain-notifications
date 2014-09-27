@@ -3,14 +3,14 @@ package com.androidsx.rainnotifications.dailyclothes.model;
 public class Clothes {
 
     private String magazine;
-    private String mSubtitle;
+    private String subtitle;
     private String description;
     private int logo;
     private int photo;
 
-    public Clothes (String magazine, String mSubtitle, String description, int logo, int photo) {
+    public Clothes (String magazine, String subtitle, String description, int logo, int photo) {
         this.magazine = magazine;
-        this.mSubtitle = mSubtitle;
+        this.subtitle = subtitle;
         this.description = description;
         this.logo = logo;
         this.photo = photo;
@@ -20,8 +20,8 @@ public class Clothes {
         return magazine;
     }
 
-    public String getmSubtitle() {
-        return mSubtitle;
+    public String getSubtitle() {
+        return subtitle;
     }
 
     public String getDescription() {
