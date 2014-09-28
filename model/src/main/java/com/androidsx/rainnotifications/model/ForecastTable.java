@@ -5,6 +5,10 @@ import org.joda.time.DateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated in favor of {@link com.androidsx.rainnotifications.model.ForecastTableV2}
+ */
+@Deprecated
 public class ForecastTable {
     private final Weather baselineWeather;
     private final DateTime baselineTime;

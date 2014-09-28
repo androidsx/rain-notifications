@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @deprecated in favor of {@link com.androidsx.rainnotifications.model.DaySummaryV2}
+ */
+@Deprecated
 public class DaySummary {
 
     public static DaySummary fromForecastTable(ForecastTable forecastTable) {

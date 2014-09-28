@@ -8,7 +8,10 @@ import java.util.Locale;
 
 /**
  * A weather forecast about a particular point in the future, with certain granularity.
+ *
+ * @deprecated in favor of {@link com.androidsx.rainnotifications.model.ForecastV2}
  */
+@Deprecated
 public class Forecast {
     private final Weather forecastedWeather;
     private final Interval timeFromNow;

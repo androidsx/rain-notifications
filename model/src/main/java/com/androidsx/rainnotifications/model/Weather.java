@@ -4,7 +4,9 @@ package com.androidsx.rainnotifications.model;
  * Status of the weather at a particular point in time (past, present of future).
  *
  * @see #equals
+ * @deprecated in favor of {@link com.androidsx.rainnotifications.model.WeatherWrapperV2}
  */
+@Deprecated
 public class Weather {
     private final WeatherType type;
 
