@@ -73,28 +73,12 @@ public class MainActivity extends Activity {
         listView.setAdapter(adapter);
 
         clothesList.add(new Clothes(
-                "Vogue",
-                "Magazine",
-                "Moda y belleza; todas las pasarelas internacionales; tendencias, diseñadores, modelos y fotógrafos de moda; joyas, moda en la calle.",
-                R.drawable.vogue_logo,
                 R.drawable.model));
         clothesList.add(new Clothes(
-                "",
-                "",
-                "",
-                R.drawable.vogue_logo,
                 R.drawable.a));
         clothesList.add(new Clothes(
-                "",
-                "",
-                "",
-                R.drawable.vogue_logo,
                 R.drawable.b));
         clothesList.add(new Clothes(
-                "",
-                "",
-                "",
-                R.drawable.vogue_logo,
                 R.drawable.c));
         adapter.notifyDataSetChanged();
     }
@@ -165,17 +149,9 @@ public class MainActivity extends Activity {
             if (convertView == null)
                 convertView = inflater.inflate(R.layout.clothes_list_item, null);
 
-            TextView magazine = (TextView)convertView.findViewById(R.id.magazine);
-            TextView mSubtitle = (TextView)convertView.findViewById(R.id.magazine_subtitle);
-            TextView description = (TextView)convertView.findViewById(R.id.text_description);
-            ImageView logo = (ImageView)convertView.findViewById(R.id.magazine_logo);
             ImageView photo = (ImageView)convertView.findViewById(R.id.photo);
 
             Clothes c = clothesItems.get(position);
-            magazine.setText(c.getMagazine());
-            mSubtitle.setText(c.getSubtitle());
-            description.setText(c.getDescription());
-            logo.setImageDrawable(context.getResources().getDrawable(c.getLogo()));
             photo.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), c.getPhoto())));
 
             return convertView;
