@@ -2,11 +2,15 @@ package com.androidsx.rainnotifications.alert;
 
 import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.DaySummary;
+import com.androidsx.rainnotifications.model.DaySummaryV2;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.ForecastTableV2;
+import com.androidsx.rainnotifications.model.ForecastV2;
 import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
+import com.androidsx.rainnotifications.model.WeatherWrapperV2;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -44,6 +48,41 @@ public class ForecastTableToDaySummaryConverterTest {
     @Before
     public void setUp() throws Exception {
         ShadowLog.stream = System.out;
+    }
+
+    @Test
+    public void testVersion2() {
+        DateTime today6am = new DateTime(2014, 9, 28, 6, 0, 0);
+        DateTime today8am = new DateTime(2014, 9, 28, 8, 0, 0);
+        DateTime today9am = new DateTime(2014, 9, 28, 9, 0, 0);
+        DateTime today11am = new DateTime(2014, 9, 28, 11, 0, 0);
+        DateTime today14pm = new DateTime(2014, 9, 28, 14, 0, 0);
+        DateTime today17pm = new DateTime(2014, 9, 28, 17, 0, 0);
+        DateTime today20pm = new DateTime(2014, 9, 28, 20, 0, 0);
+        DateTime today22pm = new DateTime(2014, 9, 28, 22, 0, 0);
+
+        ArrayList<ForecastV2> forecastList = new ArrayList<ForecastV2>();
+        forecastList.add(new ForecastV2(new Interval(today6am, today8am), new WeatherWrapperV2(WeatherType.CLOUDY))); // morning
+        forecastList.add(new ForecastV2(new Interval(today8am, today9am), new WeatherWrapperV2(WeatherType.CLEAR))); // morning
+        forecastList.add(new ForecastV2(new Interval(today9am, today11am), new WeatherWrapperV2(WeatherType.RAIN))); // morning
+        forecastList.add(new ForecastV2(new Interval(today11am, today14pm), new WeatherWrapperV2(WeatherType.CLOUDY))); // morning and afternoon
+        forecastList.add(new ForecastV2(new Interval(today14pm, today17pm), new WeatherWrapperV2(WeatherType.PARTLY_CLOUDY))); // afternoon
+        forecastList.add(new ForecastV2(new Interval(today17pm, today20pm), new WeatherWrapperV2(WeatherType.RAIN))); // afternoon and evening
+        forecastList.add(new ForecastV2(new Interval(today20pm, today22pm), new WeatherWrapperV2(WeatherType.CLEAR))); // evening and night
+
+        DaySummaryV2 summary = DaySummaryV2.fromForecastTable(new ForecastTableV2(forecastList));
+
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.primary), WeatherType.RAIN);
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), WeatherType.CLOUDY);
+
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.afternoon, WeatherPriority.primary), WeatherType.PARTLY_CLOUDY);
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.afternoon, WeatherPriority.secondary), WeatherType.RAIN);
+
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.evening, WeatherPriority.primary), WeatherType.RAIN);
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.evening, WeatherPriority.secondary), WeatherType.CLEAR);
+
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.night, WeatherPriority.primary), WeatherType.CLEAR);
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.night, WeatherPriority.secondary), WeatherType.UNDEFINED);
     }
 
     // TODO: Reimplement as soon as we create the real DayMessageGenerator
