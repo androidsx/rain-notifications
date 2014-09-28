@@ -85,6 +85,32 @@ public class ForecastTableToDaySummaryConverterTest {
         Assert.assertEquals(summary.getWeatherType(DayPeriod.night, WeatherPriority.secondary), WeatherType.UNDEFINED);
     }
 
+    // Broken. See comment at https://github.com/androidsx/rain-notifications/commit/e3594f173f5316827c7885837d2c2ea14cec1da4#commitcomment-7952897
+    @Test
+    public void testDayMessageForSunnyDayGeneratedAt6am() {
+        // TODO: these two variables are not used
+        DateTime today6am = new DateTime(2014, 9, 28, 6, 0, 0);
+        WeatherType currentWeatherType = WeatherType.CLEAR;
+
+        ArrayList<ForecastV2> emptyForecastList = new ArrayList<ForecastV2>();
+        DaySummaryV2 summary = DaySummaryV2.fromForecastTable(new ForecastTableV2(emptyForecastList));
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.primary), WeatherType.CLEAR);
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), WeatherType.CLEAR);
+    }
+
+    // Broken. See previous test
+    @Test
+    public void testDayMessageForSunnyDayGeneratedAt10am() {
+        // TODO: these two variables are not used
+        DateTime today10am = new DateTime(2014, 9, 28, 10, 0, 0);
+        WeatherType currentWeatherType = WeatherType.CLEAR;
+
+        ArrayList<ForecastV2> emptyForecastList = new ArrayList<ForecastV2>();
+        DaySummaryV2 summary = DaySummaryV2.fromForecastTable(new ForecastTableV2(emptyForecastList));
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.primary), WeatherType.CLEAR);
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), WeatherType.CLEAR);
+    }
+
     // TODO: Reimplement as soon as we create the real DayMessageGenerator
     @Test
     public void testEasyCases() {
