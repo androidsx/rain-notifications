@@ -85,30 +85,35 @@ public class ForecastTableToDaySummaryConverterTest {
         Assert.assertEquals(summary.getWeatherType(DayPeriod.night, WeatherPriority.secondary), WeatherType.UNDEFINED);
     }
 
-    // Broken. See comment at https://github.com/androidsx/rain-notifications/commit/e3594f173f5316827c7885837d2c2ea14cec1da4#commitcomment-7952897
     @Test
     public void testDayMessageForSunnyDayGeneratedAt6am() {
-        // TODO: these two variables are not used
         DateTime today6am = new DateTime(2014, 9, 28, 6, 0, 0);
         WeatherType currentWeatherType = WeatherType.CLEAR;
 
-        ArrayList<ForecastV2> emptyForecastList = new ArrayList<ForecastV2>();
-        DaySummaryV2 summary = DaySummaryV2.fromForecastTable(new ForecastTableV2(emptyForecastList));
-        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.primary), WeatherType.CLEAR);
-        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), WeatherType.CLEAR);
+        ArrayList<ForecastV2> forecastList = new ArrayList<ForecastV2>();
+        forecastList.add(new ForecastV2(new Interval(today6am, today6am.plus(Period.hours(24))), new WeatherWrapperV2(currentWeatherType)));
+
+        ForecastTableV2 table = new ForecastTableV2(forecastList);
+        DaySummaryV2 summary = DaySummaryV2.fromForecastTable(table);
+        for (DayPeriod dayPeriod : DayPeriod.values()) {
+            Assert.assertEquals("Wrong primary for " + dayPeriod, WeatherType.CLEAR, summary.getWeatherType(dayPeriod, WeatherPriority.primary));
+            Assert.assertEquals("Wrong secondary for " + dayPeriod, WeatherType.UNDEFINED, summary.getWeatherType(dayPeriod, WeatherPriority.secondary));
+        }
     }
 
-    // Broken. See previous test
     @Test
     public void testDayMessageForSunnyDayGeneratedAt10am() {
-        // TODO: these two variables are not used
         DateTime today10am = new DateTime(2014, 9, 28, 10, 0, 0);
         WeatherType currentWeatherType = WeatherType.CLEAR;
 
-        ArrayList<ForecastV2> emptyForecastList = new ArrayList<ForecastV2>();
-        DaySummaryV2 summary = DaySummaryV2.fromForecastTable(new ForecastTableV2(emptyForecastList));
-        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.primary), WeatherType.CLEAR);
-        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), WeatherType.CLEAR);
+        ArrayList<ForecastV2> forecastList = new ArrayList<ForecastV2>();
+        forecastList.add(new ForecastV2(new Interval(today10am, today10am.plus(Period.hours(24))), new WeatherWrapperV2(currentWeatherType)));
+
+        DaySummaryV2 summary = DaySummaryV2.fromForecastTable(new ForecastTableV2(forecastList));
+        for (DayPeriod dayPeriod : DayPeriod.values()) {
+            Assert.assertEquals("Wrong primary for " + dayPeriod, WeatherType.CLEAR, summary.getWeatherType(dayPeriod, WeatherPriority.primary));
+            Assert.assertEquals("Wrong secondary for " + dayPeriod, WeatherType.UNDEFINED, summary.getWeatherType(dayPeriod, WeatherPriority.secondary));
+        }
     }
 
     // TODO: Reimplement as soon as we create the real DayMessageGenerator
@@ -116,19 +121,29 @@ public class ForecastTableToDaySummaryConverterTest {
     public void testEasyCases() {
         final DateTime today9am = new DateTime(2014, 9, 17, 9, 0);
         final List<ForecastV2> forecasts = new ArrayList<ForecastV2>();
-        final DateTime cloudyStart = today9am.plus(Period.minutes(30));
+
+        // The day starts off sunny, but just for 30 minutes
+        final WeatherType currentWeather = WeatherType.CLEAR;
+        final DateTime sunnyEnd = today9am.plus(Period.minutes(30));
+        forecasts.add(new ForecastV2(new Interval(today9am, sunnyEnd), new WeatherWrapperV2(currentWeather)));
+
+        // It gets cloudy for most of the morning
+        final DateTime cloudyStart = sunnyEnd;
         final DateTime cloudyEnd = cloudyStart.plus(Period.hours(2));
         forecasts.add(new ForecastV2(new Interval(cloudyStart, cloudyEnd), new WeatherWrapperV2(WeatherType.CLOUDY)));
+
+        // And then rains for hours
         final DateTime rainStart = today9am.plus(Period.minutes(30)).plus(Period.hours(2));
         final DateTime rainEnd = rainStart.plus(Period.hours(10));
         forecasts.add(new ForecastV2(new Interval(rainStart, rainEnd), new WeatherWrapperV2(WeatherType.RAIN)));
-        final ForecastTableV2 forecastTable = new ForecastTableV2(forecasts);
 
+        // Compute the day summary
+        final ForecastTableV2 forecastTable = new ForecastTableV2(forecasts);
         DaySummaryV2 daySummary = DaySummaryV2.fromForecastTable(forecastTable);
 
+        // Check the results
         Assert.assertEquals(daySummary.getWeatherType(DayPeriod.morning, WeatherPriority.primary), WeatherType.CLOUDY);
         Assert.assertEquals(daySummary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), WeatherType.RAIN);
-
         Assert.assertEquals(daySummary.getWeatherType(DayPeriod.afternoon, WeatherPriority.primary), WeatherType.RAIN);
         Assert.assertEquals(daySummary.getWeatherType(DayPeriod.afternoon, WeatherPriority.secondary), WeatherType.UNDEFINED);
     }
