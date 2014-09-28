@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:customAttrs="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingLeft="5dp"
@@ -28,14 +29,15 @@
         android:layout_weight="34"
         android:gravity="center_horizontal">
 
-        <TextView
+        <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
             android:id="@+id/forecast_temp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="63º"
             android:textSize="25sp"
-            android:textColor="#8e7f3a"/>
+            android:textColor="#8e7f3a"
+            customAttrs:customFont="roboto_light"/>
     </LinearLayout>
 
     <LinearLayout
@@ -44,12 +46,13 @@
         android:layout_weight="33"
         android:gravity="center_horizontal">
 
-        <TextView
+        <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
             android:id="@+id/forecast_hour"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="10am"
-            android:textColor="#8e7f3a"/>
+            android:textColor="#8e7f3a"
+            customAttrs:customFont="roboto_light"/>
     </LinearLayout>
 </LinearLayout>

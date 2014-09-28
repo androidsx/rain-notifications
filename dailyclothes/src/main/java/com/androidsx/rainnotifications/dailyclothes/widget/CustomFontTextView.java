@@ -20,7 +20,8 @@ public class CustomFontTextView extends TextView {
     private static final String sAttribute = "customFont";
 
     static enum CustomFont {
-        ROBOTO_THIN("fonts/Roboto-Thin.ttf");
+        ROBOTO_THIN("fonts/Roboto-Thin.ttf"),
+        ROBOTO_LIGHT("fonts/Roboto-Light.ttf");
 
         private final String fileName;
 
