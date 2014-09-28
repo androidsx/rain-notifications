@@ -9,9 +9,10 @@ import java.util.Locale;
 
 /**
  * Text view with a custom font.
- * <p>
- * In the XML, use {@code customAttrs:customFont="robotothin"}, where the list of fonts
- * that are currently supported are defined in the enum {@link CustomFont}.
+ * <p/>
+ * In the XML, use something like {@code customAttrs:customFont="roboto-thin"}. The list of fonts
+ * that are currently supported are defined in the enum {@link CustomFont}. Remember to also add
+ * {@code xmlns:customAttrs="http://schemas.android.com/apk/res-auto"} in the header.
  */
 public class CustomFontTextView extends TextView {
 

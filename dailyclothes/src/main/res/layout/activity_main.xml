@@ -88,14 +88,15 @@
                 android:src="@android:drawable/btn_dialog"
                 android:visibility="gone"/>
 
-            <TextView
+            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
                 android:id="@+id/forecast_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/close_forecast_icon"
                 android:padding="5dp"
                 android:textSize="16sp"
-                android:textColor="#3c5f6e"/>
+                android:textColor="#3c5f6e"
+                customAttrs:customFont="roboto_light"/>
         </LinearLayout>
     </RelativeLayout>
 
@@ -131,12 +132,12 @@
             android:layout_marginBottom="-10dp"
             android:background="#ffffff">
 
-            <TextView
+            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ALERTS"
                 android:textSize="10sp"
-                android:textColor="#8e7f3a"/>
+                android:textColor="#8e7f3a"
+                customAttrs:customFont="roboto_light"/>
         </LinearLayout>
 
         <LinearLayout
@@ -164,13 +165,14 @@
                 android:padding="15dp"
                 android:gravity="center">
 
-                <TextView
+                <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
                     android:id="@+id/alert_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:textStyle="bold"
-                    android:textColor="#8e7f3a"/>
+                    android:textColor="#8e7f3a"
+                    customAttrs:customFont="roboto_light"/>
 
             </LinearLayout>
 
