@@ -3,7 +3,7 @@ package com.androidsx.rainnotifications.model;
 import org.joda.time.Interval;
 
 /**
- * A weather forecast about a particular point in the future.
+ * A weather forecast about a particular interval of time in the future.
  */
 public class ForecastV2 {
     private final Interval interval;
@@ -18,6 +18,11 @@ public class ForecastV2 {
         this.weatherWrapper = weatherWrapper;
     }
 
+    /**
+     * Interval of time during which this forecast is valid. For instance, there may be rain
+     * forecasted for 4pm to 6pm certain day. Those two points in time are the start and the
+     * end of the interval.
+     */
     public Interval getInterval() {
         return interval;
     }
