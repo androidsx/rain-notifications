@@ -41,7 +41,7 @@ public class ForecastTableV2 {
     }
 
     public boolean hasTransitions() {
-        return mergedForecast.size() > 1;
+        return mergedForecast.size() > 1; // Because the first one is the current weather
     }
 
     /**
