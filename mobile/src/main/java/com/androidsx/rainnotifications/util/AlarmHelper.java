@@ -51,7 +51,7 @@ public class AlarmHelper {
                     10 * DateTimeConstants.MILLIS_PER_MINUTE,
                     weatherAlarmIntent);
             SharedPrefsHelper.saveLongValue(context, NEXT_ALARM_TIME, nextAlarmTime.getMillis());
-            if (forecastTable.getForecasts().size() > 1) {
+            if (forecastTable.hasTransitions()) {
                 Timber.tag(TAG).i("Next transition is %s -> %s in %s.",
                         forecastTable.getForecasts().get(0).getWeatherWrapper().getType(),
                         forecastTable.getForecasts().get(1).getWeatherWrapper().getType(),
@@ -116,10 +116,10 @@ public class AlarmHelper {
      */
     public static DateTime computeNextAlarmTime(ForecastTableV2 forecastTable) {
         Interval nextIntervalAlarmTime;
-        if (forecastTable.getForecasts().size() < 2) {
-            nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getStart().getMillis() + DateTimeConstants.MILLIS_PER_HOUR);
-        } else {
+        if (forecastTable.hasTransitions()) {
             nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getForecasts().get(1).getInterval().getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
+        } else {
+            nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getStart().getMillis() + DateTimeConstants.MILLIS_PER_HOUR);
         }
         if (nextIntervalAlarmTime.toDurationMillis() < 90 * DateTimeConstants.MILLIS_PER_MINUTE) {
             return new DateTime(nextIntervalAlarmTime.getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
