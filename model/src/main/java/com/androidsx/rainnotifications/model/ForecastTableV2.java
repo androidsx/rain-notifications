@@ -16,7 +16,6 @@ public class ForecastTableV2 {
     /**
      * @param forecastList An ordered list of forecasts without overlaps or gaps in their Intervals.
      */
-    // TODO: Think about param conditions.
     public ForecastTableV2(List<ForecastV2> forecastList) {
         mergedForecast = new ArrayList<ForecastV2>();
 

@@ -1,7 +1,5 @@
 package com.androidsx.rainnotifications.model;
 
-import android.util.Log;
-
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.json.JSONArray;
@@ -12,69 +10,66 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder for {@link ForecastTable}.
+ * Builder for {@link com.androidsx.rainnotifications.model.ForecastTableV2}.
  * <p>
  * Should not be used from outside of this project.
  */
 public class WundergroundTableBuilder {
+    public static ForecastTableV2 buildFromWunderground(JSONObject response) throws JSONException {
+        if (response.has("current_observation") && response.has("hourly_forecast")) {
+            JSONObject current = (JSONObject) response.get("current_observation");
+            List<ForecastV2> forecastList = new ArrayList<ForecastV2>();
+            List<ForecastV2> hourlyForecastList = getForecastListFromHourly(response.getJSONArray("hourly_forecast"));
 
-    public static ForecastTable buildFromWunderground(JSONObject response) throws JSONException {
-        if (response.has("current_observation") && response.has("hourly_forecast") && response.has("sun_phase")) {
-            final JSONObject currently = (JSONObject) response.get("current_observation");
-            final JSONArray hourly = (JSONArray) response.get("hourly_forecast");
-            final JSONObject sunPhase = (JSONObject) response.get("sun_phase");
+            forecastList.add(new ForecastV2(getCurrentInterval(current, hourlyForecastList.size() != 0 ? hourlyForecastList.get(0) : null),
+                    WundergroundWeatherBuilder.buildFromWunderground(current)));
 
-            final DateTime currentTime = new DateTime(Long.parseLong(currently.get("local_epoch").toString()) * 1000);
-            final DateTime sunriseTime = getSunPhaseTime(sunPhase, "sunrise");
-            final DateTime sunsetTime = getSunPhaseTime(sunPhase, "sunset");
-            
-            final List<Forecast> allForecasts = new ArrayList<Forecast>();
-            allForecasts.addAll(extractAllValidForecast(currentTime, hourly, Forecast.Granularity.HOUR));
+            forecastList.addAll(hourlyForecastList);
 
-            final Weather currentWeather = WundergroundWeatherBuilder.buildFromWunderground(currently.getString("icon"));
-
-            return ForecastTable.create(currentWeather, currentTime, sunriseTime, sunsetTime, allForecasts);
+            return new ForecastTableV2(forecastList);
         } else {
             return null;
         }
     }
 
-    private static List<Forecast> extractAllValidForecast(DateTime fromTime,
-                                                          JSONArray dataBlock,
-                                                          Forecast.Granularity granularity) throws JSONException{
-        final List<Forecast> forecasts = new ArrayList<Forecast>();
-        if (dataBlock != null) {
-            for(int i=0; i < dataBlock.length(); i++) {
-                final Forecast forecast = extractForecastIfValid(fromTime, (JSONObject)dataBlock.get(i), granularity);
-                if (forecast != null) {
-                    forecasts.add(forecast);
-                }
+    private static List<ForecastV2> getForecastListFromHourly(JSONArray hourly) throws JSONException {
+        List<ForecastV2> forecasts = new ArrayList<ForecastV2>();
+
+        if(hourly.length() != 0) {
+            for (int i = 0 ; i < hourly.length() - 1 ; i++) {
+                forecasts.add(new ForecastV2(getHourlyForecastInterval(hourly.getJSONObject(i), hourly.getJSONObject(i + 1)), WundergroundWeatherBuilder.buildFromWunderground(hourly.getJSONObject(i))));
             }
+            forecasts.add(new ForecastV2(getHourlyForecastInterval(hourly.getJSONObject(hourly.length() - 1), null), WundergroundWeatherBuilder.buildFromWunderground(hourly.getJSONObject(hourly.length()))));
         }
+
         return forecasts;
     }
 
-    private static Forecast extractForecastIfValid(DateTime fromTime,
-                                                   JSONObject dataPoint,
-                                                   Forecast.Granularity granularity) throws JSONException {
-        JSONObject time = (JSONObject)dataPoint.get("FCTTIME");
-        final DateTime forecastTime = new DateTime(Long.parseLong(time.get("epoch").toString()) * 1000);
-        final Weather forecastedWeather = WundergroundWeatherBuilder.buildFromWunderground(dataPoint.getString("icon"));
-
-        if (forecastTime.isBefore(fromTime.toInstant())) {
-            //Log.v(TAG, "Skip the forecast for the present interval at " + forecastTime);
-            return null;
-        } else {
-            final Interval timeFromNow = new Interval(fromTime, forecastTime);
-            return new Forecast(forecastedWeather, timeFromNow, granularity);
+    private static Interval getCurrentInterval(JSONObject current, ForecastV2 forecast) throws JSONException {
+        if(forecast == null) {
+            DateTime currentStart = getCurrentStartDateTime(current);
+            return new Interval(currentStart, DayPeriod.night.getInterval(currentStart).getEnd());
+        }
+        else {
+            return new Interval(getCurrentStartDateTime(current), forecast.getInterval().getStart());
         }
     }
 
-    private static DateTime getSunPhaseTime(JSONObject sunPhase, String phase) throws JSONException {
-        final JSONObject sunrise = (JSONObject) sunPhase.get(phase);
-        DateTime sunPhaseTime = DateTime.now();
-        sunPhaseTime = sunPhaseTime.hourOfDay().setCopy(sunrise.getString("hour"));
-        sunPhaseTime = sunPhaseTime.minuteOfHour().setCopy(sunrise.getString("minute"));
-        return sunPhaseTime;
+    private static Interval getHourlyForecastInterval(JSONObject hourlyForecast, JSONObject nextHourlyForecast) throws JSONException {
+        if(nextHourlyForecast == null) {
+            DateTime hourlyForecastStart = getHourlyForecastStartDateTime(hourlyForecast);
+            return new Interval(hourlyForecastStart, DayPeriod.night.getInterval(hourlyForecastStart).getEnd());
+        }
+        else {
+            return new Interval(getHourlyForecastStartDateTime(hourlyForecast), getHourlyForecastStartDateTime(nextHourlyForecast));
+        }
+    }
+
+    private static DateTime getCurrentStartDateTime(JSONObject current) throws JSONException {
+        return new DateTime(Long.parseLong(current.get("local_epoch").toString()) * 1000);
+    }
+
+    private static DateTime getHourlyForecastStartDateTime(JSONObject hourlyForecast) throws JSONException {
+        return new DateTime(Long.parseLong(hourlyForecast.getJSONObject("FCTTIME").get("epoch").toString()) * 1000);
     }
 }
