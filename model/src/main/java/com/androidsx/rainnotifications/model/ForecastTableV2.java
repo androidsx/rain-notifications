@@ -40,6 +40,10 @@ public class ForecastTableV2 {
         return mergedForecast.get(0).getInterval().getStart();
     }
 
+    public boolean hasTransitions() {
+        return mergedForecast.size() > 1;
+    }
+
     /**
      * Returns the processed lists of forecasts. It is guaranteed to be non-empty.
      */
