@@ -4,9 +4,9 @@ import android.content.Context;
 import android.util.SparseArray;
 
 import com.androidsx.rainnotifications.model.DayPeriod;
+import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
-import com.androidsx.rainnotifications.model.DaySummaryV2;
-import com.androidsx.rainnotifications.model.ForecastTableV2;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.google.gson.GsonBuilder;
@@ -44,31 +44,31 @@ public class DaySummaryGenerator {
     public void init(InputStream dayMessagesJsonInputStream) {
         final Reader jsonReader = new InputStreamReader(dayMessagesJsonInputStream);
         final GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(DaySummaryV2.class, new DaySummaryDeserializer());
-        daySummaryPostProcessor = new DaySummaryPostProcessor(Arrays.asList(gsonBuilder.create().fromJson(jsonReader, DaySummaryV2[].class)));
+        gsonBuilder.registerTypeAdapter(DaySummary.class, new DaySummaryDeserializer());
+        daySummaryPostProcessor = new DaySummaryPostProcessor(Arrays.asList(gsonBuilder.create().fromJson(jsonReader, DaySummary[].class)));
     }
 
-    public DaySummaryV2 getDaySummary(ForecastTableV2 forecastTable) {
-        return daySummaryPostProcessor.getClosestDaySummary(DaySummaryV2.fromForecastTable(forecastTable));
+    public DaySummary getDaySummary(ForecastTable forecastTable) {
+        return daySummaryPostProcessor.getClosestDaySummary(DaySummary.fromForecastTable(forecastTable));
     }
 
     private class DaySummaryPostProcessor {
         private List<String> meaningfulWeatherTypeNames;
-        private HashMap<String, DaySummaryV2> sumariesMap;
+        private HashMap<String, DaySummary> sumariesMap;
 
         /**
          * This the maximum number of "Whatever" a DaySummary can have.
          */
         private final int MAX_WHATEVER_LEVEL = DayPeriod.values().length * WeatherPriority.values().length;
 
-        public DaySummaryPostProcessor(List<DaySummaryV2> daySummaries) {
-            sumariesMap = new HashMap<String, DaySummaryV2>();
+        public DaySummaryPostProcessor(List<DaySummary> daySummaries) {
+            sumariesMap = new HashMap<String, DaySummary>();
             meaningfulWeatherTypeNames = WeatherType.getMeaningfulWeatherTypeNames();
 
-            SparseArray<ArrayList<DaySummaryV2>> dispersedSumaries = getDispersedSummaries(daySummaries);
+            SparseArray<ArrayList<DaySummary>> dispersedSumaries = getDispersedSummaries(daySummaries);
 
             for (int i = 0 ; i <= MAX_WHATEVER_LEVEL ; i++) {
-                for (DaySummaryV2 daySummary : dispersedSumaries.get(i)) {
+                for (DaySummary daySummary : dispersedSumaries.get(i)) {
                     for (String key : getSuitableWeathersKeys(daySummary)) {
                         if (!sumariesMap.containsKey(key)) {
                             sumariesMap.put(key,daySummary);
@@ -78,9 +78,9 @@ public class DaySummaryGenerator {
             }
         }
 
-        public DaySummaryV2 getClosestDaySummary(DaySummaryV2 daySummary) {
+        public DaySummary getClosestDaySummary(DaySummary daySummary) {
             Timber.d("getClosestDaySummary for: " + daySummary);
-            DaySummaryV2 onMapSummary = getDaySummaryFromMap(daySummary);
+            DaySummary onMapSummary = getDaySummaryFromMap(daySummary);
 
             while (onMapSummary == null) {
                 if(downgradeDaySummary(daySummary)) {
@@ -101,11 +101,11 @@ public class DaySummaryGenerator {
             return onMapSummary;
         }
 
-        private DaySummaryV2 getDaySummaryFromMap(DaySummaryV2 daySummary) {
+        private DaySummary getDaySummaryFromMap(DaySummary daySummary) {
             return sumariesMap.get(getDaySummaryWeatherKey(daySummary));
         }
 
-        private boolean downgradeDaySummary(DaySummaryV2 daySummary) {
+        private boolean downgradeDaySummary(DaySummary daySummary) {
             if (!daySummary.getWeatherType(DayPeriod.night, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
                 Timber.d("remove night secondary");
                 daySummary.setWeatherType(DayPeriod.night, WeatherPriority.secondary, WeatherType.UNDEFINED);
@@ -157,7 +157,7 @@ public class DaySummaryGenerator {
             return false;
         }
 
-        private String getDaySummaryWeatherKey(DaySummaryV2 daySummary) {
+        private String getDaySummaryWeatherKey(DaySummary daySummary) {
             StringBuilder builder = new StringBuilder();
 
             for (DayPeriod period : DayPeriod.values()) {
@@ -169,7 +169,7 @@ public class DaySummaryGenerator {
             return builder.toString();
         }
 
-        private List<String> getSuitableWeathersKeys(DaySummaryV2 daySummary) {
+        private List<String> getSuitableWeathersKeys(DaySummary daySummary) {
             List<String> keys = Arrays.asList("");
 
             for (DayPeriod period : DayPeriod.values()) {
@@ -181,7 +181,7 @@ public class DaySummaryGenerator {
             return keys;
         }
 
-        private int getWhateverLevel(DaySummaryV2 daySummary) {
+        private int getWhateverLevel(DaySummary daySummary) {
             int level = 0;
 
             for (DayPeriod period : DayPeriod.values()) {
@@ -193,14 +193,14 @@ public class DaySummaryGenerator {
             return level;
         }
 
-        private SparseArray<ArrayList<DaySummaryV2>> getDispersedSummaries(List<DaySummaryV2> daySummaries) {
-            SparseArray<ArrayList<DaySummaryV2>> dispersed = new SparseArray<ArrayList<DaySummaryV2>>();
+        private SparseArray<ArrayList<DaySummary>> getDispersedSummaries(List<DaySummary> daySummaries) {
+            SparseArray<ArrayList<DaySummary>> dispersed = new SparseArray<ArrayList<DaySummary>>();
 
             for (int i = 0 ; i <= MAX_WHATEVER_LEVEL ; i++) {
-                dispersed.append(i, new ArrayList<DaySummaryV2>());
+                dispersed.append(i, new ArrayList<DaySummary>());
             }
 
-            for (DaySummaryV2 daySummary : daySummaries) {
+            for (DaySummary daySummary : daySummaries) {
                 dispersed.get(getWhateverLevel(daySummary)).add(daySummary);
             }
 

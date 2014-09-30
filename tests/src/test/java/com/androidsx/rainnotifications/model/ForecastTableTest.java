@@ -9,10 +9,10 @@ import java.util.Collections;
 
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
-public class ForecastTableV2Test {
+public class ForecastTableTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testEmptyListIsNotAllowed() {
-        new ForecastTableV2(Collections.<ForecastV2>emptyList());
+        new ForecastTable(Collections.<Forecast>emptyList());
     }
 }

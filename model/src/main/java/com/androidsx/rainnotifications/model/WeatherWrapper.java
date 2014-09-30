@@ -5,10 +5,10 @@ package com.androidsx.rainnotifications.model;
  *
  * @see #equals
  */
-public class WeatherWrapperV2 {
+public class WeatherWrapper {
     private final WeatherType type;
 
-    public WeatherWrapperV2(WeatherType type) {
+    public WeatherWrapper(WeatherType type) {
         this.type = type;
     }
 
@@ -43,10 +43,10 @@ public class WeatherWrapperV2 {
         } else if (other == null || getClass() != other.getClass()) {
             return false;
         } else {
-            final WeatherWrapperV2 otherWeather = (WeatherWrapperV2) other;
+            final WeatherWrapper otherWeather = (WeatherWrapper) other;
             if (getType() == WeatherType.UNKNOWN && !(otherWeather.getType() == WeatherType.UNKNOWN)) {
                 return false;
-            } else if (getType() == WeatherType.UNKNOWN || ((WeatherWrapperV2) other).getType() == WeatherType.UNKNOWN) {
+            } else if (getType() == WeatherType.UNKNOWN || ((WeatherWrapper) other).getType() == WeatherType.UNKNOWN) {
                 return true;
             } else {
                 return getType() == otherWeather.getType();

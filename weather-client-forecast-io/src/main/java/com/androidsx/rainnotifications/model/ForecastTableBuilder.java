@@ -10,12 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder for {@link com.androidsx.rainnotifications.model.ForecastTableV2}.
+ * Builder for {@link ForecastTable}.
  * <p>
  * Should not be used from outside of this project.
  */
 public class ForecastTableBuilder {
-    public static ForecastTableV2 buildFromForecastIo(ForecastService.Response response) {
+    public static ForecastTable buildFromForecastIo(ForecastService.Response response) {
         DataPoint currently = response.getForecast().getCurrently();
         List<DataPoint> dataPoints = new ArrayList<DataPoint>();
         dataPoints.add(currently);
@@ -26,16 +26,16 @@ public class ForecastTableBuilder {
             }
         }
 
-        return new ForecastTableV2(getForecastList(dataPoints));
+        return new ForecastTable(getForecastList(dataPoints));
     }
 
-    private static List<ForecastV2> getForecastList(List<DataPoint> dataPoints) {
-        List<ForecastV2> forecasts = new ArrayList<ForecastV2>();
+    private static List<Forecast> getForecastList(List<DataPoint> dataPoints) {
+        List<Forecast> forecasts = new ArrayList<Forecast>();
 
         for (int i = 0 ; i < dataPoints.size() - 1 ; i++) {
-            forecasts.add(new ForecastV2(getDataPointInterval(dataPoints.get(i), dataPoints.get(i + 1)), WeatherBuilder.buildFromForecastIo(dataPoints.get(i))));
+            forecasts.add(new Forecast(getDataPointInterval(dataPoints.get(i), dataPoints.get(i + 1)), WeatherBuilder.buildFromForecastIo(dataPoints.get(i))));
         }
-        forecasts.add(new ForecastV2(getDataPointInterval(dataPoints.get(dataPoints.size() - 1), null), WeatherBuilder.buildFromForecastIo(dataPoints.get(dataPoints.size() - 1))));
+        forecasts.add(new Forecast(getDataPointInterval(dataPoints.get(dataPoints.size() - 1), null), WeatherBuilder.buildFromForecastIo(dataPoints.get(dataPoints.size() - 1))));
 
         return forecasts;
     }

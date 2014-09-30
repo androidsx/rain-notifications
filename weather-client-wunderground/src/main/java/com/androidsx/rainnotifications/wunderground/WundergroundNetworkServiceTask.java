@@ -6,7 +6,7 @@ import android.util.Log;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientExecutor;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
-import com.androidsx.rainnotifications.model.ForecastTableV2;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WundergroundTableBuilder;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -39,7 +39,7 @@ public final class WundergroundNetworkServiceTask implements WeatherClientExecut
                 super.onSuccess(statusCode, headers, response);
                 try {
                     Log.v(TAG, "Raw response from Wunderground:\n" + response.toString(1));
-                    final ForecastTableV2 forecastTable = WundergroundTableBuilder.buildFromWunderground(response);
+                    final ForecastTable forecastTable = WundergroundTableBuilder.buildFromWunderground(response);
                     if (forecastTable != null) {
                         Log.d(TAG, "Transition table: " + forecastTable);
                         responseListener.onForecastSuccess(WundergroundTableBuilder.buildFromWunderground(response));

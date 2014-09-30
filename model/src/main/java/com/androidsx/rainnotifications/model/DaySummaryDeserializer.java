@@ -14,10 +14,10 @@ import java.util.List;
 
 public class DaySummaryDeserializer implements JsonDeserializer {
     @Override
-    public DaySummaryV2 deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public DaySummary deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         final JsonObject jsonObject = json.getAsJsonObject();
 
-        DaySummaryV2.DaySummaryBuilder builder = new DaySummaryV2.DaySummaryBuilder();
+        DaySummary.DaySummaryBuilder builder = new DaySummary.DaySummaryBuilder();
 
         for (DayPeriod period : DayPeriod.values()) {
             if (jsonObject.has(period.toString())) {

@@ -5,15 +5,15 @@ import org.joda.time.Interval;
 /**
  * A weather forecast about a particular interval of time in the future.
  */
-public class ForecastV2 {
+public class Forecast {
     private final Interval interval;
-    private final WeatherWrapperV2 weatherWrapper;
+    private final WeatherWrapper weatherWrapper;
 
     /**
      * @param interval When the weather happens, from start until end.
      * @param weatherWrapper
      */
-    public ForecastV2(Interval interval, WeatherWrapperV2 weatherWrapper) {
+    public Forecast(Interval interval, WeatherWrapper weatherWrapper) {
         this.interval = interval;
         this.weatherWrapper = weatherWrapper;
     }
@@ -27,7 +27,7 @@ public class ForecastV2 {
         return interval;
     }
 
-    public WeatherWrapperV2 getWeatherWrapper() {
+    public WeatherWrapper getWeatherWrapper() {
         return weatherWrapper;
     }
 

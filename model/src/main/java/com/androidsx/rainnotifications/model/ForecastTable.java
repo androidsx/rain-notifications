@@ -10,22 +10,22 @@ import java.util.List;
  * Table of expected forecasts. The first forecast in the table usually represents the current
  * weather.
  */
-public class ForecastTableV2 {
-    private final List<ForecastV2> mergedForecast;
+public class ForecastTable {
+    private final List<Forecast> mergedForecast;
 
     /**
      * @param forecastList An ordered list of forecasts without overlaps or gaps in their Intervals.
      */
-    public ForecastTableV2(List<ForecastV2> forecastList) {
-        mergedForecast = new ArrayList<ForecastV2>();
+    public ForecastTable(List<Forecast> forecastList) {
+        mergedForecast = new ArrayList<Forecast>();
 
         // Merge consecutive identical predictions
         if (forecastList.size() > 0) {
             mergedForecast.add(forecastList.get(0));
-            for (ForecastV2 currentForecast : forecastList) {
+            for (Forecast currentForecast : forecastList) {
                 if (currentForecast.getWeatherWrapper().equals(mergedForecast.get(mergedForecast.size() -1).getWeatherWrapper())) {
-                    ForecastV2 lastForecast = mergedForecast.remove(mergedForecast.size() -1);
-                    mergedForecast.add(new ForecastV2(new Interval(lastForecast.getInterval().getStart(), currentForecast.getInterval().getEnd()), lastForecast.getWeatherWrapper()));
+                    Forecast lastForecast = mergedForecast.remove(mergedForecast.size() -1);
+                    mergedForecast.add(new Forecast(new Interval(lastForecast.getInterval().getStart(), currentForecast.getInterval().getEnd()), lastForecast.getWeatherWrapper()));
                 }
                 else {
                     mergedForecast.add(currentForecast);
@@ -47,14 +47,14 @@ public class ForecastTableV2 {
     /**
      * Returns the processed lists of forecasts. It is guaranteed to be non-empty.
      */
-    public List<ForecastV2> getForecasts() {
+    public List<Forecast> getForecasts() {
         return mergedForecast;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        for (ForecastV2 forecast : mergedForecast) {
+        for (Forecast forecast : mergedForecast) {
             builder.append("\n" + forecast);
         }
         return builder.toString();

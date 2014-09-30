@@ -13,8 +13,8 @@ import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.ForecastTableV2;
-import com.androidsx.rainnotifications.model.ForecastV2;
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.NotificationHelper;
@@ -59,14 +59,14 @@ public class WeatherService extends Service {
             public void onLocationSuccess(Location location) {
                 WeatherClientFactory.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
-                    public void onForecastSuccess (ForecastTableV2 forecastTable){
+                    public void onForecastSuccess (ForecastTable forecastTable){
                         if (intent != null && intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {
                             //TODO: getDayMessage and send Notification.
                         } else {
                             if (!forecastTable.hasTransitions()) {
                                 Timber.d("No transitions are expected, so there's no notifications to generate");
                             } else {
-                                final ForecastV2 forecast = forecastTable.getForecasts().get(1);
+                                final Forecast forecast = forecastTable.getForecasts().get(1);
                                 final Alert alert = alertGenerator.generateAlert(forecastTable.getForecasts().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
                                 if (shouldLaunchNotification(forecast.getInterval().getStartMillis() - System.currentTimeMillis())) {
                                     Timber.i("Will display notification for " + alert);
@@ -98,7 +98,7 @@ public class WeatherService extends Service {
         return START_NOT_STICKY;
     }
 
-    private void setNextAlarm(ForecastTableV2 forecastTable) {
+    private void setNextAlarm(ForecastTable forecastTable) {
         final PendingIntent weatherAlarmIntent = PendingIntent.getService(
                 WeatherService.this,
                 Constants.Alarms.WEATHER_ID,

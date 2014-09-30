@@ -10,42 +10,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Builder for {@link com.androidsx.rainnotifications.model.ForecastTableV2}.
+ * Builder for {@link ForecastTable}.
  * <p>
  * Should not be used from outside of this project.
  */
 public class WundergroundTableBuilder {
-    public static ForecastTableV2 buildFromWunderground(JSONObject response) throws JSONException {
+    public static ForecastTable buildFromWunderground(JSONObject response) throws JSONException {
         if (response.has("current_observation") && response.has("hourly_forecast")) {
             JSONObject current = (JSONObject) response.get("current_observation");
-            List<ForecastV2> forecastList = new ArrayList<ForecastV2>();
-            List<ForecastV2> hourlyForecastList = getForecastListFromHourly(response.getJSONArray("hourly_forecast"));
+            List<Forecast> forecastList = new ArrayList<Forecast>();
+            List<Forecast> hourlyForecastList = getForecastListFromHourly(response.getJSONArray("hourly_forecast"));
 
-            forecastList.add(new ForecastV2(getCurrentInterval(current, hourlyForecastList.isEmpty() ? null : hourlyForecastList.get(0)),
+            forecastList.add(new Forecast(getCurrentInterval(current, hourlyForecastList.isEmpty() ? null : hourlyForecastList.get(0)),
                     WundergroundWeatherBuilder.buildFromWunderground(current)));
 
             forecastList.addAll(hourlyForecastList);
 
-            return new ForecastTableV2(forecastList);
+            return new ForecastTable(forecastList);
         } else {
             return null;
         }
     }
 
-    private static List<ForecastV2> getForecastListFromHourly(JSONArray hourly) throws JSONException {
-        List<ForecastV2> forecasts = new ArrayList<ForecastV2>();
+    private static List<Forecast> getForecastListFromHourly(JSONArray hourly) throws JSONException {
+        List<Forecast> forecasts = new ArrayList<Forecast>();
 
         if(hourly.length() != 0) {
             for (int i = 0 ; i < hourly.length() - 1 ; i++) {
-                forecasts.add(new ForecastV2(getHourlyForecastInterval(hourly.getJSONObject(i), hourly.getJSONObject(i + 1)), WundergroundWeatherBuilder.buildFromWunderground(hourly.getJSONObject(i))));
+                forecasts.add(new Forecast(getHourlyForecastInterval(hourly.getJSONObject(i), hourly.getJSONObject(i + 1)), WundergroundWeatherBuilder.buildFromWunderground(hourly.getJSONObject(i))));
             }
-            forecasts.add(new ForecastV2(getHourlyForecastInterval(hourly.getJSONObject(hourly.length() - 1), null), WundergroundWeatherBuilder.buildFromWunderground(hourly.getJSONObject(hourly.length() - 1))));
+            forecasts.add(new Forecast(getHourlyForecastInterval(hourly.getJSONObject(hourly.length() - 1), null), WundergroundWeatherBuilder.buildFromWunderground(hourly.getJSONObject(hourly.length() - 1))));
         }
 
         return forecasts;
     }
 
-    private static Interval getCurrentInterval(JSONObject current, ForecastV2 forecast) throws JSONException {
+    private static Interval getCurrentInterval(JSONObject current, Forecast forecast) throws JSONException {
         if(forecast == null) {
             DateTime currentStart = getCurrentStartDateTime(current);
             return new Interval(currentStart, DayPeriod.night.getInterval(currentStart).getEnd());

@@ -19,8 +19,8 @@ import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.ForecastTableV2;
-import com.androidsx.rainnotifications.model.ForecastV2;
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
@@ -67,8 +67,8 @@ public class MainMobileActivity extends BaseWelcomeActivity {
             public void onLocationSuccess(final Location location) {
                 WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
-                    public void onForecastSuccess(ForecastTableV2 forecastTable) {
-                        final ForecastV2 forecast = forecastTable.hasTransitions() ? forecastTable.getForecasts().get(1) : null;
+                    public void onForecastSuccess(ForecastTable forecastTable) {
+                        final Forecast forecast = forecastTable.hasTransitions() ? forecastTable.getForecasts().get(1) : null;
                         final Alert alert = alertGenerator.generateAlert(forecastTable.getForecasts().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
                         final String locationAddress = UserLocationFetcher.getLocationAddress(
                                 MainMobileActivity.this,

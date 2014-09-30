@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class DaySummaryV2 {
+public class DaySummary {
 
-    public static DaySummaryV2 fromForecastTable(ForecastTableV2 forecastTable) {
+    public static DaySummary fromForecastTable(ForecastTable forecastTable) {
         DaySummaryBuilder builder = new DaySummaryBuilder();
 
         for (DayPeriod period : DayPeriod.values()) {
@@ -22,20 +22,20 @@ public class DaySummaryV2 {
         return builder.build();
     }
 
-    private static List<ForecastV2> filterForecasts(List<ForecastV2> forecasts, Interval interval) {
-        List<ForecastV2> filteredForecasts = new ArrayList<ForecastV2>();
+    private static List<Forecast> filterForecasts(List<Forecast> forecasts, Interval interval) {
+        List<Forecast> filteredForecasts = new ArrayList<Forecast>();
 
-        for (ForecastV2 forecast : forecasts) {
+        for (Forecast forecast : forecasts) {
             Interval overlap = forecast.getInterval().overlap(interval);
             if (overlap != null) {
-                filteredForecasts.add(new ForecastV2(overlap, forecast.getWeatherWrapper()));
+                filteredForecasts.add(new Forecast(overlap, forecast.getWeatherWrapper()));
             }
         }
 
         return filteredForecasts;
     }
 
-    private static HashMap<WeatherPriority, WeatherType> summarizeForecasts(List<ForecastV2> forecasts) {
+    private static HashMap<WeatherPriority, WeatherType> summarizeForecasts(List<Forecast> forecasts) {
         HashMap<WeatherPriority, WeatherType> summarizedForecasts = new HashMap<WeatherPriority, WeatherType>();
 
         if (forecasts.size() == 0) {
@@ -51,7 +51,7 @@ public class DaySummaryV2 {
             HashMap<WeatherType, Long> durations = new HashMap<WeatherType, Long>();
             WeatherType mostDurable = null;
 
-            for (ForecastV2 forecast : forecasts) {
+            for (Forecast forecast : forecasts) {
                 long weatherTypeDuration = forecast.getInterval().toDurationMillis();
 
                 if(durations.containsKey(forecast.getWeatherWrapper().getType())) {
@@ -92,7 +92,7 @@ public class DaySummaryV2 {
     private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
     private HashMap<String, List<String>> messages;
 
-    private DaySummaryV2(DaySummaryBuilder builder) {
+    private DaySummary(DaySummaryBuilder builder) {
         this.weatherMap = builder.weatherMap;
         this.messages = builder.messages;
     }
@@ -163,8 +163,8 @@ public class DaySummaryV2 {
             return this;
         }
 
-        public DaySummaryV2 build() {
-            return new DaySummaryV2(this);
+        public DaySummary build() {
+            return new DaySummary(this);
         }
     }
 }

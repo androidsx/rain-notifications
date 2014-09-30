@@ -26,10 +26,10 @@ import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.DayPeriod;
-import com.androidsx.rainnotifications.model.ForecastTableV2;
-import com.androidsx.rainnotifications.model.ForecastV2;
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherType;
-import com.androidsx.rainnotifications.model.WeatherWrapperV2;
+import com.androidsx.rainnotifications.model.WeatherWrapper;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.androidsx.rainnotifications.util.AlarmHelper;
@@ -240,22 +240,22 @@ public class DebugActivity extends Activity {
         AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
     }
 
-    private ForecastTableV2 getDebugForecastTable() {
-        List<ForecastV2> forecastList = new ArrayList<ForecastV2>();
+    private ForecastTable getDebugForecastTable() {
+        List<Forecast> forecastList = new ArrayList<Forecast>();
         List<WeatherItemRow> weatherItemRows = new ArrayList<WeatherItemRow>();
 
         weatherItemRows.add(nowWeatherItemRow);
         weatherItemRows.addAll(weatherTransitionsList);
 
         for (int i = 0 ; i< weatherItemRows.size() - 1 ; i++) {
-            forecastList.add(new ForecastV2(getWeatherInterval(weatherItemRows.get(i), weatherItemRows.get(i + 1)),
-                    new WeatherWrapperV2(weatherItemRows.get(i).getWeatherType())));
+            forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(i), weatherItemRows.get(i + 1)),
+                    new WeatherWrapper(weatherItemRows.get(i).getWeatherType())));
         }
 
-        forecastList.add(new ForecastV2(getWeatherInterval(weatherItemRows.get(weatherItemRows.size() - 1), null),
-                new WeatherWrapperV2(weatherItemRows.get(weatherItemRows.size() - 1).getWeatherType())));
+        forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(weatherItemRows.size() - 1), null),
+                new WeatherWrapper(weatherItemRows.get(weatherItemRows.size() - 1).getWeatherType())));
 
-        return new ForecastTableV2(forecastList);
+        return new ForecastTable(forecastList);
     }
 
     private Interval getWeatherInterval(WeatherItemRow current, WeatherItemRow next) {

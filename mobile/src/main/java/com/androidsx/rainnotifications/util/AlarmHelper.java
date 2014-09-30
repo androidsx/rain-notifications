@@ -6,7 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.model.ForecastTableV2;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.service.WeatherService;
 
@@ -33,9 +33,9 @@ public class AlarmHelper {
      * Sets the following alarm for the weather service, that depends on the time to the first
      * expected weather transition. If there are no weather transitions, it's set an hour from now.
      *
-     * @see #computeNextAlarmTime(com.androidsx.rainnotifications.model.ForecastTableV2)
+     * @see #computeNextAlarmTime(com.androidsx.rainnotifications.model.ForecastTable)
      */
-    public static void setNextAlarm(Context context, PendingIntent weatherAlarmIntent, DateTime nextAlarmTime, ForecastTableV2 forecastTable) {
+    public static void setNextAlarm(Context context, PendingIntent weatherAlarmIntent, DateTime nextAlarmTime, ForecastTable forecastTable) {
         weatherAlarmIntent.cancel();
         weatherAlarmIntent = PendingIntent.getService(
                 context,
@@ -114,7 +114,7 @@ public class AlarmHelper {
      * @param forecastTable Forecast table that contains all the weather transitions
      * @return DateTime next alarm time
      */
-    public static DateTime computeNextAlarmTime(ForecastTableV2 forecastTable) {
+    public static DateTime computeNextAlarmTime(ForecastTable forecastTable) {
         Interval nextIntervalAlarmTime;
         if (forecastTable.hasTransitions()) {
             nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getForecasts().get(1).getInterval().getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
