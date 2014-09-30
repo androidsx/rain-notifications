@@ -242,24 +242,20 @@ public class DebugActivity extends Activity {
 
     private ForecastTableV2 getDebugForecastTable() {
         List<ForecastV2> forecastList = new ArrayList<ForecastV2>();
-        List<ForecastV2> weatherTransitionsForecastList = getOnlyWeatherTransitionsListForecastList();
-        forecastList.add(new ForecastV2(getWeatherInterval(nowWeatherItemRow, weatherTransitionsList.isEmpty() ? null : weatherTransitionsList.get(0)), new WeatherWrapperV2(nowWeatherItemRow.getWeatherType())));
-        forecastList.addAll(weatherTransitionsForecastList);
-        return new ForecastTableV2(forecastList);
-    }
+        List<WeatherItemRow> weatherItemRows = new ArrayList<WeatherItemRow>();
 
-    private List<ForecastV2> getOnlyWeatherTransitionsListForecastList() {
-        List<ForecastV2> forecastList = new ArrayList<ForecastV2>();
+        weatherItemRows.add(nowWeatherItemRow);
+        weatherItemRows.addAll(weatherTransitionsList);
 
-        for (int i = 0 ; i< weatherTransitionsList.size() - 1 ; i++) {
-            forecastList.add(new ForecastV2(getWeatherInterval(weatherTransitionsList.get(i), weatherTransitionsList.get(i + 1)),
-                    new WeatherWrapperV2(weatherTransitionsList.get(i).getWeatherType())));
+        for (int i = 0 ; i< weatherItemRows.size() - 1 ; i++) {
+            forecastList.add(new ForecastV2(getWeatherInterval(weatherItemRows.get(i), weatherItemRows.get(i + 1)),
+                    new WeatherWrapperV2(weatherItemRows.get(i).getWeatherType())));
         }
 
-        forecastList.add(new ForecastV2(getWeatherInterval(weatherTransitionsList.get(weatherTransitionsList.size()), null),
-                new WeatherWrapperV2(weatherTransitionsList.get(weatherTransitionsList.size()).getWeatherType())));
+        forecastList.add(new ForecastV2(getWeatherInterval(weatherItemRows.get(weatherItemRows.size() - 1), null),
+                new WeatherWrapperV2(weatherItemRows.get(weatherItemRows.size() - 1).getWeatherType())));
 
-        return forecastList;
+        return new ForecastTableV2(forecastList);
     }
 
     private Interval getWeatherInterval(WeatherItemRow current, WeatherItemRow next) {

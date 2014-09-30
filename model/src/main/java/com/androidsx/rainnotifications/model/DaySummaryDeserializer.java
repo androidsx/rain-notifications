@@ -24,7 +24,7 @@ public class DaySummaryDeserializer implements JsonDeserializer {
                 JsonObject jsonPeriod = (JsonObject) jsonObject.get(period.toString());
                 for (WeatherPriority priority : WeatherPriority.values()) {
                     if (jsonPeriod.has(priority.toString())) {
-                        builder.setWeatherType(period, priority, (WeatherType) context.deserialize(jsonPeriod.get(priority.toString()), WeatherType.class));
+                        builder.setWeatherType(period, priority, (WeatherType) context.deserialize(jsonPeriod.getAsJsonObject(priority.toString()).get("weatherType"), WeatherType.class));
                     }
                 }
             }

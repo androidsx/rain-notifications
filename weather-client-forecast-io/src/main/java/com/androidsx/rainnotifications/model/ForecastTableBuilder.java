@@ -16,9 +16,15 @@ import java.util.List;
  */
 public class ForecastTableBuilder {
     public static ForecastTableV2 buildFromForecastIo(ForecastService.Response response) {
+        DataPoint currently = response.getForecast().getCurrently();
         List<DataPoint> dataPoints = new ArrayList<DataPoint>();
-        dataPoints.add(response.getForecast().getCurrently());
-        dataPoints.addAll(response.getForecast().getHourly().getData());
+        dataPoints.add(currently);
+
+        for (DataPoint dataPoint : response.getForecast().getHourly().getData()) {
+            if (dataPoint.getTime() > currently.getTime()) {
+                dataPoints.add(dataPoint);
+            }
+        }
 
         return new ForecastTableV2(getForecastList(dataPoints));
     }

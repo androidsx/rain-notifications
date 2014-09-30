@@ -21,7 +21,7 @@ public class WundergroundTableBuilder {
             List<ForecastV2> forecastList = new ArrayList<ForecastV2>();
             List<ForecastV2> hourlyForecastList = getForecastListFromHourly(response.getJSONArray("hourly_forecast"));
 
-            forecastList.add(new ForecastV2(getCurrentInterval(current, hourlyForecastList.size() != 0 ? hourlyForecastList.get(0) : null),
+            forecastList.add(new ForecastV2(getCurrentInterval(current, hourlyForecastList.isEmpty() ? null : hourlyForecastList.get(0)),
                     WundergroundWeatherBuilder.buildFromWunderground(current)));
 
             forecastList.addAll(hourlyForecastList);
@@ -39,7 +39,7 @@ public class WundergroundTableBuilder {
             for (int i = 0 ; i < hourly.length() - 1 ; i++) {
                 forecasts.add(new ForecastV2(getHourlyForecastInterval(hourly.getJSONObject(i), hourly.getJSONObject(i + 1)), WundergroundWeatherBuilder.buildFromWunderground(hourly.getJSONObject(i))));
             }
-            forecasts.add(new ForecastV2(getHourlyForecastInterval(hourly.getJSONObject(hourly.length() - 1), null), WundergroundWeatherBuilder.buildFromWunderground(hourly.getJSONObject(hourly.length()))));
+            forecasts.add(new ForecastV2(getHourlyForecastInterval(hourly.getJSONObject(hourly.length() - 1), null), WundergroundWeatherBuilder.buildFromWunderground(hourly.getJSONObject(hourly.length() - 1))));
         }
 
         return forecasts;
