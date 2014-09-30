@@ -242,6 +242,8 @@ public class DebugActivity extends Activity {
 
         ForecastTable forecastTable = getDebugForecastTable();
         if(forecastTable != null) {
+            Timber.d("FORECAST_TABLE: \n" + forecastTable.toString());
+
             DaySummaryGenerator daySummaryGenerator = new DaySummaryGenerator(this);
             daySummaryGenerator.init();
             cardMessageTextView.setText(daySummaryGenerator.getDaySummary(forecastTable).getDayMessage());

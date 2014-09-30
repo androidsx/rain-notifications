@@ -68,8 +68,8 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                 WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
-                        final Forecast forecast = forecastTable.hasTransitions() ? forecastTable.getForecasts().get(1) : null;
-                        final Alert alert = alertGenerator.generateAlert(forecastTable.getForecasts().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
+                        final Forecast forecast = forecastTable.hasTransitions() ? forecastTable.getForecastList().get(1) : null;
+                        final Alert alert = alertGenerator.generateAlert(forecastTable.getForecastList().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
                         final String locationAddress = UserLocationFetcher.getLocationAddress(
                                 MainMobileActivity.this,
                                 location.getLatitude(),

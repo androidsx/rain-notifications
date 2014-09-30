@@ -53,8 +53,8 @@ public class AlarmHelper {
             SharedPrefsHelper.saveLongValue(context, NEXT_ALARM_TIME, nextAlarmTime.getMillis());
             if (forecastTable.hasTransitions()) {
                 Timber.tag(TAG).i("Next transition is %s -> %s in %s.",
-                        forecastTable.getForecasts().get(0).getWeatherWrapper().getType(),
-                        forecastTable.getForecasts().get(1).getWeatherWrapper().getType(),
+                        forecastTable.getForecastList().get(0).getWeatherWrapper().getType(),
+                        forecastTable.getForecastList().get(1).getWeatherWrapper().getType(),
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(new Interval(System.currentTimeMillis(), nextAlarmTime.getMillis())))
                 );
@@ -117,7 +117,7 @@ public class AlarmHelper {
     public static DateTime computeNextAlarmTime(ForecastTable forecastTable) {
         Interval nextIntervalAlarmTime;
         if (forecastTable.hasTransitions()) {
-            nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getForecasts().get(1).getInterval().getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
+            nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getForecastList().get(1).getInterval().getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
         } else {
             nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getStart().getMillis() + DateTimeConstants.MILLIS_PER_HOUR);
         }

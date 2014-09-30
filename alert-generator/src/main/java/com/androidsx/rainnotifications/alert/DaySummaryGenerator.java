@@ -63,7 +63,11 @@ public class DaySummaryGenerator {
 
         public DaySummaryPostProcessor(List<DaySummary> daySummaries) {
             sumariesMap = new HashMap<String, DaySummary>();
-            meaningfulWeatherTypeNames = WeatherType.getMeaningfulWeatherTypeNames();
+            meaningfulWeatherTypeNames = new ArrayList<String>();
+
+            for (WeatherType type : WeatherType.getMeaningfulWeatherTypes()) {
+                meaningfulWeatherTypeNames.add(type.toString());
+            }
 
             SparseArray<ArrayList<DaySummary>> dispersedSumaries = getDispersedSummaries(daySummaries);
 

@@ -13,7 +13,7 @@ public class DaySummary {
         DaySummaryBuilder builder = new DaySummaryBuilder();
 
         for (DayPeriod period : DayPeriod.values()) {
-            HashMap<WeatherPriority, WeatherType> periodSummary = summarizeForecasts(filterForecasts(forecastTable.getForecasts(), period.getInterval(forecastTable.getStart())));
+            HashMap<WeatherPriority, WeatherType> periodSummary = summarizeForecasts(filterForecasts(forecastTable.getForecastList(), period.getInterval(forecastTable.getStart())));
             for (WeatherPriority priority : periodSummary.keySet()) {
                 builder.setWeatherType(period, priority, periodSummary.get(priority));
             }
