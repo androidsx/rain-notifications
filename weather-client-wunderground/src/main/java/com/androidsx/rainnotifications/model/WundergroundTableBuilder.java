@@ -58,7 +58,7 @@ public class WundergroundTableBuilder {
     private static Interval getHourlyForecastInterval(JSONObject hourlyForecast, JSONObject nextHourlyForecast) throws JSONException {
         if(nextHourlyForecast == null) {
             DateTime hourlyForecastStart = getHourlyForecastStartDateTime(hourlyForecast);
-            return new Interval(hourlyForecastStart, DayPeriod.night.getInterval(hourlyForecastStart).getEnd());
+            return new Interval(hourlyForecastStart, hourlyForecastStart.plusHours(1));
         }
         else {
             return new Interval(getHourlyForecastStartDateTime(hourlyForecast), getHourlyForecastStartDateTime(nextHourlyForecast));

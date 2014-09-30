@@ -25,7 +25,6 @@ import com.androidsx.rainnotifications.WearNotificationManagerException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherType;
@@ -263,7 +262,7 @@ public class DebugActivity extends Activity {
             return new Interval(current.getTime(), next.getTime());
         }
         else {
-            return new Interval(current.getTime(), DayPeriod.night.getInterval(current.getTime()).getEnd());
+            return new Interval(current.getTime(), current.getTime().plusHours(1));
         }
     }
 
