@@ -4,9 +4,9 @@ import android.content.Context;
 import android.util.SparseArray;
 
 import com.androidsx.rainnotifications.model.DayPeriod;
-import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
-import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.DaySummaryV2;
+import com.androidsx.rainnotifications.model.ForecastTableV2;
 import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.google.gson.GsonBuilder;
@@ -44,31 +44,31 @@ public class DaySummaryGenerator {
     public void init(InputStream dayMessagesJsonInputStream) {
         final Reader jsonReader = new InputStreamReader(dayMessagesJsonInputStream);
         final GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(DaySummary.class, new DaySummaryDeserializer());
-        daySummaryPostProcessor = new DaySummaryPostProcessor(Arrays.asList(gsonBuilder.create().fromJson(jsonReader, DaySummary[].class)));
+        gsonBuilder.registerTypeAdapter(DaySummaryV2.class, new DaySummaryDeserializer());
+        daySummaryPostProcessor = new DaySummaryPostProcessor(Arrays.asList(gsonBuilder.create().fromJson(jsonReader, DaySummaryV2[].class)));
     }
 
-    public DaySummary getDaySummary(ForecastTable forecastTable) {
-        return daySummaryPostProcessor.getClosestDaySummary(DaySummary.fromForecastTable(forecastTable));
+    public DaySummaryV2 getDaySummary(ForecastTableV2 forecastTable) {
+        return daySummaryPostProcessor.getClosestDaySummary(DaySummaryV2.fromForecastTable(forecastTable));
     }
 
     private class DaySummaryPostProcessor {
         private List<String> meaningfulWeatherTypeNames;
-        private HashMap<String, DaySummary> sumariesMap;
+        private HashMap<String, DaySummaryV2> sumariesMap;
 
         /**
          * This the maximum number of "Whatever" a DaySummary can have.
          */
         private final int MAX_WHATEVER_LEVEL = DayPeriod.values().length * WeatherPriority.values().length;
 
-        public DaySummaryPostProcessor(List<DaySummary> daySummaries) {
-            sumariesMap = new HashMap<String, DaySummary>();
+        public DaySummaryPostProcessor(List<DaySummaryV2> daySummaries) {
+            sumariesMap = new HashMap<String, DaySummaryV2>();
             meaningfulWeatherTypeNames = WeatherType.getMeaningfulWeatherTypeNames();
 
-            SparseArray<ArrayList<DaySummary>> dispersedSumaries = getDispersedSummaries(daySummaries);
+            SparseArray<ArrayList<DaySummaryV2>> dispersedSumaries = getDispersedSummaries(daySummaries);
 
             for (int i = 0 ; i <= MAX_WHATEVER_LEVEL ; i++) {
-                for (DaySummary daySummary : dispersedSumaries.get(i)) {
+                for (DaySummaryV2 daySummary : dispersedSumaries.get(i)) {
                     for (String key : getSuitableWeathersKeys(daySummary)) {
                         if (!sumariesMap.containsKey(key)) {
                             sumariesMap.put(key,daySummary);
@@ -78,9 +78,9 @@ public class DaySummaryGenerator {
             }
         }
 
-        public DaySummary getClosestDaySummary(DaySummary daySummary) {
+        public DaySummaryV2 getClosestDaySummary(DaySummaryV2 daySummary) {
             Timber.d("getClosestDaySummary for: " + daySummary);
-            DaySummary onMapSummary = getDaySummaryFromMap(daySummary);
+            DaySummaryV2 onMapSummary = getDaySummaryFromMap(daySummary);
 
             while (onMapSummary == null) {
                 if(downgradeDaySummary(daySummary)) {
@@ -101,107 +101,106 @@ public class DaySummaryGenerator {
             return onMapSummary;
         }
 
-        private DaySummary getDaySummaryFromMap(DaySummary daySummary) {
+        private DaySummaryV2 getDaySummaryFromMap(DaySummaryV2 daySummary) {
             return sumariesMap.get(getDaySummaryWeatherKey(daySummary));
         }
 
-        private boolean downgradeDaySummary(DaySummary daySummary) {
-
-            if (!daySummary.getWeatherWrapper(DayPeriod.night, WeatherPriority.secondary).getType().equals(WeatherType.UNDEFINED)) {
+        private boolean downgradeDaySummary(DaySummaryV2 daySummary) {
+            if (!daySummary.getWeatherType(DayPeriod.night, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
                 Timber.d("remove night secondary");
-                daySummary.setWeatherWrapper(DayPeriod.night, WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+                daySummary.setWeatherType(DayPeriod.night, WeatherPriority.secondary, WeatherType.UNDEFINED);
                 return true;
             }
 
-            if (!daySummary.getWeatherWrapper(DayPeriod.night, WeatherPriority.primary).getType().equals(WeatherType.UNDEFINED)) {
+            if (!daySummary.getWeatherType(DayPeriod.night, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
                 Timber.d("remove night primary");
-                daySummary.setWeatherWrapper(DayPeriod.night, WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+                daySummary.setWeatherType(DayPeriod.night, WeatherPriority.primary, WeatherType.UNDEFINED);
                 return true;
             }
 
-            if (!daySummary.getWeatherWrapper(DayPeriod.evening, WeatherPriority.secondary).getType().equals(WeatherType.UNDEFINED)) {
+            if (!daySummary.getWeatherType(DayPeriod.evening, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
                 Timber.d("remove evening secondary");
-                daySummary.setWeatherWrapper(DayPeriod.evening, WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+                daySummary.setWeatherType(DayPeriod.evening, WeatherPriority.secondary, WeatherType.UNDEFINED);
                 return true;
             }
 
-            if (!daySummary.getWeatherWrapper(DayPeriod.evening, WeatherPriority.primary).getType().equals(WeatherType.UNDEFINED)) {
+            if (!daySummary.getWeatherType(DayPeriod.evening, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
                 Timber.d("remove evening primary");
-                daySummary.setWeatherWrapper(DayPeriod.evening, WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+                daySummary.setWeatherType(DayPeriod.evening, WeatherPriority.primary, WeatherType.UNDEFINED);
                 return true;
             }
 
-            if (!daySummary.getWeatherWrapper(DayPeriod.afternoon, WeatherPriority.secondary).getType().equals(WeatherType.UNDEFINED)) {
+            if (!daySummary.getWeatherType(DayPeriod.afternoon, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
                 Timber.d("remove afternoon secondary");
-                daySummary.setWeatherWrapper(DayPeriod.afternoon, WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+                daySummary.setWeatherType(DayPeriod.afternoon, WeatherPriority.secondary, WeatherType.UNDEFINED);
                 return true;
             }
 
-            if (!daySummary.getWeatherWrapper(DayPeriod.morning, WeatherPriority.secondary).getType().equals(WeatherType.UNDEFINED)) {
+            if (!daySummary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
                 Timber.d("remove morning secondary");
-                daySummary.setWeatherWrapper(DayPeriod.morning, WeatherPriority.secondary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+                daySummary.setWeatherType(DayPeriod.morning, WeatherPriority.secondary, WeatherType.UNDEFINED);
                 return true;
             }
 
-            if (!daySummary.getWeatherWrapper(DayPeriod.afternoon, WeatherPriority.primary).getType().equals(WeatherType.UNDEFINED)) {
+            if (!daySummary.getWeatherType(DayPeriod.afternoon, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
                 Timber.d("remove afternoon primary");
-                daySummary.setWeatherWrapper(DayPeriod.afternoon, WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+                daySummary.setWeatherType(DayPeriod.afternoon, WeatherPriority.primary, WeatherType.UNDEFINED);
                 return true;
             }
 
-            if (!daySummary.getWeatherWrapper(DayPeriod.morning, WeatherPriority.primary).getType().equals(WeatherType.UNDEFINED)) {
+            if (!daySummary.getWeatherType(DayPeriod.morning, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
                 Timber.d("remove morning primary");
-                daySummary.setWeatherWrapper(DayPeriod.morning, WeatherPriority.primary, new DaySummary.WeatherWrapper(WeatherType.UNDEFINED));
+                daySummary.setWeatherType(DayPeriod.morning, WeatherPriority.primary, WeatherType.UNDEFINED);
                 return true;
             }
 
             return false;
         }
 
-        private String getDaySummaryWeatherKey(DaySummary daySummary) {
+        private String getDaySummaryWeatherKey(DaySummaryV2 daySummary) {
             StringBuilder builder = new StringBuilder();
 
             for (DayPeriod period : DayPeriod.values()) {
                 for (WeatherPriority priority : WeatherPriority.values()) {
-                    builder.append(daySummary.getWeatherWrapper(period, priority).getType());
+                    builder.append(daySummary.getWeatherType(period, priority));
                 }
             }
 
             return builder.toString();
         }
 
-        private List<String> getSuitableWeathersKeys(DaySummary daySummary) {
+        private List<String> getSuitableWeathersKeys(DaySummaryV2 daySummary) {
             List<String> keys = Arrays.asList("");
 
             for (DayPeriod period : DayPeriod.values()) {
                 for (WeatherPriority priority : WeatherPriority.values()) {
-                    keys = addWeatherNamesToList(keys, daySummary.getWeatherWrapper(period, priority).getType());
+                    keys = addWeatherNamesToList(keys, daySummary.getWeatherType(period, priority));
                 }
             }
 
             return keys;
         }
 
-        private int getWhateverLevel(DaySummary daySummary) {
+        private int getWhateverLevel(DaySummaryV2 daySummary) {
             int level = 0;
 
             for (DayPeriod period : DayPeriod.values()) {
                 for (WeatherPriority priority : WeatherPriority.values()) {
-                   if (daySummary.getWeatherWrapper(period, priority).getType().equals(WeatherType.WHATEVER)) level++;
+                   if (daySummary.getWeatherType(period, priority).equals(WeatherType.WHATEVER)) level++;
                 }
             }
 
             return level;
         }
 
-        private SparseArray<ArrayList<DaySummary>> getDispersedSummaries(List<DaySummary> daySummaries) {
-            SparseArray<ArrayList<DaySummary>> dispersed = new SparseArray<ArrayList<DaySummary>>();
+        private SparseArray<ArrayList<DaySummaryV2>> getDispersedSummaries(List<DaySummaryV2> daySummaries) {
+            SparseArray<ArrayList<DaySummaryV2>> dispersed = new SparseArray<ArrayList<DaySummaryV2>>();
 
             for (int i = 0 ; i <= MAX_WHATEVER_LEVEL ; i++) {
-                dispersed.append(i, new ArrayList<DaySummary>());
+                dispersed.append(i, new ArrayList<DaySummaryV2>());
             }
 
-            for (DaySummary daySummary : daySummaries) {
+            for (DaySummaryV2 daySummary : daySummaries) {
                 dispersed.get(getWhateverLevel(daySummary)).add(daySummary);
             }
 

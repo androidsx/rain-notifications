@@ -14,17 +14,17 @@ import java.util.List;
 
 public class DaySummaryDeserializer implements JsonDeserializer {
     @Override
-    public DaySummary deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public DaySummaryV2 deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         final JsonObject jsonObject = json.getAsJsonObject();
 
-        DaySummary.DaySummaryBuilder builder = new DaySummary.DaySummaryBuilder();
+        DaySummaryV2.DaySummaryBuilder builder = new DaySummaryV2.DaySummaryBuilder();
 
         for (DayPeriod period : DayPeriod.values()) {
             if (jsonObject.has(period.toString())) {
                 JsonObject jsonPeriod = (JsonObject) jsonObject.get(period.toString());
                 for (WeatherPriority priority : WeatherPriority.values()) {
                     if (jsonPeriod.has(priority.toString())) {
-                        builder.setWeatherWrapper(period, priority, (DaySummary.WeatherWrapper) context.deserialize(jsonPeriod.get(priority.toString()), DaySummary.WeatherWrapper.class));
+                        builder.setWeatherType(period, priority, (WeatherType) context.deserialize(jsonPeriod.getAsJsonObject(priority.toString()).get("weatherType"), WeatherType.class));
                     }
                 }
             }

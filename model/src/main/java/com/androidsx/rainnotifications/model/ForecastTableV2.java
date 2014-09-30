@@ -16,7 +16,6 @@ public class ForecastTableV2 {
     /**
      * @param forecastList An ordered list of forecasts without overlaps or gaps in their Intervals.
      */
-    // TODO: Think about param conditions.
     public ForecastTableV2(List<ForecastV2> forecastList) {
         mergedForecast = new ArrayList<ForecastV2>();
 
@@ -39,6 +38,10 @@ public class ForecastTableV2 {
 
     public DateTime getStart() {
         return mergedForecast.get(0).getInterval().getStart();
+    }
+
+    public boolean hasTransitions() {
+        return mergedForecast.size() > 1; // Because the first one is the current weather
     }
 
     /**

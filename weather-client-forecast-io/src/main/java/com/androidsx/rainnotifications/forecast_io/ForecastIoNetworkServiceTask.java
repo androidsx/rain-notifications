@@ -6,8 +6,8 @@ import android.util.Log;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientExecutor;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
-import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.ForecastTableBuilder;
+import com.androidsx.rainnotifications.model.ForecastTableV2;
 import com.forecast.io.network.responses.INetworkResponse;
 import com.forecast.io.network.responses.NetworkResponse;
 import com.forecast.io.toolbox.NetworkServiceTask;
@@ -15,7 +15,7 @@ import com.forecast.io.v2.network.services.ForecastService;
 
 /**
  * Async task that perform a request to Forecast.io and returns the result represented by our model
- * objects, namely our {@link ForecastTable}.
+ * objects, namely our {@link com.androidsx.rainnotifications.model.ForecastTableV2}.
  * <p/>
  * Just execute this async task and implement the abstract methods to get your results.
  */
@@ -37,7 +37,7 @@ public final class ForecastIoNetworkServiceTask extends NetworkServiceTask imple
             final ForecastService.Response response = (ForecastService.Response) rawNetworkResponse;
             Log.v(TAG, "Raw response from Forecast.io:\n" + response);
 
-            final ForecastTable forecastTable = ForecastTableBuilder.buildFromForecastIo(response);
+            final ForecastTableV2 forecastTable = ForecastTableBuilder.buildFromForecastIo(response);
             Log.d(TAG, "Transition table: " + forecastTable);
 
             responseListener.onForecastSuccess(forecastTable);

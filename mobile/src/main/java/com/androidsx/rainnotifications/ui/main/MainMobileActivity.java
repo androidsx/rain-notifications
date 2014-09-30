@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,20 +12,19 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
-import com.androidsx.rainnotifications.ui.debug.DebugActivity;
-import com.androidsx.rainnotifications.util.AnimationHelper;
-import com.androidsx.rainnotifications.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTableV2;
+import com.androidsx.rainnotifications.model.ForecastV2;
+import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
+import com.androidsx.rainnotifications.util.AnimationHelper;
+import com.androidsx.rainnotifications.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.crashlytics.android.Crashlytics;
 
@@ -69,14 +67,14 @@ public class MainMobileActivity extends BaseWelcomeActivity {
             public void onLocationSuccess(final Location location) {
                 WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
-                    public void onForecastSuccess(ForecastTable forecastTable) {
-                        final Forecast forecast = forecastTable.getForecasts().isEmpty() ? null : forecastTable.getForecasts().get(0);
-                        final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineWeather(), forecast);
+                    public void onForecastSuccess(ForecastTableV2 forecastTable) {
+                        final ForecastV2 forecast = forecastTable.hasTransitions() ? forecastTable.getForecasts().get(1) : null;
+                        final Alert alert = alertGenerator.generateAlert(forecastTable.getForecasts().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
                         final String locationAddress = UserLocationFetcher.getLocationAddress(
                                 MainMobileActivity.this,
                                 location.getLatitude(),
                                 location.getLongitude());
-                        final Interval interval = forecast == null ? null : forecast.getTimeFromNow();
+                        final Interval interval = forecast == null ? null : new Interval(forecastTable.getStart(), forecast.getInterval().getStart());
 
                         updateUI(locationAddress,
                                 alert.getDressedMascot(),
