@@ -69,6 +69,7 @@ public class Alert {
         return output;
     }
 
+    // TODO: Think about move this to some Util class (see also DaySummary.getMessage)
     private static <T> T pickRandom(List<T> list, Random random) {
         return new ArrayList<T>(list).get(random.nextInt(list.size()));
     }

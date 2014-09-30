@@ -15,7 +15,7 @@ import com.forecast.io.v2.network.services.ForecastService;
 
 /**
  * Async task that perform a request to Forecast.io and returns the result represented by our model
- * objects, namely our {@link ForecastTable}.
+ * objects, namely our {@link com.androidsx.rainnotifications.model.ForecastTable}.
  * <p/>
  * Just execute this async task and implement the abstract methods to get your results.
  */
@@ -38,9 +38,14 @@ public final class ForecastIoNetworkServiceTask extends NetworkServiceTask imple
             Log.v(TAG, "Raw response from Forecast.io:\n" + response);
 
             final ForecastTable forecastTable = ForecastTableBuilder.buildFromForecastIo(response);
-            Log.d(TAG, "Transition table: " + forecastTable);
 
-            responseListener.onForecastSuccess(forecastTable);
+            if (forecastTable != null) {
+                Log.d(TAG, "Transition table: " + forecastTable);
+                responseListener.onForecastSuccess(forecastTable);
+            } else {
+                responseListener.onForecastFailure(new WeatherClientException(
+                        "The forecast table is null for the Forecast.io response " + response));
+            }
         }
     }
 }

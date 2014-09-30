@@ -3,16 +3,10 @@ package com.androidsx.rainnotifications.alert;
 import android.content.Context;
 
 import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.AlertLevel;
-import com.androidsx.rainnotifications.model.Forecast;
-import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherTypeMascots;
-import com.androidsx.rainnotifications.model.util.UiUtil;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.joda.time.Interval;
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
@@ -86,39 +80,39 @@ public class AlertGenerator {
      * Generates a weather alert.
      *
      * @param currentWeather weather at the current moment
-     * @param forecast forecast for some point in the future, or null if it is
+     * @param forecastedWeather forecast for some point in the future, or null if it is
      *                 unknown. This is usually expected to be a different
      *                 weather than the current one.
      *
      * @return an alert for the provided weather transition
      * @see #generateMascot
      */
-    public Alert generateAlert(Weather currentWeather, Forecast forecast) {
+    public Alert generateAlert(WeatherType currentWeather, WeatherType forecastedWeather) {
         if (alerts == null || mascots == null) {
             throw new IllegalStateException("Did you forget to call the init() method?");
         }
 
         for(Alert a : alerts) {
-            if (forecast != null) {
-                if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(forecast.getForecastedWeather().getType())) {
-                    a.setDressedMascot(generateMascot(forecast.getForecastedWeather()));
+            if (forecastedWeather != null) {
+                if (a.getFromType().equals(currentWeather) && a.getToType().equals(forecastedWeather)) {
+                    a.setDressedMascot(generateMascot(forecastedWeather));
                     return a;
                 }
             } else {
-                if (a.getFromType().equals(currentWeather.getType()) && a.getToType().equals(currentWeather.getType())) {
+                if (a.getFromType().equals(currentWeather) && a.getToType().equals(currentWeather)) {
                     a.setDressedMascot(generateMascot(currentWeather));
                     return a;
                 }
             }
         }
 
-        throw new IllegalArgumentException("Didn't find an alert for " + currentWeather + " -> " + forecast);
+        throw new IllegalArgumentException("Didn't find an alert for " + currentWeather + " -> " + forecastedWeather);
     }
 
-    private int generateMascot(Weather weather) {
+    private int generateMascot(WeatherType weather) {
         final List<Integer> mascotsForThisWeather = new ArrayList<Integer>();
         for (WeatherTypeMascots wtm : mascots) {
-            if (wtm.getType().equals(weather.getType())) {
+            if (wtm.getType().equals(weather)) {
                 for (String s : wtm.getDressedMascots()) {
                     mascotsForThisWeather.add(context.getResources().getIdentifier(s, "drawable", context.getPackageName()));
                 }

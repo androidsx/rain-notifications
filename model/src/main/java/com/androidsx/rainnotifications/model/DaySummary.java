@@ -1,12 +1,8 @@
 package com.androidsx.rainnotifications.model;
 
-import org.joda.time.DateTime;
 import org.joda.time.Interval;
-import org.joda.time.Period;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -14,83 +10,86 @@ import java.util.Random;
 public class DaySummary {
 
     public static DaySummary fromForecastTable(ForecastTable forecastTable) {
-        forecastTable.getForecasts().add(createForecastFromBaseline(forecastTable));
-        DaySummary.DaySummaryBuilder builder = new DaySummary.DaySummaryBuilder();
+        DaySummaryBuilder builder = new DaySummaryBuilder();
 
         for (DayPeriod period : DayPeriod.values()) {
-            HashMap<WeatherPriority, DaySummary.WeatherWrapper> periodSummary = summarizeForecasts(filterForecasts(forecastTable.getForecasts(), period));
+            HashMap<WeatherPriority, WeatherType> periodSummary = summarizeForecasts(filterForecasts(forecastTable.getForecastList(), period.getInterval(forecastTable.getStart())));
             for (WeatherPriority priority : periodSummary.keySet()) {
-                builder.setWeatherWrapper(period, priority, periodSummary.get(priority));
+                builder.setWeatherType(period, priority, periodSummary.get(priority));
             }
         }
 
         return builder.build();
     }
 
-    private static List<Forecast> filterForecasts(List<Forecast> forecasts, DayPeriod period) {
-        ArrayList<Forecast> filteredForecasts = new ArrayList<Forecast>();
-        for (Forecast forecast : forecasts) {
-            int startHourOfDayForecast = new DateTime(forecast.getTimeFromNow().getStartMillis()).getHourOfDay();
-            int endHourOfDayForecast = new DateTime(forecast.getTimeFromNow().getEndMillis()).getHourOfDay();
+    private static List<Forecast> filterForecasts(List<Forecast> forecasts, Interval interval) {
+        List<Forecast> filteredForecasts = new ArrayList<Forecast>();
 
-            // The start or end hour within the limits, or overlapping across outside the limits
-            if ((startHourOfDayForecast >= period.getStartHour() && startHourOfDayForecast <= period.getEndHour()) ||
-                    (endHourOfDayForecast >= period.getStartHour() && endHourOfDayForecast <= period.getEndHour()) ||
-                    (endHourOfDayForecast >= period.getEndHour() && startHourOfDayForecast <= period.getEndHour())) {
-                filteredForecasts.add(forecast);
+        for (Forecast forecast : forecasts) {
+            Interval overlap = forecast.getInterval().overlap(interval);
+            if (overlap != null) {
+                filteredForecasts.add(new Forecast(overlap, forecast.getWeatherWrapper()));
             }
         }
 
         return filteredForecasts;
     }
 
-    private static HashMap<WeatherPriority, DaySummary.WeatherWrapper> summarizeForecasts(List<Forecast> forecasts) {
-        HashMap<WeatherPriority, DaySummary.WeatherWrapper> priorityWeathers = new HashMap<WeatherPriority, DaySummary.WeatherWrapper>();
+    private static HashMap<WeatherPriority, WeatherType> summarizeForecasts(List<Forecast> forecasts) {
+        HashMap<WeatherPriority, WeatherType> summarizedForecasts = new HashMap<WeatherPriority, WeatherType>();
 
         if (forecasts.size() == 0) {
-            return priorityWeathers;
-        } else if (forecasts.size() == 1) {
-            priorityWeathers.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(forecasts.get(0).getForecastedWeather().getType()));
-            return priorityWeathers;
-        } else {
-            // Sort by the bigger interval of time
-            Collections.sort(forecasts, new Comparator<Forecast>() {
-                @Override
-                public int compare(Forecast o1, Forecast o2) {
-                    if (o1.getTimeFromNow().isBefore(o2.getTimeFromNow())) {
-                        return 1;
-                    } else if (o1.getTimeFromNow().isEqual(o2.getTimeFromNow())) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
+            summarizedForecasts.put(WeatherPriority.primary, WeatherType.UNDEFINED);
+            summarizedForecasts.put(WeatherPriority.secondary, WeatherType.UNDEFINED);
+        }
+        else if (forecasts.size() == 1) {
+            summarizedForecasts.put(WeatherPriority.primary, forecasts.get(0).getWeatherWrapper().getType());
+            summarizedForecasts.put(WeatherPriority.secondary, WeatherType.UNDEFINED);
+        }
+        else {
+            // We use most durable WeatherType as primary
+            HashMap<WeatherType, Long> durations = new HashMap<WeatherType, Long>();
+            WeatherType mostDurable = null;
+
+            for (Forecast forecast : forecasts) {
+                long weatherTypeDuration = forecast.getInterval().toDurationMillis();
+
+                if(durations.containsKey(forecast.getWeatherWrapper().getType())) {
+                    weatherTypeDuration = durations.get(forecast.getWeatherWrapper().getType()) + weatherTypeDuration;
                 }
-            });
-            // TODO: if there are more than 2, check if the last forecast has more importance (such as rain)
-            priorityWeathers.put(WeatherPriority.primary, new DaySummary.WeatherWrapper(forecasts.get(0).getForecastedWeather().getType()));
-            priorityWeathers.put(WeatherPriority.secondary, new DaySummary.WeatherWrapper(forecasts.get(1).getForecastedWeather().getType()));
+
+                durations.put(forecast.getWeatherWrapper().getType(), weatherTypeDuration);
+
+                if(mostDurable == null || durations.get(mostDurable) < weatherTypeDuration) {
+                    mostDurable = forecast.getWeatherWrapper().getType();
+                }
+            }
+
+            summarizedForecasts.put(WeatherPriority.primary, mostDurable);
+            durations.remove(mostDurable);
+
+            // and the highest priority as secondary
+            if(durations.containsKey(WeatherType.RAIN)) {
+                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.RAIN);
+            }
+            else if(durations.containsKey(WeatherType.CLOUDY)) {
+                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.CLOUDY);
+            }
+            else if(durations.containsKey(WeatherType.PARTLY_CLOUDY)) {
+                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.PARTLY_CLOUDY);
+            }
+            else if(durations.containsKey(WeatherType.CLEAR)) {
+                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.CLEAR);
+            }
+            else {
+                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.UNDEFINED);
+            }
         }
-
-        return priorityWeathers;
-    }
-
-    private static Forecast createForecastFromBaseline(ForecastTable forecastTable) {
-        final Interval baselineInterval;
-        if (forecastTable.getForecasts().size() > 0) {
-            Interval firstForecastInterval = forecastTable.getForecasts().get(0).getTimeFromNow();
-            baselineInterval = new Interval(forecastTable.getBaselineTime(), new DateTime(firstForecastInterval.getStartMillis()));
-        } else {
-            baselineInterval = new Interval(forecastTable.getBaselineTime(), forecastTable.getBaselineTime().plus(Period.days(1)));
-        }
-        return new Forecast(forecastTable.getBaselineWeather(), baselineInterval, Forecast.Granularity.HOUR);
-    }
-
-    private static <T> T pickRandom(List<T> list, Random random) {
-        return new ArrayList<T>(list).get(random.nextInt(list.size()));
+        return summarizedForecasts;
     }
 
     private final Random random = new Random();
-    private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherWrapper>> weatherMap;
+    private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
     private HashMap<String, List<String>> messages;
 
     private DaySummary(DaySummaryBuilder builder) {
@@ -98,11 +97,11 @@ public class DaySummary {
         this.messages = builder.messages;
     }
 
-    public void setWeatherWrapper(DayPeriod period, WeatherPriority priority, WeatherWrapper wrapper) {
-        weatherMap.get(period).put(priority, wrapper);
+    public void setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
+        weatherMap.get(period).put(priority, type);
     }
 
-    public WeatherWrapper getWeatherWrapper(DayPeriod period, WeatherPriority priority) {
+    public WeatherType getWeatherType(DayPeriod period, WeatherPriority priority) {
         return weatherMap.get(period).get(priority);
     }
 
@@ -111,7 +110,8 @@ public class DaySummary {
     }
 
     public String getDayMessage() {
-        return pickRandom(messages.get("en"), random);
+        List<String> languageMessages = messages.get("en");
+        return languageMessages != null ? languageMessages.get(random.nextInt(languageMessages.size())) : "Default"; // TODO: Review this message
     }
 
     @Override
@@ -121,7 +121,7 @@ public class DaySummary {
 
         for (DayPeriod period : DayPeriod.values()) {
             for (WeatherPriority priority : WeatherPriority.values()) {
-                builder.append("\n" + period + " " + priority + " weather: " + getWeatherWrapper(period, priority));
+                builder.append("\n" + period + " " + priority + " weather: " + getWeatherType(period, priority));
             }
         }
 
@@ -135,26 +135,26 @@ public class DaySummary {
     }
 
     public static class DaySummaryBuilder {
-        private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherWrapper>> weatherMap;
+        private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
         private HashMap<String, List<String>> messages;
 
         public DaySummaryBuilder() {
-            weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherWrapper>>();
+            weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>>();
             messages = new HashMap<String, List<String>>();
 
             for (DayPeriod period : DayPeriod.values()) {
-                HashMap<WeatherPriority, WeatherWrapper> periodMap = new HashMap<WeatherPriority, WeatherWrapper>();
+                HashMap<WeatherPriority, WeatherType> periodMap = new HashMap<WeatherPriority, WeatherType>();
 
                 for (WeatherPriority priority : WeatherPriority.values()) {
-                    periodMap.put(priority, new WeatherWrapper(WeatherType.UNDEFINED));
+                    periodMap.put(priority, WeatherType.UNDEFINED);
                 }
 
                 weatherMap.put(period, periodMap);
             }
         }
 
-        public DaySummaryBuilder setWeatherWrapper(DayPeriod period, WeatherPriority priority, WeatherWrapper wrapper) {
-            weatherMap.get(period).put(priority, wrapper);
+        public DaySummaryBuilder setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
+            weatherMap.get(period).put(priority, type);
             return this;
         }
 
@@ -165,23 +165,6 @@ public class DaySummary {
 
         public DaySummary build() {
             return new DaySummary(this);
-        }
-    }
-
-    public static class WeatherWrapper {
-        private WeatherType weatherType;
-
-        public WeatherWrapper(WeatherType weatherType) {
-            this.weatherType = weatherType;
-        }
-
-        public WeatherType getType() {
-            return weatherType;
-        }
-
-        @Override
-        public String toString() {
-            return weatherType.toString();
         }
     }
 }

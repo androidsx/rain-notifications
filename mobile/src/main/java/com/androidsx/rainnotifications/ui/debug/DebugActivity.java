@@ -27,8 +27,8 @@ import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
+import com.androidsx.rainnotifications.model.WeatherWrapper;
 import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.androidsx.rainnotifications.util.AlarmHelper;
@@ -199,77 +199,88 @@ public class DebugActivity extends Activity {
             Toast.makeText(this, "Add a row to simulate some weather transition", Toast.LENGTH_LONG).show();
             closeCard(view);
         } else {
-            final DateTime timeLater = weatherTransitionsList.get(0).getTime();
+            ForecastTable forecastTable = getDebugForecastTable();
+            if(forecastTable == null) {
+                Toast.makeText(this, "Serious? All weathers unknown?", Toast.LENGTH_LONG).show();
+                closeCard(view);
+            }
+            else {
+                final DateTime timeLater = weatherTransitionsList.get(0).getTime();
 
-            final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
-            final ImageView mascotImageView = (ImageView) findViewById(R.id.mascot_image_view);
-            final TextView alertLevelTextView = (TextView) findViewById(R.id.alert_level_text_view);
-            final TextView nextAlarmTextView = (TextView) findViewById(R.id.next_alarm_text_view);
+                final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
+                final ImageView mascotImageView = (ImageView) findViewById(R.id.mascot_image_view);
+                final TextView alertLevelTextView = (TextView) findViewById(R.id.alert_level_text_view);
+                final TextView nextAlarmTextView = (TextView) findViewById(R.id.next_alarm_text_view);
 
-            final DateTime timeNow = nowWeatherItemRow.getTime();
-            final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
-            final Alert alert = alertGenerator.generateAlert(new Weather(nowWeatherItemRow.getWeatherType()),
-                    new Forecast(new Weather(weatherTransitionsList.get(0).getWeatherType()),
-                            intervalUntilWeatherChange,
-                            Forecast.Granularity.MINUTE));
-            cardMessageTextView.setText(alert.getAlertMessage().getNotificationMessage(intervalUntilWeatherChange));
+                final DateTime timeNow = nowWeatherItemRow.getTime();
+                final Interval intervalUntilWeatherChange = new Interval(timeNow, timeLater);
+                final Alert alert = alertGenerator.generateAlert(nowWeatherItemRow.getWeatherType(), weatherTransitionsList.get(0).getWeatherType());
+                cardMessageTextView.setText(alert.getAlertMessage().getNotificationMessage(intervalUntilWeatherChange));
 
-            alertLevelTextView.setText("Alert level: " + alert.getAlertLevel());
-            alertLevelTextView.setVisibility(View.VISIBLE);
-            ForecastTable forecastTable = ForecastTable.create(new Weather(nowWeatherItemRow.getWeatherType()), timeNow, getSunMockPhaseTime(7, 45), getSunMockPhaseTime(20, 30), removeWrongForecasts(weatherTransitionsList));
-            Interval alarmTime = new Interval(timeNow.getMillis(), AlarmHelper.computeNextAlarmTime(forecastTable).getMillis());
-            nextAlarmTextView.setText("Next alarm: " + alarmTime.toPeriod().getHours() + " hours and " + alarmTime.toPeriod().getMinutes() + " minutes from now");
-            nextAlarmTextView.setVisibility(View.VISIBLE);
+                alertLevelTextView.setText("Alert level: " + alert.getAlertLevel());
+                alertLevelTextView.setVisibility(View.VISIBLE);
 
-            findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
-            AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
+                Interval alarmTime = new Interval(timeNow.getMillis(), AlarmHelper.computeNextAlarmTime(forecastTable).getMillis());
+                nextAlarmTextView.setText("Next alarm: " + alarmTime.toPeriod().getHours() + " hours and " + alarmTime.toPeriod().getMinutes() + " minutes from now");
+                nextAlarmTextView.setVisibility(View.VISIBLE);
 
-            mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), alert.getDressedMascot()));
-            mascotImageView.setVisibility(View.VISIBLE);
-            AnimationHelper.applyMascotAnimation(mascotImageView);
+                findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
+                AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
+
+                mascotImageView.setImageBitmap(BitmapFactory.decodeResource(getResources(), alert.getDressedMascot()));
+                mascotImageView.setVisibility(View.VISIBLE);
+                AnimationHelper.applyMascotAnimation(mascotImageView);
+            }
         }
     }
 
     public void generateMessageOfTheDay(View v) {
-        if (weatherTransitionsList.isEmpty()) {
-            Toast.makeText(this, "Add a row to simulate some weather transition", Toast.LENGTH_LONG).show();
-            closeCard(v);
-        } else {
-            final TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
-            findViewById(R.id.mascot_image_view).setVisibility(View.GONE);
-            findViewById(R.id.alert_level_text_view).setVisibility(View.GONE);
-            findViewById(R.id.next_alarm_text_view).setVisibility(View.GONE);
+        TextView cardMessageTextView = (TextView) findViewById(R.id.card_message_text_view);
+        findViewById(R.id.mascot_image_view).setVisibility(View.GONE);
+        findViewById(R.id.alert_level_text_view).setVisibility(View.GONE);
+        findViewById(R.id.next_alarm_text_view).setVisibility(View.GONE);
 
-            DateTime sunriseTime = getSunMockPhaseTime(7, 45);
-            DateTime sunsetTime = getSunMockPhaseTime(20, 30);
-            ForecastTable forecastTable = ForecastTable.create(
-                    new Weather(nowWeatherItemRow.getWeatherType()),
-                    nowWeatherItemRow.getTime(),
-                    sunriseTime,
-                    sunsetTime,                    
-                    removeWrongForecasts(weatherTransitionsList));
+        ForecastTable forecastTable = getDebugForecastTable();
+        if(forecastTable != null) {
+            Timber.d("FORECAST_TABLE: \n" + forecastTable.toString());
 
-            final DaySummaryGenerator daySummaryGenerator = new DaySummaryGenerator(this);
+            DaySummaryGenerator daySummaryGenerator = new DaySummaryGenerator(this);
             daySummaryGenerator.init();
             cardMessageTextView.setText(daySummaryGenerator.getDaySummary(forecastTable).getDayMessage());
-            findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
-            AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
         }
+        else {
+            cardMessageTextView.setText("Null ForecastTable, are all WeatherTypes UNKNOWN?");
+        }
+
+        findViewById(R.id.card_wrapper).setVisibility(View.VISIBLE);
+        AnimationHelper.applyCardAnimation(findViewById(R.id.card_layout));
     }
 
-    private List<Forecast> removeWrongForecasts(List<WeatherItemRow> weatherTransitionsList) {
-        List<Forecast> mockForecasts = new ArrayList<Forecast>();
-        WeatherItemRow lastMockTransition = weatherTransitionsList.get(0);
-        mockForecasts.add(new Forecast(new Weather(lastMockTransition.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), lastMockTransition.getTime()), Forecast.Granularity.MINUTE));
-        for (WeatherItemRow w : weatherTransitionsList) {
-            if (lastMockTransition.getTime().isBefore(w.getTime())) {
-                mockForecasts.add(new Forecast(new Weather(w.getWeatherType()), new Interval(nowWeatherItemRow.getTime(), w.getTime()), Forecast.Granularity.MINUTE));
-                lastMockTransition = w;
-            } else {
-                //Skip
-            }
+    private ForecastTable getDebugForecastTable() {
+        List<Forecast> forecastList = new ArrayList<Forecast>();
+        List<WeatherItemRow> weatherItemRows = new ArrayList<WeatherItemRow>();
+
+        weatherItemRows.add(nowWeatherItemRow);
+        weatherItemRows.addAll(weatherTransitionsList);
+
+        for (int i = 0 ; i< weatherItemRows.size() - 1 ; i++) {
+            forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(i), weatherItemRows.get(i + 1)),
+                    new WeatherWrapper(weatherItemRows.get(i).getWeatherType())));
         }
-        return mockForecasts;
+
+        forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(weatherItemRows.size() - 1), null),
+                new WeatherWrapper(weatherItemRows.get(weatherItemRows.size() - 1).getWeatherType())));
+
+        return ForecastTable.fromForecastList(forecastList);
+    }
+
+    private Interval getWeatherInterval(WeatherItemRow current, WeatherItemRow next) {
+        if(next != null) {
+            return new Interval(current.getTime(), next.getTime());
+        }
+        else {
+            return new Interval(current.getTime(), current.getTime().plusHours(1));
+        }
     }
 
     public void startWeatherService(View view) {

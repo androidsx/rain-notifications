@@ -33,7 +33,7 @@ public enum WeatherType {
      */
     UNKNOWN;
 
-    public static List<String> getMeaningfulWeatherTypeNames() {
-        return Arrays.asList(WeatherType.CLEAR.toString(), WeatherType.RAIN.toString(), WeatherType.CLOUDY.toString(), WeatherType.PARTLY_CLOUDY.toString());
+    public static List<WeatherType> getMeaningfulWeatherTypes() {
+        return Arrays.asList(WeatherType.CLEAR, WeatherType.RAIN, WeatherType.CLOUDY, WeatherType.PARTLY_CLOUDY);
     }
 }
