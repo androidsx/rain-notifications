@@ -38,9 +38,14 @@ public final class ForecastIoNetworkServiceTask extends NetworkServiceTask imple
             Log.v(TAG, "Raw response from Forecast.io:\n" + response);
 
             final ForecastTable forecastTable = ForecastTableBuilder.buildFromForecastIo(response);
-            Log.d(TAG, "Transition table: " + forecastTable);
 
-            responseListener.onForecastSuccess(forecastTable);
+            if (forecastTable != null) {
+                Log.d(TAG, "Transition table: " + forecastTable);
+                responseListener.onForecastSuccess(forecastTable);
+            } else {
+                responseListener.onForecastFailure(new WeatherClientException(
+                        "The forecast table is null for the Forecast.io response " + response));
+            }
         }
     }
 }

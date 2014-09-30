@@ -42,7 +42,7 @@ public final class WundergroundNetworkServiceTask implements WeatherClientExecut
                     final ForecastTable forecastTable = WundergroundTableBuilder.buildFromWunderground(response);
                     if (forecastTable != null) {
                         Log.d(TAG, "Transition table: " + forecastTable);
-                        responseListener.onForecastSuccess(WundergroundTableBuilder.buildFromWunderground(response));
+                        responseListener.onForecastSuccess(forecastTable);
                     } else {
                         responseListener.onForecastFailure(new WeatherClientException(
                                 "The forecast table is null for the WUnderground response " + response));

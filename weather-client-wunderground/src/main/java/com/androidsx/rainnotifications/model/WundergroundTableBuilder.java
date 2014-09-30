@@ -26,7 +26,7 @@ public class WundergroundTableBuilder {
 
             forecastList.addAll(hourlyForecastList);
 
-            return new ForecastTable(forecastList);
+            return ForecastTable.fromForecastList(forecastList);
         } else {
             return null;
         }

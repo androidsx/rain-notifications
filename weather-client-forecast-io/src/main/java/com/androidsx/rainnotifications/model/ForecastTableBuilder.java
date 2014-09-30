@@ -26,7 +26,7 @@ public class ForecastTableBuilder {
             }
         }
 
-        return new ForecastTable(getForecastList(dataPoints));
+        return ForecastTable.fromForecastList(getForecastList(dataPoints));
     }
 
     private static List<Forecast> getForecastList(List<DataPoint> dataPoints) {
