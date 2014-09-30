@@ -48,7 +48,7 @@ public class WundergroundTableBuilder {
     private static Interval getCurrentInterval(JSONObject current, Forecast forecast) throws JSONException {
         if(forecast == null) {
             DateTime currentStart = getCurrentStartDateTime(current);
-            return new Interval(currentStart, DayPeriod.night.getInterval(currentStart).getEnd());
+            return new Interval(currentStart, currentStart.plusHours(1));
         }
         else {
             return new Interval(getCurrentStartDateTime(current), forecast.getInterval().getStart());

@@ -43,7 +43,7 @@ public class ForecastTableBuilder {
     private static Interval getDataPointInterval(DataPoint dataPoint, DataPoint nextDataPoint) {
         if(nextDataPoint == null) {
             DateTime dataPointStart = getStartDateTime(dataPoint);
-            return new Interval(dataPointStart, DayPeriod.night.getInterval(dataPointStart).getEnd());
+            return new Interval(dataPointStart, dataPointStart.plusHours(1));
         }
         else {
             return new Interval(getStartDateTime(dataPoint), getStartDateTime(nextDataPoint));
