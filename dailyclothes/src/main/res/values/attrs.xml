@@ -2,5 +2,6 @@
 <resources>
     <declare-styleable name="CustomFontTextView">
         <attr name="customFont" format="string"/>
+        <attr name="customRadius" format="float" />
     </declare-styleable>
 </resources>
