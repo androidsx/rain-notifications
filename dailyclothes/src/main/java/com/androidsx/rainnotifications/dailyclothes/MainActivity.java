@@ -89,13 +89,13 @@ public class MainActivity extends Activity {
     public void showNotification(View v) {
         ++todayNumClicks;
         if(todayNumClicks == CLICKS_FOR_FIRST_MESSAGE) {
-            showFirstNotificationMessage();
+            showNotificationMessage(1);
         } else if (todayNumClicks == CLICKS_FOR_SECOND_MESSAGE) {
-            showSecondNotificationMessage();
+            showNotificationMessage(2);
         }
     }
 
-    private void showFirstNotificationMessage() {
+    private void showNotificationMessage(final int messageId) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
@@ -110,36 +110,19 @@ public class MainActivity extends Activity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                NotificationHelper.displayStandardNotification(
-                        MainActivity.this,
-                        MainActivity.class,
-                        Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)),
-                        BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-            }
-        }.execute();
-    }
-
-    private void showSecondNotificationMessage() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (messageId == 1) {
+                    NotificationHelper.displayStandardNotification(
+                            MainActivity.this,
+                            MainActivity.class,
+                            Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)),
+                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                } else if (messageId == 2) {
+                    NotificationHelper.displayStandardNotification(
+                            MainActivity.this,
+                            MainActivity.class,
+                            Html.fromHtml(String.format(getString(R.string.forecast_second_message), maxTemp)),
+                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
                 }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                todayNumClicks = 0;
-                NotificationHelper.displayStandardNotification(
-                        MainActivity.this,
-                        MainActivity.class,
-                        Html.fromHtml(String.format(getString(R.string.forecast_second_message), maxTemp)),
-                        BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
             }
         }.execute();
     }
