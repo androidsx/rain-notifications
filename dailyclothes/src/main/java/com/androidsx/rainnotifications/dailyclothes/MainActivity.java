@@ -3,14 +3,7 @@ package com.androidsx.rainnotifications.dailyclothes;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -42,11 +34,9 @@ public class MainActivity extends Activity {
     private CustomListAdapter adapter;
 
     private QuickReturnListView mListView;
-    private TextView mQuickReturnView;
+    private CustomFontTextView mQuickReturnView;
     private View mPlaceHolder;
     private View listViewHeader;
-
-    private CustomFontTextView forecastMessage;
 
     private int mCachedVerticalScrollRange;
     private int mQuickReturnHeight;
@@ -81,7 +71,7 @@ public class MainActivity extends Activity {
         mPlaceHolder = findViewById(R.id.layout_weather);
         mListView = (QuickReturnListView)findViewById(R.id.clothes_list_view);
         listViewHeader = LayoutInflater.from(this).inflate(R.layout.header, null);
-        forecastMessage = (CustomFontTextView)findViewById(R.id.forecast_message);
+
         fillForecastView(8, 24);
         fillClothesListView();
     }
@@ -143,8 +133,7 @@ public class MainActivity extends Activity {
                 maxTemp = auxTemp;
             }
         }
-        TextView forecastMessage = (TextView) findViewById(R.id.forecast_message);
-        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
+        mQuickReturnView.setText(Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
     }
 
     private void fillClothesListView() {
