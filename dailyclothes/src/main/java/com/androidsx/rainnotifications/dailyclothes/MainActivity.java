@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
         mQuickReturnView = (CustomFontTextView)findViewById(R.id.forecast_message);
         mPlaceHolder = findViewById(R.id.layout_weather);
         mListView = (QuickReturnListView)findViewById(R.id.clothes_list_view);
-        
+
         fillForecastView(8, 24);
         fillClothesListView();
         configureQuickReturn();
@@ -92,6 +92,7 @@ public class MainActivity extends Activity {
                             MainActivity.class,
                             Html.fromHtml(String.format(getString(R.string.forecast_second_message), maxTemp)),
                             BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                    todayNumClicks = 0;
                 }
             }
         }.execute();
