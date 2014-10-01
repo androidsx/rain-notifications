@@ -2,8 +2,6 @@ package com.androidsx.rainnotifications.alert;
 
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
-import com.androidsx.rainnotifications.model.Forecast;
-import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherTypeMascots;
 
@@ -40,9 +38,7 @@ public class AlertGeneratorConfigProcessingTest {
 
         // Generate the actual alert
         alertGenerator.init(Arrays.asList(new Alert[] {alert}), Arrays.asList(new WeatherTypeMascots[] {weatherTypeMascots}));
-        final Weather from = new Weather(WeatherType.CLEAR);
-        final Forecast to = new Forecast(new Weather(WeatherType.CLEAR), null, null);
-        final Alert generatedAlert = alertGenerator.generateAlert(from, to);
+        final Alert generatedAlert = alertGenerator.generateAlert(WeatherType.CLEAR, WeatherType.CLEAR);
 
         // Make sure the alert is exactly as we expected
         Assert.assertEquals(alert, generatedAlert);
@@ -63,9 +59,6 @@ public class AlertGeneratorConfigProcessingTest {
 
         // Generate the actual alert
         alertGenerator.init(Arrays.asList(new Alert[] {alert}), Arrays.asList(new WeatherTypeMascots[] {weatherTypeMascots}));
-        final Weather from = new Weather(WeatherType.CLEAR);
-        final Forecast to = new Forecast(new Weather(WeatherType.RAIN), null, null);
-
-        alertGenerator.generateAlert(from, to); // This should throw an exception
+        alertGenerator.generateAlert(WeatherType.CLEAR, WeatherType.RAIN); // This should throw an exception
     }
 }

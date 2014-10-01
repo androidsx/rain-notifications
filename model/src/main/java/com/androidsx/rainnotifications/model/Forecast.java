@@ -1,55 +1,38 @@
 package com.androidsx.rainnotifications.model;
 
-import com.androidsx.rainnotifications.model.util.UiUtil;
-
 import org.joda.time.Interval;
 
-import java.util.Locale;
-
 /**
- * A weather forecast about a particular point in the future, with certain granularity.
+ * A weather forecast about a particular interval of time in the future.
  */
 public class Forecast {
-    private final Weather forecastedWeather;
-    private final Interval timeFromNow;
-    private final Granularity granularity;
+    private final Interval interval;
+    private final WeatherWrapper weatherWrapper;
 
-    public Forecast(Weather forecastedWeather, Interval timeFromNow, Granularity granularity) {
-        this.forecastedWeather = forecastedWeather;
-        this.timeFromNow = timeFromNow;
-        this.granularity = granularity;
+    /**
+     * @param interval When the weather happens, from start until end.
+     * @param weatherWrapper
+     */
+    public Forecast(Interval interval, WeatherWrapper weatherWrapper) {
+        this.interval = interval;
+        this.weatherWrapper = weatherWrapper;
     }
 
-    public Weather getForecastedWeather() {
-        return forecastedWeather;
+    /**
+     * Interval of time during which this forecast is valid. For instance, there may be rain
+     * forecasted for 4pm to 6pm certain day. Those two points in time are the start and the
+     * end of the interval.
+     */
+    public Interval getInterval() {
+        return interval;
     }
 
-    public Interval getTimeFromNow() {
-        return timeFromNow;
-    }
-
-    public Granularity getGranularity() {
-        return granularity;
+    public WeatherWrapper getWeatherWrapper() {
+        return weatherWrapper;
     }
 
     @Override
     public String toString() {
-        return forecastedWeather + " forecasted for "
-                + UiUtil.getDebugOnlyPeriodFormatter().print(timeFromNow.toPeriod()) + " from now, "
-                + granularity;
-    }
-
-    /**
-     * The granularity of a forecast, usually connected to the precision of it. Going wider than
-     * hours doesn't make much sense for our app.
-     */
-    public enum Granularity {
-        MINUTE,
-        HOUR;
-
-        @Override
-        public String toString() {
-            return super.toString().toLowerCase(Locale.ENGLISH) + "ly";
-        }
+        return weatherWrapper + " forecasted from " + interval.getStart() + " until " + interval.getEnd() + " (Duration: "+ interval.toDuration().getStandardMinutes() + ")";
     }
 }

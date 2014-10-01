@@ -6,9 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.androidsx.rainnotifications.Constants;
-import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.Weather;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.service.WeatherService;
 
@@ -18,7 +16,6 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Interval;
 import org.joda.time.Period;
 
-import java.util.List;
 import java.util.TimeZone;
 
 import timber.log.Timber;
@@ -54,12 +51,12 @@ public class AlarmHelper {
                     10 * DateTimeConstants.MILLIS_PER_MINUTE,
                     weatherAlarmIntent);
             SharedPrefsHelper.saveLongValue(context, NEXT_ALARM_TIME, nextAlarmTime.getMillis());
-            if (!forecastTable.getForecasts().isEmpty()) {
+            if (forecastTable.hasTransitions()) {
                 Timber.tag(TAG).i("Next transition is %s -> %s in %s.",
-                        forecastTable.getBaselineWeather().getType(),
-                        forecastTable.getForecasts().get(0).getForecastedWeather().getType(),
+                        forecastTable.getForecastList().get(0).getWeatherWrapper().getType(),
+                        forecastTable.getForecastList().get(1).getWeatherWrapper().getType(),
                         UiUtil.getDebugOnlyPeriodFormatter().print(
-                                new Period(forecastTable.getForecasts().get(0).getTimeFromNow()))
+                                new Period(new Interval(System.currentTimeMillis(), nextAlarmTime.getMillis())))
                 );
                 Timber.tag(TAG).i("Schedule an alarm for %s from now. Bye!",
                         UiUtil.getDebugOnlyPeriodFormatter().print(
@@ -119,10 +116,10 @@ public class AlarmHelper {
      */
     public static DateTime computeNextAlarmTime(ForecastTable forecastTable) {
         Interval nextIntervalAlarmTime;
-        if (forecastTable.getForecasts().isEmpty()) {
-            nextIntervalAlarmTime = new Interval(forecastTable.getBaselineTime().getMillis(), forecastTable.getBaselineTime().getMillis() + DateTimeConstants.MILLIS_PER_HOUR);
+        if (forecastTable.hasTransitions()) {
+            nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getForecastList().get(1).getInterval().getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
         } else {
-            nextIntervalAlarmTime = forecastTable.getForecasts().get(0).getTimeFromNow();
+            nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getStart().getMillis() + DateTimeConstants.MILLIS_PER_HOUR);
         }
         if (nextIntervalAlarmTime.toDurationMillis() < 90 * DateTimeConstants.MILLIS_PER_MINUTE) {
             return new DateTime(nextIntervalAlarmTime.getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);

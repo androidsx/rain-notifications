@@ -19,12 +19,12 @@ public class DaySummaryDeserializer implements JsonDeserializer {
 
         DaySummary.DaySummaryBuilder builder = new DaySummary.DaySummaryBuilder();
 
-        for(DayPeriod period : DayPeriod.values()) {
-            if(jsonObject.has(period.toString())) {
+        for (DayPeriod period : DayPeriod.values()) {
+            if (jsonObject.has(period.toString())) {
                 JsonObject jsonPeriod = (JsonObject) jsonObject.get(period.toString());
                 for (WeatherPriority priority : WeatherPriority.values()) {
                     if (jsonPeriod.has(priority.toString())) {
-                        builder.setWeatherWrapper(period, priority, (DaySummary.WeatherWrapper) context.deserialize(jsonPeriod.get(priority.toString()), DaySummary.WeatherWrapper.class));
+                        builder.setWeatherType(period, priority, (WeatherType) context.deserialize(jsonPeriod.getAsJsonObject(priority.toString()).get("weatherType"), WeatherType.class));
                     }
                 }
             }
@@ -34,9 +34,9 @@ public class DaySummaryDeserializer implements JsonDeserializer {
         JsonObject jsonMessages = (JsonObject) jsonObject.get("messages");
 
         List<String> mList = new ArrayList<String>();
-        if(jsonMessages.has("en")) {
+        if (jsonMessages.has("en")) {
             JsonArray messagesList = (JsonArray) jsonMessages.get("en");
-            for(int i=0; i < messagesList.size(); i++) {
+            for (int i=0; i < messagesList.size(); i++) {
                 mList.add(messagesList.get(i).getAsString());
             }
             messages.put("en", mList);
