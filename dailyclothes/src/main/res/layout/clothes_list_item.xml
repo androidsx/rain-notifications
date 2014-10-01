@@ -17,6 +17,6 @@
         android:padding="10dp"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
-        tools:src="@drawable/model" />
+        tools:src="@drawable/model_jpg" />
 
 </RelativeLayout>
