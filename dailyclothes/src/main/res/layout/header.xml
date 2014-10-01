@@ -7,5 +7,5 @@
     <View
         android:id="@+id/header_list_view"
         android:layout_width="match_parent"
-        android:layout_height="45dp" />
+        android:layout_height="65dp" />
 </LinearLayout>

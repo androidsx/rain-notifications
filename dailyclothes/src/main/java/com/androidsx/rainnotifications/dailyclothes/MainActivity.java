@@ -306,29 +306,27 @@ public class MainActivity extends Activity {
             }
         });
 
-        clothesList.add(new Clothes(
-                R.drawable.a));
-        adapter.notifyDataSetChanged();
-        clothesList.add(new Clothes(
-                R.drawable.b));
-        adapter.notifyDataSetChanged();
-        clothesList.add(new Clothes(
-                R.drawable.model));
-        adapter.notifyDataSetChanged();
-        clothesList.add(new Clothes(
-                R.drawable.c));
-        adapter.notifyDataSetChanged();
-        clothesList.add(new Clothes(
-                R.drawable.a));
-        adapter.notifyDataSetChanged();
-        clothesList.add(new Clothes(
-                R.drawable.b));
-        adapter.notifyDataSetChanged();
-        clothesList.add(new Clothes(
-                R.drawable.model));
-        adapter.notifyDataSetChanged();
-        clothesList.add(new Clothes(
-                R.drawable.c));
+        clothesList.add(new Clothes(R.drawable.lucky_1));
+        clothesList.add(new Clothes(R.drawable.lucky_2));
+        clothesList.add(new Clothes(R.drawable.lucky_3));
+        clothesList.add(new Clothes(R.drawable.lucky_4));
+        clothesList.add(new Clothes(R.drawable.lucky_5));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_1));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_2));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_3));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_4));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_5));
+        clothesList.add(new Clothes(R.drawable.blogger_1));
+        clothesList.add(new Clothes(R.drawable.blogger_2));
+        clothesList.add(new Clothes(R.drawable.blogger_3));
+        clothesList.add(new Clothes(R.drawable.blogger_4));
+        clothesList.add(new Clothes(R.drawable.blogger_5));
+        clothesList.add(new Clothes(R.drawable.blogger_6));
+        clothesList.add(new Clothes(R.drawable.blogger_7));
+        clothesList.add(new Clothes(R.drawable.blogger_8));
+        clothesList.add(new Clothes(R.drawable.blogger_9));
+        clothesList.add(new Clothes(R.drawable.blogger_10));
+
         adapter.notifyDataSetChanged();
     }
 
