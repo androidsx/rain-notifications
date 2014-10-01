@@ -307,13 +307,13 @@ public class MainActivity extends Activity {
         });
 
         clothesList.add(new Clothes(
-                R.drawable.model));
+                R.drawable.model_jpg));
         clothesList.add(new Clothes(
-                R.drawable.a));
+                R.drawable.a_jpg));
         clothesList.add(new Clothes(
-                R.drawable.b));
+                R.drawable.b_jpg));
         clothesList.add(new Clothes(
-                R.drawable.c));
+                R.drawable.c_jpg));
         adapter.notifyDataSetChanged();
     }
 
@@ -376,19 +376,33 @@ public class MainActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            // Avoid unneccessary calls to findViewById() on each row, which is expensive!
+            ViewHolder holder;
 
             if (inflater == null)
                 inflater = (LayoutInflater) context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            if (convertView == null)
+            if (convertView == null) {
                 convertView = inflater.inflate(R.layout.clothes_list_item, null);
 
-            ImageView photo = (ImageView)convertView.findViewById(R.id.photo);
+                // Create a ViewHolder and store references to the two children views
+                holder = new ViewHolder();
+                holder.icon = (ImageView) convertView.findViewById(R.id.photo);
 
-            Clothes c = clothesItems.get(position);
-            photo.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), c.getPhoto())));
+                // The tag can be any Object, this just happens to be the ViewHolder
+                convertView.setTag(holder);
+            } else {
+                // Get the ViewHolder back to get fast access to the TextView
+                // and the ImageView.
+                holder = (ViewHolder) convertView.getTag();
+            }
 
+            holder.icon.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), clothesItems.get(position).getPhoto())));
             return convertView;
         }
+    }
+
+    static class ViewHolder {
+        ImageView icon;
     }
 }
