@@ -87,18 +87,12 @@ public class DaySummaryGenerator {
             DaySummary onMapSummary = getDaySummaryFromMap(daySummary);
 
             while (onMapSummary == null) {
-                if(downgradeDaySummary(daySummary)) {
+                if(daySummary.downgrade()) {
                     onMapSummary = getDaySummaryFromMap(daySummary);
                 }
                 else {
                     Timber.d("Can't find suitable summary");
-                    // Set default message
-                    HashMap<String, List<String>> messages = new HashMap<String, List<String>>();
-                    messages.put("en", Arrays.asList("Default")); //TODO: Review this message.
-                    daySummary.setMessages(messages);
                     onMapSummary = daySummary;
-
-                    break;
                 }
             }
 
@@ -107,58 +101,6 @@ public class DaySummaryGenerator {
 
         private DaySummary getDaySummaryFromMap(DaySummary daySummary) {
             return sumariesMap.get(getDaySummaryWeatherKey(daySummary));
-        }
-
-        private boolean downgradeDaySummary(DaySummary daySummary) {
-            if (!daySummary.getWeatherType(DayPeriod.night, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
-                Timber.d("remove night secondary");
-                daySummary.setWeatherType(DayPeriod.night, WeatherPriority.secondary, WeatherType.UNDEFINED);
-                return true;
-            }
-
-            if (!daySummary.getWeatherType(DayPeriod.night, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
-                Timber.d("remove night primary");
-                daySummary.setWeatherType(DayPeriod.night, WeatherPriority.primary, WeatherType.UNDEFINED);
-                return true;
-            }
-
-            if (!daySummary.getWeatherType(DayPeriod.evening, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
-                Timber.d("remove evening secondary");
-                daySummary.setWeatherType(DayPeriod.evening, WeatherPriority.secondary, WeatherType.UNDEFINED);
-                return true;
-            }
-
-            if (!daySummary.getWeatherType(DayPeriod.evening, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
-                Timber.d("remove evening primary");
-                daySummary.setWeatherType(DayPeriod.evening, WeatherPriority.primary, WeatherType.UNDEFINED);
-                return true;
-            }
-
-            if (!daySummary.getWeatherType(DayPeriod.afternoon, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
-                Timber.d("remove afternoon secondary");
-                daySummary.setWeatherType(DayPeriod.afternoon, WeatherPriority.secondary, WeatherType.UNDEFINED);
-                return true;
-            }
-
-            if (!daySummary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
-                Timber.d("remove morning secondary");
-                daySummary.setWeatherType(DayPeriod.morning, WeatherPriority.secondary, WeatherType.UNDEFINED);
-                return true;
-            }
-
-            if (!daySummary.getWeatherType(DayPeriod.afternoon, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
-                Timber.d("remove afternoon primary");
-                daySummary.setWeatherType(DayPeriod.afternoon, WeatherPriority.primary, WeatherType.UNDEFINED);
-                return true;
-            }
-
-            if (!daySummary.getWeatherType(DayPeriod.morning, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
-                Timber.d("remove morning primary");
-                daySummary.setWeatherType(DayPeriod.morning, WeatherPriority.primary, WeatherType.UNDEFINED);
-                return true;
-            }
-
-            return false;
         }
 
         private String getDaySummaryWeatherKey(DaySummary daySummary) {
