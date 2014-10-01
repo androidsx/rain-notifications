@@ -53,7 +53,7 @@ public class ForecastTableToDaySummaryConverterTest {
         forecastList.add(new Forecast(new Interval(today17pm, today20pm), new WeatherWrapper(WeatherType.RAIN))); // afternoon and evening
         forecastList.add(new Forecast(new Interval(today20pm, today22pm), new WeatherWrapper(WeatherType.CLEAR))); // evening and night
 
-        DaySummary summary = DaySummary.fromForecastTable(new ForecastTable(forecastList));
+        DaySummary summary = DaySummary.fromForecastTable(ForecastTable.fromForecastList(forecastList));
 
         Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.primary), WeatherType.RAIN);
         Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), WeatherType.CLOUDY);
@@ -76,7 +76,7 @@ public class ForecastTableToDaySummaryConverterTest {
         ArrayList<Forecast> forecastList = new ArrayList<Forecast>();
         forecastList.add(new Forecast(new Interval(today6am, today6am.plus(Period.hours(24))), new WeatherWrapper(currentWeatherType)));
 
-        ForecastTable table = new ForecastTable(forecastList);
+        ForecastTable table = ForecastTable.fromForecastList(forecastList);
         DaySummary summary = DaySummary.fromForecastTable(table);
         for (DayPeriod dayPeriod : DayPeriod.values()) {
             Assert.assertEquals("Wrong primary for " + dayPeriod, WeatherType.CLEAR, summary.getWeatherType(dayPeriod, WeatherPriority.primary));
@@ -92,7 +92,7 @@ public class ForecastTableToDaySummaryConverterTest {
         ArrayList<Forecast> forecastList = new ArrayList<Forecast>();
         forecastList.add(new Forecast(new Interval(today10am, today10am.plus(Period.hours(24))), new WeatherWrapper(currentWeatherType)));
 
-        DaySummary summary = DaySummary.fromForecastTable(new ForecastTable(forecastList));
+        DaySummary summary = DaySummary.fromForecastTable(ForecastTable.fromForecastList(forecastList));
         for (DayPeriod dayPeriod : DayPeriod.values()) {
             Assert.assertEquals("Wrong primary for " + dayPeriod, WeatherType.CLEAR, summary.getWeatherType(dayPeriod, WeatherPriority.primary));
             Assert.assertEquals("Wrong secondary for " + dayPeriod, WeatherType.UNDEFINED, summary.getWeatherType(dayPeriod, WeatherPriority.secondary));
@@ -121,7 +121,7 @@ public class ForecastTableToDaySummaryConverterTest {
         forecasts.add(new Forecast(new Interval(rainStart, rainEnd), new WeatherWrapper(WeatherType.RAIN)));
 
         // Compute the day summary
-        final ForecastTable forecastTable = new ForecastTable(forecasts);
+        final ForecastTable forecastTable = ForecastTable.fromForecastList(forecasts);
         DaySummary daySummary = DaySummary.fromForecastTable(forecastTable);
 
         // Check the results

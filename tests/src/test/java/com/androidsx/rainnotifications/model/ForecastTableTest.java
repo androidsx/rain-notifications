@@ -13,6 +13,6 @@ public class ForecastTableTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testEmptyListIsNotAllowed() {
-        new ForecastTable(Collections.<Forecast>emptyList());
+        ForecastTable.fromForecastList(Collections.<Forecast>emptyList());
     }
 }
