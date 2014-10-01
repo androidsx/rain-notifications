@@ -38,7 +38,9 @@
             android:id="@+id/today"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp">
+            android:layout_marginLeft="15dp"
+            android:clickable="true"
+            android:onClick="showNotification">
 
             <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
                 android:id="@+id/now_temp"

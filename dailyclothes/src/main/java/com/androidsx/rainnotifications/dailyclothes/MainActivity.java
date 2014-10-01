@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
 import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView;
+import com.androidsx.rainnotifications.dailyclothes.util.NotificationHelper;
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
 
 import java.util.ArrayList;
@@ -42,6 +44,9 @@ public class MainActivity extends Activity {
     private QuickReturnListView mListView;
     private TextView mQuickReturnView;
     private View mPlaceHolder;
+    private View listViewHeader;
+
+    private CustomFontTextView forecastMessage;
 
     private int mCachedVerticalScrollRange;
     private int mQuickReturnHeight;
@@ -58,6 +63,11 @@ public class MainActivity extends Activity {
 
     private TranslateAnimation anim;
 
+    private int maxTemp = 0;
+    private int todayNumClicks = 0;
+    private static final int CLICKS_FOR_FIRST_MESSAGE = 3;
+    private static final int CLICKS_FOR_SECOND_MESSAGE = 6;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,14 +80,72 @@ public class MainActivity extends Activity {
         mQuickReturnView = (CustomFontTextView)findViewById(R.id.forecast_message);
         mPlaceHolder = findViewById(R.id.layout_weather);
         mListView = (QuickReturnListView)findViewById(R.id.clothes_list_view);
-
+        listViewHeader = LayoutInflater.from(this).inflate(R.layout.header, null);
+        forecastMessage = (CustomFontTextView)findViewById(R.id.forecast_message);
         fillForecastView(8, 24);
         fillClothesListView();
     }
 
+    public void showNotification(View v) {
+        ++todayNumClicks;
+        if(todayNumClicks == CLICKS_FOR_FIRST_MESSAGE) {
+            showFirstNotificationMessage();
+        } else if (todayNumClicks == CLICKS_FOR_SECOND_MESSAGE) {
+            showSecondNotificationMessage();
+        }
+    }
+
+    private void showFirstNotificationMessage() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                NotificationHelper.displayStandardNotification(
+                        MainActivity.this,
+                        MainActivity.class,
+                        Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)),
+                        BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+            }
+        }.execute();
+    }
+
+    private void showSecondNotificationMessage() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                todayNumClicks = 0;
+                NotificationHelper.displayStandardNotification(
+                        MainActivity.this,
+                        MainActivity.class,
+                        Html.fromHtml(String.format(getString(R.string.forecast_second_message), maxTemp)),
+                        BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+            }
+        }.execute();
+    }
+
     private void fillForecastView(int startHour, int endHour) {
         ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
-        int maxTemp = 0;
         for(int i=startHour; i < endHour; i++) {
             View view = LayoutInflater.from(this).inflate(R.layout.hourly_forecast_item, null);
             ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
@@ -93,13 +161,13 @@ public class MainActivity extends Activity {
             }
         }
         TextView forecastMessage = (TextView) findViewById(R.id.forecast_message);
-        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_message), maxTemp)));
+        forecastMessage.setText(Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
     }
 
     private void fillClothesListView() {
         adapter = new CustomListAdapter(this, clothesList);
         mListView.setAdapter(adapter);
-        mListView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.header, null));
+        mListView.addHeaderView(listViewHeader);
 
         mListView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
