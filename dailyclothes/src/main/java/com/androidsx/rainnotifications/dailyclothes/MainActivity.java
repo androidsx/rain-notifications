@@ -307,11 +307,26 @@ public class MainActivity extends Activity {
         });
 
         clothesList.add(new Clothes(
-                R.drawable.model_jpg));
-        clothesList.add(new Clothes(
                 R.drawable.a_jpg));
+        adapter.notifyDataSetChanged();
         clothesList.add(new Clothes(
                 R.drawable.b_jpg));
+        adapter.notifyDataSetChanged();
+        clothesList.add(new Clothes(
+                R.drawable.model_jpg));
+        adapter.notifyDataSetChanged();
+        clothesList.add(new Clothes(
+                R.drawable.c_jpg));
+        adapter.notifyDataSetChanged();
+        clothesList.add(new Clothes(
+                R.drawable.a_jpg));
+        adapter.notifyDataSetChanged();
+        clothesList.add(new Clothes(
+                R.drawable.b_jpg));
+        adapter.notifyDataSetChanged();
+        clothesList.add(new Clothes(
+                R.drawable.model_jpg));
+        adapter.notifyDataSetChanged();
         clothesList.add(new Clothes(
                 R.drawable.c_jpg));
         adapter.notifyDataSetChanged();
@@ -375,7 +390,7 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
+        public View getView(int position, View convertView, ViewGroup parent) {
             // Avoid unnecessary calls to findViewById() on each row, which is expensive!
             ViewHolder holder;
 
@@ -390,33 +405,14 @@ public class MainActivity extends Activity {
                 holder.icon = (ImageView) convertView.findViewById(R.id.photo);
                 holder.position = position;
 
-                holder.icon.setImageBitmap(getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), clothesItems.get(position).getPhoto())));
                 // The tag can be any Object, this just happens to be the ViewHolder
                 convertView.setTag(holder);
             } else {
                 // Get the ViewHolder back to get fast access to the ImageView.
                 holder = (ViewHolder) convertView.getTag();
             }
-
-            // Using an AsyncTask to load the slow images in a background thread
-            new AsyncTask<ViewHolder, Void, Bitmap>() {
-                private ViewHolder mHolder;
-
-                @Override
-                protected Bitmap doInBackground(ViewHolder... params) {
-                    mHolder = params[0];
-                    return getRoundedCornerBitmap(BitmapFactory.decodeResource(context.getResources(), clothesItems.get(mHolder.position).getPhoto()));
-                }
-
-                @Override
-                protected void onPostExecute(Bitmap result) {
-                    super.onPostExecute(result);
-                    if (mHolder.position == position) {
-                        mHolder.icon.setImageBitmap(result);
-                    }
-                }
-            }.execute(holder);
-
+            holder.icon.setImageDrawable(context.getResources().getDrawable(clothesItems.get(position).getPhoto()));
+            
             return convertView;
         }
     }
