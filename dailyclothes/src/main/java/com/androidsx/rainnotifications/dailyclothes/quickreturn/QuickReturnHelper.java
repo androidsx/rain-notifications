@@ -7,7 +7,10 @@ import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 
-public class QuickReturn {
+/**
+ * Helper to configure the quick return list view in {@link QuickReturnListView}.
+ */
+public class QuickReturnHelper {
 
     private static int mCachedVerticalScrollRange;
     private static int mQuickReturnHeight;
@@ -26,7 +29,7 @@ public class QuickReturn {
 
     private static TranslateAnimation anim;
 
-    private QuickReturn() {
+    private QuickReturnHelper() {
         // Non-instantiate
     }
 
@@ -70,7 +73,6 @@ public class QuickReturn {
 
                     case STATE_ONSCREEN:
                         if (rawY < -mQuickReturnHeight) {
-                            System.out.println("test3");
                             mState = STATE_OFFSCREEN;
                             mMinRawY = rawY;
                         }
@@ -105,14 +107,10 @@ public class QuickReturn {
 
                                 @Override
                                 public void onAnimationStart(Animation animation) {
-                                    // TODO Auto-generated method stub
-
                                 }
 
                                 @Override
                                 public void onAnimationRepeat(Animation animation) {
-                                    // TODO Auto-generated method stub
-
                                 }
 
                                 @Override
@@ -167,7 +165,7 @@ public class QuickReturn {
                             mMinRawY = rawY;
                         }
                 }
-                /** this can be used if the build is below honeycomb **/
+                // this can be used if the build is below honeycomb
                 if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.HONEYCOMB) {
                     anim = new TranslateAnimation(0, 0, translationY,
                             translationY);

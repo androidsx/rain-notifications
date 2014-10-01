@@ -21,6 +21,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
 
+/**
+ * Quick return implementation. Taken from https://github.com/LarsWerkman/QuickReturnListView
+ */
 public class QuickReturnListView extends ListView {
 
 	private int mItemCount;

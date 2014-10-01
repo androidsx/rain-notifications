@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
-import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturn;
+import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnHelper;
 import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView;
 import com.androidsx.rainnotifications.dailyclothes.util.NotificationHelper;
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
@@ -148,7 +148,7 @@ public class MainActivity extends Activity {
     }
 
     private void configureQuickReturn() {
-        QuickReturn.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
+        QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
     }
 
     private int getRandomBetweenNumbers(int minValue, int maxValue) {
