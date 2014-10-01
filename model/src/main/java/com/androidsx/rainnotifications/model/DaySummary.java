@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import timber.log.Timber;
+
 public class DaySummary {
 
     public static DaySummary fromForecastTable(ForecastTable forecastTable) {
@@ -97,7 +99,7 @@ public class DaySummary {
         this.messages = builder.messages;
     }
 
-    public void setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
+    private void setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
         weatherMap.get(period).put(priority, type);
     }
 
@@ -105,13 +107,62 @@ public class DaySummary {
         return weatherMap.get(period).get(priority);
     }
 
-    public void setMessages(HashMap<String, List<String>> messages) {
-        this.messages = messages;
-    }
-
     public String getDayMessage() {
         List<String> languageMessages = messages.get("en");
         return languageMessages != null ? languageMessages.get(random.nextInt(languageMessages.size())) : "Default"; // TODO: Review this message
+    }
+
+    public boolean downgrade() {
+        // TODO: Discuss with team this method. I don't like it because it's not generic.
+        if (!getWeatherType(DayPeriod.night, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
+            Timber.d("remove night secondary");
+            setWeatherType(DayPeriod.night, WeatherPriority.secondary, WeatherType.UNDEFINED);
+            return true;
+        }
+
+        if (!getWeatherType(DayPeriod.night, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
+            Timber.d("remove night primary");
+            setWeatherType(DayPeriod.night, WeatherPriority.primary, WeatherType.UNDEFINED);
+            return true;
+        }
+
+        if (!getWeatherType(DayPeriod.evening, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
+            Timber.d("remove evening secondary");
+            setWeatherType(DayPeriod.evening, WeatherPriority.secondary, WeatherType.UNDEFINED);
+            return true;
+        }
+
+        if (!getWeatherType(DayPeriod.evening, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
+            Timber.d("remove evening primary");
+            setWeatherType(DayPeriod.evening, WeatherPriority.primary, WeatherType.UNDEFINED);
+            return true;
+        }
+
+        if (!getWeatherType(DayPeriod.afternoon, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
+            Timber.d("remove afternoon secondary");
+            setWeatherType(DayPeriod.afternoon, WeatherPriority.secondary, WeatherType.UNDEFINED);
+            return true;
+        }
+
+        if (!getWeatherType(DayPeriod.morning, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
+            Timber.d("remove morning secondary");
+            setWeatherType(DayPeriod.morning, WeatherPriority.secondary, WeatherType.UNDEFINED);
+            return true;
+        }
+
+        if (!getWeatherType(DayPeriod.afternoon, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
+            Timber.d("remove afternoon primary");
+            setWeatherType(DayPeriod.afternoon, WeatherPriority.primary, WeatherType.UNDEFINED);
+            return true;
+        }
+
+        if (!getWeatherType(DayPeriod.morning, WeatherPriority.primary).equals(WeatherType.UNDEFINED)) {
+            Timber.d("remove morning primary");
+            setWeatherType(DayPeriod.morning, WeatherPriority.primary, WeatherType.UNDEFINED);
+            return true;
+        }
+
+        return false;
     }
 
     @Override
