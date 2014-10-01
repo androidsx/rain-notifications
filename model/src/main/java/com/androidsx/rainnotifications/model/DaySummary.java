@@ -99,16 +99,12 @@ public class DaySummary {
         this.messages = builder.messages;
     }
 
-    public void setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
+    private void setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
         weatherMap.get(period).put(priority, type);
     }
 
     public WeatherType getWeatherType(DayPeriod period, WeatherPriority priority) {
         return weatherMap.get(period).get(priority);
-    }
-
-    public void setMessages(HashMap<String, List<String>> messages) {
-        this.messages = messages;
     }
 
     public String getDayMessage() {
