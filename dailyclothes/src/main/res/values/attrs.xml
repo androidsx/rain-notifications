@@ -2,6 +2,9 @@
 <resources>
     <declare-styleable name="CustomFontTextView">
         <attr name="customFont" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="RoundedImageView">
         <attr name="customRadius" format="float" />
     </declare-styleable>
 </resources>
