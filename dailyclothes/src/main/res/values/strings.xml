@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">DailyClothes</string>
+    <string name="app_name">Weather UP</string>
     <string name="action_settings">Settings</string>
     <string name="forecast_message" formatted="false"><![CDATA[A <b>cool</b> fall morning heating up later in the day, reaching a <b>high of %s.</b>]]></string>
     <string name="alert_message" formatted="false"><![CDATA[it\'s going to rain in <b>30 MINUTES</b>.]]></string>
