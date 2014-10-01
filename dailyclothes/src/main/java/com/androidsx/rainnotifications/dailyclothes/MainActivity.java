@@ -19,6 +19,7 @@ import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnHelpe
 import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView;
 import com.androidsx.rainnotifications.dailyclothes.util.NotificationHelper;
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,7 @@ public class MainActivity extends Activity {
             ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
             TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
-            icon.setImageDrawable(getResources().getDrawable(getRandomWeatherIcon()));
+            Picasso.with(this).load(getRandomWeatherIcon()).into(icon);
             int auxTemp = getRandomBetweenNumbers(60, 67);
             temp.setText(auxTemp + "º");
             hour.setText(i+"am");
