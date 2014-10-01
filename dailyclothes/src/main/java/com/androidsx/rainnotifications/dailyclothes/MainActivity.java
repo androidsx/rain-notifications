@@ -307,28 +307,28 @@ public class MainActivity extends Activity {
         });
 
         clothesList.add(new Clothes(
-                R.drawable.a_jpg));
+                R.drawable.a));
         adapter.notifyDataSetChanged();
         clothesList.add(new Clothes(
-                R.drawable.b_jpg));
+                R.drawable.b));
         adapter.notifyDataSetChanged();
         clothesList.add(new Clothes(
-                R.drawable.model_jpg));
+                R.drawable.model));
         adapter.notifyDataSetChanged();
         clothesList.add(new Clothes(
-                R.drawable.c_jpg));
+                R.drawable.c));
         adapter.notifyDataSetChanged();
         clothesList.add(new Clothes(
-                R.drawable.a_jpg));
+                R.drawable.a));
         adapter.notifyDataSetChanged();
         clothesList.add(new Clothes(
-                R.drawable.b_jpg));
+                R.drawable.b));
         adapter.notifyDataSetChanged();
         clothesList.add(new Clothes(
-                R.drawable.model_jpg));
+                R.drawable.model));
         adapter.notifyDataSetChanged();
         clothesList.add(new Clothes(
-                R.drawable.c_jpg));
+                R.drawable.c));
         adapter.notifyDataSetChanged();
     }
 
@@ -412,7 +412,7 @@ public class MainActivity extends Activity {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.icon.setImageDrawable(context.getResources().getDrawable(clothesItems.get(position).getPhoto()));
-            
+
             return convertView;
         }
     }
