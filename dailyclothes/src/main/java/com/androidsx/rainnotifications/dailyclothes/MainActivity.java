@@ -403,7 +403,6 @@ public class MainActivity extends Activity {
                 // Create a ViewHolder and store references to the children view
                 holder = new ViewHolder();
                 holder.icon = (ImageView) convertView.findViewById(R.id.photo);
-                holder.position = position;
 
                 // The tag can be any Object, this just happens to be the ViewHolder
                 convertView.setTag(holder);
@@ -419,6 +418,5 @@ public class MainActivity extends Activity {
 
     static class ViewHolder {
         ImageView icon;
-        int position;
     }
 }
