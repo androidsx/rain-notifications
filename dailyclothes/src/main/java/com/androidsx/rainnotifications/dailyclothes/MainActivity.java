@@ -99,6 +99,7 @@ public class MainActivity extends Activity {
     private void fillClothesListView() {
         adapter = new CustomListAdapter(this, clothesList);
         mListView.setAdapter(adapter);
+        mListView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.header, null));
 
         mListView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
