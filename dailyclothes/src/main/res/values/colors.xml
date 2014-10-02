@@ -11,12 +11,16 @@
 
     <!-- Main Activity colors -->
     <color name="primary_foreground">@color/light_brown</color>
+
+    <!-- Today colors -->
     <color name="today_text">@color/light_brown</color>
     <color name="today_background">@color/light_grey</color>
 
-    <!-- Forecast section colors -->
+    <!-- Forecast Hourly section colors -->
     <color name="forecast_icon">@color/grey</color>
     <color name="forecast_text">@color/light_brown</color>
+
+    <!-- Forecast Message colors -->
     <color name="forecast_message">@color/grey_blue</color>
     <color name="forecast_message_background">@color/light_grey</color>
 
