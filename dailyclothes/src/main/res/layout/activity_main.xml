@@ -20,12 +20,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_weather"
         android:background="@color/forecast_message_background"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingBottom="13dp"
-        android:paddingTop="13dp"
-        android:layout_marginRight="5dp"
-        android:textSize="16sp"
+        android:paddingLeft="@dimen/forecast_message_padding_left_right"
+        android:paddingRight="@dimen/forecast_message_padding_left_right"
+        android:paddingBottom="@dimen/forecast_message_padding_top_bottom"
+        android:paddingTop="@dimen/forecast_message_padding_top_bottom"
+        android:layout_marginRight="@dimen/forecast_message_margin_right"
+        android:textSize="@dimen/forecast_message_text_size"
         android:textColor="@color/forecast_message"
         customAttrs:customFont="roboto_light"/>
 
@@ -39,7 +39,7 @@
             android:id="@+id/today"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="@dimen/today_margin_left"
             android:clickable="true"
             android:onClick="showNotification">
 
@@ -47,9 +47,9 @@
                 android:id="@+id/now_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="-10dp"
+                android:layout_marginTop="@dimen/today_temp_margin_top"
                 android:text="56º"
-                android:textSize="70sp"
+                android:textSize="@dimen/today_temp_text_size"
                 android:textColor="@color/today_text"
                 customAttrs:customFont="roboto_thin"/>
 
@@ -58,10 +58,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/now_temp"
-                android:layout_marginTop="-35dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginTop="@dimen/today_now_margin_top"
+                android:layout_marginLeft="@dimen/today_now_margin_left"
                 android:text="now"
-                android:textSize="40sp"
+                android:textSize="@dimen/today_now_text_size"
                 android:textColor="@color/today_text"
                 customAttrs:customFont="roboto_thin"/>
         </RelativeLayout>
@@ -71,8 +71,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp">
+            android:layout_marginTop="@dimen/forecast_hourly_section_margin_top"
+            android:layout_marginLeft="@dimen/forecast_hourly_section_margin_left">
 
             <HorizontalScrollView
                 android:layout_width="wrap_content"
@@ -84,7 +84,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="horizontal"
-                    android:layout_marginBottom="10dp">
+                    android:layout_marginBottom="@dimen/forecast_hourly_section_margin_bottom">
 
                 </LinearLayout>
             </HorizontalScrollView>

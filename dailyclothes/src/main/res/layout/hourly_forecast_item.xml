@@ -4,8 +4,8 @@
     xmlns:customAttrs="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
+    android:paddingLeft="@dimen/forecast_hourly_item_padding_left_right"
+    android:paddingRight="@dimen/forecast_hourly_item_padding_left_right"
     android:id="@+id/forecast">
 
     <LinearLayout
@@ -16,8 +16,8 @@
 
         <ImageView
             android:id="@+id/forecast_icon"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/forecast_hourly_item_icon_width_height"
+            android:layout_height="@dimen/forecast_hourly_item_icon_width_height"
             android:scaleType="fitXY"
             android:tint="@color/forecast_icon"
             android:src="@drawable/ic_clear" />
@@ -35,7 +35,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="63º"
-            android:textSize="25sp"
+            android:textSize="@dimen/forecast_hourly_item_temp_size"
             android:textColor="@color/forecast_text"
             customAttrs:customFont="roboto_light"/>
     </LinearLayout>
@@ -52,6 +52,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="10am"
+            android:textSize="@dimen/forecast_hourly_item_hour_size"
             android:textColor="@color/forecast_text"
             customAttrs:customFont="roboto_light"/>
     </LinearLayout>

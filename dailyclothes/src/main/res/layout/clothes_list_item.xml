@@ -9,11 +9,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:padding="10dp"
+        android:layout_marginTop="@dimen/card_image_margin_top_bottom"
+        android:layout_marginBottom="@dimen/card_image_margin_top_bottom"
+        android:layout_marginLeft="@dimen/card_image_margin_left_right"
+        android:layout_marginRight="@dimen/card_image_margin_left_right"
+        android:padding="@dimen/card_image_padding"
         android:background="@drawable/bg_parent_rounded_corner">
 
         <com.androidsx.rainnotifications.dailyclothes.widget.RoundedImageView
@@ -23,6 +23,6 @@
             tools:src="@drawable/ann_taylor_1"
             android:scaleType="fitXY"
             android:adjustViewBounds="true"
-            customAttrs:customRadius="15"/>
+            customAttrs:customRadius="@integer/custom_image_radius"/>
     </RelativeLayout>
 </RelativeLayout>
