@@ -19,20 +19,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_weather"
-        android:background="#eeeeee"
+        android:background="@color/forecast_message_background"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingBottom="13dp"
         android:paddingTop="13dp"
         android:layout_marginRight="5dp"
         android:textSize="16sp"
-        android:textColor="#3c5f6e"
+        android:textColor="@color/forecast_message"
         customAttrs:customFont="roboto_light"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#eeeeee"
+        android:background="@color/today_background"
         android:id="@+id/layout_weather">
 
         <RelativeLayout
@@ -50,7 +50,7 @@
                 android:layout_marginTop="-10dp"
                 android:text="56º"
                 android:textSize="70sp"
-                android:textColor="#8e7f3a"
+                android:textColor="@color/today_text"
                 customAttrs:customFont="roboto_thin"/>
 
             <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
@@ -62,7 +62,7 @@
                 android:layout_marginLeft="5dp"
                 android:text="now"
                 android:textSize="40sp"
-                android:textColor="#8e7f3a"
+                android:textColor="@color/today_text"
                 customAttrs:customFont="roboto_thin"/>
         </RelativeLayout>
 

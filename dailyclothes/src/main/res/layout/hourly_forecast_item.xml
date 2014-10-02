@@ -19,7 +19,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:scaleType="fitXY"
-            android:tint="#ffa7a7a7"
+            android:tint="@color/forecast_icon"
             android:src="@drawable/ic_clear" />
     </LinearLayout>
 
@@ -36,7 +36,7 @@
             android:gravity="center"
             android:text="63º"
             android:textSize="25sp"
-            android:textColor="#8e7f3a"
+            android:textColor="@color/forecast_text"
             customAttrs:customFont="roboto_light"/>
     </LinearLayout>
 
@@ -52,7 +52,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="10am"
-            android:textColor="#8e7f3a"
+            android:textColor="@color/forecast_text"
             customAttrs:customFont="roboto_light"/>
     </LinearLayout>
 </LinearLayout>
