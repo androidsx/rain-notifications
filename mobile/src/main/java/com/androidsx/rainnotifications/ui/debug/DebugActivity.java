@@ -261,7 +261,16 @@ public class DebugActivity extends Activity {
         List<WeatherItemRow> weatherItemRows = new ArrayList<WeatherItemRow>();
 
         weatherItemRows.add(nowWeatherItemRow);
-        weatherItemRows.addAll(weatherTransitionsList);
+        // Only consecutive forecasts may be accepted for prevent wrong Intervals.
+        if(!weatherTransitionsList.isEmpty()) {
+            WeatherItemRow itemRowBefore = weatherTransitionsList.get(0);
+            for (WeatherItemRow w : weatherTransitionsList) {
+                if(itemRowBefore.getTime().isBefore(w.getTime())) {
+                    weatherItemRows.add(w);
+                    itemRowBefore = w;
+                }
+            }
+        }
 
         for (int i = 0 ; i< weatherItemRows.size() - 1 ; i++) {
             forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(i), weatherItemRows.get(i + 1)),
