@@ -15,6 +15,7 @@ public enum WeatherType {
     CLEAR,
     RAIN,
     CLOUDY,
+    SNOW,
 
     @SerializedName("*")
     WHATEVER,
@@ -31,6 +32,6 @@ public enum WeatherType {
     UNKNOWN;
 
     public static List<WeatherType> getMeaningfulWeatherTypes() {
-        return Arrays.asList(WeatherType.CLEAR, WeatherType.RAIN, WeatherType.CLOUDY);
+        return Arrays.asList(WeatherType.CLEAR, WeatherType.RAIN, WeatherType.CLOUDY, WeatherType.SNOW);
     }
 }
