@@ -176,7 +176,7 @@ tools:context=".forecast_mobile" >
                 android:text="Cloudy/Rain\n Day"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/clear_cloudy_day"
+            android:id="@+id/clearly_cloudy_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -199,13 +199,13 @@ tools:context=".forecast_mobile" >
                 android:text="Clear/Cloudy\n Day"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/clear_rainy_day"
+            android:id="@+id/clearly_rainy_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10dp"
             android:layout_below="@+id/cloudy_day"
-            android:layout_toRightOf="@+id/cloudy_day"
+            android:layout_toRightOf="@+id/clearly_cloudy_day"
             android:clickable="true"
             android:onClick=""
             android:gravity="center_horizontal">
