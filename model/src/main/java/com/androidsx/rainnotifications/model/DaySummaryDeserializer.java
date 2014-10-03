@@ -1,5 +1,6 @@
 package com.androidsx.rainnotifications.model;
 
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -7,12 +8,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class DaySummaryDeserializer implements JsonDeserializer {
+
+    public static List<DaySummary> deserializeDaySummaryDictionary(Reader dictionaryReader) {
+        return Arrays.asList(new GsonBuilder().registerTypeAdapter(DaySummary.class, new DaySummaryDeserializer()).create()
+                .fromJson(dictionaryReader, DaySummary[].class));
+    }
+
     @Override
     public DaySummary deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         final JsonObject jsonObject = json.getAsJsonObject();

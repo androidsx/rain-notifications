@@ -24,7 +24,9 @@ import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
+import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherType;
@@ -243,10 +245,8 @@ public class DebugActivity extends Activity {
         ForecastTable forecastTable = getDebugForecastTable();
         if(forecastTable != null) {
             Timber.d("FORECAST_TABLE: \n" + forecastTable.toString());
-
-            DaySummaryGenerator daySummaryGenerator = new DaySummaryGenerator(this);
-            daySummaryGenerator.init();
-            cardMessageTextView.setText(daySummaryGenerator.getDaySummary(forecastTable).getDayMessage());
+            cardMessageTextView.setText(new DaySummaryGenerator(DaySummaryDeserializer.deserializeDaySummaryDictionary(Setup.getDaySummaryDictionaryReader(this)))
+                    .getDaySummary(forecastTable).getDayMessage());
         }
         else {
             cardMessageTextView.setText("Null ForecastTable, are all WeatherTypes UNKNOWN?");

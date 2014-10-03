@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications.alert;
 
 import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.DaySummary;
+import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherPriority;
@@ -18,6 +19,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,9 +33,8 @@ public class DaySummaryGeneratorLiveConfigTest {
 
     @Before
     public void setUp() throws Exception {
-        generator = new DaySummaryGenerator(null);
-
-        generator.init(new FileInputStream("../alert-generator/src/main/assets/dayMessages.json"));
+        generator = new DaySummaryGenerator(DaySummaryDeserializer
+                .deserializeDaySummaryDictionary(new InputStreamReader(new FileInputStream("../alert-generator/src/main/assets/dayMessages.json"))));
     }
 
     // TODO: Create more and better test cases

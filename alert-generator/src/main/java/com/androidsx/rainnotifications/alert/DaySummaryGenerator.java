@@ -1,20 +1,13 @@
 package com.androidsx.rainnotifications.alert;
 
-import android.content.Context;
 import android.util.SparseArray;
 
 import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.DaySummary;
-import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
-import com.google.gson.GsonBuilder;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,29 +16,10 @@ import java.util.List;
 import timber.log.Timber;
 
 public class DaySummaryGenerator {
-    private final Context context;
     private DaySummaryPostProcessor daySummaryPostProcessor;
 
-    public DaySummaryGenerator(Context context) {
-        this.context = context;
-    }
-
-    public void init() {
-        final InputStream dayMessagesJsonInputStream;
-        try {
-            dayMessagesJsonInputStream = context.getResources().getAssets().open("dayMessages.json");
-        } catch (IOException e) {
-            throw new IllegalStateException("Can't parse the day messages JSON file", e);
-        }
-
-        init(dayMessagesJsonInputStream);
-    }
-
-    public void init(InputStream dayMessagesJsonInputStream) {
-        final Reader jsonReader = new InputStreamReader(dayMessagesJsonInputStream);
-        final GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(DaySummary.class, new DaySummaryDeserializer());
-        daySummaryPostProcessor = new DaySummaryPostProcessor(Arrays.asList(gsonBuilder.create().fromJson(jsonReader, DaySummary[].class)));
+    public DaySummaryGenerator(List<DaySummary> daySummaries) {
+        daySummaryPostProcessor = new DaySummaryPostProcessor(daySummaries);
     }
 
     public DaySummary getDaySummary(ForecastTable forecastTable) {
