@@ -11,6 +11,8 @@ import timber.log.Timber;
 
 public class DaySummary {
 
+    public static final String DEFAULT_MESSAGE = "Default"; // TODO: Review this message
+
     public static DaySummary fromForecastTable(ForecastTable forecastTable) {
         DaySummaryBuilder builder = new DaySummaryBuilder();
 
@@ -109,7 +111,7 @@ public class DaySummary {
 
     public String getDayMessage() {
         List<String> languageMessages = messages.get("en");
-        return languageMessages != null ? languageMessages.get(random.nextInt(languageMessages.size())) : "Default"; // TODO: Review this message
+        return languageMessages != null ? languageMessages.get(random.nextInt(languageMessages.size())) : DEFAULT_MESSAGE;
     }
 
     public boolean downgrade() {

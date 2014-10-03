@@ -26,7 +26,13 @@ public class DaySummaryGenerator {
         return daySummaryPostProcessor.getClosestDaySummary(DaySummary.fromForecastTable(forecastTable));
     }
 
-    private class DaySummaryPostProcessor {
+    //TODO: This is only used for testing.
+    public DaySummaryPostProcessor getPostProcessor() {
+        return daySummaryPostProcessor;
+    }
+
+    //TODO: This is public only for testing.
+    public class DaySummaryPostProcessor {
         private List<String> meaningfulWeatherTypeNames;
         private HashMap<String, DaySummary> sumariesMap;
 
@@ -73,7 +79,8 @@ public class DaySummaryGenerator {
             return onMapSummary;
         }
 
-        private DaySummary getDaySummaryFromMap(DaySummary daySummary) {
+        //TODO: This is public only for testing.
+        public DaySummary getDaySummaryFromMap(DaySummary daySummary) {
             return sumariesMap.get(getDaySummaryWeatherKey(daySummary));
         }
 
