@@ -39,12 +39,15 @@ import timber.log.Timber;
 public class WeatherService extends Service {
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private AlertGenerator alertGenerator;
+    private DaySummaryGenerator daySummaryGenerator;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         alertGenerator = new AlertGenerator(this);
+        daySummaryGenerator = new DaySummaryGenerator(this);
+        daySummaryGenerator.init();
         alertGenerator.init();
     }
 
@@ -63,7 +66,7 @@ public class WeatherService extends Service {
                     @Override
                     public void onForecastSuccess (ForecastTable forecastTable){
                         if (intent != null && intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {
-                            DaySummary daySummary = new DaySummaryGenerator(WeatherService.this).getDaySummary(forecastTable);
+                            DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
                             NotificationHelper.displayStandardNotification(
                                     WeatherService.this,
                                     MainMobileActivity.class,
