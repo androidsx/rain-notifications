@@ -10,9 +10,11 @@ import android.os.IBinder;
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
+import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
@@ -37,12 +39,15 @@ import timber.log.Timber;
 public class WeatherService extends Service {
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private AlertGenerator alertGenerator;
+    private DaySummaryGenerator daySummaryGenerator;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         alertGenerator = new AlertGenerator(this);
+        daySummaryGenerator = new DaySummaryGenerator(this);
+        daySummaryGenerator.init();
         alertGenerator.init();
     }
 
@@ -61,7 +66,12 @@ public class WeatherService extends Service {
                     @Override
                     public void onForecastSuccess (ForecastTable forecastTable){
                         if (intent != null && intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {
-                            //TODO: getDayMessage and send Notification.
+                            DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
+                            NotificationHelper.displayStandardNotification(
+                                    WeatherService.this,
+                                    MainMobileActivity.class,
+                                    daySummary.getDayMessage(),
+                                    BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
                         } else {
                             if (!forecastTable.hasTransitions()) {
                                 Timber.d("No transitions are expected, so there's no notifications to generate");
