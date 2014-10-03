@@ -1,143 +1,139 @@
 [
-  {
-    "fromType":"CLEAR",
-    "toType":"CLEAR",
-    "alertLevel":"NEVER_MIND",
-    "alertMessages":{
-      "en":[
-        "It's gonna stay sunny for a while, enjoy!",
-        "What a nice sunny day, and it looks like it's gonna stay for the day",
-        "Sun is shining, and will continue for the day"
-      ]
+    {
+        "fromType": "CLEAR",
+        "toType": "CLEAR",
+        "alertLevel": "NEVER_MIND",
+        "alertMessages": {
+            "en": [
+                "It's gonna stay sunny for a while, enjoy!",
+                "What a nice sunny day, and it looks like it's gonna stay for the day",
+                "Sun is shining, and will continue for the day"
+            ]
+        }
+    },
+    {
+        "fromType": "CLEAR",
+        "toType": "CLOUDY",
+        "alertLevel": "NEVER_MIND",
+        "alertMessages": {
+            "en": [
+                "Clouds are going to appear soon :("
+            ]
+        }
+    },
+    {
+        "fromType": "CLEAR",
+        "toType": "RAIN",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "It's gonna start raining in %s",
+                "Luck is over, rain is coming in %s",
+                "Take your umbrella, it looks like it's gonna rain in %s"
+            ]
+        }
+    },
+    {
+        "fromType": "CLOUDY",
+        "toType": "CLOUDY",
+        "alertLevel": "NEVER_MIND",
+        "alertMessages": {
+            "en": [
+                "It's gonna stay cloudy for a while",
+                "I wish the sun will appear, but the clouds are going to still be there for a while"
+            ]
+        }
+    },
+    {
+        "fromType": "CLOUDY",
+        "toType": "RAIN",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "It seems finally is going to rain in %s",
+                "The clouds did not hold the rain, it is going to rain in %s",
+                "Take your umbrella, it looks like it's gonna rain in %s"
+            ]
+        }
+    },
+    {
+        "fromType": "CLOUDY",
+        "toType": "CLEAR",
+        "alertLevel": "NEVER_MIND",
+        "alertMessages": {
+            "en": [
+                "Clouds will be disappearing soon :)",
+                "The sun will try to shine in %s"
+            ]
+        }
+    },
+    {
+        "fromType": "RAIN",
+        "toType": "RAIN",
+        "alertLevel": "NEVER_MIND",
+        "alertMessages": {
+            "en": [
+                "No luck, it'll keep raining for a while",
+                "Looks like it's gonna be raining for %s",
+                "Hopefully you have your umbrella with you, it won't stop raining for a while"
+            ]
+        }
+    },
+    {
+        "fromType": "RAIN",
+        "toType": "CLOUDY",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "In around %s, it is going to stop raining!",
+                "The rain will stop soon, and the sky will be cloudy",
+                "Rain will stop soon! An estimate of %s"
+            ]
+        }
+    },
+    {
+        "fromType": "RAIN",
+        "toType": "CLEAR",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "Nice, sun is coming back in %s",
+                "Looks promising! Sun will shine again in %s",
+                "Get ready to drop your umbrella in over %s"
+            ]
+        }
+    },
+    {
+        "fromType": "UNKNOWN",
+        "toType": "CLEAR",
+        "alertLevel": "NEVER_MIND",
+        "alertMessages": {
+            "en": [
+                "Nice, sun is coming back in %s",
+                "Looks promising! Sun will shine again in %s"
+            ]
+        }
+    },
+    {
+        "fromType": "UNKNOWN",
+        "toType": "CLOUDY",
+        "alertLevel": "NEVER_MIND",
+        "alertMessages": {
+            "en": [
+                "The clouds will be back in %s"
+            ]
+        }
+    },
+    {
+        "fromType": "UNKNOWN",
+        "toType": "RAIN",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "It's gonna start raining in %s",
+                "Luck is over, rain is coming in %s",
+                "Take your umbrella, it looks like it's gonna rain in %s"
+            ]
+        }
     }
-  },
-  {
-    "fromType":"CLEAR",
-    "toType":"CLOUDY",
-    "alertLevel":"NEVER_MIND",
-    "alertMessages":{
-      "en":[
-        "Sun to cloudy"
-      ]
-    }
-  },
-  {
-    "fromType":"CLEAR",
-    "toType":"RAIN",
-    "alertLevel":"INFO",
-    "alertMessages":{
-      "en":[
-        "It's gonna start raining in %s",
-        "Luck is over, rain is coming in %s",
-        "Take your umbrella, it looks like it's gonna rain in %s"
-      ]
-    }
-  },
-  {
-    "fromType":"CLOUDY",
-    "toType":"RAIN",
-    "alertLevel":"INFO",
-    "alertMessages":{
-      "en":[
-        "Partly cloudy to rain"
-      ]
-    }
-  },
-  {
-    "fromType":"CLOUDY",
-    "toType":"CLEAR",
-    "alertLevel":"NEVER_MIND",
-    "alertMessages":{
-      "en":[
-        "Partly cloudy to sun"
-      ]
-    }
-  },
-  {
-    "fromType":"CLOUDY",
-    "toType":"RAIN",
-    "alertLevel":"INFO",
-    "alertMessages":{
-      "en":[
-        "Cloudy to rain"
-      ]
-    }
-  },
-  {
-    "fromType":"CLOUDY",
-    "toType":"CLEAR",
-    "alertLevel":"NEVER_MIND",
-    "alertMessages":{
-      "en":[
-        "Cloudy to sun"
-      ]
-    }
-  },
-  {
-    "fromType":"RAIN",
-    "toType":"RAIN",
-    "alertLevel":"NEVER_MIND",
-    "alertMessages":{
-      "en":[
-        "No luck, it'll keep raining for a while",
-        "Looks like it's gonna be raining for the rest of the day",
-        "Hopefully you have your umbrella with you, it won't stop raining for a while"
-      ]
-    }
-  },
-  {
-    "fromType":"RAIN",
-    "toType":"CLOUDY",
-    "alertLevel":"INFO",
-    "alertMessages":{
-      "en":[
-        "Rain to cloudy"
-      ]
-    }
-  },
-  {
-    "fromType":"RAIN",
-    "toType":"CLEAR",
-    "alertLevel":"INFO",
-    "alertMessages":{
-      "en":[
-        "Nice, sun is coming back in %s",
-        "Looks promising! Sun will shine again in %s",
-        "Get ready to drop your umbrella in over %s"
-      ]
-    }
-  },
-  {
-    "fromType":"UNKNOWN",
-    "toType":"CLEAR",
-    "alertLevel":"NEVER_MIND",
-    "alertMessages":{
-      "en":[
-        "Nice, sun is coming back in %s",
-        "Looks promising! Sun will shine again in %s"
-      ]
-    }
-  },
-  {
-    "fromType":"UNKNOWN",
-    "toType":"CLOUDY",
-    "alertLevel":"NEVER_MIND",
-    "alertMessages":{
-      "en":[
-        "Unknown to cloudy"
-      ]
-    }
-  },
-  {
-    "fromType":"UNKNOWN",
-    "toType":"RAIN",
-    "alertLevel":"INFO",
-    "alertMessages":{
-      "en":[
-        "It's gonna start raining in %s",
-        "Luck is over, rain is coming in %s",
-        "Take your umbrella, it looks like it's gonna rain in %s"
-      ]
-    }
-  }
 ]
