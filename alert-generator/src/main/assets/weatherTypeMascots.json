@@ -17,36 +17,11 @@
     ]
   },
   {
-    "type":"CLEAR_NIGHT",
-    "dressedMascots":[
-      "owlie_clear_night_01",
-      "owlie_clear_night_02"
-    ]
-  },
-  {
     "type":"CLOUDY",
     "dressedMascots":[
       "owlie_cloudy_01",
       "owlie_cloudy_02",
       "owlie_cloudy_03"
-    ]
-  },
-  {
-    "type":"CLOUDY_NIGHT",
-    "dressedMascots":[
-      "owlie_cloudy_night_01"
-    ]
-  },
-  {
-    "type":"PARTLY_CLOUDY",
-    "dressedMascots":[
-      "owlie_partlycloudy_01"
-    ]
-  },
-  {
-    "type":"PARTLY_CLOUDY_NIGHT",
-    "dressedMascots":[
-      "owlie_partlycloudy_night_01"
     ]
   },
   {

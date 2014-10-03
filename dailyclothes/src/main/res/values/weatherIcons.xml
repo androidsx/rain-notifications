@@ -2,7 +2,6 @@
 <resources>
     <string-array name="weatherIcons">
         <item>@drawable/ic_clear</item>
-        <item>@drawable/ic_partly_cloudy</item>
         <item>@drawable/ic_cloudy</item>
         <item>@drawable/ic_rain</item>
     </string-array>
