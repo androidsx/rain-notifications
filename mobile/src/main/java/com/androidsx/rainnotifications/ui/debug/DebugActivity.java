@@ -25,6 +25,7 @@ import com.androidsx.rainnotifications.WearNotificationManagerException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherType;
@@ -58,6 +59,7 @@ public class DebugActivity extends Activity {
     private static final int DEFAULT_SPINNER_POSITION = 0;
 
     private AlertGenerator alertGenerator;
+    private DaySummaryGenerator daySummaryGenerator;
 
     private WeatherItemRow nowWeatherItemRow;
 
@@ -70,7 +72,9 @@ public class DebugActivity extends Activity {
 
         setContentView(R.layout.debug_layout);
         alertGenerator = new AlertGenerator(this);
+        daySummaryGenerator = new DaySummaryGenerator(this);
         alertGenerator.init();
+        daySummaryGenerator.init();
 
         final DateTime savedNextAlarmTime = new DateTime(SharedPrefsHelper.getLongValue(this, AlarmHelper.NEXT_ALARM_TIME));
         final DateTime savedDayAlarmTime = new DateTime(SharedPrefsHelper.getLongValue(this, AlarmHelper.DAY_ALARM_TIME));
@@ -243,10 +247,8 @@ public class DebugActivity extends Activity {
         ForecastTable forecastTable = getDebugForecastTable();
         if(forecastTable != null) {
             Timber.d("FORECAST_TABLE: \n" + forecastTable.toString());
-
-            DaySummaryGenerator daySummaryGenerator = new DaySummaryGenerator(this);
-            daySummaryGenerator.init();
-            cardMessageTextView.setText(daySummaryGenerator.getDaySummary(forecastTable).getDayMessage());
+            DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
+            cardMessageTextView.setText(daySummary.getDayMessage());
         }
         else {
             cardMessageTextView.setText("Null ForecastTable, are all WeatherTypes UNKNOWN?");
