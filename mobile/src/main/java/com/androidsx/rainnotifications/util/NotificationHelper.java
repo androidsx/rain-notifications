@@ -13,6 +13,7 @@ import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.google.android.gms.wearable.NodeApi;
 
@@ -34,19 +35,21 @@ public class NotificationHelper {
         new WearNotificationManager(context) {
             @Override
             public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
+                // FIXME: one day we will need to remove this line to not show NEVERMIND alerts
+                final int notificationIconRes = alert.getAlertLevel().equals(AlertLevel.NEVER_MIND) ? R.drawable.owlie_debug : alert.getDressedMascot();
                 if (getConnectedNodesResult.getNodes() != null) {
                     if (getConnectedNodesResult.getNodes().size() > 0) {
                         sendWearNotification(
                                 context,
                                 alert.getAlertMessage().getNotificationMessage(interval),
-                                alert.getDressedMascot()
+                                notificationIconRes
                         );
                     } else {
                         NotificationHelper.displayStandardNotification(
                                 context,
                                 MainMobileActivity.class,
                                 alert.getAlertMessage().getNotificationMessage(interval),
-                                BitmapFactory.decodeResource(context.getResources(), alert.getDressedMascot())
+                                BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
                         );
                     }
                 } else {
@@ -54,7 +57,7 @@ public class NotificationHelper {
                             context,
                             MainMobileActivity.class,
                             alert.getAlertMessage().getNotificationMessage(interval),
-                            BitmapFactory.decodeResource(context.getResources(), alert.getDressedMascot())
+                            BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
                     );
                 }
             }
