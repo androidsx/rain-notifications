@@ -45,6 +45,7 @@ import org.joda.time.Minutes;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import timber.log.Timber;
 
@@ -62,9 +63,16 @@ public class DebugActivity extends Activity {
     private DaySummaryGenerator daySummaryGenerator;
 
     private WeatherItemRow nowWeatherItemRow;
+    private TextView nowTimeText;
+    private Button nowTimeButton;
+    private Spinner nowSpinner;
 
     private ListView transitionsListView;
     private List<WeatherItemRow> weatherTransitionsList;
+
+    private View mockDaysView;
+    private View addNewRowView;
+    private View clearMockDayView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +90,13 @@ public class DebugActivity extends Activity {
         realAlarmTime.setText("Next alarm time at: " + savedNextAlarmTime.getHourOfDay() + ":" + savedNextAlarmTime.getMinuteOfHour() +
                 " - Day alarm at " + savedDayAlarmTime.getHourOfDay() + ":" + savedDayAlarmTime.getMinuteOfHour());
 
-        final TextView nowTimeText = (TextView) findViewById(R.id.now_text_view);
-        final Button nowTimeButton = (Button) findViewById(R.id.now_time_button);
-        final Spinner nowSpinner = (Spinner) findViewById(R.id.weather_now_spinner);
+        mockDaysView = findViewById(R.id.mock_days);
+        addNewRowView = findViewById(R.id.add_new_row);
+        clearMockDayView = findViewById(R.id.clear_mock_day);
+
+        nowTimeText = (TextView) findViewById(R.id.now_text_view);
+        nowTimeButton = (Button) findViewById(R.id.now_time_button);
+        nowSpinner = (Spinner) findViewById(R.id.weather_now_spinner);
         transitionsListView = (ListView) findViewById(R.id.rows_weather_list);
         nowWeatherItemRow = new WeatherItemRow(0, new DateTime().now());
 
@@ -95,11 +107,39 @@ public class DebugActivity extends Activity {
         nowTimeButton.setText(timeToString(nowWeatherItemRow.getTime()));
     }
 
+    public void generateNewMockDay(View view) {
+        addNewRowView.setVisibility(View.GONE);
+        mockDaysView.setVisibility(View.GONE);
+        clearMockDayView.setVisibility(View.VISIBLE);
+
+        switch(view.getId()) {
+            case R.id.clearly_day:
+                generateNewMockDayFor(WeatherType.CLEAR, WeatherType.CLEAR);
+                break;
+            case R.id.cloudy_day:
+                generateNewMockDayFor(WeatherType.CLOUDY, WeatherType.CLOUDY);
+                break;
+            case R.id.rainy_day:
+                generateNewMockDayFor(WeatherType.RAIN, WeatherType.RAIN);
+                break;
+            case R.id.cloudy_rainy_day:
+                generateNewMockDayFor(WeatherType.CLOUDY, WeatherType.RAIN);
+                break;
+            case R.id.clearly_cloudy_day:
+                generateNewMockDayFor(WeatherType.CLEAR, WeatherType.CLOUDY);
+                break;
+            case R.id.clearly_rainy_day:
+                generateNewMockDayFor(WeatherType.CLEAR, WeatherType.RAIN);
+                break;
+        }
+    }
+
     public void closeCard(View view) {
         findViewById(R.id.card_wrapper).setVisibility(View.GONE);
     }
 
     public void addNewRow(View view) {
+        mockDaysView.setVisibility(View.GONE);
         DateTime newTime;
         if(weatherTransitionsList.isEmpty()) {
             newTime = nowWeatherItemRow.getTime().plus(Minutes.minutes(DEFAULT_MINUTES_NEW_ROW));
@@ -107,8 +147,23 @@ public class DebugActivity extends Activity {
             newTime = weatherTransitionsList.get(weatherTransitionsList.size() - 1).getTime().plus(Minutes.minutes(DEFAULT_MINUTES_NEW_ROW));
         }
         weatherTransitionsList.add(new WeatherItemRow(DEFAULT_SPINNER_POSITION, newTime));
-        WeatherListAdapter adapter = (WeatherListAdapter)transitionsListView.getAdapter();
-        adapter.notifyDataSetChanged();
+        ((WeatherListAdapter)transitionsListView.getAdapter()).notifyDataSetChanged();
+
+        closeCard(view);
+    }
+
+    public void resetMockDay(View view) {
+        weatherTransitionsList.clear();
+        ((WeatherListAdapter)transitionsListView.getAdapter()).notifyDataSetChanged();
+
+        nowWeatherItemRow = new WeatherItemRow(0, new DateTime().now());
+        configureTimeButton(nowTimeButton, nowTimeText, nowWeatherItemRow);
+        configureWeatherSpinner(nowSpinner, nowWeatherItemRow);
+        nowTimeButton.setText(timeToString(nowWeatherItemRow.getTime()));
+
+        clearMockDayView.setVisibility(View.GONE);
+        addNewRowView.setVisibility(View.VISIBLE);
+        mockDaysView.setVisibility(View.VISIBLE);
 
         closeCard(view);
     }
@@ -409,6 +464,9 @@ public class DebugActivity extends Activity {
                 @Override
                 public void onClick(View view) {
                     remove(item);
+                    if(weatherTransitionsList.isEmpty()) {
+                        mockDaysView.setVisibility(View.VISIBLE);
+                    }
                 }
             });
 
@@ -421,5 +479,45 @@ public class DebugActivity extends Activity {
         sunPhaseTime = sunPhaseTime.hourOfDay().setCopy(hour);
         sunPhaseTime = sunPhaseTime.minuteOfHour().setCopy(minute);
         return sunPhaseTime;
+    }
+
+    private void generateNewMockDayFor(WeatherType primary, WeatherType secondary) {
+        Timber.d("Mock day: " + primary + " - " + secondary);
+        Random random = new Random();
+        DateTime nowTime = DateTime.now();
+        DateTime startTime = nowTime.hourOfDay().setCopy(8).minuteOfHour().setCopy(0).secondOfMinute().setCopy(0).millisOfSecond().setCopy(0);
+        int spinnerPrimaryPosition = 0;
+        int spinnerSecondaryPosition = 0;
+
+        final List<String> weatherTypeNames = new ArrayList<String>();
+        for (WeatherType weatherType : WeatherType.values()) {
+            weatherTypeNames.add(weatherType.toString());
+        }
+
+        for(int i=0; i<weatherTypeNames.size(); i++) {
+            if(primary.toString().equals(weatherTypeNames.get(i).toString())) {
+                spinnerPrimaryPosition = i;
+            }
+            if(secondary.toString().equals(weatherTypeNames.get(i).toString())) {
+                spinnerSecondaryPosition = i;
+            }
+        }
+
+        nowWeatherItemRow.setTime(startTime);
+        nowWeatherItemRow.setWeatherTypeSpinnerPosition(spinnerPrimaryPosition);
+        configureTimeButton(nowTimeButton, nowTimeText, nowWeatherItemRow);
+        configureWeatherSpinner(nowSpinner, nowWeatherItemRow);
+        nowTimeButton.setText(timeToString(nowWeatherItemRow.getTime()));
+        nowSpinner.setSelection(spinnerPrimaryPosition);
+
+        weatherTransitionsList.clear();
+        for(int i = 1; i < 16; i++) {
+            if(random.nextInt() % 2 == 0) {
+                weatherTransitionsList.add(new WeatherItemRow(spinnerPrimaryPosition, startTime.plusHours(i)));
+            } else {
+                weatherTransitionsList.add(new WeatherItemRow(spinnerSecondaryPosition, startTime.plusHours(i)));
+            }
+        }
+        ((WeatherListAdapter)transitionsListView.getAdapter()).notifyDataSetChanged();
     }
 }
