@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base colors -->
+    <color name="white">#ffffff</color>
+    <color name="light_grey">#eeeeee</color>
+    <color name="light_grey_1">#ebeef0</color>
+    <color name="light_grey_2">#c2c3c8</color>
+    <color name="light_brown">#8e7f3a</color>
+    <color name="grey">#ffa7a7a7</color>
+    <color name="grey_blue">#3c5f6e</color>
+
+    <!-- Main Activity colors -->
+    <color name="primary_foreground">@color/light_brown</color>
+
+    <!-- Today colors -->
+    <color name="today_text">@color/light_brown</color>
+    <color name="today_background">@color/light_grey</color>
+
+    <!-- Forecast Hourly section colors -->
+    <color name="forecast_icon">@color/grey</color>
+    <color name="forecast_text">@color/light_brown</color>
+
+    <!-- Forecast Message colors -->
+    <color name="forecast_message">@color/grey_blue</color>
+    <color name="forecast_message_background">@color/light_grey</color>
+
+    <!-- List row colors -->
+    <color name="list_row_start_color">@color/white</color>
+    <color name="list_row_end_color">@color/white</color>
+    <color name="list_row_hover_start_color">@color/light_grey_1</color>
+    <color name="list_row_hover_end_color">@color/light_grey_1</color>
+
+    <!-- Card colors -->
+    <color name="feed_bg">@color/light_grey</color>
+    <color name="feed_item_bg">@color/white</color>
+    <color name="feed_item_border">@color/light_grey_2</color>
+</resources>

@@ -1,0 +1,93 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:customAttrs="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView
+        android:id="@+id/clothes_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_weather"
+        android:scrollbarThumbVertical="@drawable/scrollbar"
+        android:divider="@null"/>
+
+    <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+        android:id="@+id/forecast_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_weather"
+        android:background="@color/forecast_message_background"
+        android:paddingLeft="@dimen/forecast_message_padding_left_right"
+        android:paddingRight="@dimen/forecast_message_padding_left_right"
+        android:paddingBottom="@dimen/forecast_message_padding_top_bottom"
+        android:paddingTop="@dimen/forecast_message_padding_top_bottom"
+        android:layout_marginRight="@dimen/forecast_message_margin_right"
+        android:textSize="@dimen/forecast_message_text_size"
+        android:textColor="@color/forecast_message"
+        customAttrs:customFont="roboto_light"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/today_background"
+        android:id="@+id/layout_weather">
+
+        <RelativeLayout
+            android:id="@+id/today"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/today_margin_left"
+            android:clickable="true"
+            android:onClick="showNotification">
+
+            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                android:id="@+id/now_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/today_temp_margin_top"
+                android:text="56º"
+                android:textSize="@dimen/today_temp_text_size"
+                android:textColor="@color/today_text"
+                customAttrs:customFont="roboto_thin"/>
+
+            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                android:id="@+id/now_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/now_temp"
+                android:layout_marginTop="@dimen/today_now_margin_top"
+                android:layout_marginLeft="@dimen/today_now_margin_left"
+                android:text="now"
+                android:textSize="@dimen/today_now_text_size"
+                android:textColor="@color/today_text"
+                customAttrs:customFont="roboto_thin"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_toRightOf="@+id/today"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/forecast_hourly_section_margin_top"
+            android:layout_marginLeft="@dimen/forecast_hourly_section_margin_left">
+
+            <HorizontalScrollView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scrollbarThumbHorizontal="@drawable/scrollbar">
+
+                <LinearLayout
+                    android:id="@+id/hourly_forecast"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/forecast_hourly_section_margin_bottom">
+
+                </LinearLayout>
+            </HorizontalScrollView>
+        </RelativeLayout>
+    </RelativeLayout>
+</RelativeLayout>

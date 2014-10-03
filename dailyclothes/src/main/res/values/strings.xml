@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Weather UP</string>
+    <string name="action_settings">Settings</string>
+    <string name="forecast_first_message" formatted="false"><![CDATA[A <b>cool</b> fall morning heating up later in the day, reaching a <b>high of %s.</b>]]></string>
+    <string name="forecast_second_message" formatted="false"><![CDATA[It is going to rain in <b>45 minutes</b>, take your umbrella with you!]]></string>
+    <string name="alert_message" formatted="false"><![CDATA[it\'s going to rain in <b>30 MINUTES</b>.]]></string>
+
+</resources>
