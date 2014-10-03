@@ -17,8 +17,8 @@ public class WeatherTypeBuilder {
         put("clear-night", CLEAR);
         put("rain", RAIN);
         put("cloudy", CLOUDY);
-        put("partly-cloudy-day", PARTLY_CLOUDY);
-        put("partly-cloudy-night", PARTLY_CLOUDY);
+        put("partly-cloudy-day", CLOUDY);
+        put("partly-cloudy-night", CLOUDY);
         //put("snow", SNOW); // Exists in Forecast.io. Not supported by us yet
         //put("sleet", SLEET); // Exists in Forecast.io. Not supported by us yet
         //put("wind", WIND); // Exists in Forecast.io. Not supported by us yet

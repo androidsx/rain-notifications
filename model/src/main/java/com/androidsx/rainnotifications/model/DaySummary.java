@@ -77,9 +77,6 @@ public class DaySummary {
             else if(durations.containsKey(WeatherType.CLOUDY)) {
                 summarizedForecasts.put(WeatherPriority.secondary, WeatherType.CLOUDY);
             }
-            else if(durations.containsKey(WeatherType.PARTLY_CLOUDY)) {
-                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.PARTLY_CLOUDY);
-            }
             else if(durations.containsKey(WeatherType.CLEAR)) {
                 summarizedForecasts.put(WeatherPriority.secondary, WeatherType.CLEAR);
             }

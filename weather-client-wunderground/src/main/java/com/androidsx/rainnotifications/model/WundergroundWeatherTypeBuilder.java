@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.androidsx.rainnotifications.model.WeatherType.CLOUDY;
-import static com.androidsx.rainnotifications.model.WeatherType.PARTLY_CLOUDY;
 import static com.androidsx.rainnotifications.model.WeatherType.RAIN;
 import static com.androidsx.rainnotifications.model.WeatherType.CLEAR;
 import static com.androidsx.rainnotifications.model.WeatherType.UNKNOWN;
@@ -23,8 +22,8 @@ public class WundergroundWeatherTypeBuilder {
         put("rain", RAIN);
         put("cloudy", CLOUDY);
         put("mostlycloudy", CLOUDY);
-        put("partlycloudy", PARTLY_CLOUDY);
-        put("partlysunny", PARTLY_CLOUDY);
+        put("partlycloudy", CLOUDY);
+        put("partlysunny", CLEAR);
         //put("snow", SNOW); // Exists in Wunderground. Not supported by us yet
         //put("sleet", SLEET); // Exists in Wunderground. Not supported by us yet
         //put("fog", FOG); // Exists in Wunderground. Not supported by us yet

@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
+import timber.log.Timber;
+
 /**
  * Generates weather alerts that are relevant to the user.
  * <p/>
@@ -112,6 +114,8 @@ public class AlertGenerator {
     private int generateMascot(WeatherType weather) {
         final List<Integer> mascotsForThisWeather = new ArrayList<Integer>();
         for (WeatherTypeMascots wtm : mascots) {
+            Timber.d(""+ weather);
+            Timber.v("" + wtm);
             if (wtm.getType().equals(weather)) {
                 for (String s : wtm.getDressedMascots()) {
                     mascotsForThisWeather.add(context.getResources().getIdentifier(s, "drawable", context.getPackageName()));
