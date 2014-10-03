@@ -84,6 +84,145 @@ tools:context=".forecast_mobile" >
             android:spinnerMode="dropdown" />
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/mock_days"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/clearly_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:clickable="true"
+            android:onClick=""
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="70dp"
+                android:src="@drawable/owlie_sunny_01"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear Day"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/cloudy_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_toRightOf="@+id/clearly_day"
+            android:clickable="true"
+            android:onClick=""
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="70dp"
+                android:src="@drawable/owlie_cloudy_01"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cloudy Day"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/rainy_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_toRightOf="@+id/cloudy_day"
+            android:clickable="true"
+            android:onClick=""
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="70dp"
+                android:src="@drawable/owlie_rainy_03"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rain Day"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/cloudy_rainy_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_below="@+id/rainy_day"
+            android:clickable="true"
+            android:onClick=""
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="70dp"
+                android:src="@drawable/owlie_rainy_01"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Cloudy/Rain\n Day"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/clear_cloudy_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_below="@+id/cloudy_day"
+            android:layout_toRightOf="@+id/cloudy_rainy_day"
+            android:clickable="true"
+            android:onClick=""
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="70dp"
+                android:src="@drawable/owlie_cloudy_02"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Clear/Cloudy\n Day"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/clear_rainy_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_below="@+id/cloudy_day"
+            android:layout_toRightOf="@+id/cloudy_day"
+            android:clickable="true"
+            android:onClick=""
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="90dp"
+                android:layout_height="70dp"
+                android:src="@drawable/owlie_rainy_02"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Clear/Rainy\n Day"/>
+        </LinearLayout>
+    </RelativeLayout>
+
     <!-- List of weather transitions. It has its own scroll. -->
     <ListView
         android:id="@+id/rows_weather_list"
