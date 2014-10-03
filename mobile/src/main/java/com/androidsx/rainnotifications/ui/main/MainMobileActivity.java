@@ -16,9 +16,11 @@ import android.widget.TextView;
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
+import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
@@ -39,6 +41,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
 
     private AlertGenerator alertGenerator;
+    private DaySummaryGenerator daySummaryGenerator;
 
     private TextView locationTextView;
     private TextView cardMessageTextView;
@@ -57,7 +60,9 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         alertGenerator = new AlertGenerator(this);
+        daySummaryGenerator = new DaySummaryGenerator(this);
         alertGenerator.init();
+        daySummaryGenerator.init();
 
         setupUI();
 
@@ -68,17 +73,15 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                 WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
-                        final Forecast forecast = forecastTable.hasTransitions() ? forecastTable.getForecastList().get(1) : null;
-                        final Alert alert = alertGenerator.generateAlert(forecastTable.getForecastList().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
+                        final DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
                         final String locationAddress = UserLocationFetcher.getLocationAddress(
                                 MainMobileActivity.this,
                                 location.getLatitude(),
                                 location.getLongitude());
-                        final Interval interval = forecast == null ? null : new Interval(forecastTable.getStart(), forecast.getInterval().getStart());
 
                         updateUI(locationAddress,
-                                alert.getDressedMascot(),
-                                alert.getAlertMessage().getNotificationMessage(interval));
+                                R.drawable.owlie_default,
+                                daySummary.getDayMessage());
                     }
 
                     @Override
