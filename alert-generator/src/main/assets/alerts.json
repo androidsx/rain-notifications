@@ -34,6 +34,24 @@
         }
     },
     {
+        "fromType": "CLEAR",
+        "toType": "SNOW",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "It's gonna start snowing in %s",
+                "Luck is over, snow is coming in %s",
+                "Take your snow shoes with you, it looks like it's gonna snow in %s"
+            ]
+        }
+    },
+
+
+
+
+
+
+    {
         "fromType": "CLOUDY",
         "toType": "CLOUDY",
         "alertLevel": "NEVER_MIND",
@@ -67,6 +85,22 @@
             ]
         }
     },
+    {
+        "fromType": "CLOUDY",
+        "toType": "SNOW",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "Clouds will be disappearing soon, and snow is coming!",
+                "Snow is coming soon, be alert!",
+                "Lovely snowflakes will be coming soon"
+            ]
+        }
+    },
+
+
+
+
     {
         "fromType": "RAIN",
         "toType": "RAIN",
@@ -104,6 +138,77 @@
         }
     },
     {
+        "fromType": "RAIN",
+        "toType": "SNOW",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "The rain is going to be snowflakes soon!",
+                "Snow is coming!"
+            ]
+        }
+    },
+
+
+
+
+
+
+
+    {
+        "fromType": "SNOW",
+        "toType": "SNOW",
+        "alertLevel": "NEVER_MIND",
+        "alertMessages": {
+            "en": [
+                "No luck, it'll keep snowing for a while",
+                "Looks like it's gonna be snowing for %s",
+                "Hopefully you have your snow shoes with you, it won't stop snowing for a while"
+            ]
+        }
+    },
+    {
+        "fromType": "SNOW",
+        "toType": "CLOUDY",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "In around %s, it is going to stop snowing!",
+                "The snow will stop soon, and the sky will be cloudy",
+                "Snow will stop soon! An estimate of %s"
+            ]
+        }
+    },
+    {
+        "fromType": "SNOW",
+        "toType": "CLEAR",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "Nice, sun is coming back in %s",
+                "Looks promising! Sun will shine again in %s",
+                "Get ready to enjoy a clear sky in over %s"
+            ]
+        }
+    },
+    {
+        "fromType": "SNOW",
+        "toType": "RAIN",
+        "alertLevel": "NEVERMIND",
+        "alertMessages": {
+            "en": [
+                "Rain is coming, but I am not sure what I prefer!",
+                "The snowflakes will go away in %s, and rain will appear"
+            ]
+        }
+    },
+
+
+
+
+
+
+    {
         "fromType": "UNKNOWN",
         "toType": "CLEAR",
         "alertLevel": "NEVER_MIND",
@@ -135,5 +240,18 @@
                 "Take your umbrella, it looks like it's gonna rain in %s"
             ]
         }
+    },
+    {
+        "fromType": "UNKNOWN",
+        "toType": "SNOW",
+        "alertLevel": "INFO",
+        "alertMessages": {
+            "en": [
+                "It seems is gonna start snowing in %s",
+                "Luck is over, snow is coming in %s",
+                "Take your snow shoes, it looks like it's gonna snow in %s"
+            ]
+        }
     }
+
 ]

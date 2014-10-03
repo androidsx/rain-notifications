@@ -71,6 +71,9 @@ public class DaySummary {
             durations.remove(mostDurable);
 
             // and the highest priority as secondary
+            if(durations.containsKey(WeatherType.SNOW)) {
+                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.SNOW);
+            }
             if(durations.containsKey(WeatherType.RAIN)) {
                 summarizedForecasts.put(WeatherPriority.secondary, WeatherType.RAIN);
             }
