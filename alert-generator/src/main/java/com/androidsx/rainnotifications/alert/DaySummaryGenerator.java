@@ -26,13 +26,11 @@ public class DaySummaryGenerator {
         return daySummaryPostProcessor.getClosestDaySummary(DaySummary.fromForecastTable(forecastTable));
     }
 
-    //TODO: This is only used for testing.
-    public DaySummaryPostProcessor getPostProcessor() {
+    protected DaySummaryPostProcessor getPostProcessor() {
         return daySummaryPostProcessor;
     }
 
-    //TODO: This is public only for testing.
-    public class DaySummaryPostProcessor {
+    protected class DaySummaryPostProcessor {
         private List<String> meaningfulWeatherTypeNames;
         private HashMap<String, DaySummary> sumariesMap;
 
@@ -64,11 +62,11 @@ public class DaySummaryGenerator {
 
         public DaySummary getClosestDaySummary(DaySummary daySummary) {
             Timber.d("getClosestDaySummary for: " + daySummary);
-            DaySummary onMapSummary = getDaySummaryFromMap(daySummary);
+            DaySummary onMapSummary = getDaySummary(daySummary);
 
             while (onMapSummary == null) {
                 if(daySummary.downgrade()) {
-                    onMapSummary = getDaySummaryFromMap(daySummary);
+                    onMapSummary = getDaySummary(daySummary);
                 }
                 else {
                     Timber.d("Can't find suitable summary");
@@ -79,8 +77,7 @@ public class DaySummaryGenerator {
             return onMapSummary;
         }
 
-        //TODO: This is public only for testing.
-        public DaySummary getDaySummaryFromMap(DaySummary daySummary) {
+        public DaySummary getDaySummary(DaySummary daySummary) {
             return sumariesMap.get(getDaySummaryWeatherKey(daySummary));
         }
 
@@ -108,18 +105,6 @@ public class DaySummaryGenerator {
             return keys;
         }
 
-        private int getWhateverLevel(DaySummary daySummary) {
-            int level = 0;
-
-            for (DayPeriod period : DayPeriod.values()) {
-                for (WeatherPriority priority : WeatherPriority.values()) {
-                   if (daySummary.getWeatherType(period, priority).equals(WeatherType.WHATEVER)) level++;
-                }
-            }
-
-            return level;
-        }
-
         private SparseArray<ArrayList<DaySummary>> getDispersedSummaries(List<DaySummary> daySummaries) {
             SparseArray<ArrayList<DaySummary>> dispersed = new SparseArray<ArrayList<DaySummary>>();
 
@@ -128,7 +113,7 @@ public class DaySummaryGenerator {
             }
 
             for (DaySummary daySummary : daySummaries) {
-                dispersed.get(getWhateverLevel(daySummary)).add(daySummary);
+                dispersed.get(daySummary.getWeatherLevel(WeatherType.WHATEVER)).add(daySummary);
             }
 
             return dispersed;

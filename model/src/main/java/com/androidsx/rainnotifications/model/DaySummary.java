@@ -114,6 +114,18 @@ public class DaySummary {
         return languageMessages != null ? languageMessages.get(random.nextInt(languageMessages.size())) : DEFAULT_MESSAGE;
     }
 
+    public int getWeatherLevel(WeatherType weatherType) {
+        int level = 0;
+
+        for (DayPeriod period : DayPeriod.values()) {
+            for (WeatherPriority priority : WeatherPriority.values()) {
+                if (getWeatherType(period, priority).equals(weatherType)) level++;
+            }
+        }
+
+        return level;
+    }
+
     public boolean downgrade() {
         // TODO: Discuss with team this method. I don't like it because it's not generic.
         if (!getWeatherType(DayPeriod.night, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
