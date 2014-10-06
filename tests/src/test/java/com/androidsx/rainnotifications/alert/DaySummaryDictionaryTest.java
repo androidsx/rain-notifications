@@ -6,6 +6,9 @@ import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,9 +18,11 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -26,9 +31,7 @@ import java.util.List;
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
 public class DaySummaryDictionaryTest {
-
-    // TODO: Re-Implement and improve this test when DaySummary V2 is ready.
-
+    // TODO: Re-Implement and improve this tests when DaySummary V2 is ready.
     @Before
     public void setUp() {
         ShadowLog.stream = System.out;
@@ -58,6 +61,91 @@ public class DaySummaryDictionaryTest {
         weatherPriorities.remove(WeatherPriority.primary);
         weatherPriorities.remove(WeatherPriority.secondary);
         Assert.assertTrue(weatherPriorities.isEmpty());
+    }
+
+    @Test
+    public void testSyntactic() throws Exception{
+        InputStream is = new FileInputStream("../alert-generator/src/main/assets/dayMessages.json");
+        byte[] buffer = new byte[is.available()];
+        is.read(buffer);
+        is.close();
+        JSONArray daySummaries =  new JSONArray(new String(buffer, "UTF-8"));
+
+        for (int i = 0 ; i < daySummaries.length() ; i++) {
+            JSONObject daySummary = daySummaries.getJSONObject(i);
+            String errorTrace = "on DaySummary number " + i + "\n" + daySummary.toString();
+            checkDaySummary(daySummary, errorTrace);
+        }
+    }
+
+    private void checkDaySummary(JSONObject daySummary, String errorTrace) throws JSONException {
+        Iterator<String> keyIterator = daySummary.keys();
+
+        while (keyIterator.hasNext()) {
+            String key = keyIterator.next();
+
+            if(key.equals("morning") || key.equals("afternoon") || key.equals("evening") || key.equals("night")) {
+                checkDayPeriod(daySummary.getJSONObject(key), errorTrace);
+            }
+            else if(key.equals("messages")) {
+                checkMessages(daySummary.getJSONObject(key), errorTrace);
+            }
+            else {
+                Assert.fail("Key " + key + " is not a DayPeriod or Messages " + errorTrace);
+            }
+        }
+    }
+
+    private void checkDayPeriod(JSONObject dayPeriod, String errorTrace) throws JSONException {
+        Assert.assertTrue("Not primary key " + errorTrace, dayPeriod.has("primary"));
+        Iterator<String> keyIterator = dayPeriod.keys();
+
+        while (keyIterator.hasNext()) {
+            String key = keyIterator.next();
+
+            if(key.equals("primary") || key.equals("secondary")) {
+                checkWeather(dayPeriod.getJSONObject(key), errorTrace);
+            }
+            else {
+                Assert.fail("Key is not a WeatherPriority " + errorTrace);
+            }
+        }
+    }
+
+    private void checkWeather(JSONObject weather, String errorTrace) throws JSONException {
+        Assert.assertTrue("Not weatherType key " + errorTrace, weather.has("weatherType"));
+        Iterator<String> keyIterator = weather.keys();
+
+        while (keyIterator.hasNext()) {
+            String key = keyIterator.next();
+
+            if(key.equals("weatherType")) {
+                String value = weather.getString(key);
+                if (!(value.equals("CLEAR") || value.equals("RAIN") || value.equals("CLOUDY") || value.equals("PARTLY_CLOUDY") || value.equals("*"))) {
+                    Assert.fail("Unknown weatherType " + errorTrace);
+                }
+            }
+            else {
+                Assert.fail("Key is not weatherType " + errorTrace);
+            }
+        }
+    }
+
+    private void checkMessages(JSONObject messages, String errorTrace) throws JSONException {
+        Assert.assertTrue("Not en key " + errorTrace, messages.has("en"));
+        Iterator<String> keyIterator = messages.keys();
+
+        while (keyIterator.hasNext()) {
+            String key = keyIterator.next();
+
+            if(key.equals("en")) {
+                Assert.assertTrue("Empty messages array " + errorTrace, messages.getJSONArray(key).length() != 0);
+
+            }
+            else {
+                Assert.fail("New language " + errorTrace);
+            }
+        }
     }
 
     @Test
@@ -100,7 +188,7 @@ public class DaySummaryDictionaryTest {
                                         }
                                         else {
                                             noMatchesCount++;
-                                            System.out.println(daySummarySingleLine);
+                                            System.out.println("NO MATCH FOR: " + daySummarySingleLine);
                                         }
                                     }
                                 }
@@ -111,9 +199,9 @@ public class DaySummaryDictionaryTest {
             }
         }
 
-        System.out.println("Matches: " + matchesCount);
-        System.out.println("Downgraded matches: " + downgradedMatchesCount);
-        System.out.println("No Match: " + noMatchesCount);
+        System.out.println("Total matches: " + matchesCount);
+        System.out.println("Total downgraded matches: " + downgradedMatchesCount);
+        System.out.println("Total no match: " + noMatchesCount);
     }
 
     private String getSingleLineDaySummary(DaySummary daySummary) {
