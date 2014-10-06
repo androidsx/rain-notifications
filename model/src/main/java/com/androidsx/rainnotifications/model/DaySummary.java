@@ -11,6 +11,8 @@ import timber.log.Timber;
 
 public class DaySummary {
 
+    public static final String DEFAULT_MESSAGE = "Default"; // TODO: Review this message
+
     public static DaySummary fromForecastTable(ForecastTable forecastTable) {
         DaySummaryBuilder builder = new DaySummaryBuilder();
 
@@ -109,7 +111,19 @@ public class DaySummary {
 
     public String getDayMessage() {
         List<String> languageMessages = messages.get("en");
-        return languageMessages != null ? languageMessages.get(random.nextInt(languageMessages.size())) : "Default"; // TODO: Review this message
+        return languageMessages != null ? languageMessages.get(random.nextInt(languageMessages.size())) : DEFAULT_MESSAGE;
+    }
+
+    public int getWeatherLevel(WeatherType weatherType) {
+        int level = 0;
+
+        for (DayPeriod period : DayPeriod.values()) {
+            for (WeatherPriority priority : WeatherPriority.values()) {
+                if (getWeatherType(period, priority).equals(weatherType)) level++;
+            }
+        }
+
+        return level;
     }
 
     public boolean downgrade() {

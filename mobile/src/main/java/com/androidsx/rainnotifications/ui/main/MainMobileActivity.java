@@ -17,11 +17,11 @@ import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
+import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
-import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.DaySummary;
-import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
@@ -29,8 +29,6 @@ import com.androidsx.rainnotifications.util.AnimationHelper;
 import com.androidsx.rainnotifications.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.crashlytics.android.Crashlytics;
-
-import org.joda.time.Interval;
 
 import timber.log.Timber;
 
@@ -60,9 +58,8 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         alertGenerator = new AlertGenerator(this);
-        daySummaryGenerator = new DaySummaryGenerator(this);
+        daySummaryGenerator = new DaySummaryGenerator(DaySummaryDeserializer.deserializeDaySummaryDictionary(Setup.getDaySummaryDictionaryReader(this)));
         alertGenerator.init();
-        daySummaryGenerator.init();
 
         setupUI();
 

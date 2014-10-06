@@ -24,8 +24,9 @@ import com.androidsx.rainnotifications.WearNotificationManager;
 import com.androidsx.rainnotifications.WearNotificationManagerException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
+import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.DaySummary;
+import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherType;
@@ -60,7 +61,6 @@ public class DebugActivity extends Activity {
     private static final int DEFAULT_SPINNER_POSITION = 0;
 
     private AlertGenerator alertGenerator;
-    private DaySummaryGenerator daySummaryGenerator;
 
     private WeatherItemRow nowWeatherItemRow;
     private TextView nowTimeText;
@@ -80,9 +80,7 @@ public class DebugActivity extends Activity {
 
         setContentView(R.layout.debug_layout);
         alertGenerator = new AlertGenerator(this);
-        daySummaryGenerator = new DaySummaryGenerator(this);
         alertGenerator.init();
-        daySummaryGenerator.init();
 
         final DateTime savedNextAlarmTime = new DateTime(SharedPrefsHelper.getLongValue(this, AlarmHelper.NEXT_ALARM_TIME));
         final DateTime savedDayAlarmTime = new DateTime(SharedPrefsHelper.getLongValue(this, AlarmHelper.DAY_ALARM_TIME));
@@ -302,8 +300,8 @@ public class DebugActivity extends Activity {
         ForecastTable forecastTable = getDebugForecastTable();
         if(forecastTable != null) {
             Timber.d("FORECAST_TABLE: \n" + forecastTable.toString());
-            DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
-            cardMessageTextView.setText(daySummary.getDayMessage());
+            cardMessageTextView.setText(new DaySummaryGenerator(DaySummaryDeserializer.deserializeDaySummaryDictionary(Setup.getDaySummaryDictionaryReader(this)))
+                    .getDaySummary(forecastTable).getDayMessage());
         }
         else {
             cardMessageTextView.setText("Null ForecastTable, are all WeatherTypes UNKNOWN?");
@@ -318,16 +316,7 @@ public class DebugActivity extends Activity {
         List<WeatherItemRow> weatherItemRows = new ArrayList<WeatherItemRow>();
 
         weatherItemRows.add(nowWeatherItemRow);
-        // Only consecutive forecasts may be accepted for prevent wrong Intervals.
-        if(!weatherTransitionsList.isEmpty()) {
-            WeatherItemRow itemRowBefore = weatherTransitionsList.get(0);
-            for (WeatherItemRow w : weatherTransitionsList) {
-                if(itemRowBefore.getTime().isBefore(w.getTime())) {
-                    weatherItemRows.add(w);
-                    itemRowBefore = w;
-                }
-            }
-        }
+        weatherItemRows.addAll(weatherTransitionsList);
 
         for (int i = 0 ; i< weatherItemRows.size() - 1 ; i++) {
             forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(i), weatherItemRows.get(i + 1)),
