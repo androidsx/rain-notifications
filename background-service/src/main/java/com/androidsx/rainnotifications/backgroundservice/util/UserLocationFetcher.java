@@ -19,36 +19,43 @@ import java.util.Locale;
  */
 public class UserLocationFetcher {
 
-    private final LocationClient mLocationClient;
-
-    public UserLocationFetcher(final Context context, final UserLocationResultListener userLocationResultListener) {
-        mLocationClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
-            @Override
-            public void onConnected(Bundle bundle) {
-                if (mLocationClient.isConnected()) {
-                    Location loc = mLocationClient.getLastLocation();
-                    if (loc != null) {
-                        userLocationResultListener.onLocationSuccess(loc);
-                    } else {
-                        userLocationResultListener.onLocationFailure(new UserLocationException());
-                    }
-                }
-            }
-
-            @Override
-            public void onDisconnected() {
-
-            }
-        }, new GooglePlayServicesClient.OnConnectionFailedListener() {
-            @Override
-            public void onConnectionFailed(ConnectionResult connectionResult) {
-
-            }
-        });
+    public static void getUserLocation(final Context context, final UserLocationResultListener userLocationResultListener) {
+        new UserLocation(context, userLocationResultListener).connect();
     }
 
-    public void connect() {
-        mLocationClient.connect();
+    public static class UserLocation {
+
+        private final LocationClient mLocationClient;
+
+        public UserLocation(final Context context, final UserLocationResultListener userLocationResultListener) {
+            mLocationClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
+                @Override
+                public void onConnected(Bundle bundle) {
+                    if (mLocationClient.isConnected()) {
+                        Location loc = mLocationClient.getLastLocation();
+                        if (loc != null) {
+                            userLocationResultListener.onLocationSuccess(loc);
+                        } else {
+                            userLocationResultListener.onLocationFailure(new UserLocationException());
+                        }
+                    }
+                }
+
+                @Override
+                public void onDisconnected() {
+
+                }
+            }, new GooglePlayServicesClient.OnConnectionFailedListener() {
+                @Override
+                public void onConnectionFailed(ConnectionResult connectionResult) {
+
+                }
+            });
+        }
+
+        public void connect() {
+            mLocationClient.connect();
+        }
     }
 
     /**

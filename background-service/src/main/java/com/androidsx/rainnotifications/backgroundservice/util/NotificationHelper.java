@@ -4,17 +4,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 
-import com.androidsx.rainnotifications.R;
-import com.androidsx.rainnotifications.WearNotificationManager;
-import com.androidsx.rainnotifications.WearNotificationManagerException;
+import com.androidsx.rainnotifications.backgroundservice.R;
 import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.AlertLevel;
-import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
-import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.Interval;
 
@@ -30,42 +24,8 @@ public class NotificationHelper {
     /**
      * If wear is connected, only to wear. Otherwise, standard one.
      */
-    public static void displayCustomNotification(final Context context, final Alert alert, final Interval interval) {
-        new WearNotificationManager(context) {
-            @Override
-            public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                // FIXME: one day we will need to remove this line to not show NEVERMIND alerts
-                final int notificationIconRes = alert.getAlertLevel().equals(AlertLevel.NEVER_MIND) ? R.drawable.owlie_debug : alert.getDressedMascot();
-                if (getConnectedNodesResult.getNodes() != null) {
-                    if (getConnectedNodesResult.getNodes().size() > 0) {
-                        sendWearNotification(
-                                context,
-                                alert.getAlertMessage().getNotificationMessage(interval),
-                                notificationIconRes
-                        );
-                    } else {
-                        NotificationHelper.displayStandardNotification(
-                                context,
-                                MainMobileActivity.class,
-                                alert.getAlertMessage().getNotificationMessage(interval),
-                                BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
-                        );
-                    }
-                } else {
-                    NotificationHelper.displayStandardNotification(
-                            context,
-                            MainMobileActivity.class,
-                            alert.getAlertMessage().getNotificationMessage(interval),
-                            BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
-                    );
-                }
-            }
-
-            @Override
-            public void onWearManagerFailure(WearNotificationManagerException exception) {
-                // FIXME: show the notification in the mobile?
-            }
-        }.connect();
+    public static void displayWearNotification(final Context context, final Alert alert, final Interval interval) {
+        WearNotificationManager.sendWearNotification(context, alert, interval);
     }
 
     /**

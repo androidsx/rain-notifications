@@ -20,6 +20,11 @@ android {
 }
 
 dependencies {
+    compile 'com.google.android.gms:play-services-wearable:+'
+    compile 'com.android.support:support-v4:20.0.+'
     compile project(':model');
     compile project(':common-library')
+    compile project(':alert-generator')
+    compile project(':weather-client-api')
+    compile project(':weather-client-factory')
 }

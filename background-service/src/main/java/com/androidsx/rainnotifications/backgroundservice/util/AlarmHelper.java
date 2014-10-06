@@ -5,10 +5,10 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
-import com.androidsx.rainnotifications.Constants;
+import com.androidsx.rainnotifications.backgroundservice.Constants;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.util.UiUtil;
-import com.androidsx.rainnotifications.service.WeatherService;
+import com.androidsx.rainnotifications.backgroundservice.WeatherService;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
