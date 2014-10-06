@@ -10,13 +10,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    lintOptions {
-        abortOnError false
-    }
 }
 
 dependencies {
-    compile project(':weather-client-api')
-    compile project(':Forecast')
-    compile project(':model')
+    compile project(':common-library')
+    compile(project(':model')){
+        transitive = false;
+    }
+    compile(project(':weather-client-api')){
+        transitive = false;
+    }
+    compile(project(':Forecast')){
+        transitive = false;
+    }
 }

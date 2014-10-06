@@ -42,15 +42,21 @@ dependencies {
     wearApp project(':wear')
     compile 'com.google.android.gms:play-services-wearable:+'
     compile 'com.android.support:support-v4:20.0.+'
-    compile project(':background-service')
-    compile project(':alert-generator')
-    compile project(':common-library')
-    compile project(':model')
+    compile 'com.crashlytics.android:crashlytics:1.+'
 
     // Animations framework: https://github.com/daimajia/AndroidViewAnimations
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.easing:library:1.0.0@aar'
     compile 'com.daimajia.androidanimations:library:1.1.2@aar'
 
-    compile 'com.crashlytics.android:crashlytics:1.+'
+    compile project(':common-library')
+    compile(project(':model')){
+        transitive = false;
+    }
+    compile(project(':background-service')) {
+        transitive = false
+    }
+    compile(project(':alert-generator')) {
+        transitive = false
+    }
 }

@@ -13,6 +13,11 @@ android {
 }
 
 dependencies {
-    compile project(':weather-client-api')
-    compile project(':model')
+    compile project(':common-library')
+    compile(project(':model')){
+        transitive = false;
+    }
+    compile(project(':weather-client-api')){
+        transitive = false;
+    }
 }
