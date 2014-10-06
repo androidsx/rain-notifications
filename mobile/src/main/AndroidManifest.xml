@@ -24,6 +24,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="backgroundservices.intent.action.Launch" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity android:name=".ui.welcome.WelcomeActivity"
                   android:screenOrientation="portrait"
@@ -32,13 +36,6 @@
                   android:theme="@android:style/Theme.Holo.Light.NoActionBar"
                   android:screenOrientation="portrait"/>
 
-        <service android:name=".service.WeatherService" />
-
-        <receiver android:name=".service.OnBootReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
         <meta-data android:name="com.crashlytics.ApiKey" android:value="fbc96569a645a75be279b1b89b6c97b91043a12a"/>
     </application>
 

@@ -43,6 +43,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-wearable:+'
     compile 'com.jakewharton.timber:timber:2.4.+'
     compile 'com.android.support:support-v4:20.0.+'
+    compile project(':background-service')
     compile project(':weather-client-factory')
     compile project(':alert-generator')
     compile project(':common-library')

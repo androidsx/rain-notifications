@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications.backgroundservice;
 
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -38,7 +39,6 @@ public class WeatherService extends Service {
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private AlertGenerator alertGenerator;
     private DaySummaryGenerator daySummaryGenerator;
-    private PackageManager pm;
 
     @Override
     public void onCreate() {
@@ -48,8 +48,6 @@ public class WeatherService extends Service {
         daySummaryGenerator = new DaySummaryGenerator(this);
         daySummaryGenerator.init();
         alertGenerator.init();
-
-        pm = getPackageManager();
     }
 
     @Override
@@ -62,14 +60,14 @@ public class WeatherService extends Service {
         UserLocationFetcher.getUserLocation(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(Location location) {
-                WeatherClientFactory.requestForecastForLocation(WeatherService.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
+                WeatherClientFactory.requestForecastForLocation(getApplicationContext(), location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess (ForecastTable forecastTable){
                         if (intent != null && intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {
                             DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
                             NotificationHelper.displayStandardNotification(
-                                    WeatherService.this,
-                                    intent.resolveActivity(pm).getClass(),
+                                    getApplicationContext(),
+                                    new Intent("backgroundservices.intent.action.Launch"),
                                     daySummary.getDayMessage(),
                                     BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
                         } else {
@@ -80,7 +78,7 @@ public class WeatherService extends Service {
                                 final Alert alert = alertGenerator.generateAlert(forecastTable.getForecastList().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
                                 if (shouldLaunchNotification(forecast.getInterval().getStartMillis() - System.currentTimeMillis())) {
                                     Timber.i("Will display notification for " + alert);
-                                    NotificationHelper.displayWearNotification(WeatherService.this, alert, new Interval(forecastTable.getStart(), forecast.getInterval().getStart()));
+                                    NotificationHelper.displayWearNotification(getApplicationContext(), alert, new Interval(forecastTable.getStart(), forecast.getInterval().getStart()));
                                 } else {
                                     Timber.d("No notification for now. The alert was " + alert);
                                 }
@@ -93,7 +91,12 @@ public class WeatherService extends Service {
                     @Override
                     public void onForecastFailure (WeatherClientException exception){
                         Timber.e(exception, "Failed to get the forecast");
-                        NotificationHelper.displayStandardNotification(WeatherService.this, intent.resolveActivity(pm).getClass(), "Failed to get the forecast: " + exception.toString(), BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
+                        NotificationHelper.displayStandardNotification(
+                                WeatherService.this,
+                                new Intent("backgroundservices.intent.action.Launch"),
+                                "Failed to get the forecast: " + exception.toString(),
+                                BitmapFactory.decodeResource(getResources(),
+                                R.drawable.owlie_default));
                     }
                 });
             }
@@ -101,7 +104,11 @@ public class WeatherService extends Service {
             @Override
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 Timber.e(exception, "Failed to get the location");
-                NotificationHelper.displayStandardNotification(WeatherService.this, intent.resolveActivity(pm).getClass(), "Failed to get the location" + exception.toString(), BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
+                NotificationHelper.displayStandardNotification(WeatherService.this,
+                        new Intent("backgroundservices.intent.action.Launch"),
+                        "Failed to get the location" + exception.toString(),
+                        BitmapFactory.decodeResource(getResources(),
+                        R.drawable.owlie_default));
             }
         });
 
@@ -112,7 +119,7 @@ public class WeatherService extends Service {
         final PendingIntent weatherAlarmIntent = PendingIntent.getService(
                 WeatherService.this,
                 Constants.Alarms.WEATHER_ID,
-                new Intent(WeatherService.this, WeatherService.class),
+                new Intent(getApplicationContext(), WeatherService.class),
                 0);
         AlarmHelper.setNextAlarm(
                 WeatherService.this,

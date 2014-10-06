@@ -31,11 +31,11 @@ public class NotificationHelper {
     /**
      * Displays a standard notification, that will show up in both mobile and wear.
      */
-    public static void displayStandardNotification(Context context, Class<?> activity, String text, Bitmap largeIcon) {
+    public static void displayStandardNotification(Context context, Intent intent, String text, Bitmap largeIcon) {
         final int notificationId = 002;
 
         // Main intent for the notification (click for mobile, swipe left and click for wear)
-        Intent viewIntent = new Intent(context, activity);
+        Intent viewIntent = intent;
         PendingIntent viewPendingIntent =
                 PendingIntent.getActivity(context, 0, viewIntent, 0);
 
@@ -53,6 +53,8 @@ public class NotificationHelper {
                         .setContentText(text)
                         .setContentIntent(viewPendingIntent)
                         .setStyle(bigTextStyle)
+                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        .setAutoCancel(true)
                 ;
 
         // Build the notification and launch it

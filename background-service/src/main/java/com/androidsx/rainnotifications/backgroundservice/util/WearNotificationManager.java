@@ -1,7 +1,9 @@
 package com.androidsx.rainnotifications.backgroundservice.util;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -46,7 +48,7 @@ public class WearNotificationManager {
                     } else {
                         NotificationHelper.displayStandardNotification(
                                 context,
-                                ((Activity) context).getClass(),
+                                new Intent("backgroundservices.intent.action.Launch"),
                                 alert.getAlertMessage().getNotificationMessage(interval),
                                 BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
                         );
@@ -54,7 +56,7 @@ public class WearNotificationManager {
                 } else {
                     NotificationHelper.displayStandardNotification(
                             context,
-                            ((Activity)context).getClass(),
+                            new Intent("backgroundservices.intent.action.Launch"),
                             alert.getAlertMessage().getNotificationMessage(interval),
                             BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
                     );

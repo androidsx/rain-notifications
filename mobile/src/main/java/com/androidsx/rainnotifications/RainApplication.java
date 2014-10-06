@@ -5,10 +5,10 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.androidsx.rainnotifications.service.WeatherService;
-import com.androidsx.rainnotifications.util.AlarmHelper;
+import com.androidsx.rainnotifications.backgroundservice.WeatherService;
+import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
+import com.androidsx.rainnotifications.backgroundservice.util.SharedPrefsHelper;
 import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
-import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 
 import timber.log.Timber;
 
