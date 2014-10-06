@@ -49,7 +49,7 @@ public class ForecastTableToDaySummaryConverterTest {
         forecastList.add(new Forecast(new Interval(today8am, today9am), new WeatherWrapper(WeatherType.CLEAR))); // morning
         forecastList.add(new Forecast(new Interval(today9am, today11am), new WeatherWrapper(WeatherType.RAIN))); // morning
         forecastList.add(new Forecast(new Interval(today11am, today14pm), new WeatherWrapper(WeatherType.CLOUDY))); // morning and afternoon
-        forecastList.add(new Forecast(new Interval(today14pm, today17pm), new WeatherWrapper(WeatherType.PARTLY_CLOUDY))); // afternoon
+        forecastList.add(new Forecast(new Interval(today14pm, today17pm), new WeatherWrapper(WeatherType.CLOUDY))); // afternoon
         forecastList.add(new Forecast(new Interval(today17pm, today20pm), new WeatherWrapper(WeatherType.RAIN))); // afternoon and evening
         forecastList.add(new Forecast(new Interval(today20pm, today22pm), new WeatherWrapper(WeatherType.CLEAR))); // evening and night
 
@@ -58,7 +58,7 @@ public class ForecastTableToDaySummaryConverterTest {
         Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.primary), WeatherType.RAIN);
         Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), WeatherType.CLOUDY);
 
-        Assert.assertEquals(summary.getWeatherType(DayPeriod.afternoon, WeatherPriority.primary), WeatherType.PARTLY_CLOUDY);
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.afternoon, WeatherPriority.primary), WeatherType.CLOUDY);
         Assert.assertEquals(summary.getWeatherType(DayPeriod.afternoon, WeatherPriority.secondary), WeatherType.RAIN);
 
         Assert.assertEquals(summary.getWeatherType(DayPeriod.evening, WeatherPriority.primary), WeatherType.RAIN);

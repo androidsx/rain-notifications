@@ -73,14 +73,14 @@ public class DaySummary {
             durations.remove(mostDurable);
 
             // and the highest priority as secondary
+            if(durations.containsKey(WeatherType.SNOW)) {
+                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.SNOW);
+            }
             if(durations.containsKey(WeatherType.RAIN)) {
                 summarizedForecasts.put(WeatherPriority.secondary, WeatherType.RAIN);
             }
             else if(durations.containsKey(WeatherType.CLOUDY)) {
                 summarizedForecasts.put(WeatherPriority.secondary, WeatherType.CLOUDY);
-            }
-            else if(durations.containsKey(WeatherType.PARTLY_CLOUDY)) {
-                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.PARTLY_CLOUDY);
             }
             else if(durations.containsKey(WeatherType.CLEAR)) {
                 summarizedForecasts.put(WeatherPriority.secondary, WeatherType.CLEAR);

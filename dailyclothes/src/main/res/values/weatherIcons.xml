@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="weatherIcons">
+        <item>@drawable/ic_clear</item>
+        <item>@drawable/ic_cloudy</item>
+        <item>@drawable/ic_rain</item>
+    </string-array>
+</resources>
