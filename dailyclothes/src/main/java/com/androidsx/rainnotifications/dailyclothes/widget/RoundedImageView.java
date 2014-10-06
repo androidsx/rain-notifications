@@ -11,7 +11,7 @@ public class RoundedImageView extends ImageView {
     private static final String sScheme =
             "http://schemas.android.com/apk/res-auto";
     private static final String sAttribute = "customRadius";
-    private float radius;
+    private int radius;
 
     public RoundedImageView(Context context) {
         super(context);
@@ -19,7 +19,7 @@ public class RoundedImageView extends ImageView {
 
     public RoundedImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        radius = attrs.getAttributeFloatValue(sScheme, sAttribute, 0.f); // angle of round corners
+        radius = attrs.getAttributeIntValue(sScheme, sAttribute, 0); // angle of round corners
     }
 
     public RoundedImageView(Context context, AttributeSet attrs, int defStyle) {
