@@ -1,16 +1,14 @@
 package com.androidsx.rainnotifications.backgroundservice.util;
 
-import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
-import com.androidsx.commonlibrary.Constants;
+import com.androidsx.commonlibrary.CommonConstants;
+import com.androidsx.rainnotifications.backgroundservice.Constants;
 import com.androidsx.rainnotifications.backgroundservice.R;
-import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
 import com.google.android.gms.common.ConnectionResult;
@@ -48,7 +46,7 @@ public class WearNotificationManager {
                     } else {
                         NotificationHelper.displayStandardNotification(
                                 context,
-                                new Intent("backgroundservices.intent.action.Launch"),
+                                new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                                 alert.getAlertMessage().getNotificationMessage(interval),
                                 BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
                         );
@@ -56,7 +54,7 @@ public class WearNotificationManager {
                 } else {
                     NotificationHelper.displayStandardNotification(
                             context,
-                            new Intent("backgroundservices.intent.action.Launch"),
+                            new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                             alert.getAlertMessage().getNotificationMessage(interval),
                             BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
                     );
@@ -118,11 +116,11 @@ public class WearNotificationManager {
 
         public boolean sendWearNotification(Context context, String text, int mascotIcon) {
             if (isGoogleApiClientConnected()) {
-                PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(Constants.WEAR_PATH);
+                PutDataMapRequest putDataMapRequest = PutDataMapRequest.create(CommonConstants.WEAR_PATH);
                 // Add data to the request
-                putDataMapRequest.getDataMap().putString(Constants.Keys.KEY_TEXT, text);
-                putDataMapRequest.getDataMap().putAsset(Constants.Keys.KEY_MASCOT_ICON, createAssetFromDrawable(context, mascotIcon));
-                putDataMapRequest.getDataMap().putLong(Constants.Keys.KEY_TIMESTAMP, System.currentTimeMillis());
+                putDataMapRequest.getDataMap().putString(CommonConstants.Keys.KEY_TEXT, text);
+                putDataMapRequest.getDataMap().putAsset(CommonConstants.Keys.KEY_MASCOT_ICON, createAssetFromDrawable(context, mascotIcon));
+                putDataMapRequest.getDataMap().putLong(CommonConstants.Keys.KEY_TIMESTAMP, System.currentTimeMillis());
                 PutDataRequest request = putDataMapRequest.asPutDataRequest();
 
                 Wearable.DataApi.putDataItem(mGoogleApiClient, request)

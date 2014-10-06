@@ -8,7 +8,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.NotificationCompat.WearableExtender;
 import android.util.Log;
 
-import com.androidsx.commonlibrary.Constants;
+import com.androidsx.commonlibrary.CommonConstants;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.data.FreezableUtils;
@@ -58,15 +58,15 @@ public class OngoingNotificationListenerService extends WearableListenerService 
         for (DataEvent event : events) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 String path = event.getDataItem().getUri().getPath();
-                if (Constants.WEAR_PATH.equals(path)) {
+                if (CommonConstants.WEAR_PATH.equals(path)) {
                     // Get the data out of the event
                     DataMapItem dataMapItem = DataMapItem.fromDataItem(event.getDataItem());
-                    final String text = dataMapItem.getDataMap().getString(Constants.Keys.KEY_TEXT);
-                    Asset assetMascotIcon = dataMapItem.getDataMap().getAsset(Constants.Keys.KEY_MASCOT_ICON);
+                    final String text = dataMapItem.getDataMap().getString(CommonConstants.Keys.KEY_TEXT);
+                    Asset assetMascotIcon = dataMapItem.getDataMap().getAsset(CommonConstants.Keys.KEY_MASCOT_ICON);
 
                     Intent actionIntent = new Intent(this, ForecastWear.class);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
-                    actionIntent.putExtra(Constants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
+                    actionIntent.putExtra(CommonConstants.Extras.EXTRA_TEXT, text);
+                    actionIntent.putExtra(CommonConstants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
                     PendingIntent actionPendingIntent = PendingIntent.getActivity(
                             this,
                             0,
@@ -80,8 +80,8 @@ public class OngoingNotificationListenerService extends WearableListenerService 
 
                     // Intent for change the standard notification by our custom notification layout
                     Intent notificationIntent = new Intent(this, WearCustomNotificationActivity.class);
-                    notificationIntent.putExtra(Constants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
-                    notificationIntent.putExtra(Constants.Extras.EXTRA_TEXT, text);
+                    notificationIntent.putExtra(CommonConstants.Extras.EXTRA_MASCOT_ICON, assetMascotIcon);
+                    notificationIntent.putExtra(CommonConstants.Extras.EXTRA_TEXT, text);
                     PendingIntent notificationPendingIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                             PendingIntent.FLAG_UPDATE_CURRENT);
 

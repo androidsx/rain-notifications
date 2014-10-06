@@ -2,9 +2,7 @@ package com.androidsx.rainnotifications.backgroundservice;
 
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.IBinder;
@@ -67,7 +65,7 @@ public class WeatherService extends Service {
                             DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
                             NotificationHelper.displayStandardNotification(
                                     getApplicationContext(),
-                                    new Intent("backgroundservices.intent.action.Launch"),
+                                    new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                                     daySummary.getDayMessage(),
                                     BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
                         } else {
@@ -93,7 +91,7 @@ public class WeatherService extends Service {
                         Timber.e(exception, "Failed to get the forecast");
                         NotificationHelper.displayStandardNotification(
                                 WeatherService.this,
-                                new Intent("backgroundservices.intent.action.Launch"),
+                                new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                                 "Failed to get the forecast: " + exception.toString(),
                                 BitmapFactory.decodeResource(getResources(),
                                 R.drawable.owlie_default));
@@ -105,7 +103,7 @@ public class WeatherService extends Service {
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 Timber.e(exception, "Failed to get the location");
                 NotificationHelper.displayStandardNotification(WeatherService.this,
-                        new Intent("backgroundservices.intent.action.Launch"),
+                        new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                         "Failed to get the location" + exception.toString(),
                         BitmapFactory.decodeResource(getResources(),
                         R.drawable.owlie_default));

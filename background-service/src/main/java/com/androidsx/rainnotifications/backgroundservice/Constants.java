@@ -11,4 +11,7 @@ public class Constants {
     public static class Extras{
         public static final String EXTRA_DAY_ALARM = "extra_day_alarm";
     }
+    public static class CustomIntent{
+        public static final String BACKGROUND_INTENT = "backgroundservices.intent.action.Launch";
+    }
 }

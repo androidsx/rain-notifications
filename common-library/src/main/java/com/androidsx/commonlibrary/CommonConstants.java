@@ -1,6 +1,6 @@
 package com.androidsx.commonlibrary;
 
-public class Constants {
+public class CommonConstants {
 
     public static final String WEAR_PATH = "/forecast";
     public static final String DISMISS_PATH = "/dismiss";

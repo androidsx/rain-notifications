@@ -2,7 +2,7 @@ apply plugin: 'java'
 
 dependencies {
     compile 'joda-time:joda-time:2.3'
-    compile 'com.loopj.android:android-async-http:1.4.5'
-    compile 'com.google.code.gson:gson:2.2.+'
     compile 'com.jakewharton.timber:timber:2.4.+'
+    compile 'com.google.code.gson:gson:2.2.+'
+    compile 'com.loopj.android:android-async-http:1.4.5'
 }

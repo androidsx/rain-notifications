@@ -41,10 +41,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     wearApp project(':wear')
     compile 'com.google.android.gms:play-services-wearable:+'
-    compile 'com.jakewharton.timber:timber:2.4.+'
     compile 'com.android.support:support-v4:20.0.+'
     compile project(':background-service')
-    compile project(':weather-client-factory')
     compile project(':alert-generator')
     compile project(':common-library')
     compile project(':model')
@@ -53,5 +51,6 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.easing:library:1.0.0@aar'
     compile 'com.daimajia.androidanimations:library:1.1.2@aar'
+
     compile 'com.crashlytics.android:crashlytics:1.+'
 }

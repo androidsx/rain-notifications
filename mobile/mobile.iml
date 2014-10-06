@@ -94,7 +94,6 @@
     <orderEntry type="module" module-name="alert-generator" exported="" />
     <orderEntry type="module" module-name="background-service" exported="" />
     <orderEntry type="module" module-name="model" exported="" />
-    <orderEntry type="module" module-name="weather-client-factory" exported="" />
     <orderEntry type="module" module-name="common-library" exported="" />
   </component>
 </module>
