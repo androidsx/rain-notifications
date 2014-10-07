@@ -13,6 +13,7 @@ import java.util.List;
 public class ForecastTable {
 
     private List<Forecast> forecastList;
+    private static List<Forecast> rawForecastList;
 
     /**
      * Returns an appropiate {@link com.androidsx.rainnotifications.model.ForecastTable} for the given forecastList. It processed the given list as follows:
@@ -31,6 +32,7 @@ public class ForecastTable {
      * @throws java.lang.IllegalArgumentException if the given forecastList is empty
      */
     public static ForecastTable fromForecastList(List<Forecast> forecastList) {
+        rawForecastList = forecastList;
         if (forecastList.isEmpty()) {
             throw new IllegalArgumentException("The list of forecasts is empty. At least one forecast is needed");
         } else {
@@ -102,5 +104,9 @@ public class ForecastTable {
             builder.append("\n" + forecast);
         }
         return builder.toString();
+    }
+
+    public List<Forecast> getRawForecastList() {
+        return rawForecastList;
     }
 }
