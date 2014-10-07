@@ -61,7 +61,7 @@ public class MainActivity extends Activity {
         mPlaceHolder = findViewById(R.id.layout_weather);
         mListView = (QuickReturnListView)findViewById(R.id.clothes_list_view);
 
-        fillForecastView();
+        fillForecastView(8, 24);
         fillClothesListView();
         configureQuickReturn();
     }
@@ -108,35 +108,24 @@ public class MainActivity extends Activity {
         }.execute();
     }
 
-    private void fillForecastView() {
-        UserLocationFetcher.getUserLocation(this, new UserLocationFetcher.UserLocationResultListener() {
-            @Override
-            public void onLocationSuccess(Location location) {
-                WeatherClientFactory.requestForecastForLocation(MainActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
-                    @Override
-                    public void onForecastSuccess(ForecastTable forecastTable) {
-                        for (Forecast f : forecastTable.getRawForecastList()) {
-                            forecastListItems.add(
-                                    new ForecastListItem(
-                                            getRandomWeatherIcon(),
-                                            getRandomBetweenNumbers(60, 67),
-                                            f.getInterval().getStart().getHourOfDay()));
-                        }
-                        loadForecastList();
-                    }
-
-                    @Override
-                    public void onForecastFailure(WeatherClientException weatherClientException) {
-
-                    }
-                });
+    private void fillForecastView(int startHour, int endHour) {
+        ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
+        for(int i=startHour; i < endHour; i++) {
+            View view = LayoutInflater.from(this).inflate(R.layout.hourly_forecast_item, null);
+            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
+            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
+            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
+            Picasso.with(this).load(getRandomWeatherIcon()).into(icon);
+            int auxTemp = getRandomBetweenNumbers(60, 67);
+            temp.setText(auxTemp + "º");
+            hour.setText(i+"am");
+            forecastView.addView(view);
+            if(auxTemp > maxTemp) {
+                maxTemp = auxTemp;
             }
-
-            @Override
-            public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
-
-            }
-        });
+        }
+        ((TextView)findViewById(R.id.forecast_message)).setText(
+                Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
     }
 
     private void loadForecastList() {
