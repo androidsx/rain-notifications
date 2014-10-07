@@ -90,7 +90,6 @@
     <orderEntry type="module" module-name="Forecast" exported="" />
     <orderEntry type="module" module-name="weather-client-wunderground" exported="" />
     <orderEntry type="module" module-name="weather-client-forecast-io" exported="" />
-    <orderEntry type="module" module-name="model" exported="" />
     <orderEntry type="module" module-name="common-library" exported="" />
   </component>
 </module>
