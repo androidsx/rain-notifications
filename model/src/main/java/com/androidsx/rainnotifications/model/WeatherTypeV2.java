@@ -16,16 +16,6 @@ public enum WeatherTypeV2 {
     SNOW,
 
     /**
-     * Matches any type of weather, except for the previous one.
-     */
-    UNDEFINED,
-
-    /**
-     * Matches the type of weather of the previous day period.
-     */
-    SAME,
-
-    /**
      * This is a weather type that is unknown for us, but it could be a valid one in the data
      * source, after all.
      */
