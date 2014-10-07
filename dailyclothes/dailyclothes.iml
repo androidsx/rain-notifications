@@ -81,8 +81,15 @@
     <orderEntry type="jdk" jdkName="Android API 20 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="picasso-2.3.4" level="project" />
+    <orderEntry type="library" exported="" name="timber-2.4.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-20.0.0" level="project" />
     <orderEntry type="library" exported="" name="support-v4-20.0.0" level="project" />
+    <orderEntry type="library" exported="" name="joda-time-2.3" level="project" />
+    <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
+    <orderEntry type="module" module-name="alert-generator" exported="" />
+    <orderEntry type="module" module-name="background-service" exported="" />
+    <orderEntry type="module" module-name="model" exported="" />
+    <orderEntry type="module" module-name="common-library" exported="" />
   </component>
 </module>
 

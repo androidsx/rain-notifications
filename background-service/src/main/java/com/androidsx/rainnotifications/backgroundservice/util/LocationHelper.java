@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.util;
+package com.androidsx.rainnotifications.backgroundservice.util;
 
 import android.location.Location;
 

@@ -1,0 +1,42 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.1.0"
+
+    defaultConfig {
+        applicationId "com.androidsx.rainnotifications.backgroundservice"
+        minSdkVersion 19
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile 'com.google.android.gms:play-services-wearable:+'
+    compile 'com.android.support:support-v4:20.0.+'
+
+    compile project(':common-library')
+    compile(project(':model')){
+        transitive = false;
+    }
+    compile(project(':alert-generator')) {
+        transitive = false
+    }
+    compile(project(':weather-client-api')) {
+        transitive = false
+    }
+    compile(project(':weather-client-factory')) {
+        transitive = false
+    }
+}

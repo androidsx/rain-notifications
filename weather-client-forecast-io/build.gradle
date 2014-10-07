@@ -16,7 +16,10 @@ android {
 }
 
 dependencies {
-    compile project(':weather-client-api')
-    compile project(':Forecast')
+    compile project(':common-library')
     compile project(':model')
+    compile project(':weather-client-api')
+    compile(project(':Forecast')) {
+        transitive = false;
+    }
 }

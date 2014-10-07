@@ -5,6 +5,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
+import com.androidsx.rainnotifications.backgroundservice.util.SharedPrefsHelper;
+
 public class ApplicationVersionHelper {
     private static final String TAG = ApplicationVersionHelper.class.getSimpleName();
 
@@ -31,7 +33,7 @@ public class ApplicationVersionHelper {
     /**
      * Saves the current version code on the Shared Preferences.
      * <p>
-     * Keep in mind that the execution of this method invalidates the output of {@link #isUserOpeningAppForFirstTime}
+     * Keep in mind that the execution of this method invalidates the output of {@link #//isUserOpeningAppForFirstTime}
      * and {@link #isUserOpeningAppAfterUpdate}.
      */
     public static void saveCurrentVersionCode(Context context) {

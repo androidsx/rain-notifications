@@ -7,7 +7,7 @@ import android.support.wearable.view.WatchViewStub;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidsx.commonlibrary.Constants;
+import com.androidsx.commonlibrary.CommonConstants;
 import com.google.android.gms.wearable.Asset;
 
 public class ForecastWear extends Activity {
@@ -29,11 +29,11 @@ public class ForecastWear extends Activity {
 
                 Intent mIntent = getIntent();
                 if (mIntent != null) {
-                    String text = mIntent.getStringExtra(Constants.Extras.EXTRA_TEXT);
+                    String text = mIntent.getStringExtra(CommonConstants.Extras.EXTRA_TEXT);
                     if (text != null) {
                         mTextView.setText(text);
                     }
-                    Asset assetMascotIcon = mIntent.getParcelableExtra(Constants.Extras.EXTRA_MASCOT_ICON);
+                    Asset assetMascotIcon = mIntent.getParcelableExtra(CommonConstants.Extras.EXTRA_MASCOT_ICON);
                     if (assetMascotIcon != null) {
                         AssetHelper.loadBitmapFromAsset(ForecastWear.this, assetMascotIcon, mMascotImageView);
                     }

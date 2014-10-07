@@ -1,4 +1,4 @@
-include ':mobile', ':dailyclothes'
+include ':mobile', ':dailyclothes', ':background-service'
 include ':wear'
 include 'alert-generator'
 

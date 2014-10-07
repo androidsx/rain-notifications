@@ -7,7 +7,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidsx.commonlibrary.Constants;
+import com.androidsx.commonlibrary.CommonConstants;
 import com.google.android.gms.wearable.Asset;
 
 public class WearCustomNotificationActivity extends Activity {
@@ -20,8 +20,8 @@ public class WearCustomNotificationActivity extends Activity {
         final Intent mIntent = getIntent();
 
         // TODO: replace by a full Alert
-        final String message = mIntent.getStringExtra(Constants.Extras.EXTRA_TEXT);
-        final Asset mascot = mIntent.getParcelableExtra(Constants.Extras.EXTRA_MASCOT_ICON);
+        final String message = mIntent.getStringExtra(CommonConstants.Extras.EXTRA_TEXT);
+        final Asset mascot = mIntent.getParcelableExtra(CommonConstants.Extras.EXTRA_MASCOT_ICON);
         Log.i(TAG, "Will create a custom notification \"" + message + "\"");
 
         // Set the notification text

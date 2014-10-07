@@ -20,23 +20,23 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.androidsx.rainnotifications.R;
-import com.androidsx.rainnotifications.WearNotificationManager;
-import com.androidsx.rainnotifications.WearNotificationManagerException;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
+import com.androidsx.rainnotifications.backgroundservice.WeatherService;
+import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
+import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
+import com.androidsx.rainnotifications.backgroundservice.util.SharedPrefsHelper;
+import com.androidsx.rainnotifications.backgroundservice.util.WearNotificationManager;
 import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherWrapper;
-import com.androidsx.rainnotifications.service.WeatherService;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
-import com.androidsx.rainnotifications.util.AlarmHelper;
 import com.androidsx.rainnotifications.util.AnimationHelper;
-import com.androidsx.rainnotifications.util.NotificationHelper;
-import com.androidsx.rainnotifications.util.SharedPrefsHelper;
 import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTime;
@@ -45,6 +45,7 @@ import org.joda.time.Minutes;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -344,36 +345,19 @@ public class DebugActivity extends Activity {
 
     public void showWearOnlyNotification(View view) {
         Timber.d("Show a random notification");
-        new WearNotificationManager(this) {
-            @Override
-            public void onWearManagerSuccess(NodeApi.GetConnectedNodesResult getConnectedNodesResult) {
-                if (getConnectedNodesResult.getNodes() != null) {
-                    if (getConnectedNodesResult.getNodes().size() > 0) {
-                        Toast.makeText(DebugActivity.this, "Check your wear!", Toast.LENGTH_LONG).show();
-                        sendWearNotification(
-                                DebugActivity.this,
-                                getString(R.string.notif_long_text_fake),
-                                R.drawable.owlie_debug
-                        );
-                    } else {
-                        Toast.makeText(DebugActivity.this, "Wear is not connected (no nodes)", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(DebugActivity.this, "Wear is not connected (null nodes)", Toast.LENGTH_LONG).show();
-                }
-            }
+        HashMap<String, List<String>> messages = new HashMap<String, List<String>>();
+        List<String> messagesList = new ArrayList<String>();
+        messagesList.add(getString(R.string.notif_long_text_fake));
+        messages.put("messages", messagesList);
 
-            @Override
-            public void onWearManagerFailure(WearNotificationManagerException exception) {
-                Toast.makeText(DebugActivity.this, "Failed to connect to wear", Toast.LENGTH_LONG).show();
-            }
-        }.connect();
+        Alert alert = new Alert(WeatherType.CLEAR, WeatherType.CLEAR, AlertLevel.INFO, messages, R.drawable.owlie_default);
+        NotificationHelper.displayWearNotification(this, alert, new Interval(DateTime.now(), DateTime.now().plusHours(1)));
     }
 
     public void showStandardNotification(View v) {
         NotificationHelper.displayStandardNotification(
                 DebugActivity.this,
-                MainMobileActivity.class,
+                new Intent(DebugActivity.this, MainMobileActivity.class),
                 getString(R.string.notif_long_text_fake),
                 BitmapFactory.decodeResource(getResources(), R.drawable.owlie_debug));
     }

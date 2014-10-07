@@ -3,6 +3,11 @@ rain-notifications
 
 Rain notifications before it happens for Google Wear
 
+Architecture
+------------
+
+Here's our module structure (as of Oct 2014): ![Module structure](/readme-files/weather-modules-v2.jpg?raw=true)
+
 How to run the tests
 --------------------
 

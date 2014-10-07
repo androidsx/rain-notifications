@@ -18,6 +18,7 @@ import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.alert.Setup;
+import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.DaySummary;
@@ -26,7 +27,6 @@ import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
-import com.androidsx.rainnotifications.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.crashlytics.android.Crashlytics;
 
@@ -64,7 +64,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setupUI();
 
         // FIXME: we do exactly the same in the weather service. grr..
-        new UserLocationFetcher(this, new UserLocationFetcher.UserLocationResultListener() {
+        UserLocationFetcher.getUserLocation(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(final Location location) {
                 WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
@@ -98,7 +98,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                         R.drawable.owlie_default,
                         getString(R.string.location_error));
             }
-        }).connect();
+        });
     }
 
     private void setupUI() {
