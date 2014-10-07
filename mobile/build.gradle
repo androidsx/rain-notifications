@@ -59,4 +59,7 @@ dependencies {
     compile(project(':alert-generator')) {
         transitive = false
     }
+    compile(project(':weather-client-api')) {
+        transitive = false
+    }
 }
