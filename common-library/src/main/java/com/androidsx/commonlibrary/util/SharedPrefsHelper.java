@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.backgroundservice.util;
+package com.androidsx.commonlibrary.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

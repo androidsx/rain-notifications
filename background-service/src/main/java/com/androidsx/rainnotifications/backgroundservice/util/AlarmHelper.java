@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
+import com.androidsx.commonlibrary.util.SharedPrefsHelper;
 import com.androidsx.rainnotifications.backgroundservice.Constants;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.util.UiUtil;

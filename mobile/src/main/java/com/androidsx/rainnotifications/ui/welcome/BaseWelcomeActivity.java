@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
+import com.androidsx.commonlibrary.util.ApplicationVersionHelper;
 
 /**
  * Base activity that shows the welcome screens if necessary.

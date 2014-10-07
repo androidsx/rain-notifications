@@ -31,4 +31,6 @@ dependencies {
     compile project(':model')
     compile project(':background-service')
     compile project(':alert-generator')
+    compile project(':weather-client-api')
+    compile project(':weather-client-factory')
 }
