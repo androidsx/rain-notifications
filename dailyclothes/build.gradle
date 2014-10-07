@@ -28,13 +28,7 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.3.4'
 
     compile project(':common-library')
-    compile(project(':model')){
-        transitive = false;
-    }
-    compile(project(':background-service')) {
-        transitive = false
-    }
-    compile(project(':alert-generator')) {
-        transitive = false
-    }
+    compile project(':model')
+    compile project(':background-service')
+    compile project(':alert-generator')
 }

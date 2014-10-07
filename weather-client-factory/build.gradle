@@ -14,16 +14,14 @@ android {
 
 dependencies {
     compile project(':common-library')
-    compile(project(':weather-client-api')){
+    compile project(':weather-client-api')
+    compile(project(':weather-client-forecast-io')) {
         transitive = false;
     }
-    compile(project(':weather-client-forecast-io')){
+    compile(project(':Forecast')) {
         transitive = false;
     }
-    compile(project(':Forecast')){
-        transitive = false;
-    }
-    compile(project(':weather-client-wunderground')){
+    compile(project(':weather-client-wunderground')) {
         transitive = false;
     }
 }

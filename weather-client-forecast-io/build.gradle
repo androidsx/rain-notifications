@@ -14,13 +14,9 @@ android {
 
 dependencies {
     compile project(':common-library')
-    compile(project(':model')){
-        transitive = false;
-    }
-    compile(project(':weather-client-api')){
-        transitive = false;
-    }
-    compile(project(':Forecast')){
+    compile project(':model')
+    compile project(':weather-client-api')
+    compile(project(':Forecast')) {
         transitive = false;
     }
 }
