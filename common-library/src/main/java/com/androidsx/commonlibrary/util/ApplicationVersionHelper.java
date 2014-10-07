@@ -1,11 +1,10 @@
-package com.androidsx.rainnotifications.util;
+package com.androidsx.commonlibrary.util;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
-import com.androidsx.rainnotifications.backgroundservice.util.SharedPrefsHelper;
 
 public class ApplicationVersionHelper {
     private static final String TAG = ApplicationVersionHelper.class.getSimpleName();

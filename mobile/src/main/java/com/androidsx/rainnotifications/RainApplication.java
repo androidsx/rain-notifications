@@ -7,8 +7,8 @@ import android.content.SharedPreferences;
 
 import com.androidsx.rainnotifications.backgroundservice.WeatherService;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
-import com.androidsx.rainnotifications.backgroundservice.util.SharedPrefsHelper;
-import com.androidsx.rainnotifications.util.ApplicationVersionHelper;
+import com.androidsx.commonlibrary.util.SharedPrefsHelper;
+import com.androidsx.commonlibrary.util.ApplicationVersionHelper;
 
 import timber.log.Timber;
 

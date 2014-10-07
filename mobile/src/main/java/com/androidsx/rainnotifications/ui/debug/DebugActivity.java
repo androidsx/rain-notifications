@@ -25,8 +25,7 @@ import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.backgroundservice.WeatherService;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
-import com.androidsx.rainnotifications.backgroundservice.util.SharedPrefsHelper;
-import com.androidsx.rainnotifications.backgroundservice.util.WearNotificationManager;
+import com.androidsx.commonlibrary.util.SharedPrefsHelper;
 import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
@@ -37,7 +36,6 @@ import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherWrapper;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
-import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
