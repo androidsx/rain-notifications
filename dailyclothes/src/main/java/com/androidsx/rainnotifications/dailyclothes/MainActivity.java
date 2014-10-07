@@ -35,6 +35,7 @@ import java.util.Random;
 public class MainActivity extends Activity {
     private Random random = new Random();
     private List<Clothes> clothesList = new ArrayList<Clothes>();
+    private List<ForecastListItem> forecastListItems = new ArrayList<ForecastListItem>();
     private CustomListAdapter adapter;
 
     private QuickReturnListView mListView;
@@ -113,23 +114,14 @@ public class MainActivity extends Activity {
                 WeatherClientFactory.requestForecastForLocation(MainActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
-                        ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
-                        for (Forecast f : forecastTable.getForecastList()) {
-                            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.hourly_forecast_item, null);
-                            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
-                            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
-                            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
-                            Picasso.with(MainActivity.this).load(getRandomWeatherIcon()).into(icon);
-                            int auxTemp = getRandomBetweenNumbers(60, 67);
-                            temp.setText(auxTemp + "º");
-                            forecastView.addView(view);
-                            hour.setText(f.getInterval().getStart().getHourOfDay() + "h");
-                            if(auxTemp > maxTemp) {
-                                maxTemp = auxTemp;
-                            }
+                        for (Forecast f : forecastTable.getRawForecastList()) {
+                            forecastListItems.add(
+                                    new ForecastListItem(
+                                            getRandomWeatherIcon(),
+                                            getRandomBetweenNumbers(60, 67),
+                                            f.getInterval().getStart().getHourOfDay()));
                         }
-                        ((TextView)findViewById(R.id.forecast_message)).setText(
-                                Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
+                        loadForecastList();
                     }
 
                     @Override
@@ -144,6 +136,25 @@ public class MainActivity extends Activity {
 
             }
         });
+    }
+
+    private void loadForecastList() {
+        ViewGroup forecastView = (ViewGroup) findViewById(R.id.hourly_forecast);
+        for (ForecastListItem f : forecastListItems) {
+            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.hourly_forecast_item, null);
+            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
+            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
+            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
+            Picasso.with(MainActivity.this).load(f.getIcon()).into(icon);
+            temp.setText(f.getTemp() + "º");
+            hour.setText(f.getHour() + "h");
+            forecastView.addView(view);
+            if (f.getTemp() > maxTemp) {
+                maxTemp = f.getTemp();
+            }
+        }
+        ((TextView) findViewById(R.id.forecast_message)).setText(
+                Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
     }
 
     private void fillClothesListView() {
@@ -243,5 +254,29 @@ public class MainActivity extends Activity {
 
     static class ViewHolder {
         ImageView icon;
+    }
+
+    private class ForecastListItem {
+        int icon;
+        int temp;
+        int hour;
+
+        public ForecastListItem(int icon, int temp, int hour) {
+            this.icon = icon;
+            this.temp = temp;
+            this.hour = hour;
+        }
+
+        public int getIcon() {
+            return icon;
+        }
+
+        public int getTemp() {
+            return temp;
+        }
+
+        public int getHour() {
+            return hour;
+        }
     }
 }
