@@ -34,7 +34,6 @@ import timber.log.Timber;
  * The response is analyzed for determine the next alarm time, and if it's appropriate
  * notify to user the next significant weather change.
  */
-
 public class WeatherService extends Service {
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private AlertGenerator alertGenerator;
@@ -45,6 +44,7 @@ public class WeatherService extends Service {
         super.onCreate();
 
         alertGenerator = new AlertGenerator(this);
+        alertGenerator.init();
         daySummaryGenerator = new DaySummaryGenerator(DaySummaryDeserializer.deserializeDaySummaryDictionary(Setup.getDaySummaryDictionaryReader(this)));
     }
 
