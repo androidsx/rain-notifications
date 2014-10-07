@@ -1,32 +1,36 @@
 package com.androidsx.rainnotifications.model;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
-public class DaySummaryDeserializer implements JsonDeserializer {
+public class JsonDayTemplateLoader implements DayTemplateLoader{
 
-    public static List<DaySummary> deserializeDaySummaryDictionary(Reader dictionaryReader) {
-        return Arrays.asList(new GsonBuilder().registerTypeAdapter(DaySummary.class, new DaySummaryDeserializer()).create()
-                .fromJson(dictionaryReader, DaySummary[].class));
+    private Reader reader;
+
+    public JsonDayTemplateLoader(Reader reader) {
+        this.reader = reader;
     }
 
     @Override
-    public DaySummary deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public List<DayTemplate> load() {
+        return new ArrayList<DayTemplate>();
+    }
+
+    /*
+
+    public class DaySummaryDeserializer implements JsonDeserializer {
+
+    public static List<Day> deserializeDaySummaryDictionary(Reader dictionaryReader) {
+        return Arrays.asList(new GsonBuilder().registerTypeAdapter(Day.class, new DaySummaryDeserializer()).create()
+                .fromJson(dictionaryReader, Day[].class));
+    }
+
+    @Override
+    public Day deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         final JsonObject jsonObject = json.getAsJsonObject();
 
-        DaySummary.DaySummaryBuilder builder = new DaySummary.DaySummaryBuilder();
+        Day.DaySummaryBuilder builder = new Day.DaySummaryBuilder();
 
         for (DayPeriod period : DayPeriod.values()) {
             if (jsonObject.has(period.toString())) {
@@ -55,4 +59,5 @@ public class DaySummaryDeserializer implements JsonDeserializer {
 
         return builder.build();
     }
+    */
 }

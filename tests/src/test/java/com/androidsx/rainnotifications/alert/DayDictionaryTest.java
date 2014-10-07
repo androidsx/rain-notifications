@@ -1,7 +1,7 @@
 package com.androidsx.rainnotifications.alert;
 
+import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.DayPeriod;
-import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
@@ -30,7 +30,7 @@ import java.util.List;
  */
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
-public class DaySummaryDictionaryTest {
+public class DayDictionaryTest {
     // TODO: Re-Implement and improve this tests when DaySummary V2 is ready.
     @Before
     public void setUp() {
@@ -150,7 +150,7 @@ public class DaySummaryDictionaryTest {
 
     @Test
     public void testCompletenessStatistics() throws Exception{
-        List<DaySummary> dictionary = DaySummaryDeserializer.deserializeDaySummaryDictionary(new InputStreamReader(new FileInputStream("../alert-generator/src/main/assets/dayMessages.json")));
+        List<Day> dictionary = DaySummaryDeserializer.deserializeDaySummaryDictionary(new InputStreamReader(new FileInputStream("../alert-generator/src/main/assets/dayMessages.json")));
         DaySummaryGenerator generator = new DaySummaryGenerator(dictionary);
         List<WeatherType> summaryPossibleTypes = new ArrayList<WeatherType>(WeatherType.getMeaningfulWeatherTypes());
         summaryPossibleTypes.add(WeatherType.UNDEFINED);
@@ -167,7 +167,7 @@ public class DaySummaryDictionaryTest {
                             for (WeatherType eveningSecondary : summaryPossibleTypes) {
                                 for (WeatherType nightPrimary : summaryPossibleTypes) {
                                     for (WeatherType nightSecondary : summaryPossibleTypes) {
-                                        DaySummary daySummary = (new DaySummary.DaySummaryBuilder()
+                                        Day day = (new Day.DaySummaryBuilder()
                                                 .setWeatherType(DayPeriod.morning, WeatherPriority.primary, morningPrimary)
                                                 .setWeatherType(DayPeriod.morning, WeatherPriority.secondary, morningSecondary)
                                                 .setWeatherType(DayPeriod.afternoon, WeatherPriority.primary, afternoonPrimary)
@@ -178,12 +178,12 @@ public class DaySummaryDictionaryTest {
                                                 .setWeatherType(DayPeriod.night, WeatherPriority.secondary, nightSecondary)
                                                 .build());
 
-                                        String daySummarySingleLine = getSingleLineDaySummary(daySummary);
+                                        String daySummarySingleLine = getSingleLineDaySummary(day);
 
-                                        if(generator.getPostProcessor().getDaySummary(daySummary) != null) {
+                                        if(generator.getPostProcessor().getDaySummary(day) != null) {
                                             matchesCount++;
                                         }
-                                        else if (!generator.getPostProcessor().getClosestDaySummary(daySummary).getDayMessage().equals(DaySummary.DEFAULT_MESSAGE)) {
+                                        else if (!generator.getPostProcessor().getClosestDaySummary(day).getDayMessage().equals(Day.DEFAULT_MESSAGE)) {
                                             downgradedMatchesCount++;
                                         }
                                         else {
@@ -204,14 +204,14 @@ public class DaySummaryDictionaryTest {
         System.out.println("Total no match: " + noMatchesCount);
     }
 
-    private String getSingleLineDaySummary(DaySummary daySummary) {
-        return daySummary.getWeatherType(DayPeriod.morning, WeatherPriority.primary) + "_"
-                + daySummary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary) + "_"
-                + daySummary.getWeatherType(DayPeriod.afternoon, WeatherPriority.primary) + "_"
-                + daySummary.getWeatherType(DayPeriod.afternoon, WeatherPriority.secondary) + "_"
-                + daySummary.getWeatherType(DayPeriod.evening, WeatherPriority.primary) + "_"
-                + daySummary.getWeatherType(DayPeriod.evening, WeatherPriority.secondary) + "_"
-                + daySummary.getWeatherType(DayPeriod.night, WeatherPriority.primary) + "_"
-                + daySummary.getWeatherType(DayPeriod.night, WeatherPriority.secondary);
+    private String getSingleLineDaySummary(Day day) {
+        return day.getWeatherType(DayPeriod.morning, WeatherPriority.primary) + "_"
+                + day.getWeatherType(DayPeriod.morning, WeatherPriority.secondary) + "_"
+                + day.getWeatherType(DayPeriod.afternoon, WeatherPriority.primary) + "_"
+                + day.getWeatherType(DayPeriod.afternoon, WeatherPriority.secondary) + "_"
+                + day.getWeatherType(DayPeriod.evening, WeatherPriority.primary) + "_"
+                + day.getWeatherType(DayPeriod.evening, WeatherPriority.secondary) + "_"
+                + day.getWeatherType(DayPeriod.night, WeatherPriority.primary) + "_"
+                + day.getWeatherType(DayPeriod.night, WeatherPriority.secondary);
     }
 }

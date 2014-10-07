@@ -7,13 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-import timber.log.Timber;
-
-public class DaySummary {
+public class Day {
 
     public static final String DEFAULT_MESSAGE = "Default"; // TODO: Review this message
 
-    public static DaySummary fromForecastTable(ForecastTable forecastTable) {
+    public static Day fromForecastTable(ForecastTable forecastTable) {
         DaySummaryBuilder builder = new DaySummaryBuilder();
 
         for (DayPeriod period : DayPeriod.values()) {
@@ -42,6 +40,7 @@ public class DaySummary {
     private static HashMap<WeatherPriority, WeatherType> summarizeForecasts(List<Forecast> forecasts) {
         HashMap<WeatherPriority, WeatherType> summarizedForecasts = new HashMap<WeatherPriority, WeatherType>();
 
+        /*
         if (forecasts.size() == 0) {
             summarizedForecasts.put(WeatherPriority.primary, WeatherType.UNDEFINED);
             summarizedForecasts.put(WeatherPriority.secondary, WeatherType.UNDEFINED);
@@ -89,6 +88,7 @@ public class DaySummary {
                 summarizedForecasts.put(WeatherPriority.secondary, WeatherType.UNDEFINED);
             }
         }
+        */
         return summarizedForecasts;
     }
 
@@ -96,7 +96,7 @@ public class DaySummary {
     private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
     private HashMap<String, List<String>> messages;
 
-    private DaySummary(DaySummaryBuilder builder) {
+    private Day(DaySummaryBuilder builder) {
         this.weatherMap = builder.weatherMap;
         this.messages = builder.messages;
     }
@@ -128,6 +128,7 @@ public class DaySummary {
 
     public boolean downgrade() {
         // TODO: Discuss with team this method. I don't like it because it's not generic.
+        /*
         if (!getWeatherType(DayPeriod.night, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
             Timber.d("remove night secondary");
             setWeatherType(DayPeriod.night, WeatherPriority.secondary, WeatherType.UNDEFINED);
@@ -175,6 +176,7 @@ public class DaySummary {
             setWeatherType(DayPeriod.morning, WeatherPriority.primary, WeatherType.UNDEFINED);
             return true;
         }
+        */
 
         return false;
     }
@@ -211,7 +213,7 @@ public class DaySummary {
                 HashMap<WeatherPriority, WeatherType> periodMap = new HashMap<WeatherPriority, WeatherType>();
 
                 for (WeatherPriority priority : WeatherPriority.values()) {
-                    periodMap.put(priority, WeatherType.UNDEFINED);
+                    //periodMap.put(priority, WeatherType.UNDEFINED);
                 }
 
                 weatherMap.put(period, periodMap);
@@ -228,8 +230,8 @@ public class DaySummary {
             return this;
         }
 
-        public DaySummary build() {
-            return new DaySummary(this);
+        public Day build() {
+            return new Day(this);
         }
     }
 }

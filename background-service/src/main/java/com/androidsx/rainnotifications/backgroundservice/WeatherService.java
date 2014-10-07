@@ -10,16 +10,16 @@ import android.os.IBinder;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
 import com.androidsx.rainnotifications.alert.Setup;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
-import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.DaySummary;
-import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
-import com.androidsx.rainnotifications.model.Forecast;
-import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.Day;
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 
 import org.joda.time.DateTimeConstants;
@@ -45,7 +45,7 @@ public class WeatherService extends Service {
 
         alertGenerator = new AlertGenerator(this);
         alertGenerator.init();
-        daySummaryGenerator = new DaySummaryGenerator(DaySummaryDeserializer.deserializeDaySummaryDictionary(Setup.getDaySummaryDictionaryReader(this)));
+        daySummaryGenerator = new DaySummaryGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)).load());
     }
 
     @Override
@@ -62,11 +62,11 @@ public class WeatherService extends Service {
                     @Override
                     public void onForecastSuccess (ForecastTable forecastTable){
                         if (intent != null && intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {
-                            DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
+                            Day day = daySummaryGenerator.getDaySummary(forecastTable);
                             NotificationHelper.displayStandardNotification(
                                     getApplicationContext(),
                                     new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
-                                    daySummary.getDayMessage(),
+                                    day.getDayMessage(),
                                     BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
                         } else {
                             if (!forecastTable.hasTransitions()) {

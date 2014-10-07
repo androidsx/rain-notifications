@@ -22,22 +22,20 @@ import android.widget.Toast;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
+import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.backgroundservice.WeatherService;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.SharedPrefsHelper;
-import com.androidsx.rainnotifications.backgroundservice.util.WearNotificationManager;
-import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
-import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherWrapper;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
-import com.google.android.gms.wearable.NodeApi;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
@@ -301,8 +299,7 @@ public class DebugActivity extends Activity {
         ForecastTable forecastTable = getDebugForecastTable();
         if(forecastTable != null) {
             Timber.d("FORECAST_TABLE: \n" + forecastTable.toString());
-            cardMessageTextView.setText(new DaySummaryGenerator(DaySummaryDeserializer.deserializeDaySummaryDictionary(Setup.getDaySummaryDictionaryReader(this)))
-                    .getDaySummary(forecastTable).getDayMessage());
+            cardMessageTextView.setText(new DaySummaryGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)).load()).getDaySummary(forecastTable).getDayMessage());
         }
         else {
             cardMessageTextView.setText("Null ForecastTable, are all WeatherTypes UNKNOWN?");

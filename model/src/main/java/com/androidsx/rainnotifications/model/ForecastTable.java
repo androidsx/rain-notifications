@@ -24,7 +24,7 @@ public class ForecastTable {
      *
      * As a result of {@link #getMeaningfulForecastList(java.util.List)} and {@link #getMergedForecastList(java.util.List)}
      * the gaps after remove not meaningful Forecast are filled by merging previous and subsequent Forecast if they has the
-     * same WeatherType. Otherwise the table contains gaps that are not taken into account for {@link com.androidsx.rainnotifications.model.DaySummary#fromForecastTable(ForecastTable)}
+     * same WeatherType. Otherwise the table contains gaps that are not taken into account for {@link Day#fromForecastTable(ForecastTable)}
      *
      * @param forecastList An ordered list of {@link com.androidsx.rainnotifications.model.Forecast} without overlaps or gaps in their Intervals.
      * @return {@link com.androidsx.rainnotifications.model.ForecastTable} if processed forecastList isn't empty, null in other case.

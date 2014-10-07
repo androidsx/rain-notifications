@@ -21,9 +21,9 @@ import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
-import com.androidsx.rainnotifications.model.DaySummary;
-import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
+import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
@@ -58,7 +58,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         alertGenerator = new AlertGenerator(this);
-        daySummaryGenerator = new DaySummaryGenerator(DaySummaryDeserializer.deserializeDaySummaryDictionary(Setup.getDaySummaryDictionaryReader(this)));
+        daySummaryGenerator = new DaySummaryGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)).load());
         alertGenerator.init();
 
         setupUI();
@@ -70,7 +70,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                 WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
-                        final DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
+                        final Day day = daySummaryGenerator.getDaySummary(forecastTable);
                         final String locationAddress = UserLocationFetcher.getLocationAddress(
                                 MainMobileActivity.this,
                                 location.getLatitude(),
@@ -78,7 +78,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
 
                         updateUI(locationAddress,
                                 R.drawable.owlie_default,
-                                daySummary.getDayMessage());
+                                day.getDayMessage());
                     }
 
                     @Override

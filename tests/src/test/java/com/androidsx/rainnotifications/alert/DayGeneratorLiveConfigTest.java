@@ -1,7 +1,7 @@
 package com.androidsx.rainnotifications.alert;
 
+import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.DayPeriod;
-import com.androidsx.rainnotifications.model.DaySummary;
 import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
-public class DaySummaryGeneratorLiveConfigTest {
+public class DayGeneratorLiveConfigTest {
     private DaySummaryGenerator generator;
 
     @Before
@@ -46,11 +46,11 @@ public class DaySummaryGeneratorLiveConfigTest {
             forecasts.add(new Forecast(period.getInterval(new DateTime()), new WeatherWrapper(WeatherType.CLEAR)));
         }
 
-        final DaySummary daySummary = DaySummary.fromForecastTable(ForecastTable.fromForecastList(forecasts));
+        final Day day = Day.fromForecastTable(ForecastTable.fromForecastList(forecasts));
 
         for (DayPeriod period : DayPeriod.values()) {
-            Assert.assertEquals(WeatherType.CLEAR, daySummary.getWeatherType(period, WeatherPriority.primary));
-            Assert.assertEquals(WeatherType.UNDEFINED, daySummary.getWeatherType(period, WeatherPriority.secondary));
+            Assert.assertEquals(WeatherType.CLEAR, day.getWeatherType(period, WeatherPriority.primary));
+            Assert.assertEquals(WeatherType.UNDEFINED, day.getWeatherType(period, WeatherPriority.secondary));
         }
         // Assert.assertTrue(daySummary.getDayMessage().contains("sun"));
         // Assert.assertFalse(daySummary.getDayMessage().contains("rain"));
