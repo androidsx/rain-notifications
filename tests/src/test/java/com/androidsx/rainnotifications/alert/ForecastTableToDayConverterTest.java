@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tests for the generation of the day summary, {@link com.androidsx.rainnotifications.alert.DaySummaryGenerator}.
+ * Tests for the generation of the day summary, {@link DayTemplateGenerator}.
  */
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)

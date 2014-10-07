@@ -16,12 +16,11 @@ import android.widget.TextView;
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
-import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
+import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
 import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
-import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
@@ -39,7 +38,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     private static final int NUM_CLICKS_FOR_DEBUG_SCREEN = 6;
 
     private AlertGenerator alertGenerator;
-    private DaySummaryGenerator daySummaryGenerator;
+    private DayTemplateGenerator dayTemplateGenerator;
 
     private TextView locationTextView;
     private TextView cardMessageTextView;
@@ -58,7 +57,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         alertGenerator = new AlertGenerator(this);
-        daySummaryGenerator = new DaySummaryGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)).load());
+        dayTemplateGenerator = new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)).load());
         alertGenerator.init();
 
         setupUI();
@@ -70,7 +69,6 @@ public class MainMobileActivity extends BaseWelcomeActivity {
                 WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
-                        final Day day = daySummaryGenerator.getDaySummary(forecastTable);
                         final String locationAddress = UserLocationFetcher.getLocationAddress(
                                 MainMobileActivity.this,
                                 location.getLatitude(),
@@ -78,7 +76,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
 
                         updateUI(locationAddress,
                                 R.drawable.owlie_default,
-                                day.getDayMessage());
+                                dayTemplateGenerator.generateMessage(forecastTable, "WORK IN PROGRESS")); //TODO: Revisar este mensaje a pelo.
                     }
 
                     @Override

@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Tests for the generation of the day summary, {@link DaySummaryGenerator}.
+ * Tests for the generation of the day summary, {@link DayTemplateGenerator}.
  */
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
@@ -151,7 +151,7 @@ public class DayDictionaryTest {
     @Test
     public void testCompletenessStatistics() throws Exception{
         List<Day> dictionary = DaySummaryDeserializer.deserializeDaySummaryDictionary(new InputStreamReader(new FileInputStream("../alert-generator/src/main/assets/dayMessages.json")));
-        DaySummaryGenerator generator = new DaySummaryGenerator(dictionary);
+        DayTemplateGenerator generator = new DayTemplateGenerator(dictionary);
         List<WeatherType> summaryPossibleTypes = new ArrayList<WeatherType>(WeatherType.getMeaningfulWeatherTypes());
         summaryPossibleTypes.add(WeatherType.UNDEFINED);
 
