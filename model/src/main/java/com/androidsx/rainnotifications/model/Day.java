@@ -10,22 +10,16 @@ import java.util.List;
 
 public class Day {
 
-    public static final String DEFAULT_MESSAGE = "Default"; // TODO: Review this message
+    private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
 
-    public static Day fromForecastTable(ForecastTable forecastTable) {
-        DaySummaryBuilder builder = new DaySummaryBuilder();
-
+    public Day(ForecastTable forecastTable) {
+        weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>>();
         for (DayPeriod period : DayPeriod.values()) {
-            HashMap<WeatherPriority, WeatherType> periodSummary = summarizeForecasts(filterForecasts(forecastTable.getForecastList(), period.getInterval(forecastTable.getStart())));
-            for (WeatherPriority priority : periodSummary.keySet()) {
-                builder.setWeatherType(period, priority, periodSummary.get(priority));
-            }
+            weatherMap.put(period, summarizeForecasts(filterForecasts(forecastTable.getForecastList(), period.getInterval(forecastTable.getStart()))));
         }
-
-        return builder.build();
     }
 
-    private static List<Forecast> filterForecasts(List<Forecast> forecasts, Interval interval) {
+    private List<Forecast> filterForecasts(List<Forecast> forecasts, Interval interval) {
         List<Forecast> filteredForecasts = new ArrayList<Forecast>();
 
         for (Forecast forecast : forecasts) {
@@ -38,7 +32,7 @@ public class Day {
         return filteredForecasts;
     }
 
-    private static HashMap<WeatherPriority, WeatherType> summarizeForecasts(List<Forecast> forecasts) {
+    private HashMap<WeatherPriority, WeatherType> summarizeForecasts(List<Forecast> forecasts) {
         HashMap<WeatherPriority, WeatherType> summarizedForecasts = new HashMap<WeatherPriority, WeatherType>();
 
         if (forecasts.size() == 0) {
@@ -91,40 +85,6 @@ public class Day {
         return summarizedForecasts;
     }
 
-    public static class DaySummaryBuilder {
-        private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
-
-        public DaySummaryBuilder() {
-            weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>>();
-
-            for (DayPeriod period : DayPeriod.values()) {
-                HashMap<WeatherPriority, WeatherType> periodMap = new HashMap<WeatherPriority, WeatherType>();
-
-                for (WeatherPriority priority : WeatherPriority.values()) {
-                    periodMap.put(priority, null);
-                }
-
-                weatherMap.put(period, periodMap);
-            }
-        }
-
-        public DaySummaryBuilder setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
-            weatherMap.get(period).put(priority, type);
-            return this;
-        }
-
-        public Day build() {
-            return new Day(this);
-        }
-    }
-
-
-    private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
-
-    private Day(DaySummaryBuilder builder) {
-        this.weatherMap = builder.weatherMap;
-    }
-
     public WeatherType getWeatherType(DayPeriod period, WeatherPriority priority) {
         return weatherMap.get(period).get(priority);
     }
@@ -143,7 +103,11 @@ public class Day {
         return builder.toString();
     }
 
+    //TODO: Remove this comment
     /*
+
+    esto me lo guardo por si hago downgrade...
+
     private void setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
         weatherMap.get(period).put(priority, type);
     }

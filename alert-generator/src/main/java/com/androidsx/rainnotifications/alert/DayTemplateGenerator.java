@@ -24,7 +24,7 @@ public class DayTemplateGenerator {
     }
 
     public String generateMessage(ForecastTable forecastTable, String defaultMessage) {
-        Day day = Day.fromForecastTable(forecastTable);
+        Day day = new Day(forecastTable);
         DayTemplate template = getDayTemplate(day);
         return template == null ? defaultMessage : template.resolveMessage(day);
     }
@@ -42,6 +42,7 @@ public class DayTemplateGenerator {
         return matches.isEmpty() ? null : matches.get(matches.size() -1);
     }
 
+    //TODO: Remove this comment
     /*
     esto me lo guardo por si hago downgrade...
 
