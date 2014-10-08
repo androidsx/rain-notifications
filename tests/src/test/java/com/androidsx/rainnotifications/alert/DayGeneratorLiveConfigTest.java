@@ -2,9 +2,9 @@ package com.androidsx.rainnotifications.alert;
 
 import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.DayPeriod;
-import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
 import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherWrapper;
@@ -33,8 +33,7 @@ public class DayGeneratorLiveConfigTest {
 
     @Before
     public void setUp() throws Exception {
-        generator = new DayTemplateGenerator(DaySummaryDeserializer
-                .deserializeDaySummaryDictionary(new InputStreamReader(new FileInputStream("../alert-generator/src/main/assets/dayMessages.json"))));
+        generator = new DayTemplateGenerator(new JsonDayTemplateLoader(new InputStreamReader(new FileInputStream("../alert-generator/src/main/assets/dayTemplates.json"))));
     }
 
     // TODO: Create more and better test cases
@@ -46,11 +45,11 @@ public class DayGeneratorLiveConfigTest {
             forecasts.add(new Forecast(period.getInterval(new DateTime()), new WeatherWrapper(WeatherType.CLEAR)));
         }
 
-        final Day day = Day.fromForecastTable(ForecastTable.fromForecastList(forecasts));
+        final Day day = new Day(ForecastTable.fromForecastList(forecasts));
 
         for (DayPeriod period : DayPeriod.values()) {
             Assert.assertEquals(WeatherType.CLEAR, day.getWeatherType(period, WeatherPriority.primary));
-            Assert.assertEquals(WeatherType.UNDEFINED, day.getWeatherType(period, WeatherPriority.secondary));
+            Assert.assertTrue(day.getWeatherType(period, WeatherPriority.secondary) == null);
         }
         // Assert.assertTrue(daySummary.getDayMessage().contains("sun"));
         // Assert.assertFalse(daySummary.getDayMessage().contains("rain"));

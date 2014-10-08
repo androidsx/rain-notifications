@@ -92,7 +92,7 @@ public class Day {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("Day: ");
+        builder.append("DAY: ");
 
         for (DayPeriod period : DayPeriod.values()) {
             for (WeatherPriority priority : WeatherPriority.values()) {

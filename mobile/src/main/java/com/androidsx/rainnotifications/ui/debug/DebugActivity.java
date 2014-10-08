@@ -29,6 +29,7 @@ import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper
 import com.androidsx.rainnotifications.backgroundservice.util.SharedPrefsHelper;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
+import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
@@ -298,7 +299,8 @@ public class DebugActivity extends Activity {
 
         ForecastTable forecastTable = getDebugForecastTable();
         if(forecastTable != null) {
-            Timber.d("FORECAST_TABLE: \n" + forecastTable.toString());
+            Timber.d("_\n" + forecastTable.toString());
+            Timber.d("_\n" + new Day(forecastTable).toString());
             cardMessageTextView.setText(new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this))).generateMessage(this, forecastTable, "There isn't a template for today")); //TODO: Revisar este mensaje a pelo.
         }
         else {
