@@ -12,23 +12,31 @@ import java.util.List;
  * </p>
  */
 public enum WeatherType {
-    CLEAR(R.string.clear_adjective, R.string.clear_gerund),
-    RAIN(R.string.rain_adjective, R.string.rain_gerund),
-    CLOUDY(R.string.cloudy_adjective, R.string.cloudy_gerund),
-    SNOW(R.string.snow_adjective, R.string.snow_gerund),
-
     /**
      * This is a weather type that is unknown for us, but it could be a valid one in the data
      * source, after all.
      */
-    UNKNOWN(R.string.clear_adjective, R.string.clear_gerund); // This values are never used for UNKNOWN Weather
+    UNKNOWN(0, R.string.clear_adjective, R.string.clear_gerund), // This values are never used for UNKNOWN Weather
+    CLEAR(1, R.string.clear_adjective, R.string.clear_gerund),
+    CLOUDY(2, R.string.cloudy_adjective, R.string.cloudy_gerund),
+    RAIN(3, R.string.rain_adjective, R.string.rain_gerund),
+    SNOW(4, R.string.snow_adjective, R.string.snow_gerund);
 
+    /**
+     * Higher values ​​indicate greater relevance
+     */
+    private int relevance;
     private int adjective_resource;
     private int gerund_resource;
 
-    private WeatherType(int adjective_resource, int gerund_resource) {
+    private WeatherType(int relevance, int adjective_resource, int gerund_resource) {
+        this.relevance = relevance;
         this.adjective_resource = adjective_resource;
         this.gerund_resource = gerund_resource;
+    }
+
+    public int getRelevance() {
+        return relevance;
     }
 
     public String getAdjective(Context context) {
