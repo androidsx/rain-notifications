@@ -1,5 +1,7 @@
 package com.androidsx.rainnotifications.alert;
 
+import android.content.Context;
+
 import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.DayTemplate;
 import com.androidsx.rainnotifications.model.DayTemplateLoader;
@@ -20,14 +22,14 @@ public class DayTemplateGenerator {
         return getMostAccurate(getMatches(day));
     }
 
-    public String generateMessage(ForecastTable forecastTable) {
-        return generateMessage(forecastTable, null);
+    public String generateMessage(Context context, ForecastTable forecastTable) {
+        return generateMessage(context, forecastTable, null);
     }
 
-    public String generateMessage(ForecastTable forecastTable, String defaultMessage) {
+    public String generateMessage(Context context, ForecastTable forecastTable, String defaultMessage) {
         Day day = new Day(forecastTable);
         DayTemplate template = getDayTemplate(day);
-        return template == null ? defaultMessage : template.resolveMessage(day);
+        return template == null ? defaultMessage : template.resolveMessage(context,day);
     }
 
     private List<DayTemplate> getMatches(Day day) {

@@ -76,7 +76,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
 
                         updateUI(locationAddress,
                                 R.drawable.owlie_default,
-                                dayTemplateGenerator.generateMessage(forecastTable, "WORK IN PROGRESS")); //TODO: Revisar este mensaje a pelo.
+                                dayTemplateGenerator.generateMessage(MainMobileActivity.this, forecastTable, "WORK IN PROGRESS")); //TODO: Revisar este mensaje a pelo.
                     }
 
                     @Override
