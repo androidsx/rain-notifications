@@ -3,9 +3,10 @@ package com.androidsx.rainnotifications.model;
 import org.joda.time.Interval;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 public class Day {
 
@@ -40,14 +41,13 @@ public class Day {
     private static HashMap<WeatherPriority, WeatherType> summarizeForecasts(List<Forecast> forecasts) {
         HashMap<WeatherPriority, WeatherType> summarizedForecasts = new HashMap<WeatherPriority, WeatherType>();
 
-        /*
         if (forecasts.size() == 0) {
-            summarizedForecasts.put(WeatherPriority.primary, WeatherType.UNDEFINED);
-            summarizedForecasts.put(WeatherPriority.secondary, WeatherType.UNDEFINED);
+            summarizedForecasts.put(WeatherPriority.primary, null);
+            summarizedForecasts.put(WeatherPriority.secondary, null);
         }
         else if (forecasts.size() == 1) {
             summarizedForecasts.put(WeatherPriority.primary, forecasts.get(0).getWeatherWrapper().getType());
-            summarizedForecasts.put(WeatherPriority.secondary, WeatherType.UNDEFINED);
+            summarizedForecasts.put(WeatherPriority.secondary, null);
         }
         else {
             // We use most durable WeatherType as primary
@@ -69,66 +69,87 @@ public class Day {
             }
 
             summarizedForecasts.put(WeatherPriority.primary, mostDurable);
-            durations.remove(mostDurable);
 
-            // and the highest priority as secondary
-            if(durations.containsKey(WeatherType.SNOW)) {
-                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.SNOW);
-            }
-            if(durations.containsKey(WeatherType.RAIN)) {
-                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.RAIN);
-            }
-            else if(durations.containsKey(WeatherType.CLOUDY)) {
-                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.CLOUDY);
-            }
-            else if(durations.containsKey(WeatherType.CLEAR)) {
-                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.CLEAR);
+            // and the most relevant as secondary
+            durations.remove(mostDurable);
+            if(durations.isEmpty()) {
+                summarizedForecasts.put(WeatherPriority.secondary, null);
             }
             else {
-                summarizedForecasts.put(WeatherPriority.secondary, WeatherType.UNDEFINED);
+                List<WeatherType> secondaryWeathers = new ArrayList<WeatherType>(durations.keySet());
+                Collections.sort(secondaryWeathers, new Comparator<WeatherType>() {
+                    @Override
+                    public int compare(WeatherType lhs, WeatherType rhs) {
+                        return rhs.getRelevance() - lhs.getRelevance();
+                    }
+                });
+
+                summarizedForecasts.put(WeatherPriority.secondary, secondaryWeathers.get(0));
             }
         }
-        */
+
         return summarizedForecasts;
     }
 
-    private final Random random = new Random();
+    public static class DaySummaryBuilder {
+        private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
+
+        public DaySummaryBuilder() {
+            weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>>();
+
+            for (DayPeriod period : DayPeriod.values()) {
+                HashMap<WeatherPriority, WeatherType> periodMap = new HashMap<WeatherPriority, WeatherType>();
+
+                for (WeatherPriority priority : WeatherPriority.values()) {
+                    periodMap.put(priority, null);
+                }
+
+                weatherMap.put(period, periodMap);
+            }
+        }
+
+        public DaySummaryBuilder setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
+            weatherMap.get(period).put(priority, type);
+            return this;
+        }
+
+        public Day build() {
+            return new Day(this);
+        }
+    }
+
+
     private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
-    private HashMap<String, List<String>> messages;
 
     private Day(DaySummaryBuilder builder) {
         this.weatherMap = builder.weatherMap;
-        this.messages = builder.messages;
-    }
-
-    private void setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
-        weatherMap.get(period).put(priority, type);
     }
 
     public WeatherType getWeatherType(DayPeriod period, WeatherPriority priority) {
         return weatherMap.get(period).get(priority);
     }
 
-    public String getDayMessage() {
-        List<String> languageMessages = messages.get("en");
-        return languageMessages != null ? languageMessages.get(random.nextInt(languageMessages.size())) : DEFAULT_MESSAGE;
-    }
-
-    public int getWeatherLevel(WeatherType weatherType) {
-        int level = 0;
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Day: ");
 
         for (DayPeriod period : DayPeriod.values()) {
             for (WeatherPriority priority : WeatherPriority.values()) {
-                if (getWeatherType(period, priority).equals(weatherType)) level++;
+                builder.append("\n     " + period + " " + priority + " weather: " + getWeatherType(period, priority));
             }
         }
 
-        return level;
+        return builder.toString();
+    }
+
+    /*
+    private void setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
+        weatherMap.get(period).put(priority, type);
     }
 
     public boolean downgrade() {
         // TODO: Discuss with team this method. I don't like it because it's not generic.
-        /*
         if (!getWeatherType(DayPeriod.night, WeatherPriority.secondary).equals(WeatherType.UNDEFINED)) {
             Timber.d("remove night secondary");
             setWeatherType(DayPeriod.night, WeatherPriority.secondary, WeatherType.UNDEFINED);
@@ -176,62 +197,9 @@ public class Day {
             setWeatherType(DayPeriod.morning, WeatherPriority.primary, WeatherType.UNDEFINED);
             return true;
         }
-        */
 
         return false;
     }
+    */
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("Day Messages for: ");
-
-        for (DayPeriod period : DayPeriod.values()) {
-            for (WeatherPriority priority : WeatherPriority.values()) {
-                builder.append("\n" + period + " " + priority + " weather: " + getWeatherType(period, priority));
-            }
-        }
-
-        if (messages.containsKey("en")) {
-            builder.append("\n\nMessages:");
-            for (String s : messages.get("en")) {
-                builder.append(String.format("Message (en): %s", s) + "\n");
-            }
-        }
-        return builder.toString();
-    }
-
-    public static class DaySummaryBuilder {
-        private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
-        private HashMap<String, List<String>> messages;
-
-        public DaySummaryBuilder() {
-            weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>>();
-            messages = new HashMap<String, List<String>>();
-
-            for (DayPeriod period : DayPeriod.values()) {
-                HashMap<WeatherPriority, WeatherType> periodMap = new HashMap<WeatherPriority, WeatherType>();
-
-                for (WeatherPriority priority : WeatherPriority.values()) {
-                    //periodMap.put(priority, WeatherType.UNDEFINED);
-                }
-
-                weatherMap.put(period, periodMap);
-            }
-        }
-
-        public DaySummaryBuilder setWeatherType(DayPeriod period, WeatherPriority priority, WeatherType type) {
-            weatherMap.get(period).put(priority, type);
-            return this;
-        }
-
-        public DaySummaryBuilder setMessages(HashMap<String, List<String>> messages) {
-            this.messages = messages;
-            return this;
-        }
-
-        public Day build() {
-            return new Day(this);
-        }
-    }
 }
