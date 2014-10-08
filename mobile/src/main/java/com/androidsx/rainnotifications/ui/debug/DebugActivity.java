@@ -299,7 +299,7 @@ public class DebugActivity extends Activity {
         ForecastTable forecastTable = getDebugForecastTable();
         if(forecastTable != null) {
             Timber.d("FORECAST_TABLE: \n" + forecastTable.toString());
-            cardMessageTextView.setText(new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)).load()).generateMessage(forecastTable, "WORK IN PROGRESS")); //TODO: Revisar este mensaje a pelo.
+            cardMessageTextView.setText(new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this))).generateMessage(forecastTable, "WORK IN PROGRESS")); //TODO: Revisar este mensaje a pelo.
         }
         else {
             cardMessageTextView.setText("Null ForecastTable, are all WeatherTypes UNKNOWN?");

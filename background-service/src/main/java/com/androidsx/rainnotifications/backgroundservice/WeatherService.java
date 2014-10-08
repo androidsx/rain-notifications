@@ -44,7 +44,7 @@ public class WeatherService extends Service {
 
         alertGenerator = new AlertGenerator(this);
         alertGenerator.init();
-        dayTemplateGenerator = new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)).load());
+        dayTemplateGenerator = new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)));
     }
 
     @Override

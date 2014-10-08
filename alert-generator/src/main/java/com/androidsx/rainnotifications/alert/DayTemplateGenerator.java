@@ -2,6 +2,7 @@ package com.androidsx.rainnotifications.alert;
 
 import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.DayTemplate;
+import com.androidsx.rainnotifications.model.DayTemplateLoader;
 import com.androidsx.rainnotifications.model.ForecastTable;
 
 import java.util.ArrayList;
@@ -11,8 +12,8 @@ public class DayTemplateGenerator {
 
     private List<DayTemplate> dayTemplates;
 
-    public DayTemplateGenerator(List<DayTemplate> dayTemplates) {
-        this.dayTemplates = dayTemplates;
+    public DayTemplateGenerator(DayTemplateLoader loader) {
+        this.dayTemplates = loader.load();
     }
 
     public DayTemplate getDayTemplate(Day day) {

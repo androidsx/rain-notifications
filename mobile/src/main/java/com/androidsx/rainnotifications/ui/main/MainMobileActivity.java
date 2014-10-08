@@ -57,7 +57,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         alertGenerator = new AlertGenerator(this);
-        dayTemplateGenerator = new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)).load());
+        dayTemplateGenerator = new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)));
         alertGenerator.init();
 
         setupUI();
