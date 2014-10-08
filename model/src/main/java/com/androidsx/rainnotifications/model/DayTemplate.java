@@ -8,7 +8,25 @@ import java.util.Random;
 
 public class DayTemplate {
 
-    public enum DayTemplateJokerType {UNDEFINED, SAME}
+    public enum DayTemplateJokerType {
+        UNDEFINED,
+        SAME;
+
+        private boolean match(WeatherType currentType, WeatherType previousType) {
+            if(previousType == null) { //This is for morning
+                return true;
+            }
+
+            switch (this) {
+                case SAME:
+                    return currentType.equals(previousType);
+                case UNDEFINED:
+                    return !currentType.equals(previousType);
+                default:
+                    return false;
+            }
+        }
+    }
 
     private final Random random = new Random();
     private HashMap<DayPeriod, HashMap<WeatherPriority, Object>> weatherMap;
@@ -20,16 +38,69 @@ public class DayTemplate {
     }
 
     public boolean match(Day day) {
-        //TODO: Implement
-        return false;
+
+        WeatherType lastPrimaryWeather = null;
+
+        for (DayPeriod period : DayPeriod.values()) {
+
+            // FIRST CHECK PRIMARY
+            WeatherType currentPrimaryWeather = day.getWeatherType(period, WeatherPriority.primary);
+            Object templatePrimaryWeather = getWeatherType(period, WeatherPriority.primary);
+
+            if(currentPrimaryWeather == null && templatePrimaryWeather == null) {
+                // true
+            }
+            else if(currentPrimaryWeather == null && templatePrimaryWeather != null) {
+                return false;
+            }
+            else if(currentPrimaryWeather != null && templatePrimaryWeather == null) {
+                return false;
+            }
+            else if(currentPrimaryWeather != null && templatePrimaryWeather != null) {
+
+                if(templatePrimaryWeather instanceof DayTemplateJokerType) {
+                    if(!((DayTemplateJokerType) templatePrimaryWeather).match(currentPrimaryWeather, lastPrimaryWeather)) {
+                        return false;
+                    }
+                }
+                else {
+                    if(!currentPrimaryWeather.equals(templatePrimaryWeather)) {
+                        return false;
+                    }
+                }
+
+            }
+            lastPrimaryWeather = currentPrimaryWeather;
+
+            // NOW CHECK SECONDARY
+            WeatherType currentSecondaryWeather = day.getWeatherType(period, WeatherPriority.secondary);
+            WeatherType templateSecondaryWeather = (WeatherType) getWeatherType(period, WeatherPriority.secondary);
+
+            if(currentSecondaryWeather == null && templateSecondaryWeather == null) {
+                // true
+            }
+            else if(currentSecondaryWeather == null && templateSecondaryWeather != null) {
+                return false;
+            }
+            else if(currentSecondaryWeather != null && templateSecondaryWeather == null) {
+                return false;
+            }
+            else if(currentSecondaryWeather != null && templateSecondaryWeather != null) {
+                if(!currentSecondaryWeather.equals(templateSecondaryWeather)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     //TODO: ReImplement with Multilanguage support.
     public String resolveMessage(Context context, Day day) {
         String message = messages.get("en").get(random.nextInt(messages.get("en").size()));
         for (DayPeriod period : DayPeriod.values()) {
-            message = message.replace("${weather_" + period + "_adj", day.getWeatherType(period, WeatherPriority.primary).getAdjective(context));
-            message = message.replace("${weather_" + period + "_ing", day.getWeatherType(period, WeatherPriority.primary).getGerund(context));
+            message = message.replace("${weather_" + period + "_adj}", day.getWeatherType(period, WeatherPriority.primary).getAdjective(context));
+            message = message.replace("${weather_" + period + "_ing}", day.getWeatherType(period, WeatherPriority.primary).getGerund(context));
         }
         return message;
     }
