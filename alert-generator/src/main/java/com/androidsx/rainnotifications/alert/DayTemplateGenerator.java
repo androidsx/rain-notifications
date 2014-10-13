@@ -23,7 +23,7 @@ public class DayTemplateGenerator {
     }
 
     public void mergeConflictTest() {
-        //Original
+        //B
     }
 
 
