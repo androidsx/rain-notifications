@@ -44,26 +44,4 @@ public class DayTemplateGenerator {
         //TODO: This is a temporary implementation.
         return matches.isEmpty() ? null : matches.get(matches.size() -1);
     }
-
-    //TODO: Remove this comment
-    /*
-    esto me lo guardo por si hago downgrade...
-
-    public Day getClosestDaySummary(Day day) {
-            Timber.d("getClosestDaySummary for: " + day);
-            Day onMapSummary = getDaySummary(day);
-
-            while (onMapSummary == null) {
-                if(day.downgrade()) {
-                    onMapSummary = getDaySummary(day);
-                }
-                else {
-                    Timber.d("Can't find suitable summary");
-                    onMapSummary = day;
-                }
-            }
-
-            return onMapSummary;
-        }
-     */
 }
