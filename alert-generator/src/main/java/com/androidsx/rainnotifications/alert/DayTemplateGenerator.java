@@ -22,6 +22,11 @@ public class DayTemplateGenerator {
         return getMostAccurate(getMatches(day));
     }
 
+    public void mergeConflictTest() {
+        //Original
+    }
+
+
     public String generateMessage(Context context, ForecastTable forecastTable) {
         return generateMessage(context, forecastTable, null);
     }
