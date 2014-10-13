@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications;
+package com.androidsx.rainnotifications.dailyclothes;
 
 import android.app.Application;
 import android.app.PendingIntent;
@@ -12,14 +12,14 @@ import com.androidsx.commonlibrary.util.ApplicationVersionHelper;
 
 import timber.log.Timber;
 
-public class RainApplication extends Application {
-    private static RainApplication instance;
+public class DailyApplication extends Application {
+    private static DailyApplication instance;
 
-    public RainApplication() {
+    public DailyApplication() {
         instance = this;
     }
 
-    public static RainApplication getApplication() {
+    public static DailyApplication getApplication() {
         return instance;
     }
 

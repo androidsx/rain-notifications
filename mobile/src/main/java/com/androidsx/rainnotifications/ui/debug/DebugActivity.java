@@ -26,7 +26,7 @@ import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.backgroundservice.WeatherService;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
-import com.androidsx.rainnotifications.backgroundservice.util.SharedPrefsHelper;
+import com.androidsx.commonlibrary.util.SharedPrefsHelper;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.Day;

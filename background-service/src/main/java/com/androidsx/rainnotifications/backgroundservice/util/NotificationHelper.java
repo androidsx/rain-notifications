@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.text.Html;
+import android.text.Spanned;
 
 import com.androidsx.rainnotifications.backgroundservice.R;
 import com.androidsx.rainnotifications.model.Alert;
@@ -32,6 +34,10 @@ public class NotificationHelper {
      * Displays a standard notification, that will show up in both mobile and wear.
      */
     public static void displayStandardNotification(Context context, Intent intent, String text, Bitmap largeIcon) {
+        displayStandardNotification(context, intent, Html.fromHtml(text), largeIcon);
+    }
+
+    public static void displayStandardNotification(Context context, Intent intent, Spanned text, Bitmap largeIcon) {
         final int notificationId = 002;
 
         // Main intent for the notification (click for mobile, swipe left and click for wear)

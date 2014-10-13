@@ -2,8 +2,10 @@ package com.androidsx.rainnotifications.dailyclothes;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
@@ -14,11 +16,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
+import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
 import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnHelper;
 import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView;
-import com.androidsx.rainnotifications.dailyclothes.util.NotificationHelper;
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -28,6 +36,7 @@ import java.util.Random;
 public class MainActivity extends Activity {
     private Random random = new Random();
     private List<Clothes> clothesList = new ArrayList<Clothes>();
+    private List<ForecastListItem> forecastListItems = new ArrayList<ForecastListItem>();
     private CustomListAdapter adapter;
 
     private QuickReturnListView mListView;
@@ -84,13 +93,13 @@ public class MainActivity extends Activity {
                 if (messageId == 1) {
                     NotificationHelper.displayStandardNotification(
                             MainActivity.this,
-                            MainActivity.class,
+                            new Intent(MainActivity.this, MainActivity.class),
                             Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)),
                             BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
                 } else if (messageId == 2) {
                     NotificationHelper.displayStandardNotification(
                             MainActivity.this,
-                            MainActivity.class,
+                            new Intent(MainActivity.this, MainActivity.class),
                             Html.fromHtml(String.format(getString(R.string.forecast_second_message), maxTemp)),
                             BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
                     todayNumClicks = 0;
@@ -116,6 +125,25 @@ public class MainActivity extends Activity {
             }
         }
         ((TextView)findViewById(R.id.forecast_message)).setText(
+                Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
+    }
+
+    private void loadForecastList() {
+        ViewGroup forecastView = (ViewGroup) findViewById(R.id.hourly_forecast);
+        for (ForecastListItem f : forecastListItems) {
+            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.hourly_forecast_item, null);
+            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
+            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
+            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
+            Picasso.with(MainActivity.this).load(f.getIcon()).into(icon);
+            temp.setText(f.getTemp() + "º");
+            hour.setText(f.getHour() + "h");
+            forecastView.addView(view);
+            if (f.getTemp() > maxTemp) {
+                maxTemp = f.getTemp();
+            }
+        }
+        ((TextView) findViewById(R.id.forecast_message)).setText(
                 Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
     }
 
@@ -216,5 +244,29 @@ public class MainActivity extends Activity {
 
     static class ViewHolder {
         ImageView icon;
+    }
+
+    private class ForecastListItem {
+        int icon;
+        int temp;
+        int hour;
+
+        public ForecastListItem(int icon, int temp, int hour) {
+            this.icon = icon;
+            this.temp = temp;
+            this.hour = hour;
+        }
+
+        public int getIcon() {
+            return icon;
+        }
+
+        public int getTemp() {
+            return temp;
+        }
+
+        public int getHour() {
+            return hour;
+        }
     }
 }

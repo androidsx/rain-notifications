@@ -87,9 +87,11 @@
     <orderEntry type="library" exported="" name="support-v4-20.0.0" level="project" />
     <orderEntry type="library" exported="" name="joda-time-2.3" level="project" />
     <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
+    <orderEntry type="module" module-name="weather-client-api" exported="" />
     <orderEntry type="module" module-name="alert-generator" exported="" />
     <orderEntry type="module" module-name="background-service" exported="" />
     <orderEntry type="module" module-name="model" exported="" />
+    <orderEntry type="module" module-name="weather-client-factory" exported="" />
     <orderEntry type="module" module-name="common-library" exported="" />
   </component>
 </module>
