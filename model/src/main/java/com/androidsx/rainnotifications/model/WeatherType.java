@@ -26,13 +26,13 @@ public enum WeatherType {
      * Higher values ​​indicate greater relevance
      */
     private int relevance;
-    private int adjective_resource;
-    private int gerund_resource;
+    private int adjectiveResId;
+    private int gerundResId;
 
-    private WeatherType(int relevance, int adjective_resource, int gerund_resource) {
+    private WeatherType(int relevance, int adjectiveResId, int gerundResId) {
         this.relevance = relevance;
-        this.adjective_resource = adjective_resource;
-        this.gerund_resource = gerund_resource;
+        this.adjectiveResId = adjectiveResId;
+        this.gerundResId = gerundResId;
     }
 
     public int getRelevance() {
@@ -40,11 +40,11 @@ public enum WeatherType {
     }
 
     public String getAdjective(Context context) {
-        return context.getString(adjective_resource);
+        return context.getString(adjectiveResId);
     }
 
     public String getGerund(Context context) {
-        return context.getString(gerund_resource);
+        return context.getString(gerundResId);
     }
 
     public static List<WeatherType> getMeaningfulWeatherTypes() {
