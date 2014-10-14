@@ -9,7 +9,7 @@ import android.os.IBinder;
 
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
-import com.androidsx.rainnotifications.alert.Setup;
+import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
@@ -43,7 +43,7 @@ public class WeatherService extends Service {
 
         alertGenerator = new AlertGenerator(this);
         alertGenerator.init();
-        dayTemplateGenerator = new DayTemplateGenerator(Setup.getDayTemplateLoader(this));
+        dayTemplateGenerator = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(this));
     }
 
     @Override

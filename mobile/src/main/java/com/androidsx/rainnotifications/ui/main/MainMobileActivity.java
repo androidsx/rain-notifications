@@ -17,7 +17,7 @@ import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
-import com.androidsx.rainnotifications.alert.Setup;
+import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
@@ -56,7 +56,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         alertGenerator = new AlertGenerator(this);
-        dayTemplateGenerator = new DayTemplateGenerator(Setup.getDayTemplateLoader(this));
+        dayTemplateGenerator = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(this));
         alertGenerator.init();
 
         setupUI();
