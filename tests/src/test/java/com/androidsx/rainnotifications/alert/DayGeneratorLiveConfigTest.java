@@ -18,8 +18,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class DayGeneratorLiveConfigTest {
 
     @Before
     public void setUp() throws Exception {
-        generator = new DayTemplateGenerator(new JsonDayTemplateLoader(new InputStreamReader(new FileInputStream("../alert-generator/src/main/assets/dayTemplates.json"))));
+        generator = new DayTemplateGenerator(JsonDayTemplateLoader.fromFile(new File("../alert-generator/src/main/assets/dayTemplates.json")));
     }
 
     // TODO: Create more and better test cases

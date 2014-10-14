@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.androidsx.commonlibrary.util.SharedPrefsHelper;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
@@ -26,13 +27,11 @@ import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.backgroundservice.WeatherService;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
-import com.androidsx.commonlibrary.util.SharedPrefsHelper;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
 import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherWrapper;
 import com.androidsx.rainnotifications.ui.main.MainMobileActivity;
@@ -301,7 +300,7 @@ public class DebugActivity extends Activity {
         if(forecastTable != null) {
             Timber.d("_\n" + forecastTable.toString());
             Timber.d("_\n" + new Day(forecastTable).toString());
-            cardMessageTextView.setText(new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this))).generateMessage(this, forecastTable, "There isn't a template for today")); //TODO: Revisar este mensaje a pelo.
+            cardMessageTextView.setText(new DayTemplateGenerator(Setup.getDayTemplateLoader(this)).generateMessage(this, forecastTable, "There isn't a template for today")); //TODO: Revisar este mensaje a pelo.
         }
         else {
             cardMessageTextView.setText("Null ForecastTable, are all WeatherTypes UNKNOWN?");

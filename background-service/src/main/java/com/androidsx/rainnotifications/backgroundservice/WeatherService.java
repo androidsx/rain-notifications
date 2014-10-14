@@ -18,7 +18,6 @@ import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponse
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 
 import org.joda.time.DateTimeConstants;
@@ -44,7 +43,7 @@ public class WeatherService extends Service {
 
         alertGenerator = new AlertGenerator(this);
         alertGenerator.init();
-        dayTemplateGenerator = new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)));
+        dayTemplateGenerator = new DayTemplateGenerator(Setup.getDayTemplateLoader(this));
     }
 
     @Override

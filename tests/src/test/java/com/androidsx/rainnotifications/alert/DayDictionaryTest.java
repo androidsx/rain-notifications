@@ -144,8 +144,11 @@ public class DayDictionaryTest {
     }
 
     @Test
-    public void testCompletenessStatistics() throws Exception{
+    public void testCompletenessStatistics() {
         //TODO: ReImplement
+
+        //DayTemplateGenerator generator = new DayTemplateGenerator(JsonDayTemplateLoader.fromFile(new File("../alert-generator/src/main/assets/dayTemplates.json")));
+
         /*
         List<Day> dictionary = DaySummaryDeserializer.deserializeDaySummaryDictionary(new InputStreamReader(new FileInputStream("../alert-generator/src/main/assets/dayMessages.json")));
         DayTemplateGenerator generator = new DayTemplateGenerator(dictionary);

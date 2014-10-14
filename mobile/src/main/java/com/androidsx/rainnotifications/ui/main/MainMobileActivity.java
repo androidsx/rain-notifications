@@ -22,7 +22,6 @@ import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetche
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.ForecastTable;
-import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
@@ -57,7 +56,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         setContentView(R.layout.activity_forecast_mobile);
 
         alertGenerator = new AlertGenerator(this);
-        dayTemplateGenerator = new DayTemplateGenerator(new JsonDayTemplateLoader(Setup.getJsonDayTemplateReader(this)));
+        dayTemplateGenerator = new DayTemplateGenerator(Setup.getDayTemplateLoader(this));
         alertGenerator.init();
 
         setupUI();

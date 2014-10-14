@@ -1,5 +1,7 @@
 package com.androidsx.rainnotifications.model;
 
+import android.content.Context;
+
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
@@ -8,6 +10,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -17,17 +23,56 @@ import java.util.List;
 
 public class JsonDayTemplateLoader implements DayTemplateLoader{
 
-    //TODO: The reader should be closed but.... When?
+    private Context applicationContext;
+    private String assetFileName;
+    private File file;
 
-    private Reader reader;
+    public static JsonDayTemplateLoader fromAssets(Context context, String assetFileName) {
+        JsonDayTemplateLoader loader = new JsonDayTemplateLoader();
+        loader.applicationContext = context.getApplicationContext();
+        loader.assetFileName = assetFileName;
+        return loader;
+    }
 
-    public JsonDayTemplateLoader(Reader reader) {
-        this.reader = reader;
+    public static JsonDayTemplateLoader fromFile(File file) {
+        JsonDayTemplateLoader loader = new JsonDayTemplateLoader();
+        loader.file = file;
+        return loader;
+    }
+
+    private JsonDayTemplateLoader() {
+        // Non-instantiable
+    }
+
+    private Reader getReader() throws IOException {
+        if(assetFileName != null) {
+            return new InputStreamReader(applicationContext.getAssets().open(assetFileName));
+        }
+        else {
+            return new InputStreamReader(new FileInputStream(file));
+        }
     }
 
     @Override
     public List<DayTemplate> load() {
-        return Arrays.asList(new GsonBuilder().registerTypeAdapter(DayTemplate.class, new DayTemplateDeserializer()).create().fromJson(reader, DayTemplate[].class));
+        Reader reader = null;
+
+        try {
+            reader = getReader();
+        } catch (IOException e) {
+            //TODO: Crashlytics?
+            return new ArrayList<DayTemplate>();
+        }
+
+        List<DayTemplate> templates = Arrays.asList(new GsonBuilder().registerTypeAdapter(DayTemplate.class, new DayTemplateDeserializer()).create().fromJson(reader, DayTemplate[].class));
+
+        try {
+            reader.close();
+        } catch (IOException e) {
+            //TODO: Crashlytics?
+            // Eat it.
+        }
+        return templates;
     }
 
     private class DayTemplateDeserializer implements JsonDeserializer{
