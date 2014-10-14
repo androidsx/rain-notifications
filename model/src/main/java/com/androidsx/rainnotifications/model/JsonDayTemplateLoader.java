@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class JsonDayTemplateLoader implements DayTemplateLoader{
 
     private Context applicationContext;
@@ -60,7 +62,8 @@ public class JsonDayTemplateLoader implements DayTemplateLoader{
         try {
             reader = getReader();
         } catch (IOException e) {
-            //TODO: Crashlytics?
+            //TODO: Throw this Exception and add code for handle it.
+            Timber.e("IOException opening reader");
             return new ArrayList<DayTemplate>();
         }
 
@@ -69,8 +72,8 @@ public class JsonDayTemplateLoader implements DayTemplateLoader{
         try {
             reader.close();
         } catch (IOException e) {
-            //TODO: Crashlytics?
             // Eat it.
+            Timber.w("IOException closing reader");
         }
         return templates;
     }
