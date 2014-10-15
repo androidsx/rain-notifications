@@ -56,13 +56,13 @@ public class ForecastTableToDayConverterTest {
         Day summary = new Day(ForecastTable.fromForecastList(forecastList));
 
         Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.primary), WeatherType.RAIN);
-        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), WeatherType.CLOUDY);
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.morning, WeatherPriority.secondary), null);
 
         Assert.assertEquals(summary.getWeatherType(DayPeriod.afternoon, WeatherPriority.primary), WeatherType.CLOUDY);
         Assert.assertEquals(summary.getWeatherType(DayPeriod.afternoon, WeatherPriority.secondary), WeatherType.RAIN);
 
         Assert.assertEquals(summary.getWeatherType(DayPeriod.evening, WeatherPriority.primary), WeatherType.RAIN);
-        Assert.assertEquals(summary.getWeatherType(DayPeriod.evening, WeatherPriority.secondary), WeatherType.CLEAR);
+        Assert.assertEquals(summary.getWeatherType(DayPeriod.evening, WeatherPriority.secondary), null);
     }
 
     @Test

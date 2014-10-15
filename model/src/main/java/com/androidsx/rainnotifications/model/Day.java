@@ -64,7 +64,7 @@ public class Day {
 
             summarizedForecasts.put(WeatherPriority.primary, mostDurable);
 
-            // and the most relevant as secondary
+            // and the most relevant as secondary (only if it is more relevant than primary)
             durations.remove(mostDurable);
             if(durations.isEmpty()) {
                 summarizedForecasts.put(WeatherPriority.secondary, null);
@@ -78,7 +78,12 @@ public class Day {
                     }
                 });
 
-                summarizedForecasts.put(WeatherPriority.secondary, secondaryWeathers.get(0));
+                if(secondaryWeathers.get(0).getRelevance() > mostDurable.getRelevance()) {
+                    summarizedForecasts.put(WeatherPriority.secondary, secondaryWeathers.get(0));
+                }
+                else {
+                    summarizedForecasts.put(WeatherPriority.secondary, null);
+                }
             }
         }
 
