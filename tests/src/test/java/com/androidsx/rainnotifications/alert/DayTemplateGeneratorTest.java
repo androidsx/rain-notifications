@@ -103,6 +103,36 @@ public class DayTemplateGeneratorTest {
     }
 
     @Test
+    public void testFromAfternoonWithOneSecondary() {
+        startTest("From Afternoon with one secondary:", JSON_FROM_AFTERNOON);
+        for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+            for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+
+                for (WeatherType afternoonSecondary : getMoreRelevantWeatherTypes(afternoonPrimary)) {
+                    Day mockDay = getMockDay(null, null, afternoonPrimary, afternoonSecondary, eveningPrimary, null);
+                    if(generator.getDayTemplate(mockDay) != null) {
+                        addMatch();
+                    }
+                    else {
+                        addNonMatch();
+                    }
+                }
+
+                for (WeatherType eveningSecondary : getMoreRelevantWeatherTypes(eveningPrimary)) {
+                    Day mockDay = getMockDay(null, null, afternoonPrimary, null, eveningPrimary, eveningSecondary);
+                    if(generator.getDayTemplate(mockDay) != null) {
+                        addMatch();
+                    }
+                    else {
+                        addNonMatch();
+                    }
+                }
+            }
+        }
+        endTest();
+    }
+
+    @Test
     public void testFromEveningOnlyPrimary() {
         startTest("From Evening, only primaries:", JSON_FROM_EVENING);
         for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
@@ -118,8 +148,8 @@ public class DayTemplateGeneratorTest {
     }
 
     @Test
-    public void testFromEvening() {
-        startTest("From Evening:", JSON_FROM_EVENING);
+    public void testFromEveningWithSecondary() {
+        startTest("From Evening with secondary:", JSON_FROM_EVENING);
         for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType eveningSecondary : getMoreRelevantWeatherTypes(eveningPrimary)) {
                 Day mockDay = getMockDay(null, null, null, null, eveningPrimary, eveningSecondary);
