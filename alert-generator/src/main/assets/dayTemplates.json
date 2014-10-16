@@ -1245,36 +1245,35 @@
 
 
 
-   {
-      "morning" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "RAIN"
-               }
-         },
-      "afternoon" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "SAME"
-               }
-         },
-      "evening" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "SAME"
-               }
-         },
-      "messages" :
-         {
-            "en" :
-               [
-                  "That sucks, it won't stop raining all day, don't forget your umbrella"
-               ]
-         }
-   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1647,6 +1646,35 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   {
       "evening" :
          {
@@ -1680,6 +1708,105 @@
             "en" :
                [
                   "FOR_REVIEW Except for a little ${weather_evening_secondary_noun}, it will be ${weather_evening_primary_ing} the rest of the day"
+               ]
+         }
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "RAIN"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "That sucks, it won't stop raining all day, don't forget your umbrella"
                ]
          }
    }
