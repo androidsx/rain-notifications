@@ -4,7 +4,7 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "afternoon" :
@@ -25,7 +25,7 @@
          {
             "en" :
                [
-                  "It's gonna be ${weather_morning_ing} all day"
+                  "It's gonna be ${weather_morning_primary_ing} all day"
                ]
          }
    },
@@ -34,7 +34,7 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "afternoon" :
@@ -48,14 +48,14 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "messages" :
          {
             "en" :
                [
-                  "Looks like it'll be ${weather_morning_ing} until tonight, when it's gonna turn ${weather_evening_adj}"
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
                ]
          }
    },
@@ -64,14 +64,14 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "afternoon" :
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "evening" :
@@ -85,7 +85,7 @@
          {
             "en" :
                [
-                  "We'll have a ${weather_morning_adj} morning, but this afternoon will turn ${weather_afternoon_adj} through the night"
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
                ]
          }
    },
@@ -94,28 +94,28 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "afternoon" :
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "evening" :
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "messages" :
          {
             "en" :
                [
-                  "An interesting day: ${weather_morning_adj} in the morning, then ${weather_afternoon_adj} to end up ${weather_evening_adj} in the evening"
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
                ]
          }
    },
@@ -154,7 +154,7 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                },
             "secondary" :
                {
@@ -179,7 +179,7 @@
          {
             "en" :
                [
-                  "Except for a little rain in the morning, it will be a ${weather_morning_adj} day"
+                  "Except for a little rain in the morning, it will be a ${weather_morning_primary_adj} day"
                ]
          }
    }

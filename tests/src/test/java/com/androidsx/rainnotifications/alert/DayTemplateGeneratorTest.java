@@ -117,6 +117,32 @@ public class DayTemplateGeneratorTest {
         endTest();
     }
 
+    @Test
+    public void testFromEvening() {
+        startTest("From Evening:", JSON_FROM_EVENING);
+        for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+            for (WeatherType eveningSecondary : getMoreRelevantWeatherTypes(eveningPrimary)) {
+                Day mockDay = getMockDay(null, null, null, null, eveningPrimary, eveningSecondary);
+                if(generator.getDayTemplate(mockDay) != null) {
+                    addMatch();
+                }
+                else {
+                    addNonMatch();
+                }
+            }
+        }
+        endTest();
+    }
+
+    private List<WeatherType> getMoreRelevantWeatherTypes(WeatherType type) {
+        List<WeatherType> moreRelevant = new ArrayList<WeatherType>();
+        for (WeatherType meaningful : WeatherType.getMeaningfulWeatherTypes()) {
+            if(meaningful.getRelevance() > type.getRelevance()) {
+                moreRelevant.add(meaningful);
+            }
+        }
+        return moreRelevant;
+    }
 
     private Day getMockDay(WeatherType morningPrimary, WeatherType morningSecondary,
                            WeatherType afternoonPrimary, WeatherType afternoonSecondary,

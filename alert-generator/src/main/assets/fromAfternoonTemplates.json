@@ -4,7 +4,7 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "evening" :
@@ -18,7 +18,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW It's gonna be ${weather_afternoon_ing} the rest of the day"
+                  "FOR_REVIEW It's gonna be ${weather_afternoon_primary_ing} the rest of the day"
                ]
          }
    },
@@ -27,21 +27,21 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "evening" :
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "messages" :
          {
             "en" :
                [
-                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_ing} until tonight, when it's gonna turn ${weather_evening_adj}"
+                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
                ]
          }
    }

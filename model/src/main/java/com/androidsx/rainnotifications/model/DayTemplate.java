@@ -9,19 +9,19 @@ import java.util.Random;
 public class DayTemplate {
 
     public enum DayTemplateJokerType {
-        UNDEFINED,
-        SAME;
+        WHATEVER, // Only for secondary
+        OTHER, // Only for primary
+        SAME; // Only for primary
 
         private boolean match(WeatherType currentType, WeatherType previousType) {
-            if(previousType == null) { //This is for morning
-                return true;
-            }
-
             switch (this) {
+                case WHATEVER:
+                    return true;
                 case SAME:
-                    return currentType.equals(previousType);
-                case UNDEFINED:
-                    return !currentType.equals(previousType);
+                    return previousType == null ? false : currentType.equals(previousType);
+                case OTHER:
+                    // previousType == null means currentType is the first period on day.
+                    return previousType == null ? true : !currentType.equals(previousType);
                 default:
                     return false;
             }
@@ -74,7 +74,7 @@ public class DayTemplate {
 
             // NOW CHECK SECONDARY
             WeatherType currentSecondaryWeather = day.getWeatherType(period, WeatherPriority.secondary);
-            WeatherType templateSecondaryWeather = (WeatherType) getWeatherType(period, WeatherPriority.secondary);
+            Object templateSecondaryWeather = getWeatherType(period, WeatherPriority.secondary);
 
             if(currentSecondaryWeather == null && templateSecondaryWeather == null) {
                 // true
@@ -86,8 +86,16 @@ public class DayTemplate {
                 return false;
             }
             else if(currentSecondaryWeather != null && templateSecondaryWeather != null) {
-                if(!currentSecondaryWeather.equals(templateSecondaryWeather)) {
-                    return false;
+
+                if(templateSecondaryWeather instanceof DayTemplateJokerType) {
+                    if(!((DayTemplateJokerType) templateSecondaryWeather).match(currentSecondaryWeather, null)) {
+                        return false;
+                    }
+                }
+                else {
+                    if(!currentSecondaryWeather.equals(templateSecondaryWeather)) {
+                        return false;
+                    }
                 }
             }
         }
@@ -99,8 +107,11 @@ public class DayTemplate {
     public String resolveMessage(Context context, Day day) {
         String message = messages.get("en").get(random.nextInt(messages.get("en").size()));
         for (DayPeriod period : DayPeriod.values()) {
-            message = message.replace("${weather_" + period + "_adj}", day.getWeatherType(period, WeatherPriority.primary).getAdjective(context));
-            message = message.replace("${weather_" + period + "_ing}", day.getWeatherType(period, WeatherPriority.primary).getGerund(context));
+            for(WeatherPriority priority : WeatherPriority.values()) {
+                message = message.replace("${weather_" + period + "_" + priority + "_noun}", day.getWeatherType(period, WeatherPriority.primary).getNoun(context));
+                message = message.replace("${weather_" + period + "_" + priority + "_adj}", day.getWeatherType(period, WeatherPriority.primary).getAdjective(context));
+                message = message.replace("${weather_" + period + "_" + priority + "_ing}", day.getWeatherType(period, WeatherPriority.primary).getGerund(context));
+            }
         }
         return message;
     }
@@ -154,11 +165,16 @@ public class DayTemplate {
         }
 
         public DayTemplateBuilder setWeatherType(DayPeriod period, WeatherPriority priority, DayTemplateJokerType type) {
-            if(priority.equals(WeatherPriority.primary)) {
+            if(priority.equals(WeatherPriority.primary) && type.equals(DayTemplateJokerType.WHATEVER)) {
+                throw new IllegalArgumentException("WHATEVER Joker type aren't allowed for primary priority");
+            }
+            else if(priority.equals(WeatherPriority.secondary) && !type.equals(DayTemplateJokerType.WHATEVER)) {
+                throw new IllegalArgumentException("Only WHATEVER Joker type are allowed for secondary priority");
+            }
+            else {
                 weatherMap.get(period).put(priority, type);
                 return this;
             }
-            throw new IllegalArgumentException("Joker types are only allowed for primary priority");
         }
 
         public DayTemplateBuilder setMessages(HashMap<String, List<String>> messages) {

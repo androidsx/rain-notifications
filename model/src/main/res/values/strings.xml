@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="clear_noun">clear</string>
     <string name="clear_adjective">clear</string>
     <string name="clear_gerund">clear</string>
+    <string name="rain_noun">rain</string>
     <string name="rain_adjective">rainy</string>
     <string name="rain_gerund">raining</string>
+    <string name="cloudy_noun">cloudy</string>
     <string name="cloudy_adjective">cloudy</string>
     <string name="cloudy_gerund">cloudy</string>
+    <string name="snow_noun">snow</string>
     <string name="snow_adjective">snowy</string>
     <string name="snow_gerund">snowing</string>
 

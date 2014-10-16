@@ -4,14 +4,34 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "messages" :
          {
             "en" :
                [
-                  "FOR_REVIEW It's gonna be ${weather_evening_ing} the rest of the day"
+                  "FOR_REVIEW It's gonna be ${weather_evening_primary_ing} the rest of the day"
+               ]
+         }
+   },
+   {
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW Except for a little ${weather_evening_secondary_noun}, it will be ${weather_evening_primary_ing} the rest of the day"
                ]
          }
    }
