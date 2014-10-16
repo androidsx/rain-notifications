@@ -120,7 +120,12 @@ public class RainApplication extends Application {
         @Override
         public void i(String message, Object... args) {
             super.i(message, args);
-            currentLog.append(String.format("\n" + message, args));
+            try{
+                currentLog.append(String.format("\n" + message, args));
+            } catch (Exception e) {
+                currentLog.append("\n" + message);
+            }
+
             sharedPrefs.edit().putString(HISTORY_SHARED_PREF, currentLog.toString()).commit();
         }
 
