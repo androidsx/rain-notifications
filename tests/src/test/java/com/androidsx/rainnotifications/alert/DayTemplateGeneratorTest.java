@@ -11,6 +11,7 @@ import com.androidsx.rainnotifications.model.WeatherWrapper;
 
 import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,8 +63,7 @@ public class DayTemplateGeneratorTest {
         System.out.println(testTitle);
         System.out.println("     matches: " + testMatches);
         System.out.println("     no matches: " + testNonMatches);
-        //TODO: Remove this line when test are all implemented
-        //Assert.assertTrue(testNonMatches == 0);
+        Assert.assertTrue(testNonMatches == 0);
     }
 
     @Test
@@ -125,6 +125,27 @@ public class DayTemplateGeneratorTest {
                     }
                     else {
                         addNonMatch();
+                    }
+                }
+            }
+        }
+        endTest();
+    }
+
+    @Test
+    public void testFromAfternoonWithTwoSecondaries() {
+        startTest("From Afternoon with two secondaries:", JSON_FROM_AFTERNOON);
+        for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+            for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+                for (WeatherType afternoonSecondary : getMoreRelevantWeatherTypes(afternoonPrimary)) {
+                    for (WeatherType eveningSecondary : getMoreRelevantWeatherTypes(eveningPrimary)) {
+                        Day mockDay = getMockDay(null, null, afternoonPrimary, afternoonSecondary, eveningPrimary, eveningSecondary);
+                        if(generator.getDayTemplate(mockDay) != null) {
+                            addMatch();
+                        }
+                        else {
+                            addNonMatch();
+                        }
                     }
                 }
             }
