@@ -25,11 +25,11 @@ import timber.log.Timber;
 
 public class JsonDayTemplateLoader implements DayTemplateLoader{
 
+    public static final String DEFAULT_DAY_TEMPLATES_JSON_ASSET = "dayTemplates.json";
+
     private Context applicationContext;
     private String assetFileName;
     private File file;
-
-    public static final String DEFAULT_DAY_TEMPLATES_JSON_ASSET = "dayTemplates.json";
 
     public static JsonDayTemplateLoader fromAssets(Context context, String assetFileName) {
         JsonDayTemplateLoader loader = new JsonDayTemplateLoader();

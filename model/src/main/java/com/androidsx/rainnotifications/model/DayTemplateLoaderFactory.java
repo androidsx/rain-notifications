@@ -13,6 +13,8 @@ public class DayTemplateLoaderFactory {
      */
     public static DayTemplateLoader getDayTemplateLoader(Context context) {
         // TODO: Implement logic for server updates.
-        return JsonDayTemplateLoader.fromAssets(context, JsonDayTemplateLoader.DEFAULT_DAY_TEMPLATES_JSON_ASSET);
+        // TODO: Change loader.
+        //return JsonDayTemplateLoader.fromAssets(context, JsonDayTemplateLoader.DEFAULT_DAY_TEMPLATES_JSON_ASSET);
+        return new DevelopmentDayTemplateLoader(context);
     }
 }
