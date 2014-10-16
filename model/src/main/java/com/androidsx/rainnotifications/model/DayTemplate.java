@@ -108,9 +108,12 @@ public class DayTemplate {
         String message = messages.get("en").get(random.nextInt(messages.get("en").size()));
         for (DayPeriod period : DayPeriod.values()) {
             for(WeatherPriority priority : WeatherPriority.values()) {
-                message = message.replace("${weather_" + period + "_" + priority + "_noun}", day.getWeatherType(period, WeatherPriority.primary).getNoun(context));
-                message = message.replace("${weather_" + period + "_" + priority + "_adj}", day.getWeatherType(period, WeatherPriority.primary).getAdjective(context));
-                message = message.replace("${weather_" + period + "_" + priority + "_ing}", day.getWeatherType(period, WeatherPriority.primary).getGerund(context));
+                WeatherType type = day.getWeatherType(period, priority);
+                if(type != null) {
+                    message = message.replace("${weather_" + period + "_" + priority + "_noun}", type.getNoun(context));
+                    message = message.replace("${weather_" + period + "_" + priority + "_adj}", type.getAdjective(context));
+                    message = message.replace("${weather_" + period + "_" + priority + "_ing}", type.getGerund(context));
+                }
             }
         }
         return message;
