@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.alert;
+package com.androidsx.rainnotifications.model;
 
 import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.DayPeriod;
@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Tests for the generation of the day summary, {@link DayTemplateGenerator}.
+ * Tests for the generation of the day summary, {@link com.androidsx.rainnotifications.alert.DayTemplateGenerator}.
  */
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
@@ -34,7 +34,7 @@ public class ForecastTableToDayConverterTest {
     }
 
     @Test
-    public void testVersion2() {
+    public void testDayMessageForMixDay() {
         DateTime today6am = new DateTime(2014, 9, 28, 6, 0, 0);
         DateTime today8am = new DateTime(2014, 9, 28, 8, 0, 0);
         DateTime today9am = new DateTime(2014, 9, 28, 9, 0, 0);
@@ -96,7 +96,6 @@ public class ForecastTableToDayConverterTest {
         }
     }
 
-    // TODO: Reimplement as soon as we create the real DayMessageGenerator
     @Test
     public void testEasyCases() {
         final DateTime today9am = new DateTime(2014, 9, 17, 9, 0);

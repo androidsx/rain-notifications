@@ -128,6 +128,80 @@ public class DayTemplateGeneratorTest {
     }
 
     @Test
+    public void testFromMorningWithTwoSecondaries() {
+        startTest("From Morning with two secondaries:", JSON_FROM_MORNING);
+        for (WeatherType morningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+            for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+                for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+
+                    for (WeatherType morningSecondary : getMoreRelevantWeatherTypes(morningPrimary)) {
+                        for (WeatherType afternoonSecondary : getMoreRelevantWeatherTypes(afternoonPrimary)) {
+                            Day mockDay = getMockDay(morningPrimary, morningSecondary, afternoonPrimary, afternoonSecondary, eveningPrimary, null);
+                            if(generator.getDayTemplate(mockDay) != null) {
+                                addMatch();
+                            }
+                            else {
+                                addNonMatch();
+                            }
+                        }
+                    }
+
+                    for (WeatherType morningSecondary : getMoreRelevantWeatherTypes(morningPrimary)) {
+                        for (WeatherType eveningSecondary : getMoreRelevantWeatherTypes(eveningPrimary)) {
+                            Day mockDay = getMockDay(morningPrimary, morningSecondary, afternoonPrimary, null, eveningPrimary, eveningSecondary);
+                            if(generator.getDayTemplate(mockDay) != null) {
+                                addMatch();
+                            }
+                            else {
+                                addNonMatch();
+                            }
+                        }
+                    }
+
+                    for (WeatherType afternoonSecondary : getMoreRelevantWeatherTypes(afternoonPrimary)) {
+                        for (WeatherType eveningSecondary : getMoreRelevantWeatherTypes(eveningPrimary)) {
+                            Day mockDay = getMockDay(morningPrimary, null, afternoonPrimary, afternoonSecondary, eveningPrimary, eveningSecondary);
+                            if(generator.getDayTemplate(mockDay) != null) {
+                                addMatch();
+                            }
+                            else {
+                                addNonMatch();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        endTest();
+    }
+
+
+    @Test
+    public void testFromMorningWithThreeSecondaries() {
+        startTest("From Morning with three secondaries:", JSON_FROM_MORNING);
+        for (WeatherType morningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+            for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+                for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
+                    for (WeatherType morningSecondary : getMoreRelevantWeatherTypes(morningPrimary)) {
+                        for (WeatherType afternoonSecondary : getMoreRelevantWeatherTypes(afternoonPrimary)) {
+                            for (WeatherType eveningSecondary : getMoreRelevantWeatherTypes(eveningPrimary)) {
+                                Day mockDay = getMockDay(morningPrimary, morningSecondary, afternoonPrimary, afternoonSecondary, eveningPrimary, eveningSecondary);
+                                if(generator.getDayTemplate(mockDay) != null) {
+                                    addMatch();
+                                }
+                                else {
+                                    addNonMatch();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        endTest();
+    }
+
+    @Test
     public void testFromAfternoonOnlyPrimary() {
         startTest("From Afternoon, only primaries:", JSON_FROM_AFTERNOON);
         for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
