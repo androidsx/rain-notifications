@@ -38,6 +38,7 @@ public class DayTemplate {
     }
 
     public boolean match(Day day) {
+        // TODO: Simplify this code.
 
         WeatherType lastPrimaryWeather = null;
 
