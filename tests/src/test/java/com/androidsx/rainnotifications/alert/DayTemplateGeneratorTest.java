@@ -29,6 +29,10 @@ import java.util.List;
 @RunWith(RobolectricTestRunner.class)
 public class DayTemplateGeneratorTest {
 
+    private static final String JSON_FROM_MORNING = "fromMorningTemplates.json";
+    private static final String JSON_FROM_AFTERNOON = "fromAfternoonTemplates.json";
+    private static final String JSON_FROM_EVENING = "fromEveningTemplates.json";
+
     private DayTemplateGenerator generator;
     private String testTitle;
     private int testMatches;
@@ -37,10 +41,10 @@ public class DayTemplateGeneratorTest {
     @Before
     public void setUp() {
         ShadowLog.stream = System.out;
-        generator = new DayTemplateGenerator(JsonDayTemplateLoader.fromFile(new File("../alert-generator/src/main/assets/dayTemplates.json")));
     }
 
-    private void startTest(String title) {
+    private void startTest(String title, String fileName) {
+        generator = new DayTemplateGenerator(JsonDayTemplateLoader.fromFile(new File("../alert-generator/src/main/assets/" + fileName)));
         testTitle = title;
         testMatches = 0;
         testNonMatches = 0;
@@ -63,8 +67,8 @@ public class DayTemplateGeneratorTest {
     }
 
     @Test
-    public void testAllDayOnlyPrimary() {
-        startTest("All Day, only primaries:");
+    public void testFromMorningOnlyPrimary() {
+        startTest("From Morning, only primaries:", JSON_FROM_MORNING);
         for (WeatherType morningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
                 for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
@@ -83,7 +87,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromAfternoonOnlyPrimary() {
-        startTest("From Afternoon, only primaries:");
+        startTest("From Afternoon, only primaries:", JSON_FROM_AFTERNOON);
         for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
                 Day mockDay = getMockDay(null, null, afternoonPrimary, null, eveningPrimary, null);
@@ -100,7 +104,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromEveningOnlyPrimary() {
-        startTest("From Evening, only primaries:");
+        startTest("From Evening, only primaries:", JSON_FROM_EVENING);
         for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             Day mockDay = getMockDay(null, null, null, null, eveningPrimary, null);
             if(generator.getDayTemplate(mockDay) != null) {

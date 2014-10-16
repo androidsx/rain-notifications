@@ -1,0 +1,18 @@
+[
+   {
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "UNDEFINED"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW It's gonna be ${weather_evening_ing} the rest of the day"
+               ]
+         }
+   }
+]
