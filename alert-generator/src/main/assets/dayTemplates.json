@@ -1,26 +1,18 @@
-[
+ [
+
    {
-      "evening" :
+      "morning" :
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
-      "messages" :
-         {
-            "en" :
-               [
-                  "FOR_REVIEW It's gonna be ${weather_evening_ing} the rest of the day"
-               ]
-         }
-   },
-   {
       "afternoon" :
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "SAME"
                }
          },
       "evening" :
@@ -34,30 +26,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW It's gonna be ${weather_afternoon_ing} the rest of the day"
-               ]
-         }
-   },
-   {
-      "afternoon" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "UNDEFINED"
-               }
-         },
-      "evening" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "UNDEFINED"
-               }
-         },
-      "messages" :
-         {
-            "en" :
-               [
-                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_ing} until tonight, when it's gonna turn ${weather_evening_adj}"
+                  "It's gonna be ${weather_morning_primary_ing} all day"
                ]
          }
    },
@@ -66,7 +35,11 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
                }
          },
       "afternoon" :
@@ -87,7 +60,7 @@
          {
             "en" :
                [
-                  "It's gonna be ${weather_morning_ing} all day"
+                  "It's gonna be ${weather_morning_primary_ing} all day"
                ]
          }
    },
@@ -96,7 +69,7 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "afternoon" :
@@ -104,36 +77,10 @@
             "primary" :
                {
                   "weatherType" : "SAME"
-               }
-         },
-      "evening" :
-         {
-            "primary" :
+               },
+            "secondary" :
                {
-                  "weatherType" : "UNDEFINED"
-               }
-         },
-      "messages" :
-         {
-            "en" :
-               [
-                  "Looks like it'll be ${weather_morning_ing} until tonight, when it's gonna turn ${weather_evening_adj}"
-               ]
-         }
-   },
-   {
-      "morning" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "UNDEFINED"
-               }
-         },
-      "afternoon" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "WHATEVER"
                }
          },
       "evening" :
@@ -147,7 +94,7 @@
          {
             "en" :
                [
-                  "We'll have a ${weather_morning_adj} morning, but this afternoon will turn ${weather_afternoon_adj} through the night"
+                  "It's gonna be ${weather_morning_primary_ing} all day"
                ]
          }
    },
@@ -156,31 +103,1148 @@
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "OTHER"
                }
          },
       "afternoon" :
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "SAME"
                }
          },
       "evening" :
          {
             "primary" :
                {
-                  "weatherType" : "UNDEFINED"
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
                }
          },
       "messages" :
          {
             "en" :
                [
-                  "An interesting day: ${weather_morning_adj} in the morning, then ${weather_afternoon_adj} to end up ${weather_evening_adj} in the evening"
+                  "It's gonna be ${weather_morning_primary_ing} all day"
                ]
          }
    },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "It's gonna be ${weather_morning_primary_ing} all day"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "It's gonna be ${weather_morning_primary_ing} all day"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "It's gonna be ${weather_morning_primary_ing} all day"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "It's gonna be ${weather_morning_primary_ing} all day"
+               ]
+         }
+   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+               ]
+         }
+   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+               ]
+         }
+   },
+
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+               ]
+         }
+   },
+
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+               ]
+         }
+   },
+
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+               ]
+         }
+   },
+
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+               ]
+         }
+   },
+
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+               ]
+         }
+   },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    {
       "morning" :
          {
@@ -210,24 +1274,90 @@
                   "That sucks, it won't stop raining all day, don't forget your umbrella"
                ]
          }
-   },
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    {
-      "morning" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "UNDEFINED"
-               },
-            "secondary" :
-               {
-                  "weatherType" : "RAIN"
-               }
-         },
       "afternoon" :
          {
             "primary" :
                {
-                  "weatherType" : "SAME"
+                  "weatherType" : "OTHER"
                }
          },
       "evening" :
@@ -241,7 +1371,315 @@
          {
             "en" :
                [
-                  "Except for a little rain in the morning, it will be a ${weather_morning_adj} day"
+                  "FOR_REVIEW It's gonna be ${weather_afternoon_primary_ing} the rest of the day"
+               ]
+         }
+   },
+   {
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW Except for a little ${weather_afternoon_secondary_noun} this afternoon, it's gonna be ${weather_afternoon_primary_ing} the rest of the day"
+               ]
+         }
+   },
+   {
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW Except for a little ${weather_evening_secondary_noun} this evening, it's gonna be ${weather_afternoon_primary_ing} the rest of the day"
+               ]
+         }
+   },
+   {
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW Except for a little ${weather_afternoon_secondary_noun} this afternoon and a little ${weather_evening_secondary_noun} this evening, it's gonna be ${weather_afternoon_primary_ing} the rest of the day"
+               ]
+         }
+   },
+   {
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+   {
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_primary_ing} with a little {weather_afternoon_secondary_noun} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+               ]
+         }
+   },
+   {
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj} with a little {weather_evening_secondary_noun}"
+               ]
+         }
+   },
+   {
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_primary_ing} and a little ${weather_afternoon_secondary_noun} until tonight, when it's gonna turn ${weather_evening_primary_adj} with a little ${weather_evening_secondary_noun}"
+               ]
+         }
+   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  {
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW It's gonna be ${weather_evening_primary_ing} the rest of the day"
+               ]
+         }
+   },
+   {
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "FOR_REVIEW Except for a little ${weather_evening_secondary_noun}, it will be ${weather_evening_primary_ing} the rest of the day"
                ]
          }
    }
