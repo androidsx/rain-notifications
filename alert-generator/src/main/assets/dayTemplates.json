@@ -60,7 +60,7 @@
          {
             "en" :
                [
-                  "It's gonna be ${weather_morning_primary_ing} all day"
+                  "It's gonna be ${weather_morning_primary_ing} all day, with some ${weather_morning_secondary_noun} in the morning"
                ]
          }
    },
@@ -94,7 +94,7 @@
          {
             "en" :
                [
-                  "It's gonna be ${weather_morning_primary_ing} all day"
+                  "All day long ${weather_morning_primary_ing}! Only in the afternoon some ${weather_afternoon_secondary_noun} may appear"
                ]
          }
    },
@@ -128,7 +128,7 @@
          {
             "en" :
                [
-                  "It's gonna be ${weather_morning_primary_ing} all day"
+                  "It's gonna be ${weather_morning_primary_ing} all day, with some ${weather_evening_secondary_noun} in the evening"
                ]
          }
    },
@@ -166,7 +166,7 @@
          {
             "en" :
                [
-                  "It's gonna be ${weather_morning_primary_ing} all day"
+                  "The majority of the day is gonna be ${weather_morning_primary_ing}, with some ${weather_afternoon_secondary_noun} during the morning and afternoon"
                ]
          }
    },
@@ -204,7 +204,7 @@
          {
             "en" :
                [
-                  "It's gonna be ${weather_morning_primary_ing} all day"
+                  "The majority of the day is gonna be ${weather_morning_primary_ing}, with some ${weather_evening_secondary_noun} during the morning and evening"
                ]
          }
    },
@@ -242,7 +242,7 @@
          {
             "en" :
                [
-                  "It's gonna be ${weather_morning_primary_ing} all day"
+                  "The majority of the day is gonna be ${weather_morning_primary_ing}. Some part of the afternoon and evening seems it is gonna be ${weather_evening_secondary_ing}"
                ]
          }
    },
@@ -284,7 +284,7 @@
          {
             "en" :
                [
-                  "It's gonna be ${weather_morning_primary_ing} all day"
+                  "During all day ${weather_morning_primary_noun} and ${weather_morning_secondary_noun} will alternate"
                ]
          }
    },
@@ -372,7 +372,7 @@
          {
             "en" :
                [
-                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}. Some ${weather_morning_secondary_adj} may appear in the morning"
                ]
          }
    },
@@ -406,7 +406,7 @@
          {
             "en" :
                [
-                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}. Some ${weather_afternoon_secondary_adj} may appear in the afternoon"
                ]
          }
    },
@@ -416,82 +416,6 @@
             "primary" :
                {
                   "weatherType" : "OTHER"
-               }
-         },
-      "afternoon" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "SAME"
-               }
-         },
-      "evening" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "OTHER"
-               },
-            "secondary" :
-               {
-                  "weatherType" : "WHATEVER"
-               }
-         },
-      "messages" :
-         {
-            "en" :
-               [
-                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
-               ]
-         }
-   },
-   {
-      "morning" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "OTHER"
-               },
-            "secondary" :
-               {
-                  "weatherType" : "WHATEVER"
-               }
-         },
-      "afternoon" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "SAME"
-               },
-            "secondary" :
-               {
-                  "weatherType" : "WHATEVER"
-               }
-         },
-      "evening" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "OTHER"
-               }
-         },
-      "messages" :
-         {
-            "en" :
-               [
-                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
-               ]
-         }
-   },
-   {
-      "morning" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "OTHER"
-               },
-            "secondary" :
-               {
-                  "weatherType" : "WHATEVER"
                }
          },
       "afternoon" :
@@ -526,6 +450,10 @@
             "primary" :
                {
                   "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
                }
          },
       "afternoon" :
@@ -537,6 +465,40 @@
             "secondary" :
                {
                   "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "It will be ${weather_morning_primary_ing} until tonight, with few ${weather_morning_secondary_adj}. In the evening it is going to be ${weather_evening_primary_ing}"
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
                }
          },
       "evening" :
@@ -564,6 +526,44 @@
             "primary" :
                {
                   "weatherType" : "OTHER"
+               }
+         },
+      "afternoon" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "SAME"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "evening" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
+               },
+            "secondary" :
+               {
+                  "weatherType" : "WHATEVER"
+               }
+         },
+      "messages" :
+         {
+            "en" :
+               [
+                  "The weather will be a bit crazy. It is going to ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}. And some ${weather_afternoon_secondary_noun} too."
+               ]
+         }
+   },
+   {
+      "morning" :
+         {
+            "primary" :
+               {
+                  "weatherType" : "OTHER"
                },
             "secondary" :
                {
@@ -596,7 +596,7 @@
          {
             "en" :
                [
-                  "Looks like it'll be ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+                  "The weather will be a bit crazy. It is going to ${weather_morning_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}. And some ${weather_afternoon_secondary_noun} too."
                ]
          }
    },
@@ -682,7 +682,7 @@
          {
             "en" :
                [
-                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+                  "We'll have a ${weather_morning_primary_adj} morning with light ${weather_morning_secondary_noun}, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
                ]
          }
    },
@@ -716,7 +716,7 @@
          {
             "en" :
                [
-                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} with light ${weather_afternoon_secondary_noun}"
                ]
          }
    },
@@ -750,7 +750,7 @@
          {
             "en" :
                [
-                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+                  "We'll have a ${weather_morning_primary_adj} morning, but this evening will turn ${weather_afternoon_primary_adj} with light ${weather_evening_secondary_noun}"
                ]
          }
    },
@@ -788,7 +788,7 @@
          {
             "en" :
                [
-                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+                  "We'll have a ${weather_morning_primary_adj} morning with some ${weather_morning_secondary_noun}, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
                ]
          }
    },
@@ -826,7 +826,7 @@
          {
             "en" :
                [
-                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+                  "Crazy day. We'll have a ${weather_morning_primary_adj} morning with light ${weather_morning_secondary_noun}, but this afternoon will turn ${weather_afternoon_primary_adj} through the night. Some ${weather_evening_secondary_noun} may appear in the evening"
                ]
          }
    },
@@ -864,7 +864,7 @@
          {
             "en" :
                [
-                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+                  "Crazy day. We'll have a ${weather_morning_primary_adj} morning with light ${weather_morning_secondary_noun}, but this afternoon will turn ${weather_afternoon_primary_adj} with some ${weather_evening_secondary_noun}"
                ]
          }
    },
@@ -906,7 +906,7 @@
          {
             "en" :
                [
-                  "We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} through the night"
+                  "Difficult weather to describe! In the morning ${weather_morning_primary_adj}, and later will turn ${weather_afternoon_primary_adj} with some ${weather_afternoon_secondary_noun}"
                ]
          }
    },
@@ -992,7 +992,7 @@
          {
             "en" :
                [
-                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+                  "What a day! ${weather_morning_primary_adj} in the morning with light ${weather_morning_secondary_noun}, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
                ]
          }
    },
@@ -1027,7 +1027,7 @@
          {
             "en" :
                [
-                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} with light ${weather_afternoon_secondary_noun} to end up ${weather_evening_primary_adj} in the evening"
                ]
          }
    },
@@ -1062,7 +1062,7 @@
          {
             "en" :
                [
-                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} with light ${weather_evening_secondary_noun} in the evening"
                ]
          }
    },
@@ -1101,7 +1101,7 @@
          {
             "en" :
                [
-                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+                  "${weather_morning_primary_adj} morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening."
                ]
          }
    },
@@ -1179,7 +1179,7 @@
          {
             "en" :
                [
-                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} with light ${weather_evening_secondary_noun}"
                ]
          }
    },
@@ -1221,7 +1221,7 @@
          {
             "en" :
                [
-                  "An interesting day: ${weather_morning_primary_adj} in the morning, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
+                  "Crazy ${weather_morning_primary_adj} morning with light ${weather_morning_secondary_noun}, then ${weather_afternoon_primary_adj} to end up ${weather_evening_primary_adj} in the evening"
                ]
          }
    },
@@ -1370,7 +1370,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW It's gonna be ${weather_afternoon_primary_ing} the rest of the day"
+                  "It's gonna be ${weather_afternoon_primary_ing} for the rest of the day"
                ]
          }
    },
@@ -1397,7 +1397,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW Except for a little ${weather_afternoon_secondary_noun} this afternoon, it's gonna be ${weather_afternoon_primary_ing} the rest of the day"
+                  "Except for light ${weather_afternoon_secondary_noun} this afternoon, it's gonna be ${weather_afternoon_primary_ing} the rest of the day"
                ]
          }
    },
@@ -1424,7 +1424,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW Except for a little ${weather_evening_secondary_noun} this evening, it's gonna be ${weather_afternoon_primary_ing} the rest of the day"
+                  "The rest of the day is gonna be ${weather_afternoon_primary_ing} with light ${weather_evening_secondary_noun}"
                ]
          }
    },
@@ -1455,7 +1455,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW Except for a little ${weather_afternoon_secondary_noun} this afternoon and a little ${weather_evening_secondary_noun} this evening, it's gonna be ${weather_afternoon_primary_ing} the rest of the day"
+                  "${weather_afternoon_primary_adj} evening, with interminent ${weather_afternoon_secondary_noun}"
                ]
          }
    },
@@ -1478,7 +1478,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+                  "Looks like it'll be ${weather_afternoon_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
                ]
          }
    },
@@ -1505,7 +1505,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_primary_ing} with a little {weather_afternoon_secondary_noun} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+                  "Looks like it'll be ${weather_afternoon_primary_ing} with a little {weather_afternoon_secondary_noun} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
                ]
          }
    },
@@ -1532,7 +1532,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj} with a little {weather_evening_secondary_noun}"
+                  "Looks like it'll be ${weather_afternoon_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj} with light {weather_evening_secondary_noun}"
                ]
          }
    },
@@ -1563,7 +1563,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW Looks like it'll be ${weather_afternoon_primary_ing} and a little ${weather_afternoon_secondary_noun} until tonight, when it's gonna turn ${weather_evening_primary_adj} with a little ${weather_evening_secondary_noun}"
+                  "Looks like it'll be ${weather_afternoon_primary_ing} and some ${weather_afternoon_secondary_noun} until tonight, when it's gonna turn ${weather_evening_primary_adj} with light ${weather_evening_secondary_noun}"
                ]
          }
    }
@@ -1687,7 +1687,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW It's gonna be ${weather_evening_primary_ing} the rest of the day"
+                  "It's gonna be ${weather_evening_primary_ing} the rest of the day"
                ]
          }
    },
@@ -1707,7 +1707,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW Except for a little ${weather_evening_secondary_noun}, it will be ${weather_evening_primary_ing} the rest of the day"
+                  "Except for a little ${weather_evening_secondary_noun}, it will be ${weather_evening_primary_ing} the rest of the day"
                ]
          }
    }
