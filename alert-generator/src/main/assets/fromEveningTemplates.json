@@ -1,5 +1,7 @@
 [
-   {
+
+
+  {
       "evening" :
          {
             "primary" :
@@ -11,7 +13,7 @@
          {
             "en" :
                [
-                  "FOR_REVIEW It's gonna be ${weather_evening_primary_ing} the rest of the day"
+                  "It's gonna be ${weather_evening_primary_ing} the rest of the day"
                ]
          }
    },
@@ -31,8 +33,9 @@
          {
             "en" :
                [
-                  "FOR_REVIEW Except for a little ${weather_evening_secondary_noun}, it will be ${weather_evening_primary_ing} the rest of the day"
+                  "Except for a little ${weather_evening_secondary_noun}, it will be ${weather_evening_primary_ing} the rest of the day"
                ]
          }
    }
+
 ]
