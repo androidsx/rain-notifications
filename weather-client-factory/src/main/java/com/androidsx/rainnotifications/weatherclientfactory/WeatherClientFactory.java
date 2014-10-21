@@ -9,6 +9,7 @@ import com.androidsx.rainnotifications.wunderground.WundergroundNetworkServiceTa
 
 public abstract class WeatherClientFactory {
 
+    //WARNING: At the moment only WUNDERGROUND implement temperature, so we can't use forecast.io See also WeatherBuilder on forecast.io module
     private static final WeatherClient CLIENT = WeatherClient.WUNDERGROUND;
 
     public static void requestForecastForLocation(Context context, double latitude, double longitude, WeatherClientResponseListener responseListener) {
