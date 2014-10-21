@@ -11,10 +11,38 @@ android {
         versionCode 2
         versionName "0.2"
     }
-    buildTypes {
+    signingConfigs {
         release {
+            Properties props = getEnvironmentSettings();
+            storeFile file(props.get('storeFile'))
+            storePassword props.get('storePassword')
+            keyAlias props.get('keyAlias')
+            keyPassword props.get('keyPassword')
+        }
+    }
+    buildTypes {
+        debug {
             runProguard false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        /**
+         * To generate a signed APK, just execute {@code ./gradlew clean assembleRelease} as usual,
+         * and be sure to have a {@code gradle.properties} file in the root folder like this:
+         *
+         * <pre>
+           storeFile=../../PATH_OUTSIDE_OF_PROJECT_FOLDER
+           storePassword=XXX
+           keyAlias=XXX
+           keyPassword=XXX
+         * </pre>
+         */
+        release {
+            Properties props = getEnvironmentSettings();
+            if (!props.isEmpty() && props.containsKey('storeFile')) {
+                println 'Going to sign with ' + props.get('storeFile')
+                signingConfig signingConfigs.release
+            } else {
+                println 'Won\'t sign release'
+            }
         }
     }
     lintOptions {
@@ -33,4 +61,20 @@ dependencies {
     compile project(':alert-generator')
     compile project(':weather-client-api')
     compile project(':weather-client-factory')
+}
+
+Properties getEnvironmentSettings() {
+    Properties props = new Properties()
+    InputStream fis;
+    try {
+        fis = new FileInputStream(new File('./gradle.properties'))
+        props.load(fis)
+    } catch (FileNotFoundException e) {
+        println 'No property file.'
+    } finally {
+        if (null != fis) {
+            fis.close()
+        }
+    }
+    return props;
 }
