@@ -319,11 +319,13 @@ public class DebugActivity extends Activity {
 
         for (int i = 0 ; i< weatherItemRows.size() - 1 ; i++) {
             forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(i), weatherItemRows.get(i + 1)),
-                    new WeatherWrapper(weatherItemRows.get(i).getWeatherType())));
+                    new WeatherWrapper(weatherItemRows.get(i).getWeatherType(), 0, WeatherWrapper.TemperatureScale.CELSIUS)));
+                                                                                // TODO: FIXME: Retrieve temperature from weather
         }
 
         forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(weatherItemRows.size() - 1), null),
-                new WeatherWrapper(weatherItemRows.get(weatherItemRows.size() - 1).getWeatherType())));
+                new WeatherWrapper(weatherItemRows.get(weatherItemRows.size() - 1).getWeatherType(), 0, WeatherWrapper.TemperatureScale.CELSIUS)));
+                                                                                                    // TODO: FIXME: Retrieve temperature from weather
 
         return ForecastTable.fromForecastList(forecastList);
     }

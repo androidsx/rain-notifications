@@ -10,6 +10,7 @@ import org.json.JSONObject;
  */
 public class WundergroundWeatherBuilder {
     public static WeatherWrapper buildFromWunderground(JSONObject weather) throws JSONException {
-        return new WeatherWrapper(WundergroundWeatherTypeBuilder.buildFromWunderground(weather.getString("icon")));
+        // TODO: FIXME: Retrieve temperature from weather
+        return new WeatherWrapper(WundergroundWeatherTypeBuilder.buildFromWunderground(weather.getString("icon")), 0 , WeatherWrapper.TemperatureScale.CELSIUS);
     }
 }
