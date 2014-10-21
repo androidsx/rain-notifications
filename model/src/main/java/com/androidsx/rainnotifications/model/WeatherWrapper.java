@@ -40,7 +40,7 @@ public class WeatherWrapper {
 
     @Override
     public String toString() {
-        return type.toString();
+        return type.toString() + ", " + temperatureCelsius + " °C, " + temperatureFahrenheit + " °F";
     }
 
     /**
