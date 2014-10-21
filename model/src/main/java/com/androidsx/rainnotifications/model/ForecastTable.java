@@ -1,7 +1,6 @@
 package com.androidsx.rainnotifications.model;
 
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +13,7 @@ public class ForecastTable {
 
     private List<Forecast> forecastList;
 
+    //TODO: Update this javadoc
     /**
      * Returns an appropiate {@link com.androidsx.rainnotifications.model.ForecastTable} for the given forecastList. It processed the given list as follows:
      *
@@ -35,13 +35,16 @@ public class ForecastTable {
             throw new IllegalArgumentException("The list of forecasts is empty. At least one forecast is needed");
         } else {
             List<Forecast> meaningfulForecastList = getMeaningfulForecastList(forecastList);
+            return meaningfulForecastList.isEmpty() ? null : new ForecastTable(meaningfulForecastList);
 
+            /*
             if(meaningfulForecastList.isEmpty()) {
                 return null;
             }
             else {
                 return new ForecastTable(getMergedForecastList(meaningfulForecastList));
             }
+            */
         }
     }
 
@@ -58,6 +61,7 @@ public class ForecastTable {
         return meaningfulForecastList;
     }
 
+    /*
     private static List<Forecast> getMergedForecastList(List<Forecast> forecastList) {
         List<Forecast> mergedForecastList = new ArrayList<Forecast>();
         mergedForecastList.add(forecastList.get(0));
@@ -75,6 +79,7 @@ public class ForecastTable {
 
         return mergedForecastList;
     }
+    */
 
     private ForecastTable(List<Forecast> forecastList) {
         this.forecastList = forecastList;
@@ -84,6 +89,7 @@ public class ForecastTable {
         return forecastList.get(0).getInterval().getStart();
     }
 
+    @Deprecated
     public boolean hasTransitions() {
         return forecastList.size() > 1; // Because the first one is the current weather
     }
@@ -91,6 +97,7 @@ public class ForecastTable {
     /**
      * Returns the processed lists of forecasts. It is guaranteed to be non-empty.
      */
+    @Deprecated
     public List<Forecast> getForecastList() {
         return forecastList;
     }

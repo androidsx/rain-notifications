@@ -11,12 +11,16 @@ import java.util.List;
 public class Day {
 
     private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
+    private Forecast minTemperature;
+    private Forecast maxTemperature;
 
     public Day(ForecastTable forecastTable) {
         weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>>();
         for (DayPeriod period : DayPeriod.values()) {
             weatherMap.put(period, summarizeForecasts(filterForecasts(forecastTable.getForecastList(), period.getInterval(forecastTable.getStart()))));
         }
+        setMinMaxTemperature(forecastTable.getForecastList(),
+                new Interval(DayPeriod.MORNING.getInterval(forecastTable.getStart()).getStart(), DayPeriod.EVENING.getInterval(forecastTable.getStart()).getEnd()));
     }
 
     private List<Forecast> filterForecasts(List<Forecast> forecasts, Interval interval) {
@@ -90,8 +94,30 @@ public class Day {
         return summarizedForecasts;
     }
 
+    private void setMinMaxTemperature(List<Forecast> forecasts, Interval interval) {
+        for (Forecast forecast : forecasts) {
+            if (forecast.getInterval().overlap(interval) != null) {
+                if(minTemperature == null || minTemperature.getWeatherWrapper().getTemperatureCelsius() > forecast.getWeatherWrapper().getTemperatureCelsius()) {
+                    minTemperature = forecast;
+                }
+
+                if(maxTemperature == null || maxTemperature.getWeatherWrapper().getTemperatureCelsius() < forecast.getWeatherWrapper().getTemperatureCelsius()) {
+                    maxTemperature = forecast;
+                }
+            }
+        }
+    }
+
     public WeatherType getWeatherType(DayPeriod period, WeatherPriority priority) {
         return weatherMap.get(period).get(priority);
+    }
+
+    public Forecast getMinTemperature() {
+        return minTemperature;
+    }
+
+    public Forecast getMaxTemperature() {
+        return maxTemperature;
     }
 
     @Override
@@ -104,6 +130,9 @@ public class Day {
                 builder.append("\n     " + period + " " + priority + " weather: " + getWeatherType(period, priority));
             }
         }
+
+        builder.append("\n     Min temperature on " + minTemperature);
+        builder.append("\n     Max temperature on " + maxTemperature);
 
         return builder.toString();
     }
