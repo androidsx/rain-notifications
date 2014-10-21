@@ -37,6 +37,9 @@ public class NotificationHelper {
         displayStandardNotification(context, intent, Html.fromHtml(text), largeIcon);
     }
 
+    /**
+     * @param largeIcon FIXME: not in use at the moment
+     */
     public static void displayStandardNotification(Context context, Intent intent, Spanned text, Bitmap largeIcon) {
         final int notificationId = 002;
 
@@ -53,8 +56,8 @@ public class NotificationHelper {
         // Finally configure the notification builder
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_launcher) // Compulsory. Only for the phone AFAIK. TODO: follow guidelines: gray
-                        .setLargeIcon(largeIcon)
+                        .setSmallIcon(R.drawable.ic_stat_notify_small) // Compulsory. Only for the phone AFAIK. TODO: follow guidelines: gray. TODO: to be provided by client
+                        //.setLargeIcon(largeIcon)
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(text)
                         .setContentIntent(viewPendingIntent)
