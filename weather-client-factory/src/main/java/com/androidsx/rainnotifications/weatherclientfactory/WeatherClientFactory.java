@@ -9,7 +9,7 @@ import com.androidsx.rainnotifications.wunderground.WundergroundNetworkServiceTa
 
 public abstract class WeatherClientFactory {
 
-    private static final WeatherClient CLIENT = WeatherClient.FORECAST_IO;
+    private static final WeatherClient CLIENT = WeatherClient.WUNDERGROUND;
 
     public static void requestForecastForLocation(Context context, double latitude, double longitude, WeatherClientResponseListener responseListener) {
         final WeatherClientExecutor weatherClientExecutor;
