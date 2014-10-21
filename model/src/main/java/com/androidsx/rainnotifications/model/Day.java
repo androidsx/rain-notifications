@@ -40,7 +40,7 @@ public class Day {
             summarizedForecasts.put(WeatherPriority.secondary, null);
         }
         else if (forecasts.size() == 1) {
-            summarizedForecasts.put(WeatherPriority.primary, forecasts.get(0).getWeatherWrapper().getType());
+            summarizedForecasts.put(WeatherPriority.primary, forecasts.get(0).getWeatherWrapper().getWeatherType());
             summarizedForecasts.put(WeatherPriority.secondary, null);
         }
         else {
@@ -51,14 +51,14 @@ public class Day {
             for (Forecast forecast : forecasts) {
                 long weatherTypeDuration = forecast.getInterval().toDurationMillis();
 
-                if(durations.containsKey(forecast.getWeatherWrapper().getType())) {
-                    weatherTypeDuration = durations.get(forecast.getWeatherWrapper().getType()) + weatherTypeDuration;
+                if(durations.containsKey(forecast.getWeatherWrapper().getWeatherType())) {
+                    weatherTypeDuration = durations.get(forecast.getWeatherWrapper().getWeatherType()) + weatherTypeDuration;
                 }
 
-                durations.put(forecast.getWeatherWrapper().getType(), weatherTypeDuration);
+                durations.put(forecast.getWeatherWrapper().getWeatherType(), weatherTypeDuration);
 
                 if(mostDurable == null || durations.get(mostDurable) < weatherTypeDuration) {
-                    mostDurable = forecast.getWeatherWrapper().getType();
+                    mostDurable = forecast.getWeatherWrapper().getWeatherType();
                 }
             }
 

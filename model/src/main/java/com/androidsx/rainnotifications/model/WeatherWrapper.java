@@ -6,7 +6,11 @@ package com.androidsx.rainnotifications.model;
  * @see #equals
  */
 public class WeatherWrapper {
+
+    public enum
+
     private final WeatherType type;
+    //private final float temperature;
 
     public WeatherWrapper(WeatherType type) {
         this.type = type;

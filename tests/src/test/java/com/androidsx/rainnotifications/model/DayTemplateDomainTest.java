@@ -23,9 +23,9 @@ public class DayTemplateDomainTest {
     @Test
     public void testDayPeriodDomain() {
         ArrayList<DayPeriod> dayPeriods = new ArrayList<DayPeriod>(Arrays.asList(DayPeriod.values()));
-        dayPeriods.remove(DayPeriod.morning);
-        dayPeriods.remove(DayPeriod.afternoon);
-        dayPeriods.remove(DayPeriod.evening);
+        dayPeriods.remove(DayPeriod.MORNING);
+        dayPeriods.remove(DayPeriod.AFTERNOON);
+        dayPeriods.remove(DayPeriod.EVENING);
         Assert.assertTrue(dayPeriods.isEmpty());
     }
 

@@ -50,7 +50,7 @@ public class ForecastTable {
         List<Forecast> meaningfulForecastList = new ArrayList<Forecast>();
 
         for (Forecast forecast : forecastList) {
-            if(meaningfulWeatherTypes.contains(forecast.getWeatherWrapper().getType())) {
+            if(meaningfulWeatherTypes.contains(forecast.getWeatherWrapper().getWeatherType())) {
                 meaningfulForecastList.add(forecast);
             }
         }

@@ -70,7 +70,7 @@ public class WeatherService extends Service {
                                 Timber.d("No transitions are expected, so there's no notifications to generate");
                             } else {
                                 final Forecast forecast = forecastTable.getForecastList().get(1);
-                                final Alert alert = alertGenerator.generateAlert(forecastTable.getForecastList().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
+                                final Alert alert = alertGenerator.generateAlert(forecastTable.getForecastList().get(0).getWeatherWrapper().getWeatherType(), forecast.getWeatherWrapper().getWeatherType());
                                 if (shouldLaunchNotification(forecast.getInterval().getStartMillis() - System.currentTimeMillis())) {
                                     Timber.i("Will display notification for " + alert);
                                     NotificationHelper.displayWearNotification(getApplicationContext(), alert, new Interval(forecastTable.getStart(), forecast.getInterval().getStart()));
