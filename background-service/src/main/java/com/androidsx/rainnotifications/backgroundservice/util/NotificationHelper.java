@@ -53,8 +53,8 @@ public class NotificationHelper {
         // Finally configure the notification builder
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_launcher) // Compulsory. Only for the phone AFAIK. TODO: follow guidelines: gray
                         .setLargeIcon(largeIcon)
+                        .setSmallIcon(R.drawable.ic_stat_notify_small) // Compulsory. Only for the phone AFAIK. TODO: follow guidelines: gray. TODO: to be provided by client
                         .setContentTitle(context.getString(R.string.app_name))
                         .setContentText(text)
                         .setContentIntent(viewPendingIntent)
