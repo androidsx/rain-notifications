@@ -10,7 +10,19 @@ import org.json.JSONObject;
  */
 public class WundergroundWeatherBuilder {
     public static WeatherWrapper buildFromWunderground(JSONObject weather) throws JSONException {
-        // TODO: FIXME: Retrieve temperature from weather
-        return new WeatherWrapper(WundergroundWeatherTypeBuilder.buildFromWunderground(weather.getString("icon")), 0 , WeatherWrapper.TemperatureScale.CELSIUS);
+        return new WeatherWrapper(retrieveWeatherType(weather), retrieveCelsiusTemperature(weather), WeatherWrapper.TemperatureScale.CELSIUS);
+    }
+
+    private static WeatherType retrieveWeatherType(JSONObject weather) throws JSONException {
+        return WundergroundWeatherTypeBuilder.buildFromWunderground(weather.getString("icon"));
+    }
+
+    private static float retrieveCelsiusTemperature(JSONObject weather) throws JSONException {
+        if(weather.has("temp_c")) { // Case current_observation
+            return (float) weather.getDouble("temp_c");
+        }
+        else { // Case hourly_forecast
+            return (float) weather.getJSONObject("temp").getDouble("metric");
+        }
     }
 }
