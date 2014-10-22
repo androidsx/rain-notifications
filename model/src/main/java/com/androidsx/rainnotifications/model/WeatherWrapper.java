@@ -6,23 +6,41 @@ package com.androidsx.rainnotifications.model;
  * @see #equals
  */
 public class WeatherWrapper {
-    private final WeatherType type;
 
-    public WeatherWrapper(WeatherType type) {
+    public enum TemperatureScale {CELSIUS, FAHRENHEIT}
+
+    private final WeatherType type;
+    private final float temperatureCelsius;
+    private final float temperatureFahrenheit;
+
+    public WeatherWrapper(WeatherType type, float temperature, TemperatureScale scale) {
         this.type = type;
+
+        if(scale.equals(TemperatureScale.CELSIUS)) {
+            temperatureCelsius = temperature;
+            temperatureFahrenheit = temperature * 1.8f + 32; //Celsius to Fahrenheit : (°C × 1.8) + 32 =°F
+        }
+        else {
+            temperatureFahrenheit = temperature;
+            temperatureCelsius = (temperature - 32) / 1.8f; //Fahrenheit to Celsius : (°F − 32) ÷ 1.8 =°C
+        }
     }
 
-    public WeatherType getType() {
+    public WeatherType getWeatherType() {
         return type;
     }
 
-    public boolean isUnknownWeather() {
-        return getType().equals(WeatherType.UNKNOWN);
+    public float getTemperatureCelsius() {
+        return temperatureCelsius;
+    }
+
+    public float getTemperatureFahrenheit() {
+        return temperatureFahrenheit;
     }
 
     @Override
     public String toString() {
-        return type.toString();
+        return type.toString() + ", " + temperatureCelsius + " °C, " + temperatureFahrenheit + " °F";
     }
 
     /**
@@ -44,18 +62,18 @@ public class WeatherWrapper {
             return false;
         } else {
             final WeatherWrapper otherWeather = (WeatherWrapper) other;
-            if (getType() == WeatherType.UNKNOWN && !(otherWeather.getType() == WeatherType.UNKNOWN)) {
+            if (getWeatherType() == WeatherType.UNKNOWN && !(otherWeather.getWeatherType() == WeatherType.UNKNOWN)) {
                 return false;
-            } else if (getType() == WeatherType.UNKNOWN || ((WeatherWrapper) other).getType() == WeatherType.UNKNOWN) {
+            } else if (getWeatherType() == WeatherType.UNKNOWN || ((WeatherWrapper) other).getWeatherType() == WeatherType.UNKNOWN) {
                 return true;
             } else {
-                return getType() == otherWeather.getType();
+                return getWeatherType() == otherWeather.getWeatherType();
             }
         }
     }
 
     @Override
     public int hashCode() {
-        return getType() != null ? getType().hashCode() : 0;
+        return getWeatherType() != null ? getWeatherType().hashCode() : 0;
     }
 }

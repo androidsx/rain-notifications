@@ -19,17 +19,17 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.androidsx.commonlibrary.util.SharedPrefsHelper;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
-import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
+import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
+import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.backgroundservice.WeatherService;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
-import com.androidsx.commonlibrary.util.SharedPrefsHelper;
-import com.androidsx.rainnotifications.alert.Setup;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.AlertLevel;
-import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
+import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherType;
@@ -298,9 +298,9 @@ public class DebugActivity extends Activity {
 
         ForecastTable forecastTable = getDebugForecastTable();
         if(forecastTable != null) {
-            Timber.d("FORECAST_TABLE: \n" + forecastTable.toString());
-            cardMessageTextView.setText(new DaySummaryGenerator(DaySummaryDeserializer.deserializeDaySummaryDictionary(Setup.getDaySummaryDictionaryReader(this)))
-                    .getDaySummary(forecastTable).getDayMessage());
+            Timber.d("_\n" + forecastTable.toString());
+            Timber.d("_\n" + new Day(forecastTable).toString());
+            cardMessageTextView.setText(new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(this)).generateMessage(this, forecastTable, "There isn't a template for today")); //TODO: Revisar este mensaje a pelo.
         }
         else {
             cardMessageTextView.setText("Null ForecastTable, are all WeatherTypes UNKNOWN?");
@@ -319,11 +319,13 @@ public class DebugActivity extends Activity {
 
         for (int i = 0 ; i< weatherItemRows.size() - 1 ; i++) {
             forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(i), weatherItemRows.get(i + 1)),
-                    new WeatherWrapper(weatherItemRows.get(i).getWeatherType())));
+                    new WeatherWrapper(weatherItemRows.get(i).getWeatherType(), 0, WeatherWrapper.TemperatureScale.CELSIUS)));
+                                                                                // TODO: FIXME: Retrieve temperature from weather
         }
 
         forecastList.add(new Forecast(getWeatherInterval(weatherItemRows.get(weatherItemRows.size() - 1), null),
-                new WeatherWrapper(weatherItemRows.get(weatherItemRows.size() - 1).getWeatherType())));
+                new WeatherWrapper(weatherItemRows.get(weatherItemRows.size() - 1).getWeatherType(), 0, WeatherWrapper.TemperatureScale.CELSIUS)));
+                                                                                                    // TODO: FIXME: Retrieve temperature from weather
 
         return ForecastTable.fromForecastList(forecastList);
     }

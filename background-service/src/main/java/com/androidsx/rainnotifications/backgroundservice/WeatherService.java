@@ -8,18 +8,16 @@ import android.location.Location;
 import android.os.IBinder;
 
 import com.androidsx.rainnotifications.alert.AlertGenerator;
-import com.androidsx.rainnotifications.alert.DaySummaryGenerator;
-import com.androidsx.rainnotifications.alert.Setup;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
-import com.androidsx.rainnotifications.model.Alert;
-import com.androidsx.rainnotifications.model.DaySummary;
-import com.androidsx.rainnotifications.model.DaySummaryDeserializer;
-import com.androidsx.rainnotifications.model.Forecast;
-import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
+import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.Forecast;
+import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 
 import org.joda.time.DateTimeConstants;
@@ -37,15 +35,14 @@ import timber.log.Timber;
 public class WeatherService extends Service {
     private static final long ONE_HOUR_MILLIS = 1 * 60 * DateTimeConstants.MILLIS_PER_MINUTE;
     private AlertGenerator alertGenerator;
-    private DaySummaryGenerator daySummaryGenerator;
+    private DayTemplateGenerator dayTemplateGenerator;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
         alertGenerator = new AlertGenerator(this);
         alertGenerator.init();
-        daySummaryGenerator = new DaySummaryGenerator(DaySummaryDeserializer.deserializeDaySummaryDictionary(Setup.getDaySummaryDictionaryReader(this)));
+        dayTemplateGenerator = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(this));
     }
 
     @Override
@@ -62,21 +59,20 @@ public class WeatherService extends Service {
                     @Override
                     public void onForecastSuccess (ForecastTable forecastTable){
                         if (intent != null && intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {
-                            DaySummary daySummary = daySummaryGenerator.getDaySummary(forecastTable);
                             NotificationHelper.displayStandardNotification(
                                     getApplicationContext(),
                                     new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
-                                    daySummary.getDayMessage(),
+                                    dayTemplateGenerator.generateMessage(WeatherService.this, forecastTable, "WORK IN PROGRESS"), //TODO: Revisar este mensaje a pelo.
                                     BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
                         } else {
                             if (!forecastTable.hasTransitions()) {
                                 Timber.d("No transitions are expected, so there's no notifications to generate");
                             } else {
-                                final Forecast forecast = forecastTable.getForecastList().get(1);
-                                final Alert alert = alertGenerator.generateAlert(forecastTable.getForecastList().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
-                                if (shouldLaunchNotification(forecast.getInterval().getStartMillis() - System.currentTimeMillis())) {
+                                final Forecast transition = forecastTable.getFirstTransitionForecast();
+                                final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineForecast().getWeatherWrapper().getWeatherType(), transition.getWeatherWrapper().getWeatherType());
+                                if (shouldLaunchNotification(transition.getInterval().getStartMillis() - System.currentTimeMillis())) {
                                     Timber.i("Will display notification for " + alert);
-                                    NotificationHelper.displayWearNotification(getApplicationContext(), alert, new Interval(forecastTable.getStart(), forecast.getInterval().getStart()));
+                                    NotificationHelper.displayWearNotification(getApplicationContext(), alert, new Interval(forecastTable.getBaselineStart(), transition.getInterval().getStart()));
                                 } else {
                                     Timber.d("No notification for now. The alert was " + alert);
                                 }

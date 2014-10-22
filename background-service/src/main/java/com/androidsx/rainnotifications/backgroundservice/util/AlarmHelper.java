@@ -54,8 +54,8 @@ public class AlarmHelper {
             SharedPrefsHelper.saveLongValue(context, NEXT_ALARM_TIME, nextAlarmTime.getMillis());
             if (forecastTable.hasTransitions()) {
                 Timber.tag(TAG).i("Next transition is %s -> %s in %s.",
-                        forecastTable.getForecastList().get(0).getWeatherWrapper().getType(),
-                        forecastTable.getForecastList().get(1).getWeatherWrapper().getType(),
+                        forecastTable.getBaselineForecast().getWeatherWrapper().getWeatherType(),
+                        forecastTable.getFirstTransitionForecast().getWeatherWrapper().getWeatherType(),
                         UiUtil.getDebugOnlyPeriodFormatter().print(
                                 new Period(new Interval(System.currentTimeMillis(), nextAlarmTime.getMillis())))
                 );
@@ -118,9 +118,9 @@ public class AlarmHelper {
     public static DateTime computeNextAlarmTime(ForecastTable forecastTable) {
         Interval nextIntervalAlarmTime;
         if (forecastTable.hasTransitions()) {
-            nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getForecastList().get(1).getInterval().getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
+            nextIntervalAlarmTime = new Interval(forecastTable.getBaselineStart().getMillis(), forecastTable.getFirstTransitionForecast().getInterval().getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);
         } else {
-            nextIntervalAlarmTime = new Interval(forecastTable.getStart().getMillis(), forecastTable.getStart().getMillis() + DateTimeConstants.MILLIS_PER_HOUR);
+            nextIntervalAlarmTime = new Interval(forecastTable.getBaselineStart().getMillis(), forecastTable.getBaselineStart().getMillis() + DateTimeConstants.MILLIS_PER_HOUR);
         }
         if (nextIntervalAlarmTime.toDurationMillis() < 90 * DateTimeConstants.MILLIS_PER_MINUTE) {
             return new DateTime(nextIntervalAlarmTime.getStartMillis() + DateTimeConstants.MILLIS_PER_HOUR);

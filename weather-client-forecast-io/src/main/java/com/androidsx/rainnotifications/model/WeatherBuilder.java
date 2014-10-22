@@ -10,6 +10,7 @@ import com.forecast.io.v2.transfer.DataPoint;
 public class WeatherBuilder {
 
     public static WeatherWrapper buildFromForecastIo(DataPoint dataPoint) {
-        return new WeatherWrapper(WeatherTypeBuilder.buildFromForecastIo(dataPoint.getIcon()));
+        // TODO: FIXME: Retrieve temperature from dataPoint (if we want to use forecast.io)
+        return new WeatherWrapper(WeatherTypeBuilder.buildFromForecastIo(dataPoint.getIcon()), 0, WeatherWrapper.TemperatureScale.CELSIUS);
     }
 }

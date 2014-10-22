@@ -4,10 +4,9 @@ import org.joda.time.DateTime;
 import org.joda.time.Interval;
 
 public enum DayPeriod {
-    morning(7, 12),
-    afternoon(12, 18),
-    evening(18, 21),
-    night(21, 7);
+    MORNING(7, 12),
+    AFTERNOON(12, 18),
+    EVENING(18, 0); // This also cover night.
 
     private int startHour;
     private int endHour;
@@ -33,5 +32,10 @@ public enum DayPeriod {
             return new Interval(baselineTime.withHourOfDay(startHour).withMinuteOfHour(0).withSecondOfMinute(0), baselineTime.withHourOfDay(endHour).withMinuteOfHour(0).withSecondOfMinute(0).plusDays(1));
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return super.toString().toLowerCase();
     }
 }
