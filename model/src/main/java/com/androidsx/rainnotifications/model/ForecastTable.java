@@ -14,31 +14,21 @@ public class ForecastTable {
     private List<Forecast> hourlyForecastList;
     private Forecast firstTransitionForecast;
 
-    //TODO: Update this javadoc
     /**
-     * Returns an appropiate {@link com.androidsx.rainnotifications.model.ForecastTable} for the given hourlyForecastList. It processed the given list as follows:
+     * Returns an appropriate {@link com.androidsx.rainnotifications.model.ForecastTable} for the given list of Forecast.
+     * It removes not meaningful Forecasts from given list.
      *
-     * <ol>
-     * <li>Remove not meaningful Forecasts from the list</li>
-     * <li>Merge consecutive Forecasts with same {@link com.androidsx.rainnotifications.model.WeatherType}</li>
-     * </ol>
-     *
-     * As a result of {@link #getMeaningfulForecastList(java.util.List)} and {@link #getMergedForecastList(java.util.List)}
-     * the gaps after remove not meaningful Forecast are filled by merging previous and subsequent Forecast if they has the
-     * same WeatherType. Otherwise the table contains gaps that are not taken into account for {@link com.androidsx.rainnotifications.model.Day#Day(ForecastTable)}
-     *
-     * @param forecastList An ordered list of {@link com.androidsx.rainnotifications.model.Forecast} without overlaps or gaps in their Intervals.
+     * @param hourlyForecastList An ordered list of {@link com.androidsx.rainnotifications.model.Forecast} without overlaps or gaps in their Intervals.
+     *        Intervals must be of one-hour
      * @return {@link com.androidsx.rainnotifications.model.ForecastTable} if processed hourlyForecastList isn't empty, null in other case.
      * @throws java.lang.IllegalArgumentException if the given hourlyForecastList is empty
      */
-    public static ForecastTable fromForecastList(List<Forecast> forecastList) {
-
-        //TODO: Check hourly format.
-
-        if (forecastList.isEmpty()) {
+    public static ForecastTable fromForecastList(List<Forecast> hourlyForecastList) {
+        // TODO: Think about if we need to check the intervals conditions
+        if (hourlyForecastList.isEmpty()) {
             throw new IllegalArgumentException("The list of forecasts is empty. At least one forecast is needed");
         } else {
-            List<Forecast> meaningfulForecastList = getMeaningfulForecastList(forecastList);
+            List<Forecast> meaningfulForecastList = getMeaningfulForecastList(hourlyForecastList);
             return meaningfulForecastList.isEmpty() ? null : new ForecastTable(meaningfulForecastList);
         }
     }
