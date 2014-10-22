@@ -6,7 +6,7 @@ import org.joda.time.Interval;
 public enum DayPeriod {
     MORNING(7, 12),
     AFTERNOON(12, 18),
-    EVENING(18, 7); // This also cover night.
+    EVENING(18, 0); // This also cover night.
 
     private int startHour;
     private int endHour;
