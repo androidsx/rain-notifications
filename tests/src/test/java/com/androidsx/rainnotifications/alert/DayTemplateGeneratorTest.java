@@ -323,11 +323,11 @@ public class DayTemplateGeneratorTest {
                 Interval morningInterval = DayPeriod.MORNING.getInterval(now);
                 Interval morningPrimaryInterval = new Interval(morningInterval.getStart(), morningInterval.getEnd().minusHours(1));
                 Interval morningSecondaryInterval = new Interval(morningInterval.getEnd().minusHours(1), morningInterval.getEnd());
-                forecastList.add(new Forecast(morningPrimaryInterval, new WeatherWrapper(morningPrimary)));
-                forecastList.add(new Forecast(morningSecondaryInterval, new WeatherWrapper(morningSecondary)));
+                forecastList.add(new Forecast(morningPrimaryInterval, new WeatherWrapper(morningPrimary, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
+                forecastList.add(new Forecast(morningSecondaryInterval, new WeatherWrapper(morningSecondary, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
             }
             else {
-                forecastList.add(new Forecast(DayPeriod.MORNING.getInterval(now), new WeatherWrapper(morningPrimary)));
+                forecastList.add(new Forecast(DayPeriod.MORNING.getInterval(now), new WeatherWrapper(morningPrimary, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
             }
         }
 
@@ -336,11 +336,11 @@ public class DayTemplateGeneratorTest {
                 Interval afternoonInterval = DayPeriod.AFTERNOON.getInterval(now);
                 Interval afternoonPrimaryInterval = new Interval(afternoonInterval.getStart(), afternoonInterval.getEnd().minusHours(1));
                 Interval afternoonSecondaryInterval = new Interval(afternoonInterval.getEnd().minusHours(1), afternoonInterval.getEnd());
-                forecastList.add(new Forecast(afternoonPrimaryInterval, new WeatherWrapper(afternoonPrimary)));
-                forecastList.add(new Forecast(afternoonSecondaryInterval, new WeatherWrapper(afternoonSecondary)));
+                forecastList.add(new Forecast(afternoonPrimaryInterval, new WeatherWrapper(afternoonPrimary, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
+                forecastList.add(new Forecast(afternoonSecondaryInterval, new WeatherWrapper(afternoonSecondary, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
             }
             else {
-                forecastList.add(new Forecast(DayPeriod.AFTERNOON.getInterval(now), new WeatherWrapper(afternoonPrimary)));
+                forecastList.add(new Forecast(DayPeriod.AFTERNOON.getInterval(now), new WeatherWrapper(afternoonPrimary, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
             }
         }
 
@@ -349,11 +349,11 @@ public class DayTemplateGeneratorTest {
                 Interval eveningInterval = DayPeriod.EVENING.getInterval(now);
                 Interval eveningPrimaryInterval = new Interval(eveningInterval.getStart(), eveningInterval.getEnd().minusHours(1));
                 Interval eveningSecondaryInterval = new Interval(eveningInterval.getEnd().minusHours(1), eveningInterval.getEnd());
-                forecastList.add(new Forecast(eveningPrimaryInterval, new WeatherWrapper(eveningPrimary)));
-                forecastList.add(new Forecast(eveningSecondaryInterval, new WeatherWrapper(eveningSecondary)));
+                forecastList.add(new Forecast(eveningPrimaryInterval, new WeatherWrapper(eveningPrimary, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
+                forecastList.add(new Forecast(eveningSecondaryInterval, new WeatherWrapper(eveningSecondary, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
             }
             else {
-                forecastList.add(new Forecast(DayPeriod.EVENING.getInterval(now), new WeatherWrapper(eveningPrimary)));
+                forecastList.add(new Forecast(DayPeriod.EVENING.getInterval(now), new WeatherWrapper(eveningPrimary, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
             }
         }
 
