@@ -17,10 +17,10 @@ public class Day {
     public Day(ForecastTable forecastTable) {
         weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>>();
         for (DayPeriod period : DayPeriod.values()) {
-            weatherMap.put(period, summarizeForecasts(filterForecasts(forecastTable.getForecastList(), period.getInterval(forecastTable.getStart()))));
+            weatherMap.put(period, summarizeForecasts(filterForecasts(forecastTable.getHourlyForecastList(), period.getInterval(forecastTable.getBaselineStart()))));
         }
-        setMinMaxTemperature(forecastTable.getForecastList(),
-                new Interval(DayPeriod.MORNING.getInterval(forecastTable.getStart()).getStart(), DayPeriod.EVENING.getInterval(forecastTable.getStart()).getEnd()));
+        computeMinMaxTemperature(forecastTable.getHourlyForecastList(),
+                new Interval(DayPeriod.MORNING.getInterval(forecastTable.getBaselineStart()).getStart(), DayPeriod.EVENING.getInterval(forecastTable.getBaselineStart()).getEnd()));
     }
 
     private List<Forecast> filterForecasts(List<Forecast> forecasts, Interval interval) {
@@ -94,7 +94,7 @@ public class Day {
         return summarizedForecasts;
     }
 
-    private void setMinMaxTemperature(List<Forecast> forecasts, Interval interval) {
+    private void computeMinMaxTemperature(List<Forecast> forecasts, Interval interval) {
         for (Forecast forecast : forecasts) {
             if (forecast.getInterval().overlap(interval) != null) {
                 if(minTemperature == null || minTemperature.getWeatherWrapper().getTemperatureCelsius() > forecast.getWeatherWrapper().getTemperatureCelsius()) {

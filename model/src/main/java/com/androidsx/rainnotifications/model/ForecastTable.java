@@ -11,11 +11,12 @@ import java.util.List;
  */
 public class ForecastTable {
 
-    private List<Forecast> forecastList;
+    private List<Forecast> hourlyForecastList;
+    private Forecast firstTransitionForecast;
 
     //TODO: Update this javadoc
     /**
-     * Returns an appropiate {@link com.androidsx.rainnotifications.model.ForecastTable} for the given forecastList. It processed the given list as follows:
+     * Returns an appropiate {@link com.androidsx.rainnotifications.model.ForecastTable} for the given hourlyForecastList. It processed the given list as follows:
      *
      * <ol>
      * <li>Remove not meaningful Forecasts from the list</li>
@@ -27,24 +28,18 @@ public class ForecastTable {
      * same WeatherType. Otherwise the table contains gaps that are not taken into account for {@link com.androidsx.rainnotifications.model.Day#Day(ForecastTable)}
      *
      * @param forecastList An ordered list of {@link com.androidsx.rainnotifications.model.Forecast} without overlaps or gaps in their Intervals.
-     * @return {@link com.androidsx.rainnotifications.model.ForecastTable} if processed forecastList isn't empty, null in other case.
-     * @throws java.lang.IllegalArgumentException if the given forecastList is empty
+     * @return {@link com.androidsx.rainnotifications.model.ForecastTable} if processed hourlyForecastList isn't empty, null in other case.
+     * @throws java.lang.IllegalArgumentException if the given hourlyForecastList is empty
      */
     public static ForecastTable fromForecastList(List<Forecast> forecastList) {
+
+        //TODO: Check hourly format.
+
         if (forecastList.isEmpty()) {
             throw new IllegalArgumentException("The list of forecasts is empty. At least one forecast is needed");
         } else {
             List<Forecast> meaningfulForecastList = getMeaningfulForecastList(forecastList);
             return meaningfulForecastList.isEmpty() ? null : new ForecastTable(meaningfulForecastList);
-
-            /*
-            if(meaningfulForecastList.isEmpty()) {
-                return null;
-            }
-            else {
-                return new ForecastTable(getMergedForecastList(meaningfulForecastList));
-            }
-            */
         }
     }
 
@@ -61,52 +56,45 @@ public class ForecastTable {
         return meaningfulForecastList;
     }
 
-    /*
-    private static List<Forecast> getMergedForecastList(List<Forecast> forecastList) {
-        List<Forecast> mergedForecastList = new ArrayList<Forecast>();
-        mergedForecastList.add(forecastList.get(0));
+    private ForecastTable(List<Forecast> hourlyForecastList) {
+        this.hourlyForecastList = hourlyForecastList;
 
-        for (int i = 1 ; i < forecastList.size() ; i++) {
-            Forecast currentForecast = forecastList.get(i);
-            if (currentForecast.getWeatherWrapper().equals(mergedForecastList.get(mergedForecastList.size() -1).getWeatherWrapper())) {
-                Forecast lastMergedForecast = mergedForecastList.remove(mergedForecastList.size() -1);
-                mergedForecastList.add(new Forecast(new Interval(lastMergedForecast.getInterval().getStart(), currentForecast.getInterval().getEnd()), lastMergedForecast.getWeatherWrapper()));
-            }
-            else {
-                mergedForecastList.add(currentForecast);
+        for (Forecast current : getHourlyForecastList()) {
+            if(!current.getWeatherWrapper().getWeatherType().equals(getBaselineForecast().getWeatherWrapper().getWeatherType())) {
+                firstTransitionForecast = current;
+                return;
             }
         }
-
-        return mergedForecastList;
-    }
-    */
-
-    private ForecastTable(List<Forecast> forecastList) {
-        this.forecastList = forecastList;
-    }
-
-    public DateTime getStart() {
-        return forecastList.get(0).getInterval().getStart();
-    }
-
-    @Deprecated
-    public boolean hasTransitions() {
-        return forecastList.size() > 1; // Because the first one is the current weather
     }
 
     /**
-     * Returns the processed lists of forecasts. It is guaranteed to be non-empty.
+     * Returns the processed lists of hourly forecasts. It is guaranteed to be non-empty.
      */
-    @Deprecated
-    public List<Forecast> getForecastList() {
-        return forecastList;
+    public List<Forecast> getHourlyForecastList() {
+        return hourlyForecastList;
+    }
+
+    public DateTime getBaselineStart() {
+        return getBaselineForecast().getInterval().getStart();
+    }
+
+    public Forecast getBaselineForecast() {
+        return hourlyForecastList.get(0);
+    }
+
+    public boolean hasTransitions() {
+        return firstTransitionForecast != null;
+    }
+
+    public Forecast getFirstTransitionForecast() {
+        return firstTransitionForecast;
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("FORECAST_TABLE: ");
-        for (Forecast forecast : forecastList) {
+        for (Forecast forecast : hourlyForecastList) {
             builder.append("\n" + forecast);
         }
         return builder.toString();
