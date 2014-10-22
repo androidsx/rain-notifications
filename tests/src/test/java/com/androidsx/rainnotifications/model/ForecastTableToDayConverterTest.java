@@ -37,13 +37,13 @@ public class ForecastTableToDayConverterTest {
         DateTime today22pm = new DateTime(2014, 9, 28, 22, 0, 0);
 
         ArrayList<Forecast> forecastList = new ArrayList<Forecast>();
-        forecastList.add(new Forecast(new Interval(today6am, today8am), new WeatherWrapper(WeatherType.CLOUDY))); // MORNING
-        forecastList.add(new Forecast(new Interval(today8am, today9am), new WeatherWrapper(WeatherType.CLEAR))); // MORNING
-        forecastList.add(new Forecast(new Interval(today9am, today11am), new WeatherWrapper(WeatherType.RAIN))); // MORNING
-        forecastList.add(new Forecast(new Interval(today11am, today14pm), new WeatherWrapper(WeatherType.CLOUDY))); // MORNING and AFTERNOON
-        forecastList.add(new Forecast(new Interval(today14pm, today17pm), new WeatherWrapper(WeatherType.CLOUDY))); // AFTERNOON
-        forecastList.add(new Forecast(new Interval(today17pm, today20pm), new WeatherWrapper(WeatherType.RAIN))); // AFTERNOON and EVENING
-        forecastList.add(new Forecast(new Interval(today20pm, today22pm), new WeatherWrapper(WeatherType.CLEAR))); // EVENING and night
+        forecastList.add(new Forecast(new Interval(today6am, today8am), new WeatherWrapper(WeatherType.CLOUDY, 0f, WeatherWrapper.TemperatureScale.CELSIUS))); // MORNING
+        forecastList.add(new Forecast(new Interval(today8am, today9am), new WeatherWrapper(WeatherType.CLEAR, 0f, WeatherWrapper.TemperatureScale.CELSIUS))); // MORNING
+        forecastList.add(new Forecast(new Interval(today9am, today11am), new WeatherWrapper(WeatherType.RAIN, 0f, WeatherWrapper.TemperatureScale.CELSIUS))); // MORNING
+        forecastList.add(new Forecast(new Interval(today11am, today14pm), new WeatherWrapper(WeatherType.CLOUDY, 0f, WeatherWrapper.TemperatureScale.CELSIUS))); // MORNING and AFTERNOON
+        forecastList.add(new Forecast(new Interval(today14pm, today17pm), new WeatherWrapper(WeatherType.CLOUDY, 0f, WeatherWrapper.TemperatureScale.CELSIUS))); // AFTERNOON
+        forecastList.add(new Forecast(new Interval(today17pm, today20pm), new WeatherWrapper(WeatherType.RAIN, 0f, WeatherWrapper.TemperatureScale.CELSIUS))); // AFTERNOON and EVENING
+        forecastList.add(new Forecast(new Interval(today20pm, today22pm), new WeatherWrapper(WeatherType.CLEAR, 0f, WeatherWrapper.TemperatureScale.CELSIUS))); // EVENING and night
 
         Day summary = new Day(ForecastTable.fromForecastList(forecastList));
 
@@ -63,7 +63,7 @@ public class ForecastTableToDayConverterTest {
         WeatherType currentWeatherType = WeatherType.CLEAR;
 
         ArrayList<Forecast> forecastList = new ArrayList<Forecast>();
-        forecastList.add(new Forecast(new Interval(today6am, today6am.plus(Period.hours(24))), new WeatherWrapper(currentWeatherType)));
+        forecastList.add(new Forecast(new Interval(today6am, today6am.plus(Period.hours(24))), new WeatherWrapper(currentWeatherType, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
 
         ForecastTable table = ForecastTable.fromForecastList(forecastList);
         Day summary = new Day(table);
@@ -79,7 +79,7 @@ public class ForecastTableToDayConverterTest {
         WeatherType currentWeatherType = WeatherType.CLEAR;
 
         ArrayList<Forecast> forecastList = new ArrayList<Forecast>();
-        forecastList.add(new Forecast(new Interval(today10am, today10am.plus(Period.hours(24))), new WeatherWrapper(currentWeatherType)));
+        forecastList.add(new Forecast(new Interval(today10am, today10am.plus(Period.hours(24))), new WeatherWrapper(currentWeatherType, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
 
         Day summary = new Day(ForecastTable.fromForecastList(forecastList));
         for (DayPeriod dayPeriod : DayPeriod.values()) {
@@ -96,17 +96,17 @@ public class ForecastTableToDayConverterTest {
         // The day starts off sunny, but just for 30 minutes
         final WeatherType currentWeather = WeatherType.CLEAR;
         final DateTime sunnyEnd = today9am.plus(Period.minutes(30));
-        forecasts.add(new Forecast(new Interval(today9am, sunnyEnd), new WeatherWrapper(currentWeather)));
+        forecasts.add(new Forecast(new Interval(today9am, sunnyEnd), new WeatherWrapper(currentWeather, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
 
         // It gets cloudy for most of the MORNING
         final DateTime cloudyStart = sunnyEnd;
         final DateTime cloudyEnd = cloudyStart.plus(Period.hours(2));
-        forecasts.add(new Forecast(new Interval(cloudyStart, cloudyEnd), new WeatherWrapper(WeatherType.CLOUDY)));
+        forecasts.add(new Forecast(new Interval(cloudyStart, cloudyEnd), new WeatherWrapper(WeatherType.CLOUDY, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
 
         // And then rains for hours
         final DateTime rainStart = today9am.plus(Period.minutes(30)).plus(Period.hours(2));
         final DateTime rainEnd = rainStart.plus(Period.hours(10));
-        forecasts.add(new Forecast(new Interval(rainStart, rainEnd), new WeatherWrapper(WeatherType.RAIN)));
+        forecasts.add(new Forecast(new Interval(rainStart, rainEnd), new WeatherWrapper(WeatherType.RAIN, 0f, WeatherWrapper.TemperatureScale.CELSIUS)));
 
         // Compute the day summary
         final ForecastTable forecastTable = ForecastTable.fromForecastList(forecasts);
