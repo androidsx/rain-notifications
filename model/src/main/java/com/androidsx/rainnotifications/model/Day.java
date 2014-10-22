@@ -11,12 +11,16 @@ import java.util.List;
 public class Day {
 
     private HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>> weatherMap;
+    private Forecast minTemperature;
+    private Forecast maxTemperature;
 
     public Day(ForecastTable forecastTable) {
         weatherMap = new HashMap<DayPeriod, HashMap<WeatherPriority, WeatherType>>();
         for (DayPeriod period : DayPeriod.values()) {
-            weatherMap.put(period, summarizeForecasts(filterForecasts(forecastTable.getForecastList(), period.getInterval(forecastTable.getStart()))));
+            weatherMap.put(period, summarizeForecasts(filterForecasts(forecastTable.getHourlyForecastList(), period.getInterval(forecastTable.getBaselineStart()))));
         }
+        computeMinMaxTemperature(forecastTable.getHourlyForecastList(),
+                new Interval(DayPeriod.MORNING.getInterval(forecastTable.getBaselineStart()).getStart(), DayPeriod.EVENING.getInterval(forecastTable.getBaselineStart()).getEnd()));
     }
 
     private List<Forecast> filterForecasts(List<Forecast> forecasts, Interval interval) {
@@ -40,7 +44,7 @@ public class Day {
             summarizedForecasts.put(WeatherPriority.secondary, null);
         }
         else if (forecasts.size() == 1) {
-            summarizedForecasts.put(WeatherPriority.primary, forecasts.get(0).getWeatherWrapper().getType());
+            summarizedForecasts.put(WeatherPriority.primary, forecasts.get(0).getWeatherWrapper().getWeatherType());
             summarizedForecasts.put(WeatherPriority.secondary, null);
         }
         else {
@@ -51,14 +55,14 @@ public class Day {
             for (Forecast forecast : forecasts) {
                 long weatherTypeDuration = forecast.getInterval().toDurationMillis();
 
-                if(durations.containsKey(forecast.getWeatherWrapper().getType())) {
-                    weatherTypeDuration = durations.get(forecast.getWeatherWrapper().getType()) + weatherTypeDuration;
+                if(durations.containsKey(forecast.getWeatherWrapper().getWeatherType())) {
+                    weatherTypeDuration = durations.get(forecast.getWeatherWrapper().getWeatherType()) + weatherTypeDuration;
                 }
 
-                durations.put(forecast.getWeatherWrapper().getType(), weatherTypeDuration);
+                durations.put(forecast.getWeatherWrapper().getWeatherType(), weatherTypeDuration);
 
                 if(mostDurable == null || durations.get(mostDurable) < weatherTypeDuration) {
-                    mostDurable = forecast.getWeatherWrapper().getType();
+                    mostDurable = forecast.getWeatherWrapper().getWeatherType();
                 }
             }
 
@@ -90,8 +94,30 @@ public class Day {
         return summarizedForecasts;
     }
 
+    private void computeMinMaxTemperature(List<Forecast> forecasts, Interval interval) {
+        for (Forecast forecast : forecasts) {
+            if (forecast.getInterval().overlap(interval) != null) {
+                if(minTemperature == null || minTemperature.getWeatherWrapper().getTemperatureCelsius() > forecast.getWeatherWrapper().getTemperatureCelsius()) {
+                    minTemperature = forecast;
+                }
+
+                if(maxTemperature == null || maxTemperature.getWeatherWrapper().getTemperatureCelsius() < forecast.getWeatherWrapper().getTemperatureCelsius()) {
+                    maxTemperature = forecast;
+                }
+            }
+        }
+    }
+
     public WeatherType getWeatherType(DayPeriod period, WeatherPriority priority) {
         return weatherMap.get(period).get(priority);
+    }
+
+    public Forecast getMinTemperature() {
+        return minTemperature;
+    }
+
+    public Forecast getMaxTemperature() {
+        return maxTemperature;
     }
 
     @Override
@@ -104,6 +130,9 @@ public class Day {
                 builder.append("\n     " + period + " " + priority + " weather: " + getWeatherType(period, priority));
             }
         }
+
+        builder.append("\n     Min temperature on " + minTemperature);
+        builder.append("\n     Max temperature on " + maxTemperature);
 
         return builder.toString();
     }

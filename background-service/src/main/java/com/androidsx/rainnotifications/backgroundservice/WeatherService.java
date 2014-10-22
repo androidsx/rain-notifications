@@ -40,7 +40,6 @@ public class WeatherService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
         alertGenerator = new AlertGenerator(this);
         alertGenerator.init();
         dayTemplateGenerator = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(this));
@@ -69,11 +68,11 @@ public class WeatherService extends Service {
                             if (!forecastTable.hasTransitions()) {
                                 Timber.d("No transitions are expected, so there's no notifications to generate");
                             } else {
-                                final Forecast forecast = forecastTable.getForecastList().get(1);
-                                final Alert alert = alertGenerator.generateAlert(forecastTable.getForecastList().get(0).getWeatherWrapper().getType(), forecast.getWeatherWrapper().getType());
-                                if (shouldLaunchNotification(forecast.getInterval().getStartMillis() - System.currentTimeMillis())) {
+                                final Forecast transition = forecastTable.getFirstTransitionForecast();
+                                final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineForecast().getWeatherWrapper().getWeatherType(), transition.getWeatherWrapper().getWeatherType());
+                                if (shouldLaunchNotification(transition.getInterval().getStartMillis() - System.currentTimeMillis())) {
                                     Timber.i("Will display notification for " + alert);
-                                    NotificationHelper.displayWearNotification(getApplicationContext(), alert, new Interval(forecastTable.getStart(), forecast.getInterval().getStart()));
+                                    NotificationHelper.displayWearNotification(getApplicationContext(), alert, new Interval(forecastTable.getBaselineStart(), transition.getInterval().getStart()));
                                 } else {
                                     Timber.d("No notification for now. The alert was " + alert);
                                 }

@@ -94,7 +94,6 @@ public class JsonDayTemplateLoader implements DayTemplateLoader{
                     JsonObject jsonPeriod = (JsonObject) jsonObject.get(period.toString());
                     for (WeatherPriority priority : WeatherPriority.values()) {
                         if (jsonPeriod.has(priority.toString())) {
-
                             JsonElement element = jsonPeriod.getAsJsonObject(priority.toString()).get("weatherType");
                             DayTemplate.DayTemplateJokerType joker = context.deserialize(element, DayTemplate.DayTemplateJokerType.class);
 
