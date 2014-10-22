@@ -14,7 +14,7 @@ android {
     signingConfigs {
         release {
             Properties props = getEnvironmentSettings();
-            storeFile file(props.get('storeFile'))
+            storeFile file(props.get('storeFile', "./"))
             storePassword props.get('storePassword')
             keyAlias props.get('keyAlias')
             keyPassword props.get('keyPassword')
