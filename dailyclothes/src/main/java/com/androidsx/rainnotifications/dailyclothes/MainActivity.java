@@ -178,9 +178,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        //fillForecastView(8, 24);
         fillClothesListView();
-        configureQuickReturn();
+        QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
     }
 
     private void updateUI() {
@@ -274,45 +273,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void fillForecastView(int startHour, int endHour) {
-        ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
-        for(int i=startHour; i < endHour; i++) {
-            View view = LayoutInflater.from(this).inflate(R.layout.hourly_forecast_item, null);
-            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
-            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
-            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
-            Picasso.with(this).load(getRandomWeatherIcon()).into(icon);
-            int auxTemp = getRandomBetweenNumbers(60, 67);
-            temp.setText(auxTemp + "º");
-            hour.setText(i+"am");
-            forecastView.addView(view);
-            if(auxTemp > maxTemp) {
-                maxTemp = auxTemp;
-            }
-        }
-        ((TextView)findViewById(R.id.forecast_message)).setText(
-                Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
-    }
-
-    private void loadForecastList() {
-        ViewGroup forecastView = (ViewGroup) findViewById(R.id.hourly_forecast);
-        for (ForecastListItem f : forecastListItems) {
-            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.hourly_forecast_item, null);
-            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
-            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
-            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
-            Picasso.with(MainActivity.this).load(f.getIcon()).into(icon);
-            temp.setText(f.getTemp() + "º");
-            hour.setText(f.getHour() + "h");
-            forecastView.addView(view);
-            if (f.getTemp() > maxTemp) {
-                maxTemp = f.getTemp();
-            }
-        }
-        ((TextView) findViewById(R.id.forecast_message)).setText(
-                Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
-    }
-
     private void fillClothesListView() {
         adapter = new CustomListAdapter(this, clothesList);
         mListView.setAdapter(adapter);
@@ -342,14 +302,6 @@ public class MainActivity extends Activity {
         adapter.notifyDataSetChanged();
     }
 
-    private void configureQuickReturn() {
-        QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
-    }
-
-    private int getRandomBetweenNumbers(int minValue, int maxValue) {
-        return random.nextInt((maxValue + 1) - minValue) + minValue;
-    }
-
     private int getWeatherIcon(WeatherType type) {
         TypedArray iconTypedArray = getResources().obtainTypedArray(R.array.weatherIcons);
 
@@ -367,12 +319,6 @@ public class MainActivity extends Activity {
                 // TODO: Consultar con Pablo y/o Omar que hacer en este caso.
                 return 0;
         }
-    }
-
-    private int getRandomWeatherIcon() {
-        final TypedArray mascotTypedArray = getResources().obtainTypedArray(R.array.weatherIcons);
-        final int mascotIndex = random.nextInt(mascotTypedArray.length());
-        return mascotTypedArray.getResourceId(mascotIndex, -1);
     }
 
     public static class CustomListAdapter extends BaseAdapter {
