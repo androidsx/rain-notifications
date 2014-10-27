@@ -2,7 +2,6 @@ package com.androidsx.rainnotifications.model;
 
 import android.content.Context;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -118,11 +117,10 @@ public class DayTemplate {
             }
         }
 
-        // TODO: Add some logic for choose celsius or Fahrenheit.
         message = message + context.getString(R.string.temperature_message,
-                context.getString(R.string.temperature_celsius, new DecimalFormat("#.#").format(day.getMinTemperature().getWeatherWrapper().getTemperatureCelsius())),
+                day.getMinTemperature().getWeatherWrapper().getReadableTemperature(context),
                 day.getMinTemperature().getInterval().getStart().getHourOfDay(),
-                context.getString(R.string.temperature_celsius, new DecimalFormat("#.#").format(day.getMaxTemperature().getWeatherWrapper().getTemperatureCelsius())),
+                day.getMaxTemperature().getWeatherWrapper().getReadableTemperature(context),
                 day.getMaxTemperature().getInterval().getStart().getHourOfDay());
         return message;
     }

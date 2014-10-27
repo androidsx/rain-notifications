@@ -1,11 +1,23 @@
 package com.androidsx.rainnotifications.model;
 
+import android.content.Context;
+
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Status of the weather at a particular point in time (past, present of future).
  *
  * @see #equals
  */
 public class WeatherWrapper {
+    // United States, Puerto Rico, Guam, the U.S. Virgin Islands, Bahamas, Belize, the Cayman Islands and Palau
+    // http://en.wikipedia.org/wiki/Fahrenheit#Usage
+    // http://www.mathguide.de/info/tools/countrycode.html
+    public static final List<String> FAHRENHEIT_COUNTRY_CODES = Arrays.asList("US", "PR", "GU", "VI", "BS", "BZ", "KY", "PW");
+    public static final char CELSIUS_SYMBOL = '\u2103';
+    public static final char FAHRENHEIT_SYMBOL = '\u2109';
 
     public enum TemperatureScale {CELSIUS, FAHRENHEIT}
 
@@ -30,17 +42,28 @@ public class WeatherWrapper {
         return type;
     }
 
-    public float getTemperatureCelsius() {
-        return temperatureCelsius;
+    public float getTemperature(TemperatureScale scale) {
+        if(scale.equals(TemperatureScale.CELSIUS)) {
+            return temperatureCelsius;
+        }
+        else {
+            return temperatureFahrenheit;
+        }
     }
 
-    public float getTemperatureFahrenheit() {
-        return temperatureFahrenheit;
+    // TODO: Add some logic for allow user to choose celsius or Fahrenheit.
+    public String getReadableTemperature(Context context) {
+        if(FAHRENHEIT_COUNTRY_CODES.contains(context.getResources().getConfiguration().locale.getCountry().toString())) {
+            return new DecimalFormat("#").format(temperatureFahrenheit) + FAHRENHEIT_SYMBOL;
+        }
+        else {
+            return new DecimalFormat("#").format(temperatureCelsius) + CELSIUS_SYMBOL;
+        }
     }
 
     @Override
     public String toString() {
-        return type.toString() + ", " + temperatureCelsius + " °C, " + temperatureFahrenheit + " °F";
+        return type.toString() + ", " + temperatureCelsius + CELSIUS_SYMBOL + ", " + temperatureFahrenheit + FAHRENHEIT_SYMBOL;
     }
 
     /**

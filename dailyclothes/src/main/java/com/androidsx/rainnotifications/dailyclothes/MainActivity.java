@@ -204,10 +204,9 @@ public class MainActivity extends Activity {
                     frameLoading.setVisibility(View.INVISIBLE);
                     frameError.setVisibility(View.INVISIBLE);
 
-                    nowTemperature.setText("" + forecastTable.getBaselineForecast().getWeatherWrapper().getTemperatureCelsius()); //TODO: Adaptar a Celsius/Fahrenheit
+                    nowTemperature.setText("" + forecastTable.getBaselineForecast().getWeatherWrapper().getReadableTemperature(this)); //TODO: Adaptar a Celsius/Fahrenheit
+                    ((TextView)findViewById(R.id.forecast_message)).setText(forecastMessage);
                     fillForecastView();
-
-                    //fillForecastView(8, 24);
 
                     break;
             }
@@ -267,14 +266,12 @@ public class MainActivity extends Activity {
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
 
             Picasso.with(this).load(getWeatherIcon(current.getWeatherWrapper().getWeatherType())).into(icon);
-            temp.setText("" + current.getWeatherWrapper().getTemperatureCelsius()); //TODO: Adaptar a Celsius/Fahrenheit
+            temp.setText("" + current.getWeatherWrapper().getReadableTemperature(this));
             hour.setText("" + current.getInterval().getStart().getHourOfDay()); //TODO: Adaptar a am/pm
 
             forecastView.addView(view);
 
         }
-
-        ((TextView)findViewById(R.id.forecast_message)).setText(forecastMessage);
     }
 
     private void fillForecastView(int startHour, int endHour) {

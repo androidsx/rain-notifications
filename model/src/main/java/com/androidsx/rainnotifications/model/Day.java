@@ -97,11 +97,11 @@ public class Day {
     private void computeMinMaxTemperature(List<Forecast> forecasts, Interval interval) {
         for (Forecast forecast : forecasts) {
             if (forecast.getInterval().overlap(interval) != null) {
-                if(minTemperature == null || minTemperature.getWeatherWrapper().getTemperatureCelsius() > forecast.getWeatherWrapper().getTemperatureCelsius()) {
+                if(minTemperature == null || minTemperature.getWeatherWrapper().getTemperature(WeatherWrapper.TemperatureScale.CELSIUS) > forecast.getWeatherWrapper().getTemperature(WeatherWrapper.TemperatureScale.CELSIUS)) {
                     minTemperature = forecast;
                 }
 
-                if(maxTemperature == null || maxTemperature.getWeatherWrapper().getTemperatureCelsius() < forecast.getWeatherWrapper().getTemperatureCelsius()) {
+                if(maxTemperature == null || maxTemperature.getWeatherWrapper().getTemperature(WeatherWrapper.TemperatureScale.CELSIUS) < forecast.getWeatherWrapper().getTemperature(WeatherWrapper.TemperatureScale.CELSIUS)) {
                     maxTemperature = forecast;
                 }
             }
