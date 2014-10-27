@@ -1,5 +1,7 @@
 package com.androidsx.rainnotifications.model.util;
 
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 
@@ -13,6 +15,10 @@ public class UiUtil {
 
     private UiUtil() {
         // Non-instantiable
+    }
+
+    public static String getReadableHour(DateTime dateTime) {
+        return DateTimeFormat.forPattern("H aa").print(dateTime);
     }
 
     public static PeriodFormatter getDebugOnlyPeriodFormatter() {

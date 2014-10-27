@@ -2,6 +2,8 @@ package com.androidsx.rainnotifications.model;
 
 import android.content.Context;
 
+import com.androidsx.rainnotifications.model.util.UiUtil;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -119,9 +121,9 @@ public class DayTemplate {
 
         message = message + context.getString(R.string.temperature_message,
                 day.getMinTemperature().getWeatherWrapper().getReadableTemperature(context),
-                day.getMinTemperature().getInterval().getStart().getHourOfDay(),
+                UiUtil.getReadableHour(day.getMinTemperature().getInterval().getStart()),
                 day.getMaxTemperature().getWeatherWrapper().getReadableTemperature(context),
-                day.getMaxTemperature().getInterval().getStart().getHourOfDay());
+                UiUtil.getReadableHour(day.getMaxTemperature().getInterval().getStart()));
         return message;
     }
 

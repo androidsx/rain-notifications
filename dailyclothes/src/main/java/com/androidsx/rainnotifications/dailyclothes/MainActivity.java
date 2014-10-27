@@ -9,7 +9,6 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +29,7 @@ import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherType;
+import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.squareup.picasso.Picasso;
 
@@ -82,7 +82,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("TMP", "onCreate");
         setupUI();
     }
 
@@ -94,24 +93,19 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("TMP", "onDestroy");
         destroyed = true;
     }
 
     private void checkDataState() {
-        Log.d("TMP", "checkDataState");
         if(dataState == null || dataState.equals(ForecastDataState.ERROR)) {
-            Log.d("TMP", "case A");
             setForecastDataState(ForecastDataState.LOADING);
         }
         else if(dataState.equals(ForecastDataState.DONE) && new Duration(forecastTableTime, new DateTime()).isLongerThan(EXPIRATION_DURATION)) {
-            Log.d("TMP", "case B");
             setForecastDataState(ForecastDataState.LOADING);
         }
     }
 
     private void setForecastDataState(ForecastDataState newState) {
-        Log.d("TMP", "setForecastDateState: " + newState);
         dataState = newState;
         switch (newState) {
             case LOADING:
@@ -204,7 +198,7 @@ public class MainActivity extends Activity {
                     frameLoading.setVisibility(View.INVISIBLE);
                     frameError.setVisibility(View.INVISIBLE);
 
-                    nowTemperature.setText("" + forecastTable.getBaselineForecast().getWeatherWrapper().getReadableTemperature(this)); //TODO: Adaptar a Celsius/Fahrenheit
+                    nowTemperature.setText(forecastTable.getBaselineForecast().getWeatherWrapper().getReadableTemperature(this));
                     ((TextView)findViewById(R.id.forecast_message)).setText(forecastMessage);
                     fillForecastView();
 
@@ -266,11 +260,10 @@ public class MainActivity extends Activity {
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
 
             Picasso.with(this).load(getWeatherIcon(current.getWeatherWrapper().getWeatherType())).into(icon);
-            temp.setText("" + current.getWeatherWrapper().getReadableTemperature(this));
-            hour.setText("" + current.getInterval().getStart().getHourOfDay()); //TODO: Adaptar a am/pm
+            temp.setText(current.getWeatherWrapper().getReadableTemperature(this));
+            hour.setText(UiUtil.getReadableHour(current.getInterval().getStart()));
 
             forecastView.addView(view);
-
         }
     }
 
