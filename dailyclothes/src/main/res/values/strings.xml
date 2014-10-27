@@ -7,4 +7,9 @@
     <string name="forecast_second_message" formatted="false"><![CDATA[It is going to rain in <b>45 minutes</b>, take your umbrella with you!]]></string>
     <string name="alert_message" formatted="false"><![CDATA[it\'s going to rain in <b>30 MINUTES</b>.]]></string>
 
+    <string name="forecast_loading">Loading</string>
+
+    <string name="forecast_Error">Wops! Something wrong happen while retrieving weather forecast data. Please check your internet connection and if the problem persist contact us at support+weather@androidsx.com</string>
+    <string name="retry">Retry</string>
+
 </resources>

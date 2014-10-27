@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
@@ -24,16 +26,29 @@ import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListV
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.squareup.picasso.Picasso;
+
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import timber.log.Timber;
+
 public class MainActivity extends Activity {
+
+    private final static Duration EXPIRATION_DURATION = Duration.standardSeconds(10); // TODO Set to Duration.standardHours(1)
+    private final static int MAX_FORECAST_ITEMS = 24;
+
+    private enum ForecastDataState {LOADING, ERROR, DONE};
+
     private Random random = new Random();
     private List<Clothes> clothesList = new ArrayList<Clothes>();
     private List<ForecastListItem> forecastListItems = new ArrayList<ForecastListItem>();
@@ -48,22 +63,155 @@ public class MainActivity extends Activity {
     private static final int CLICKS_FOR_FIRST_MESSAGE = 3;
     private static final int CLICKS_FOR_SECOND_MESSAGE = 6;
 
+
+
+
+    private View frameMain;
+    private View frameLoading;
+    private View frameError;
+
+    private ForecastDataState dataState;
+    private ForecastTable forecastTable;
+    private DateTime forecastTableTime;
+    private String forecastMessage;
+
+    private CustomFontTextView nowTemperature;
+
+    private boolean destroyed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        Log.d("TMP", "onCreate");
+        setupUI();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkDataState();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d("TMP", "onDestroy");
+        destroyed = true;
+    }
+
+    private void checkDataState() {
+        Log.d("TMP", "checkDataState");
+        if(dataState == null || dataState.equals(ForecastDataState.ERROR)) {
+            Log.d("TMP", "case A");
+            setForecastDataState(ForecastDataState.LOADING);
+        }
+        else if(dataState.equals(ForecastDataState.DONE) && new Duration(forecastTableTime, new DateTime()).isLongerThan(EXPIRATION_DURATION)) {
+            Log.d("TMP", "case B");
+            setForecastDataState(ForecastDataState.LOADING);
+        }
+    }
+
+    private void setForecastDataState(ForecastDataState newState) {
+        Log.d("TMP", "setForecastDateState: " + newState);
+        dataState = newState;
+        switch (newState) {
+            case LOADING:
+                //TODO: Clear data.
+                getForecastData();
+                break;
+            case ERROR:
+                break;
+            case DONE:
+                break;
+        }
 
         updateUI();
     }
 
-    private void updateUI() {
-        mQuickReturnView = (CustomFontTextView)findViewById(R.id.forecast_message);
-        mPlaceHolder = findViewById(R.id.layout_weather);
-        mListView = (QuickReturnListView)findViewById(R.id.clothes_list_view);
+    private void getForecastData() {
+        // FIXME: we do exactly the same in the weather service. grr..
+        UserLocationFetcher.getUserLocation(this, new UserLocationFetcher.UserLocationResultListener() {
+            @Override
+            public void onLocationSuccess(final Location location) {
+                WeatherClientFactory.requestForecastForLocation(MainActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
+                    @Override
+                    public void onForecastSuccess(ForecastTable forecastTable) {
+                        MainActivity.this.forecastTable = forecastTable;
+                        MainActivity.this.forecastTableTime = new DateTime();
+                        MainActivity.this.forecastMessage = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(MainActivity.this)).generateMessage(MainActivity.this, forecastTable, "default");
 
-        fillForecastView(8, 24);
+                        setForecastDataState(ForecastDataState.DONE);
+                    }
+
+                    @Override
+                    public void onForecastFailure(WeatherClientException exception) {
+                        Timber.e(exception, "Failed to get the forecast");
+                        setForecastDataState(ForecastDataState.ERROR);
+                    }
+                });
+            }
+
+            @Override
+            public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
+                Timber.e(exception, "Failed to get the location");
+                setForecastDataState(ForecastDataState.ERROR);
+            }
+        });
+    }
+
+    private void setupUI() {
+        // TODO: Enable support email link.
+        setContentView(R.layout.activity_main);
+
+        frameMain = findViewById(R.id.frame_main);
+        frameLoading = findViewById(R.id.frame_loading);
+        frameError = findViewById(R.id.frame_error);
+
+        nowTemperature = (CustomFontTextView) frameMain.findViewById(R.id.now_temp);
+        mQuickReturnView = (CustomFontTextView) frameMain.findViewById(R.id.forecast_message);
+        mPlaceHolder = frameMain.findViewById(R.id.layout_weather);
+        mListView = (QuickReturnListView) frameMain.findViewById(R.id.clothes_list_view);
+
+        frameError.findViewById(R.id.button_error_retry).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setForecastDataState(ForecastDataState.LOADING);
+            }
+        });
+
+        //fillForecastView(8, 24);
         fillClothesListView();
         configureQuickReturn();
+    }
+
+    private void updateUI() {
+        if(!destroyed) {
+            switch (dataState) {
+                case LOADING:
+                    frameLoading.setVisibility(View.VISIBLE);
+
+                    frameError.setVisibility(View.INVISIBLE);
+                    frameMain.setVisibility(View.INVISIBLE);
+                    break;
+                case ERROR:
+                    frameError.setVisibility(View.VISIBLE);
+
+                    frameLoading.setVisibility(View.INVISIBLE);
+                    frameMain.setVisibility(View.INVISIBLE);
+                    break;
+                case DONE:
+                    frameMain.setVisibility(View.VISIBLE);
+
+                    frameLoading.setVisibility(View.INVISIBLE);
+                    frameError.setVisibility(View.INVISIBLE);
+
+                    nowTemperature.setText("" + forecastTable.getBaselineForecast().getWeatherWrapper().getTemperatureCelsius()); //TODO: Adaptar a Celsius/Fahrenheit
+                    fillForecastView();
+
+                    //fillForecastView(8, 24);
+
+                    break;
+            }
+        }
     }
 
     public void showNotification(View v) {
@@ -106,6 +254,27 @@ public class MainActivity extends Activity {
                 }
             }
         }.execute();
+    }
+
+    private void fillForecastView() {
+        ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
+        for(int i=0; i < Math.min(MAX_FORECAST_ITEMS, forecastTable.getHourlyForecastList().size()); i++) {
+            Forecast current = forecastTable.getHourlyForecastList().get(i);
+
+            View view = LayoutInflater.from(this).inflate(R.layout.hourly_forecast_item, null);
+            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
+            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
+            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
+
+            Picasso.with(this).load(getWeatherIcon(current.getWeatherWrapper().getWeatherType())).into(icon);
+            temp.setText("" + current.getWeatherWrapper().getTemperatureCelsius()); //TODO: Adaptar a Celsius/Fahrenheit
+            hour.setText("" + current.getInterval().getStart().getHourOfDay()); //TODO: Adaptar a am/pm
+
+            forecastView.addView(view);
+
+        }
+
+        ((TextView)findViewById(R.id.forecast_message)).setText(forecastMessage);
     }
 
     private void fillForecastView(int startHour, int endHour) {
@@ -182,6 +351,25 @@ public class MainActivity extends Activity {
 
     private int getRandomBetweenNumbers(int minValue, int maxValue) {
         return random.nextInt((maxValue + 1) - minValue) + minValue;
+    }
+
+    private int getWeatherIcon(WeatherType type) {
+        TypedArray iconTypedArray = getResources().obtainTypedArray(R.array.weatherIcons);
+
+        switch (type) {
+            case CLEAR:
+                return iconTypedArray.getResourceId(0,0); //TODO: Que usamos como default?
+            case CLOUDY:
+                return iconTypedArray.getResourceId(1,0);
+            case RAIN:
+                return iconTypedArray.getResourceId(2,0);
+            case SNOW:
+                // FIXME: Falta el icono
+                return iconTypedArray.getResourceId(3,0);
+            default:
+                // TODO: Consultar con Pablo y/o Omar que hacer en este caso.
+                return 0;
+        }
     }
 
     private int getRandomWeatherIcon() {
