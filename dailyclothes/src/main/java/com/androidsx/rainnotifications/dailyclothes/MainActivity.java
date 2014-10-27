@@ -183,6 +183,7 @@ public class MainActivity extends Activity {
     }
 
     private void updateUI() {
+        // FIXME: La fuente utilizada muestra los símbolos de temperatura en negrita, Aghhh!
         if(!destroyed) {
             switch (dataState) {
                 case LOADING:
