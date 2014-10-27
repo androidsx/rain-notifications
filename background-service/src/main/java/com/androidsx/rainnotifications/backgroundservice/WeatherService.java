@@ -62,7 +62,7 @@ public class WeatherService extends Service {
                             NotificationHelper.displayStandardNotification(
                                     getApplicationContext(),
                                     new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
-                                    dayTemplateGenerator.generateMessage(WeatherService.this, forecastTable, "WORK IN PROGRESS"), //TODO: Revisar este mensaje a pelo.
+                                    dayTemplateGenerator.generateMessage(WeatherService.this, forecastTable, getString(R.string.default_day_message)),
                                     BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
                         } else {
                             if (!forecastTable.hasTransitions()) {

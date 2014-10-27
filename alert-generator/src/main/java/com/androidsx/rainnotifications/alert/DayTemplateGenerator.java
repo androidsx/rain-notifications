@@ -29,7 +29,14 @@ public class DayTemplateGenerator {
     public String generateMessage(Context context, ForecastTable forecastTable, String defaultMessage) {
         Day day = new Day(forecastTable);
         DayTemplate template = getDayTemplate(day);
-        return template == null ? defaultMessage : template.resolveMessage(context,day);
+
+        if(template == null) {
+            //TODO: Track this shit!!!
+            return defaultMessage;
+        }
+        else {
+            return template.resolveMessage(context,day);
+        }
     }
 
     private List<DayTemplate> getMatches(Day day) {

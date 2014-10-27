@@ -300,7 +300,7 @@ public class DebugActivity extends Activity {
         if(forecastTable != null) {
             Timber.d("_\n" + forecastTable.toString());
             Timber.d("_\n" + new Day(forecastTable).toString());
-            cardMessageTextView.setText(new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(this)).generateMessage(this, forecastTable, "There isn't a template for today")); //TODO: Revisar este mensaje a pelo.
+            cardMessageTextView.setText(new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(this)).generateMessage(this, forecastTable, getString(R.string.default_day_message)));
         }
         else {
             cardMessageTextView.setText("Null ForecastTable, are all WeatherTypes UNKNOWN?");

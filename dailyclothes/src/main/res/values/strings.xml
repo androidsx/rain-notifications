@@ -9,7 +9,8 @@
 
     <string name="forecast_loading">Loading</string>
 
-    <string name="forecast_Error">Wops! Something wrong happen while retrieving weather forecast data. Please check your internet connection and if the problem persist contact us at support+weather@androidsx.com</string>
+    <string name="forecast_error">Wops! Something wrong happen while retrieving weather forecast data. Please check your internet connection and if the problem persist contact us at support+weather@androidsx.com</string>
     <string name="retry">Retry</string>
+    <string name="default_day_message">Ops! There has been an error. Please check your internet connection and if the problem persists contact us at support+weather@androidsx.com</string>
 
 </resources>

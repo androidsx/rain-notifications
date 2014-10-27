@@ -131,7 +131,8 @@ public class MainActivity extends Activity {
                     public void onForecastSuccess(ForecastTable forecastTable) {
                         MainActivity.this.forecastTable = forecastTable;
                         MainActivity.this.forecastTableTime = new DateTime();
-                        MainActivity.this.forecastMessage = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(MainActivity.this)).generateMessage(MainActivity.this, forecastTable, "default");
+                        MainActivity.this.forecastMessage = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(MainActivity.this))
+                                .generateMessage(MainActivity.this, forecastTable, getString(R.string.default_day_message));
 
                         setForecastDataState(ForecastDataState.DONE);
                     }
