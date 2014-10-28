@@ -10,6 +10,21 @@ import java.util.Random;
 
 public class DayTemplate {
 
+    /**
+     * README before create templates on json files.
+     * <p>
+     * WHATEVER: It is ONLY valid for SECONDARIES. It means there must be secondary REGARDLESS of the particular WeatherType
+     * <p>
+     * OTHER: It is ONLY valid for PRIMARIES. It means this WeatherType must be DIFFERENT than previous primary WeatherType.
+     *        If it's used as a first primary on a Day, it means there must be primary REGARDLESS of the particular WeatherType
+     * <p>
+     * SAME: It is ONLY valid for PRIMARIES. It means this WeatherType must be EQUAL than previous primary WeatherType.
+     * <p>
+     * Some clarifications: <p>
+     * - Secondaries WeatherTypes are optional on a Day. <p>
+     * - A Day can have null primary values, but if one primary is non-null, all following primaries must be non-null. <p>
+     * - The first primary on a Day can't be SAME, so can be only a particular WeatherType or OTHER. <p>
+     */
     public enum DayTemplateJokerType {
         WHATEVER, // Only for secondary
         OTHER, // Only for primary
