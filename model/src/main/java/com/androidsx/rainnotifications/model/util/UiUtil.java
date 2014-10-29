@@ -18,7 +18,7 @@ public class UiUtil {
     }
 
     public static String getReadableHour(DateTime dateTime) {
-        return DateTimeFormat.forPattern("H aa").print(dateTime);
+        return DateTimeFormat.forPattern("h aa").print(dateTime);
     }
 
     public static PeriodFormatter getDebugOnlyPeriodFormatter() {
