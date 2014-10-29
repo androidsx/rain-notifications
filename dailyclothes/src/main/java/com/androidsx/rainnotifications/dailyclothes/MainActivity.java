@@ -20,6 +20,7 @@ import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
+import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnHelper;
 import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView;
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
@@ -163,7 +164,7 @@ public class MainActivity extends Activity {
         });
 
         fillClothesListView();
-        //QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
+        QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
     }
 
     private void updateUI() {
