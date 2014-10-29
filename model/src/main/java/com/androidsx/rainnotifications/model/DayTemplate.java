@@ -120,9 +120,11 @@ public class DayTemplate {
         return true;
     }
 
-    //TODO: ReImplement with Multilanguage support.
     public String resolveMessage(Context context, Day day) {
-        String message = messages.get("en").get(random.nextInt(messages.get("en").size()));
+        return resolveMessage(context, getRandomMessage(), day);
+    }
+
+    protected String resolveMessage(Context context, String message, Day day) {
         for (DayPeriod period : DayPeriod.values()) {
             for(WeatherPriority priority : WeatherPriority.values()) {
                 WeatherType type = day.getWeatherType(period, priority);
@@ -142,7 +144,16 @@ public class DayTemplate {
         return message;
     }
 
-    private Object getWeatherType(DayPeriod period, WeatherPriority priority) {
+    private String getRandomMessage() {
+        //TODO: ReImplement with Multilanguage support.
+        return getMessages().get("en").get(random.nextInt(getMessages().get("en").size()));
+    }
+
+    protected HashMap<String, List<String>> getMessages() {
+        return messages;
+    }
+
+    protected Object getWeatherType(DayPeriod period, WeatherPriority priority) {
         return weatherMap.get(period).get(priority);
     }
 

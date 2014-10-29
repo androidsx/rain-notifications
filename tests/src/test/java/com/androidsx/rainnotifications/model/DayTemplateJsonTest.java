@@ -1,8 +1,4 @@
-package com.androidsx.rainnotifications.alert;
-
-import com.androidsx.rainnotifications.model.DayTemplate;
-import com.androidsx.rainnotifications.model.MultiDayTemplateLoader;
-import com.androidsx.rainnotifications.model.WeatherType;
+package com.androidsx.rainnotifications.model;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +11,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -23,11 +20,16 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Tests for the generation of the day summary, {@link DayTemplateGenerator}.
+ * Tests for the generation of the day summary, {@link com.androidsx.rainnotifications.alert.DayTemplateGenerator}.
  */
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
 public class DayTemplateJsonTest {
+
+    private List<String> assets = Arrays.asList(
+            MultiDayTemplateLoader.FROM_MORNING_TEMPLATES_JSON_ASSET,
+            MultiDayTemplateLoader.FROM_AFTERNOON_TEMPLATES_JSON_ASSET,
+            MultiDayTemplateLoader.FROM_EVENING_TEMPLATES_JSON_ASSET);
 
     private List<String> templateWeatherValues;
     private String templateTrace;
@@ -47,12 +49,6 @@ public class DayTemplateJsonTest {
 
     @Test
     public void testSyntactic() throws Exception{
-
-        List<String> assets = Arrays.asList(
-                MultiDayTemplateLoader.FROM_MORNING_TEMPLATES_JSON_ASSET,
-                MultiDayTemplateLoader.FROM_AFTERNOON_TEMPLATES_JSON_ASSET,
-                MultiDayTemplateLoader.FROM_EVENING_TEMPLATES_JSON_ASSET);
-
         for (String asset : assets) {
             InputStream is = new FileInputStream("../alert-generator/src/main/assets/" + asset);
             byte[] buffer = new byte[is.available()];
@@ -136,5 +132,27 @@ public class DayTemplateJsonTest {
                 Assert.fail("New language " + templateTrace);
             }
         }
+    }
+
+    @Test
+    public void testSemantic() {
+        for (String asset : assets) {
+            List<DayTemplate> templates = JsonDayTemplateLoader.fromFile(new File("../alert-generator/src/main/assets/" + asset)).load();
+
+            for (DayTemplate template : templates) {
+                checkWeathers(template);
+                checkResolveMessages(template);
+            }
+        }
+    }
+
+    private void checkWeathers(DayTemplate template) {
+
+
+
+    }
+
+    private void checkResolveMessages(DayTemplate template) {
+
     }
 }
