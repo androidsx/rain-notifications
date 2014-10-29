@@ -192,10 +192,10 @@ public class DayTemplate {
 
         public DayTemplateBuilder setWeatherType(DayPeriod period, WeatherPriority priority, DayTemplateJokerType type) {
             if(priority.equals(WeatherPriority.primary) && type.equals(DayTemplateJokerType.WHATEVER)) {
-                throw new IllegalArgumentException("WHATEVER Joker type aren't allowed for primary priority");
+                throw new IllegalArgumentException("WHATEVER Joker type aren't allowed for primary priority. See DayTemplateJokerType documentation for more details.");
             }
             else if(priority.equals(WeatherPriority.secondary) && !type.equals(DayTemplateJokerType.WHATEVER)) {
-                throw new IllegalArgumentException("Only WHATEVER Joker type are allowed for secondary priority");
+                throw new IllegalArgumentException("Only WHATEVER Joker type are allowed for secondary priority. See DayTemplateJokerType documentation for more details.");
             }
             else {
                 weatherMap.get(period).put(priority, type);
