@@ -16,8 +16,12 @@ public class WeatherWrapper {
     // http://en.wikipedia.org/wiki/Fahrenheit#Usage
     // http://www.mathguide.de/info/tools/countrycode.html
     public static final List<String> FAHRENHEIT_COUNTRY_CODES = Arrays.asList("US", "PR", "GU", "VI", "BS", "BZ", "KY", "PW");
-    public static final char CELSIUS_SYMBOL = '\u2103';
-    public static final char FAHRENHEIT_SYMBOL = '\u2109';
+
+    // FIXME: Utilizar los simbolos unicode en vez de las strings. Pendiente de ver que pasa con la fuente y la negrita.
+    //public static final char CELSIUS_SYMBOL = '\u2103';
+    //public static final char FAHRENHEIT_SYMBOL = '\u2109';
+    public static final String CELSIUS_SYMBOL = "°C";
+    public static final String FAHRENHEIT_SYMBOL = "°F";
 
     public enum TemperatureScale {CELSIUS, FAHRENHEIT}
 

@@ -20,7 +20,6 @@ import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
-import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnHelper;
 import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView;
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
@@ -38,7 +37,6 @@ import org.joda.time.Duration;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import timber.log.Timber;
 
@@ -49,35 +47,24 @@ public class MainActivity extends Activity {
 
     private enum ForecastDataState {LOADING, ERROR, DONE};
 
-    private Random random = new Random();
+    private ForecastDataState dataState;
+    private ForecastTable forecastTable;
+    private DateTime forecastTableTime;
+    private String forecastMessage;
     private List<Clothes> clothesList = new ArrayList<Clothes>();
-    private List<ForecastListItem> forecastListItems = new ArrayList<ForecastListItem>();
     private CustomListAdapter adapter;
+    private boolean destroyed = false;
 
+    private View frameMain;
+    private View frameLoading;
+    private View frameError;
     private QuickReturnListView mListView;
-    private CustomFontTextView mQuickReturnView;
-    private View mPlaceHolder;
+    private CustomFontTextView nowTemperature;
 
     private int maxTemp = 0;
     private int todayNumClicks = 0;
     private static final int CLICKS_FOR_FIRST_MESSAGE = 3;
     private static final int CLICKS_FOR_SECOND_MESSAGE = 6;
-
-
-
-
-    private View frameMain;
-    private View frameLoading;
-    private View frameError;
-
-    private ForecastDataState dataState;
-    private ForecastTable forecastTable;
-    private DateTime forecastTableTime;
-    private String forecastMessage;
-
-    private CustomFontTextView nowTemperature;
-
-    private boolean destroyed = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +96,9 @@ public class MainActivity extends Activity {
         dataState = newState;
         switch (newState) {
             case LOADING:
-                //TODO: Clear data.
+                forecastTable = null;
+                forecastTableTime = null;
+                forecastMessage = null;
                 getForecastData();
                 break;
             case ERROR:
@@ -162,8 +151,8 @@ public class MainActivity extends Activity {
         frameError = findViewById(R.id.frame_error);
 
         nowTemperature = (CustomFontTextView) frameMain.findViewById(R.id.now_temp);
-        mQuickReturnView = (CustomFontTextView) frameMain.findViewById(R.id.forecast_message);
-        mPlaceHolder = frameMain.findViewById(R.id.layout_weather);
+        CustomFontTextView mQuickReturnView = (CustomFontTextView) frameMain.findViewById(R.id.forecast_message);
+        View mPlaceHolder = frameMain.findViewById(R.id.layout_weather);
         mListView = (QuickReturnListView) frameMain.findViewById(R.id.clothes_list_view);
 
         frameError.findViewById(R.id.button_error_retry).setOnClickListener(new View.OnClickListener() {
@@ -174,7 +163,7 @@ public class MainActivity extends Activity {
         });
 
         fillClothesListView();
-        QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
+        //QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
     }
 
     private void updateUI() {
@@ -370,29 +359,5 @@ public class MainActivity extends Activity {
 
     static class ViewHolder {
         ImageView icon;
-    }
-
-    private class ForecastListItem {
-        int icon;
-        int temp;
-        int hour;
-
-        public ForecastListItem(int icon, int temp, int hour) {
-            this.icon = icon;
-            this.temp = temp;
-            this.hour = hour;
-        }
-
-        public int getIcon() {
-            return icon;
-        }
-
-        public int getTemp() {
-            return temp;
-        }
-
-        public int getHour() {
-            return hour;
-        }
     }
 }
