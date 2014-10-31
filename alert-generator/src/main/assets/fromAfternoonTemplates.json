@@ -1,42 +1,4 @@
 [
-
-
-  {
-      "afternoon" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "SAME"
-               }
-
-         },
-      "evening" :
-         {
-            "primary" :
-               {
-                  "weatherType" : "SAME"
-               }
-         },
-      "messages" :
-         {
-            "en" :
-               [
-                  "It's gonna be ${weather_afternoon_primary_ing} for the rest of the day"
-               ]
-         }
-   },
-
-
-
-
-
-
-
-
-
-
-
-
    {
       "afternoon" :
          {
