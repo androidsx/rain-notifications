@@ -43,7 +43,7 @@ import timber.log.Timber;
 
 public class MainActivity extends Activity {
 
-    private final static Duration EXPIRATION_DURATION = Duration.standardSeconds(10); // TODO Set to Duration.standardHours(1)
+    private final static Duration EXPIRATION_DURATION = Duration.standardHours(1);
     private final static int MAX_FORECAST_ITEMS = 24;
 
     private enum ForecastDataState {LOADING, ERROR, DONE};
