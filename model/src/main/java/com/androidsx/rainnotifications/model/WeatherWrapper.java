@@ -12,10 +12,6 @@ import java.util.List;
  * @see #equals
  */
 public class WeatherWrapper {
-    // United States, Puerto Rico, Guam, the U.S. Virgin Islands, Bahamas, Belize, the Cayman Islands and Palau
-    // http://en.wikipedia.org/wiki/Fahrenheit#Usage
-    // http://www.mathguide.de/info/tools/countrycode.html
-    public static final List<String> FAHRENHEIT_COUNTRY_CODES = Arrays.asList("US", "PR", "GU", "VI", "BS", "BZ", "KY", "PW");
 
     // FIXME: Utilizar los simbolos unicode en vez de las strings. Pendiente de ver que pasa con la fuente y la negrita.
     //public static final char CELSIUS_SYMBOL = '\u2103';
@@ -23,7 +19,24 @@ public class WeatherWrapper {
     public static final String CELSIUS_SYMBOL = "°C";
     public static final String FAHRENHEIT_SYMBOL = "°F";
 
-    public enum TemperatureScale {CELSIUS, FAHRENHEIT}
+    public enum TemperatureScale {
+        CELSIUS,
+        FAHRENHEIT;
+
+        // United States, Puerto Rico, Guam, the U.S. Virgin Islands, Bahamas, Belize, the Cayman Islands and Palau
+        // http://en.wikipedia.org/wiki/Fahrenheit#Usage
+        // http://www.mathguide.de/info/tools/countrycode.html
+        private static final List<String> FAHRENHEIT_COUNTRY_CODES = Arrays.asList("US", "PR", "GU", "VI", "BS", "BZ", "KY", "PW");
+
+        public static TemperatureScale getLocaleScale(Context context) {
+            if(FAHRENHEIT_COUNTRY_CODES.contains(context.getResources().getConfiguration().locale.getCountry().toString())) {
+                return FAHRENHEIT;
+            }
+            else {
+                return CELSIUS;
+            }
+        }
+    }
 
     private final WeatherType type;
     private final float temperatureCelsius;
@@ -57,7 +70,7 @@ public class WeatherWrapper {
 
     // TODO: Add some logic for allow user to choose celsius or Fahrenheit.
     public String getReadableTemperature(Context context) {
-        if(FAHRENHEIT_COUNTRY_CODES.contains(context.getResources().getConfiguration().locale.getCountry().toString())) {
+        if(TemperatureScale.getLocaleScale(context).equals(TemperatureScale.FAHRENHEIT)) {
             return new DecimalFormat("#").format(temperatureFahrenheit) + FAHRENHEIT_SYMBOL;
         }
         else {

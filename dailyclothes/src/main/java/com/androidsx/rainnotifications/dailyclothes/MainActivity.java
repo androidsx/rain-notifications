@@ -25,10 +25,13 @@ import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListV
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.model.Day;
+import com.androidsx.rainnotifications.model.DayTemplate;
 import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.WeatherType;
+import com.androidsx.rainnotifications.model.WeatherWrapper;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.squareup.picasso.Picasso;
@@ -36,6 +39,7 @@ import com.squareup.picasso.Picasso;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,14 +47,18 @@ import timber.log.Timber;
 
 public class MainActivity extends Activity {
 
-    private final static Duration EXPIRATION_DURATION = Duration.standardHours(1);
-    private final static int MAX_FORECAST_ITEMS = 24;
+    private static final Duration EXPIRATION_DURATION = Duration.standardHours(1);
+    private static final int MAX_FORECAST_ITEMS = 24;
+    private static final String TEMPERATURE_SYMBOL = "°";
 
     private enum ForecastDataState {LOADING, ERROR, DONE};
 
+    private WeatherWrapper.TemperatureScale localeScale;
+    private DecimalFormat temperatureFormat = new DecimalFormat("#");
     private ForecastDataState dataState;
     private ForecastTable forecastTable;
     private DateTime forecastTableTime;
+    private Day day;
     private String forecastMessage;
     private List<Clothes> clothesList = new ArrayList<Clothes>();
     private CustomListAdapter adapter;
@@ -61,7 +69,10 @@ public class MainActivity extends Activity {
     private View frameError;
     private QuickReturnListView mListView;
     private CustomFontTextView nowTemperature;
+    private CustomFontTextView minTemperature;
+    private CustomFontTextView maxTemperature;
 
+    // TODO: Remove this cheat.
     private int maxTemp = 0;
     private int todayNumClicks = 0;
     private static final int CLICKS_FOR_FIRST_MESSAGE = 3;
@@ -70,6 +81,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        localeScale  = WeatherWrapper.TemperatureScale.getLocaleScale(this);
         setupUI();
     }
 
@@ -99,6 +111,7 @@ public class MainActivity extends Activity {
             case LOADING:
                 forecastTable = null;
                 forecastTableTime = null;
+                day = null;
                 forecastMessage = null;
                 getForecastData();
                 break;
@@ -121,8 +134,15 @@ public class MainActivity extends Activity {
                     public void onForecastSuccess(ForecastTable forecastTable) {
                         MainActivity.this.forecastTable = forecastTable;
                         MainActivity.this.forecastTableTime = new DateTime();
-                        MainActivity.this.forecastMessage = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(MainActivity.this))
-                                .generateMessage(MainActivity.this, forecastTable, getString(R.string.default_day_message));
+                        MainActivity.this.day = new Day(forecastTable);
+
+                        DayTemplate template = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(MainActivity.this)).getDayTemplate(day);
+                        if(template == null) {
+                            MainActivity.this.forecastMessage = getString(R.string.default_day_message);
+                        }
+                        else {
+                            MainActivity.this.forecastMessage = template.resolveMessage(MainActivity.this, MainActivity.this.day);
+                        }
 
                         setForecastDataState(ForecastDataState.DONE);
                     }
@@ -152,6 +172,8 @@ public class MainActivity extends Activity {
         frameError = findViewById(R.id.frame_error);
 
         nowTemperature = (CustomFontTextView) frameMain.findViewById(R.id.now_temp);
+        minTemperature = (CustomFontTextView) frameMain.findViewById(R.id.today_min_temp);
+        maxTemperature = (CustomFontTextView) frameMain.findViewById(R.id.today_max_temp);
         CustomFontTextView mQuickReturnView = (CustomFontTextView) frameMain.findViewById(R.id.forecast_message);
         View mPlaceHolder = frameMain.findViewById(R.id.layout_weather);
         mListView = (QuickReturnListView) frameMain.findViewById(R.id.clothes_list_view);
@@ -189,7 +211,9 @@ public class MainActivity extends Activity {
                     frameLoading.setVisibility(View.INVISIBLE);
                     frameError.setVisibility(View.INVISIBLE);
 
-                    nowTemperature.setText(forecastTable.getBaselineForecast().getWeatherWrapper().getReadableTemperature(this));
+                    nowTemperature.setText(temperatureFormat.format(forecastTable.getBaselineForecast().getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
+                    minTemperature.setText(temperatureFormat.format(day.getMinTemperature().getWeatherWrapper().getTemperature(localeScale)));
+                    maxTemperature.setText(temperatureFormat.format(day.getMaxTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     ((TextView)findViewById(R.id.forecast_message)).setText(forecastMessage);
                     fillForecastView();
 
@@ -251,7 +275,7 @@ public class MainActivity extends Activity {
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
 
             Picasso.with(this).load(getWeatherIcon(current.getWeatherWrapper().getWeatherType())).into(icon);
-            temp.setText(current.getWeatherWrapper().getReadableTemperature(this));
+            temp.setText(temperatureFormat.format(current.getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
             hour.setText(UiUtil.getReadableHour(current.getInterval().getStart()));
 
             forecastView.addView(view);
