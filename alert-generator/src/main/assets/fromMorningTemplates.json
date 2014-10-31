@@ -863,7 +863,7 @@
          {
             "en" :
                [
-                  "Crazy day. We'll have a ${weather_morning_primary_adj} morning with light ${weather_morning_secondary_noun}, but this afternoon will turn ${weather_afternoon_primary_adj} with some ${weather_evening_secondary_noun}"
+                  "Crazy day. We'll have a ${weather_morning_primary_adj} morning, but this afternoon will turn ${weather_afternoon_primary_adj} with some ${weather_afternoon_secondary_noun}"
                ]
          }
    },

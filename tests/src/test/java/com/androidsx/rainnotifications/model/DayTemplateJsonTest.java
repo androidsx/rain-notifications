@@ -19,9 +19,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Tests for the generation of the day summary, {@link com.androidsx.rainnotifications.alert.DayTemplateGenerator}.
- */
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
 public class DayTemplateJsonTest {
