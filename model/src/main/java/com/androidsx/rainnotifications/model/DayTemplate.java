@@ -129,9 +129,7 @@ public class DayTemplate {
             for(WeatherPriority priority : WeatherPriority.values()) {
                 WeatherType type = day.getWeatherType(period, priority);
                 if(type != null) {
-                    message = message.replace("${weather_" + period + "_" + priority + "_noun}", type.getNoun(context));
-                    message = message.replace("${weather_" + period + "_" + priority + "_adj}", type.getAdjective(context));
-                    message = message.replace("${weather_" + period + "_" + priority + "_ing}", type.getGerund(context));
+                    message = replaceWeatherType(message, period, priority, type.getNoun(context), type.getAdjective(context), type.getGerund(context));
                 }
             }
         }
@@ -144,13 +142,21 @@ public class DayTemplate {
         return message;
     }
 
-    private String getRandomMessage() {
-        //TODO: ReImplement with Multilanguage support.
-        return getMessages().get("en").get(random.nextInt(getMessages().get("en").size()));
+    protected String replaceWeatherType(String message, DayPeriod period, WeatherPriority priority, String noun, String adjective, String gerund) {
+        message = message.replace("${weather_" + period + "_" + priority + "_noun}", noun);
+        message = message.replace("${weather_" + period + "_" + priority + "_adj}", adjective);
+        message = message.replace("${weather_" + period + "_" + priority + "_ing}", gerund);
+        return message;
     }
 
-    protected HashMap<String, List<String>> getMessages() {
-        return messages;
+    private String getRandomMessage() {
+        List<String> availableMessages = getMessages();
+        return availableMessages.get(random.nextInt(availableMessages.size()));
+    }
+
+    protected List<String> getMessages() {
+        //TODO: ReImplement with Multilanguage support.
+        return messages.get("en");
     }
 
     protected Object getWeatherType(DayPeriod period, WeatherPriority priority) {
@@ -202,16 +208,8 @@ public class DayTemplate {
         }
 
         public DayTemplateBuilder setWeatherType(DayPeriod period, WeatherPriority priority, DayTemplateJokerType type) {
-            if(priority.equals(WeatherPriority.primary) && type.equals(DayTemplateJokerType.WHATEVER)) {
-                throw new IllegalArgumentException("WHATEVER Joker type aren't allowed for primary priority. See DayTemplateJokerType documentation for more details.");
-            }
-            else if(priority.equals(WeatherPriority.secondary) && !type.equals(DayTemplateJokerType.WHATEVER)) {
-                throw new IllegalArgumentException("Only WHATEVER Joker type are allowed for secondary priority. See DayTemplateJokerType documentation for more details.");
-            }
-            else {
-                weatherMap.get(period).put(priority, type);
-                return this;
-            }
+            weatherMap.get(period).put(priority, type);
+            return this;
         }
 
         public DayTemplateBuilder setMessages(HashMap<String, List<String>> messages) {

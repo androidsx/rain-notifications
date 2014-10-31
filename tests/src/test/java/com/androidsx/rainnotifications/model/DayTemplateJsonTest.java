@@ -32,7 +32,7 @@ public class DayTemplateJsonTest {
             MultiDayTemplateLoader.FROM_EVENING_TEMPLATES_JSON_ASSET);
 
     private List<String> templateWeatherValues;
-    private String templateTrace;
+    private String templateFileSource;
 
     @Before
     public void setUp() {
@@ -58,7 +58,7 @@ public class DayTemplateJsonTest {
 
             for (int i = 0 ; i < dayTemplates.length() ; i++) {
                 JSONObject dayTemplate = dayTemplates.getJSONObject(i);
-                templateTrace = "on file " + asset + ", DayTemplate number " + i + "\n" + dayTemplate.toString();
+                templateFileSource = "on file " + asset + ", DayTemplate number " + i + "\n" + dayTemplate.toString();
                 checkDayTemplate(dayTemplate);
             }
         }
@@ -77,13 +77,12 @@ public class DayTemplateJsonTest {
                 checkMessages(dayTemplate.getJSONObject(key));
             }
             else {
-                Assert.fail("Key " + key + " is not a DayPeriod or Messages " + templateTrace);
+                Assert.fail("Key " + key + " is not a DayPeriod or Messages " + templateFileSource);
             }
         }
     }
 
     private void checkDayPeriod(JSONObject dayPeriod) throws JSONException {
-        Assert.assertTrue("Not primary key " + templateTrace, dayPeriod.has("primary"));
         Iterator<String> keyIterator = dayPeriod.keys();
 
         while (keyIterator.hasNext()) {
@@ -93,13 +92,13 @@ public class DayTemplateJsonTest {
                 checkWeather(dayPeriod.getJSONObject(key));
             }
             else {
-                Assert.fail("Key " + key + " is not a WeatherPriority " + templateTrace);
+                Assert.fail("Key " + key + " is not a WeatherPriority " + templateFileSource);
             }
         }
     }
 
     private void checkWeather(JSONObject weather) throws JSONException {
-        Assert.assertTrue("Not weatherType key " + templateTrace, weather.has("weatherType"));
+        Assert.assertTrue("Not weatherType key " + templateFileSource, weather.has("weatherType"));
         Iterator<String> keyIterator = weather.keys();
 
         while (keyIterator.hasNext()) {
@@ -108,28 +107,28 @@ public class DayTemplateJsonTest {
             if(key.equals("weatherType")) {
                 String weatherType = weather.getString(key);
                 if(!templateWeatherValues.contains(weatherType)) {
-                    Assert.fail("Unknown weatherType: " + weatherType + " " + templateTrace);
+                    Assert.fail("Unknown weatherType: " + weatherType + " " + templateFileSource);
                 }
             }
             else {
-                Assert.fail("Key " + key + " is not weatherType " + templateTrace);
+                Assert.fail("Key " + key + " is not weatherType " + templateFileSource);
             }
         }
     }
 
     private void checkMessages(JSONObject messages) throws JSONException {
-        Assert.assertTrue("Not en key " + templateTrace, messages.has("en"));
+        Assert.assertTrue("Not en key " + templateFileSource, messages.has("en"));
         Iterator<String> keyIterator = messages.keys();
 
         while (keyIterator.hasNext()) {
             String key = keyIterator.next();
 
             if(key.equals("en")) {
-                Assert.assertTrue("Empty messages array " + templateTrace, messages.getJSONArray(key).length() != 0);
+                Assert.assertTrue("Empty messages array " + templateFileSource, messages.getJSONArray(key).length() != 0);
 
             }
             else {
-                Assert.fail("New language " + templateTrace);
+                Assert.fail("New language " + templateFileSource);
             }
         }
     }
@@ -139,7 +138,9 @@ public class DayTemplateJsonTest {
         for (String asset : assets) {
             List<DayTemplate> templates = JsonDayTemplateLoader.fromFile(new File("../alert-generator/src/main/assets/" + asset)).load();
 
-            for (DayTemplate template : templates) {
+            for (int i = 0 ; i < templates.size() ; i++) {
+                DayTemplate template = templates.get(i);
+                templateFileSource = "on file " + asset + ", DayTemplate number " + i + "\n" + template.toString();
                 checkWeathers(template);
                 checkResolveMessages(template);
             }
@@ -147,12 +148,69 @@ public class DayTemplateJsonTest {
     }
 
     private void checkWeathers(DayTemplate template) {
+        boolean firstPrimaryFound = false;
 
+        for (DayPeriod period : DayPeriod.values()) {
+            Object primaryWeather = template.getWeatherType(period, WeatherPriority.primary);
+            Object secondaryWeather = template.getWeatherType(period, WeatherPriority.secondary);
 
+            if(primaryWeather == null) {
+                Assert.assertTrue("Found secondary without primary (" + period + ") " + templateFileSource, secondaryWeather == null);
+                if(firstPrimaryFound) Assert.fail("Found gap between primary periods " + templateFileSource);
+            }
+            else {
+                if(firstPrimaryFound) {
+                    if(primaryWeather instanceof DayTemplate.DayTemplateJokerType && primaryWeather.equals(DayTemplate.DayTemplateJokerType.WHATEVER)) {
+                        Assert.fail("Found " + primaryWeather + " on a primary " + templateFileSource);
+                    }
+                }
+                else {
+                    firstPrimaryFound = true;
+                    if(primaryWeather instanceof DayTemplate.DayTemplateJokerType && !primaryWeather.equals(DayTemplate.DayTemplateJokerType.OTHER)) {
+                        Assert.fail("Found " + primaryWeather + " as first primary " + templateFileSource);
+                    }
+                }
 
+                if(secondaryWeather != null && secondaryWeather instanceof DayTemplate.DayTemplateJokerType && !secondaryWeather.equals(DayTemplate.DayTemplateJokerType.WHATEVER)) {
+                    Assert.fail("Found " + secondaryWeather + " as secondary " + templateFileSource);
+                }
+            }
+        }
+
+        if(!firstPrimaryFound) {
+            Assert.fail("No weathers found " + templateFileSource);
+        }
     }
 
     private void checkResolveMessages(DayTemplate template) {
+        List<String> messages = template.getMessages();
 
+        if(messages == null || messages.isEmpty()) {
+            Assert.fail("No messages found " + templateFileSource);
+        }
+        else {
+            for (String message : messages) {
+                String resolvedMessage = message;
+                for (DayPeriod period : DayPeriod.values()) {
+                    for (WeatherPriority priority : WeatherPriority.values()) {
+
+                        System.out.println("Check " + period + " " + priority + " " + template.getWeatherType(period, priority));
+
+                        if(template.getWeatherType(period, priority) != null) {
+                            System.out.println("Before " + resolvedMessage);
+                            resolvedMessage = template.replaceWeatherType(resolvedMessage, period, priority, "OK", "OK", "OK");
+                            System.out.println("After " + resolvedMessage);
+                        }
+                    }
+                }
+
+                if(resolvedMessage.contains("$") || resolvedMessage.contains("{") || resolvedMessage.contains("}") || resolvedMessage.contains("_")) {
+                    Assert.fail("Has not been able to successfully resolve the message: " + message + " -> " +  resolvedMessage + "\n " + templateFileSource);
+                }
+                else if(Character.isLowerCase(resolvedMessage.charAt(0))) {
+                    Assert.fail("Message start with lower case " + templateFileSource);
+                }
+            }
+        }
     }
 }
