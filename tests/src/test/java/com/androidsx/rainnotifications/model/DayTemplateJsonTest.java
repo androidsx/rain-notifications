@@ -33,6 +33,7 @@ public class DayTemplateJsonTest {
 
     private List<String> templateWeatherValues;
     private String templateFileSource;
+    private int failsOnMessages = 0;
 
     @Before
     public void setUp() {
@@ -145,6 +146,8 @@ public class DayTemplateJsonTest {
                 checkResolveMessages(template);
             }
         }
+
+        Assert.assertTrue("There are " + failsOnMessages + " fails on messages, see Standard output for details", failsOnMessages == 0);
     }
 
     private void checkWeathers(DayTemplate template) {
@@ -186,29 +189,27 @@ public class DayTemplateJsonTest {
         List<String> messages = template.getMessages();
 
         if(messages == null || messages.isEmpty()) {
-            Assert.fail("No messages found " + templateFileSource);
+            System.out.println("No messages found " + templateFileSource);
+            failsOnMessages++;
         }
         else {
             for (String message : messages) {
                 String resolvedMessage = message;
                 for (DayPeriod period : DayPeriod.values()) {
                     for (WeatherPriority priority : WeatherPriority.values()) {
-
-                        System.out.println("Check " + period + " " + priority + " " + template.getWeatherType(period, priority));
-
                         if(template.getWeatherType(period, priority) != null) {
-                            System.out.println("Before " + resolvedMessage);
                             resolvedMessage = template.replaceWeatherType(resolvedMessage, period, priority, "OK", "OK", "OK");
-                            System.out.println("After " + resolvedMessage);
                         }
                     }
                 }
 
                 if(resolvedMessage.contains("$") || resolvedMessage.contains("{") || resolvedMessage.contains("}") || resolvedMessage.contains("_")) {
-                    Assert.fail("Has not been able to successfully resolve the message: " + message + " -> " +  resolvedMessage + "\n " + templateFileSource);
+                    System.out.println("Has not been able to successfully resolve the message: " + message + " -> " +  resolvedMessage + "\n " + templateFileSource);
+                    failsOnMessages++;
                 }
                 else if(Character.isLowerCase(resolvedMessage.charAt(0))) {
-                    Assert.fail("Message start with lower case " + templateFileSource);
+                    System.out.println("Message start with lower case " + templateFileSource);
+                    failsOnMessages++;
                 }
             }
         }
