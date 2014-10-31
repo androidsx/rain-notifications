@@ -2,6 +2,8 @@ package com.androidsx.rainnotifications.model;
 
 import android.content.Context;
 
+import java.util.Arrays;
+
 public class DayTemplateLoaderFactory {
 
     /**
@@ -13,8 +15,9 @@ public class DayTemplateLoaderFactory {
      */
     public static DayTemplateLoader getDayTemplateLoader(Context context) {
         // TODO: Implement logic for server updates.
-        // TODO: Change loader.
-        //return JsonDayTemplateLoader.fromAssets(context, JsonDayTemplateLoader.DEFAULT_DAY_TEMPLATES_JSON_ASSET);
-        return new DevelopmentDayTemplateLoader(context);
+        return new MultiDayTemplateLoader(context, Arrays.asList(
+                MultiDayTemplateLoader.FROM_MORNING_TEMPLATES_JSON_ASSET,
+                MultiDayTemplateLoader.FROM_AFTERNOON_TEMPLATES_JSON_ASSET,
+                MultiDayTemplateLoader.FROM_EVENING_TEMPLATES_JSON_ASSET));
     }
 }

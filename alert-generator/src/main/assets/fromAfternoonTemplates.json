@@ -1,6 +1,4 @@
 [
-
-
    {
       "afternoon" :
          {
@@ -155,7 +153,7 @@
          {
             "en" :
                [
-                  "Looks like it'll be ${weather_afternoon_primary_ing} with a little {weather_afternoon_secondary_noun} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
+                  "Looks like it'll be ${weather_afternoon_primary_ing} with a little ${weather_afternoon_secondary_noun} until tonight, when it's gonna turn ${weather_evening_primary_adj}"
                ]
          }
    },
@@ -182,7 +180,7 @@
          {
             "en" :
                [
-                  "Looks like it'll be ${weather_afternoon_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj} with light {weather_evening_secondary_noun}"
+                  "Looks like it'll be ${weather_afternoon_primary_ing} until tonight, when it's gonna turn ${weather_evening_primary_adj} with light ${weather_evening_secondary_noun}"
                ]
          }
    },
@@ -217,6 +215,4 @@
                ]
          }
    }
-
-
 ]

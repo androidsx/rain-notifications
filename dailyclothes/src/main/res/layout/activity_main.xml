@@ -1,93 +1,150 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:customAttrs="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+<!--
+    TODO: Eliminar dimensiones estrictas y pasarlo a variables en dimens.xml
+-->
 
-    <com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView
-        android:id="@+id/clothes_list_view"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:customAttrs="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:background="@color/today_background"
+             tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/frame_main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_weather"
-        android:scrollbarThumbVertical="@drawable/scrollbar"
-        android:divider="@null"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="invisible">
 
-    <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
-        android:id="@+id/forecast_message"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout_weather"
-        android:background="@color/forecast_message_background"
-        android:paddingLeft="@dimen/forecast_message_padding_left_right"
-        android:paddingRight="@dimen/forecast_message_padding_left_right"
-        android:paddingBottom="@dimen/forecast_message_padding_top_bottom"
-        android:paddingTop="@dimen/forecast_message_padding_top_bottom"
-        android:layout_marginRight="@dimen/forecast_message_margin_right"
-        android:textSize="@dimen/forecast_message_text_size"
-        android:textColor="@color/forecast_message"
-        customAttrs:customFont="roboto_light"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/today_background"
-        android:id="@+id/layout_weather">
-
-        <RelativeLayout
-            android:id="@+id/today"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/today_margin_left"
-            android:clickable="true"
-            android:onClick="showNotification">
+            android:orientation="horizontal">
 
-            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
-                android:id="@+id/now_temp"
+            <FrameLayout
+                android:id="@+id/layout_weather"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/today_temp_margin_top"
-                android:text="56º"
-                android:textSize="@dimen/today_temp_text_size"
-                android:textColor="@color/today_text"
-                customAttrs:customFont="roboto_thin"/>
+                android:layout_marginLeft="5dp"
+                android:onClick="showNotification"
+                android:orientation="vertical">
 
-            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
-                android:id="@+id/now_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/now_temp"
-                android:layout_marginTop="@dimen/today_now_margin_top"
-                android:layout_marginLeft="@dimen/today_now_margin_left"
-                android:text="now"
-                android:textSize="@dimen/today_now_text_size"
-                android:textColor="@color/today_text"
-                customAttrs:customFont="roboto_thin"/>
-        </RelativeLayout>
+                <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                    android:id="@+id/now_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|center"
+                    android:textColor="@color/today_text"
+                    android:textSize="@dimen/today_temp_text_size"
+                    customAttrs:customFont="roboto_thin"/>
 
-        <RelativeLayout
-            android:layout_toRightOf="@+id/today"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="@dimen/forecast_hourly_section_margin_top"
-            android:layout_marginLeft="@dimen/forecast_hourly_section_margin_left">
+                <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|center"
+                    android:layout_marginTop="50dp"
+                    android:text="@string/now"
+                    android:textColor="@color/today_text"
+                    android:textSize="@dimen/today_now_text_size"
+                    customAttrs:customFont="roboto_thin"/>
+            </FrameLayout>
 
             <HorizontalScrollView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:overScrollMode="never"
                 android:scrollbarThumbHorizontal="@drawable/scrollbar">
 
                 <LinearLayout
                     android:id="@+id/hourly_forecast"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/forecast_hourly_section_margin_bottom">
-
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
                 </LinearLayout>
             </HorizontalScrollView>
-        </RelativeLayout>
-    </RelativeLayout>
-</RelativeLayout>
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView
+                android:id="@+id/clothes_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:overScrollMode="never"
+                android:scrollbarThumbVertical="@drawable/scrollbar"/>
+
+            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                android:id="@+id/forecast_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:layout_marginRight="@dimen/forecast_message_margin_right"
+                android:background="@color/forecast_message_background"
+                android:paddingBottom="@dimen/forecast_message_padding_top_bottom"
+                android:paddingLeft="@dimen/forecast_message_padding_left_right"
+                android:paddingRight="@dimen/forecast_message_padding_left_right"
+                android:textColor="@color/forecast_message"
+                android:textSize="@dimen/forecast_message_text_size"
+                customAttrs:customFont="roboto_light"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <!-- Dar estilo a estos dos frames-->
+    <LinearLayout
+        android:id="@+id/frame_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/status_frame_padding"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/forecast_loading"
+            android:textColor="@color/grey_blue"
+            android:textSize="18dp"/>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/frame_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/status_frame_padding"
+        android:visibility="invisible">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/forecast_error"
+            android:textColor="@color/grey_blue"
+            android:textSize="18dp"/>
+
+        <Button
+            android:id="@+id/button_error_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="getForecastData"
+            android:text="@string/retry"/>
+    </LinearLayout>
+</FrameLayout>

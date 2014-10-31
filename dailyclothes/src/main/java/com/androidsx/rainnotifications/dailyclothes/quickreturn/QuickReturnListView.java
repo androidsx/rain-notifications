@@ -19,6 +19,7 @@ package com.androidsx.rainnotifications.dailyclothes.quickreturn;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 /**
@@ -51,9 +52,8 @@ public class QuickReturnListView extends ListView {
 		}
 		for (int i = 0; i < mItemCount; ++i) {
 			View view = getAdapter().getView(i, null, this);
-			view.measure(
-					MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-					MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            view.measure(MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.MATCH_PARENT, MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(ViewGroup.LayoutParams.WRAP_CONTENT, MeasureSpec.EXACTLY));
 			mItemOffsetY[i] = mHeight;
 			mHeight += view.getMeasuredHeight();
 			System.out.println(mHeight);

@@ -16,6 +16,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
@@ -24,24 +25,42 @@ import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListV
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
+import com.androidsx.rainnotifications.model.WeatherType;
+import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
 import com.squareup.picasso.Picasso;
 
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
+import timber.log.Timber;
 
 public class MainActivity extends Activity {
-    private Random random = new Random();
-    private List<Clothes> clothesList = new ArrayList<Clothes>();
-    private List<ForecastListItem> forecastListItems = new ArrayList<ForecastListItem>();
-    private CustomListAdapter adapter;
 
+    private final static Duration EXPIRATION_DURATION = Duration.standardHours(1);
+    private final static int MAX_FORECAST_ITEMS = 24;
+
+    private enum ForecastDataState {LOADING, ERROR, DONE};
+
+    private ForecastDataState dataState;
+    private ForecastTable forecastTable;
+    private DateTime forecastTableTime;
+    private String forecastMessage;
+    private List<Clothes> clothesList = new ArrayList<Clothes>();
+    private CustomListAdapter adapter;
+    private boolean destroyed = false;
+
+    private View frameMain;
+    private View frameLoading;
+    private View frameError;
     private QuickReturnListView mListView;
-    private CustomFontTextView mQuickReturnView;
-    private View mPlaceHolder;
+    private CustomFontTextView nowTemperature;
 
     private int maxTemp = 0;
     private int todayNumClicks = 0;
@@ -51,19 +70,132 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setupUI();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        checkDataState();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        destroyed = true;
+    }
+
+    private void checkDataState() {
+        if(dataState == null || dataState.equals(ForecastDataState.ERROR)) {
+            setForecastDataState(ForecastDataState.LOADING);
+        }
+        else if(dataState.equals(ForecastDataState.DONE) && new Duration(forecastTableTime, new DateTime()).isLongerThan(EXPIRATION_DURATION)) {
+            setForecastDataState(ForecastDataState.LOADING);
+        }
+    }
+
+    private void setForecastDataState(ForecastDataState newState) {
+        dataState = newState;
+        switch (newState) {
+            case LOADING:
+                forecastTable = null;
+                forecastTableTime = null;
+                forecastMessage = null;
+                getForecastData();
+                break;
+            case ERROR:
+                break;
+            case DONE:
+                break;
+        }
 
         updateUI();
     }
 
-    private void updateUI() {
-        mQuickReturnView = (CustomFontTextView)findViewById(R.id.forecast_message);
-        mPlaceHolder = findViewById(R.id.layout_weather);
-        mListView = (QuickReturnListView)findViewById(R.id.clothes_list_view);
+    private void getForecastData() {
+        // FIXME: we do exactly the same in the weather service. grr..
+        UserLocationFetcher.getUserLocation(this, new UserLocationFetcher.UserLocationResultListener() {
+            @Override
+            public void onLocationSuccess(final Location location) {
+                WeatherClientFactory.requestForecastForLocation(MainActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
+                    @Override
+                    public void onForecastSuccess(ForecastTable forecastTable) {
+                        MainActivity.this.forecastTable = forecastTable;
+                        MainActivity.this.forecastTableTime = new DateTime();
+                        MainActivity.this.forecastMessage = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(MainActivity.this))
+                                .generateMessage(MainActivity.this, forecastTable, getString(R.string.default_day_message));
 
-        fillForecastView(8, 24);
+                        setForecastDataState(ForecastDataState.DONE);
+                    }
+
+                    @Override
+                    public void onForecastFailure(WeatherClientException exception) {
+                        Timber.e(exception, "Failed to get the forecast");
+                        setForecastDataState(ForecastDataState.ERROR);
+                    }
+                });
+            }
+
+            @Override
+            public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
+                Timber.e(exception, "Failed to get the location");
+                setForecastDataState(ForecastDataState.ERROR);
+            }
+        });
+    }
+
+    private void setupUI() {
+        // TODO: Enable support email link.
+        setContentView(R.layout.activity_main);
+
+        frameMain = findViewById(R.id.frame_main);
+        frameLoading = findViewById(R.id.frame_loading);
+        frameError = findViewById(R.id.frame_error);
+
+        nowTemperature = (CustomFontTextView) frameMain.findViewById(R.id.now_temp);
+        CustomFontTextView mQuickReturnView = (CustomFontTextView) frameMain.findViewById(R.id.forecast_message);
+        View mPlaceHolder = frameMain.findViewById(R.id.layout_weather);
+        mListView = (QuickReturnListView) frameMain.findViewById(R.id.clothes_list_view);
+
+        frameError.findViewById(R.id.button_error_retry).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setForecastDataState(ForecastDataState.LOADING);
+            }
+        });
+
         fillClothesListView();
-        configureQuickReturn();
+        QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
+    }
+
+    private void updateUI() {
+        // FIXME: La fuente utilizada muestra los símbolos de temperatura en negrita, Aghhh!
+        if(!destroyed) {
+            switch (dataState) {
+                case LOADING:
+                    frameLoading.setVisibility(View.VISIBLE);
+
+                    frameError.setVisibility(View.INVISIBLE);
+                    frameMain.setVisibility(View.INVISIBLE);
+                    break;
+                case ERROR:
+                    frameError.setVisibility(View.VISIBLE);
+
+                    frameLoading.setVisibility(View.INVISIBLE);
+                    frameMain.setVisibility(View.INVISIBLE);
+                    break;
+                case DONE:
+                    frameMain.setVisibility(View.VISIBLE);
+
+                    frameLoading.setVisibility(View.INVISIBLE);
+                    frameError.setVisibility(View.INVISIBLE);
+
+                    nowTemperature.setText(forecastTable.getBaselineForecast().getWeatherWrapper().getReadableTemperature(this));
+                    ((TextView)findViewById(R.id.forecast_message)).setText(forecastMessage);
+                    fillForecastView();
+
+                    break;
+            }
+        }
     }
 
     public void showNotification(View v) {
@@ -108,43 +240,22 @@ public class MainActivity extends Activity {
         }.execute();
     }
 
-    private void fillForecastView(int startHour, int endHour) {
+    private void fillForecastView() {
         ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
-        for(int i=startHour; i < endHour; i++) {
+        for(int i=0; i < Math.min(MAX_FORECAST_ITEMS, forecastTable.getHourlyForecastList().size()); i++) {
+            Forecast current = forecastTable.getHourlyForecastList().get(i);
+
             View view = LayoutInflater.from(this).inflate(R.layout.hourly_forecast_item, null);
             ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
             TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
-            Picasso.with(this).load(getRandomWeatherIcon()).into(icon);
-            int auxTemp = getRandomBetweenNumbers(60, 67);
-            temp.setText(auxTemp + "º");
-            hour.setText(i+"am");
-            forecastView.addView(view);
-            if(auxTemp > maxTemp) {
-                maxTemp = auxTemp;
-            }
-        }
-        ((TextView)findViewById(R.id.forecast_message)).setText(
-                Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
-    }
 
-    private void loadForecastList() {
-        ViewGroup forecastView = (ViewGroup) findViewById(R.id.hourly_forecast);
-        for (ForecastListItem f : forecastListItems) {
-            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.hourly_forecast_item, null);
-            ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
-            TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
-            TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
-            Picasso.with(MainActivity.this).load(f.getIcon()).into(icon);
-            temp.setText(f.getTemp() + "º");
-            hour.setText(f.getHour() + "h");
+            Picasso.with(this).load(getWeatherIcon(current.getWeatherWrapper().getWeatherType())).into(icon);
+            temp.setText(current.getWeatherWrapper().getReadableTemperature(this));
+            hour.setText(UiUtil.getReadableHour(current.getInterval().getStart()));
+
             forecastView.addView(view);
-            if (f.getTemp() > maxTemp) {
-                maxTemp = f.getTemp();
-            }
         }
-        ((TextView) findViewById(R.id.forecast_message)).setText(
-                Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)));
     }
 
     private void fillClothesListView() {
@@ -176,18 +287,23 @@ public class MainActivity extends Activity {
         adapter.notifyDataSetChanged();
     }
 
-    private void configureQuickReturn() {
-        QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
-    }
+    private int getWeatherIcon(WeatherType type) {
+        TypedArray iconTypedArray = getResources().obtainTypedArray(R.array.weatherIcons);
 
-    private int getRandomBetweenNumbers(int minValue, int maxValue) {
-        return random.nextInt((maxValue + 1) - minValue) + minValue;
-    }
-
-    private int getRandomWeatherIcon() {
-        final TypedArray mascotTypedArray = getResources().obtainTypedArray(R.array.weatherIcons);
-        final int mascotIndex = random.nextInt(mascotTypedArray.length());
-        return mascotTypedArray.getResourceId(mascotIndex, -1);
+        switch (type) {
+            case CLEAR:
+                return iconTypedArray.getResourceId(0,0); //TODO: Que usamos como default?
+            case CLOUDY:
+                return iconTypedArray.getResourceId(1,0);
+            case RAIN:
+                return iconTypedArray.getResourceId(2,0);
+            case SNOW:
+                // FIXME: Falta el icono
+                return iconTypedArray.getResourceId(3,0);
+            default:
+                // TODO: Consultar con Pablo y/o Omar que hacer en este caso.
+                return 0;
+        }
     }
 
     public static class CustomListAdapter extends BaseAdapter {
@@ -244,29 +360,5 @@ public class MainActivity extends Activity {
 
     static class ViewHolder {
         ImageView icon;
-    }
-
-    private class ForecastListItem {
-        int icon;
-        int temp;
-        int hour;
-
-        public ForecastListItem(int icon, int temp, int hour) {
-            this.icon = icon;
-            this.temp = temp;
-            this.hour = hour;
-        }
-
-        public int getIcon() {
-            return icon;
-        }
-
-        public int getTemp() {
-            return temp;
-        }
-
-        public int getHour() {
-            return hour;
-        }
     }
 }

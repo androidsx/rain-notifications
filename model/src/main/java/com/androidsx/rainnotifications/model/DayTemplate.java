@@ -2,13 +2,29 @@ package com.androidsx.rainnotifications.model;
 
 import android.content.Context;
 
-import java.text.DecimalFormat;
+import com.androidsx.rainnotifications.model.util.UiUtil;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
 public class DayTemplate {
 
+    /**
+     * README before create templates on json files.
+     * <p>
+     * WHATEVER: It is ONLY valid for SECONDARIES. It means there must be secondary REGARDLESS of the particular WeatherType
+     * <p>
+     * OTHER: It is ONLY valid for PRIMARIES. It means this WeatherType must be DIFFERENT than previous primary WeatherType.
+     *        If it's used as a first primary on a Day, it means there must be primary REGARDLESS of the particular WeatherType
+     * <p>
+     * SAME: It is ONLY valid for PRIMARIES. It means this WeatherType must be EQUAL than previous primary WeatherType.
+     * <p>
+     * Some clarifications: <p>
+     * - Secondaries WeatherTypes are optional on a Day. <p>
+     * - A Day can have null primary values, but if one primary is non-null, all following primaries must be non-null. <p>
+     * - The first primary on a Day can't be SAME, so can be only a particular WeatherType or OTHER. <p>
+     */
     public enum DayTemplateJokerType {
         WHATEVER, // Only for secondary
         OTHER, // Only for primary
@@ -104,30 +120,46 @@ public class DayTemplate {
         return true;
     }
 
-    //TODO: ReImplement with Multilanguage support.
     public String resolveMessage(Context context, Day day) {
-        String message = messages.get("en").get(random.nextInt(messages.get("en").size()));
+        return resolveMessage(context, getRandomMessage(), day);
+    }
+
+    protected String resolveMessage(Context context, String message, Day day) {
         for (DayPeriod period : DayPeriod.values()) {
             for(WeatherPriority priority : WeatherPriority.values()) {
                 WeatherType type = day.getWeatherType(period, priority);
                 if(type != null) {
-                    message = message.replace("${weather_" + period + "_" + priority + "_noun}", type.getNoun(context));
-                    message = message.replace("${weather_" + period + "_" + priority + "_adj}", type.getAdjective(context));
-                    message = message.replace("${weather_" + period + "_" + priority + "_ing}", type.getGerund(context));
+                    message = replaceWeatherType(message, period, priority, type.getNoun(context), type.getAdjective(context), type.getGerund(context));
                 }
             }
         }
 
-        // TODO: Add some logic for choose celsius or Fahrenheit.
         message = message + context.getString(R.string.temperature_message,
-                context.getString(R.string.temperature_celsius, new DecimalFormat("#.#").format(day.getMinTemperature().getWeatherWrapper().getTemperatureCelsius())),
-                day.getMinTemperature().getInterval().getStart().getHourOfDay(),
-                context.getString(R.string.temperature_celsius, new DecimalFormat("#.#").format(day.getMaxTemperature().getWeatherWrapper().getTemperatureCelsius())),
-                day.getMaxTemperature().getInterval().getStart().getHourOfDay());
+                day.getMinTemperature().getWeatherWrapper().getReadableTemperature(context),
+                UiUtil.getReadableHour(day.getMinTemperature().getInterval().getStart()),
+                day.getMaxTemperature().getWeatherWrapper().getReadableTemperature(context),
+                UiUtil.getReadableHour(day.getMaxTemperature().getInterval().getStart()));
         return message;
     }
 
-    private Object getWeatherType(DayPeriod period, WeatherPriority priority) {
+    protected String replaceWeatherType(String message, DayPeriod period, WeatherPriority priority, String noun, String adjective, String gerund) {
+        message = message.replace("${weather_" + period + "_" + priority + "_noun}", noun);
+        message = message.replace("${weather_" + period + "_" + priority + "_adj}", adjective);
+        message = message.replace("${weather_" + period + "_" + priority + "_ing}", gerund);
+        return message;
+    }
+
+    private String getRandomMessage() {
+        List<String> availableMessages = getMessages();
+        return availableMessages.get(random.nextInt(availableMessages.size()));
+    }
+
+    protected List<String> getMessages() {
+        //TODO: ReImplement with Multilanguage support.
+        return messages.get("en");
+    }
+
+    protected Object getWeatherType(DayPeriod period, WeatherPriority priority) {
         return weatherMap.get(period).get(priority);
     }
 
@@ -176,16 +208,8 @@ public class DayTemplate {
         }
 
         public DayTemplateBuilder setWeatherType(DayPeriod period, WeatherPriority priority, DayTemplateJokerType type) {
-            if(priority.equals(WeatherPriority.primary) && type.equals(DayTemplateJokerType.WHATEVER)) {
-                throw new IllegalArgumentException("WHATEVER Joker type aren't allowed for primary priority");
-            }
-            else if(priority.equals(WeatherPriority.secondary) && !type.equals(DayTemplateJokerType.WHATEVER)) {
-                throw new IllegalArgumentException("Only WHATEVER Joker type are allowed for secondary priority");
-            }
-            else {
-                weatherMap.get(period).put(priority, type);
-                return this;
-            }
+            weatherMap.get(period).put(priority, type);
+            return this;
         }
 
         public DayTemplateBuilder setMessages(HashMap<String, List<String>> messages) {

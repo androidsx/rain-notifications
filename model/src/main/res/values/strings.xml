@@ -12,8 +12,5 @@
     <string name="snow_noun">snow</string>
     <string name="snow_adjective">snowy</string>
     <string name="snow_gerund">snowing</string>
-    <string name="temperature_message">. The minimum temperature will be %1$s at %2$s hours and maximum %3$s at %4$s hours</string>
-    <string name="temperature_celsius">%1$s °C</string>
-    <string name="temperature_fahrenheit">%1$s °F</string>
-
+    <string name="temperature_message">. The minimum temperature will be %1$s at %2$s and maximum %3$s at %4$s</string>
 </resources>

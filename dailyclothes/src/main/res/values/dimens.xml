@@ -6,7 +6,7 @@
     <!-- Today dimens -->
     <dimen name="today_margin_left">15dp</dimen>
     <dimen name="today_temp_margin_top">-10dp</dimen>
-    <dimen name="today_temp_text_size">70sp</dimen>
+    <dimen name="today_temp_text_size">60sp</dimen>
     <dimen name="today_now_margin_top">-35dp</dimen>
     <dimen name="today_now_margin_left">5dp</dimen>
     <dimen name="today_now_text_size">40sp</dimen>
@@ -37,5 +37,8 @@
     <dimen name="card_image_padding">10dp</dimen>
     <dimen name="feed_item_corner_radius">3dp</dimen>
     <dimen name="feed_item_border_width">1dp</dimen>
+
+    <!-- MainFrames dimens -->
+    <dimen name="status_frame_padding">10dp</dimen>
 
 </resources>

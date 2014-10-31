@@ -8,4 +8,6 @@
         android:id="@+id/header_list_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header_list_height" />
+
+    <!-- TODO: Este alto no debería ser fijo, debería ir en función del alto del mensaje-->
 </LinearLayout>

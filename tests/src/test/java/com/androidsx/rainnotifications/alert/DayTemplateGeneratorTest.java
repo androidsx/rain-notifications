@@ -5,6 +5,7 @@ import com.androidsx.rainnotifications.model.DayPeriod;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.JsonDayTemplateLoader;
+import com.androidsx.rainnotifications.model.MultiDayTemplateLoader;
 import com.androidsx.rainnotifications.model.WeatherPriority;
 import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherWrapper;
@@ -29,10 +30,6 @@ import java.util.List;
 @Config(manifest = "./src/main/AndroidManifest.xml")
 @RunWith(RobolectricTestRunner.class)
 public class DayTemplateGeneratorTest {
-
-    private static final String JSON_FROM_MORNING = "fromMorningTemplates.json";
-    private static final String JSON_FROM_AFTERNOON = "fromAfternoonTemplates.json";
-    private static final String JSON_FROM_EVENING = "fromEveningTemplates.json";
 
     private DayTemplateGenerator generator;
     private String testTitle;
@@ -68,7 +65,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromMorningOnlyPrimary() {
-        startTest("From Morning, only primaries:", JSON_FROM_MORNING);
+        startTest("From Morning, only primaries:", MultiDayTemplateLoader.FROM_MORNING_TEMPLATES_JSON_ASSET);
         for (WeatherType morningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
                 for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
@@ -87,7 +84,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromMorningWithOneSecondary() {
-        startTest("From Morning with one secondary:", JSON_FROM_MORNING);
+        startTest("From Morning with one secondary:", MultiDayTemplateLoader.FROM_MORNING_TEMPLATES_JSON_ASSET);
         for (WeatherType morningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
                 for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
@@ -129,7 +126,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromMorningWithTwoSecondaries() {
-        startTest("From Morning with two secondaries:", JSON_FROM_MORNING);
+        startTest("From Morning with two secondaries:", MultiDayTemplateLoader.FROM_MORNING_TEMPLATES_JSON_ASSET);
         for (WeatherType morningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
                 for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
@@ -175,10 +172,9 @@ public class DayTemplateGeneratorTest {
         endTest();
     }
 
-
     @Test
     public void testFromMorningWithThreeSecondaries() {
-        startTest("From Morning with three secondaries:", JSON_FROM_MORNING);
+        startTest("From Morning with three secondaries:", MultiDayTemplateLoader.FROM_MORNING_TEMPLATES_JSON_ASSET);
         for (WeatherType morningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
                 for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
@@ -203,7 +199,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromAfternoonOnlyPrimary() {
-        startTest("From Afternoon, only primaries:", JSON_FROM_AFTERNOON);
+        startTest("From Afternoon, only primaries:", MultiDayTemplateLoader.FROM_AFTERNOON_TEMPLATES_JSON_ASSET);
         for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
                 Day mockDay = getMockDay(null, null, afternoonPrimary, null, eveningPrimary, null);
@@ -220,7 +216,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromAfternoonWithOneSecondary() {
-        startTest("From Afternoon with one secondary:", JSON_FROM_AFTERNOON);
+        startTest("From Afternoon with one secondary:", MultiDayTemplateLoader.FROM_AFTERNOON_TEMPLATES_JSON_ASSET);
         for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
 
@@ -250,7 +246,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromAfternoonWithTwoSecondaries() {
-        startTest("From Afternoon with two secondaries:", JSON_FROM_AFTERNOON);
+        startTest("From Afternoon with two secondaries:", MultiDayTemplateLoader.FROM_AFTERNOON_TEMPLATES_JSON_ASSET);
         for (WeatherType afternoonPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
                 for (WeatherType afternoonSecondary : getMoreRelevantWeatherTypes(afternoonPrimary)) {
@@ -271,7 +267,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromEveningOnlyPrimary() {
-        startTest("From Evening, only primaries:", JSON_FROM_EVENING);
+        startTest("From Evening, only primaries:", MultiDayTemplateLoader.FROM_EVENING_TEMPLATES_JSON_ASSET);
         for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             Day mockDay = getMockDay(null, null, null, null, eveningPrimary, null);
             if(generator.getDayTemplate(mockDay) != null) {
@@ -286,7 +282,7 @@ public class DayTemplateGeneratorTest {
 
     @Test
     public void testFromEveningWithSecondary() {
-        startTest("From Evening with secondary:", JSON_FROM_EVENING);
+        startTest("From Evening with secondary:", MultiDayTemplateLoader.FROM_EVENING_TEMPLATES_JSON_ASSET);
         for (WeatherType eveningPrimary : WeatherType.getMeaningfulWeatherTypes()) {
             for (WeatherType eveningSecondary : getMoreRelevantWeatherTypes(eveningPrimary)) {
                 Day mockDay = getMockDay(null, null, null, null, eveningPrimary, eveningSecondary);

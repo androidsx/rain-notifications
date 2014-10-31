@@ -9,13 +9,13 @@ import android.os.IBinder;
 
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
-import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
@@ -62,7 +62,7 @@ public class WeatherService extends Service {
                             NotificationHelper.displayStandardNotification(
                                     getApplicationContext(),
                                     new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
-                                    dayTemplateGenerator.generateMessage(WeatherService.this, forecastTable, "WORK IN PROGRESS"), //TODO: Revisar este mensaje a pelo.
+                                    dayTemplateGenerator.generateMessage(WeatherService.this, forecastTable, getString(R.string.default_day_message)),
                                     BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
                         } else {
                             if (!forecastTable.hasTransitions()) {
@@ -71,7 +71,7 @@ public class WeatherService extends Service {
                                 final Forecast transition = forecastTable.getFirstTransitionForecast();
                                 final Alert alert = alertGenerator.generateAlert(forecastTable.getBaselineForecast().getWeatherWrapper().getWeatherType(), transition.getWeatherWrapper().getWeatherType());
                                 if (shouldLaunchNotification(transition.getInterval().getStartMillis() - System.currentTimeMillis())) {
-                                    Timber.i("Will display notification for " + alert);
+                                    Timber.i("Will display notification for " + alert); // FIXME: Desde Aqui es desde donde se produce el crash.
                                     NotificationHelper.displayWearNotification(getApplicationContext(), alert, new Interval(forecastTable.getBaselineStart(), transition.getInterval().getStart()));
                                 } else {
                                     Timber.d("No notification for now. The alert was " + alert);
