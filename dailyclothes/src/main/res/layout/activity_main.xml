@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,17 +37,59 @@
                     android:layout_gravity="top|center"
                     android:textColor="@color/today_text"
                     android:textSize="@dimen/today_temp_text_size"
+                    android:textStyle="bold"
                     customAttrs:customFont="roboto_thin"/>
 
-                <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|center"
-                    android:layout_marginTop="50dp"
-                    android:text="@string/now"
-                    android:textColor="@color/today_text"
-                    android:textSize="@dimen/today_now_text_size"
-                    customAttrs:customFont="roboto_thin"/>
+                    android:layout_marginTop="65dp"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                            android:id="@+id/today_min_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|center"
+                            android:textColor="@color/today_text"
+                            android:textSize="@dimen/today_min_max_temp_text_size"
+                            customAttrs:customFont="roboto_thin"/>
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_gravity="top|center"
+                            android:layout_marginTop="25dp"
+                            android:src="@drawable/triangle_down"/>
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp">
+
+                        <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                            android:id="@+id/today_max_temp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|center"
+                            android:textColor="@color/today_text"
+                            android:textSize="@dimen/today_min_max_temp_text_size"
+                            customAttrs:customFont="roboto_thin"/>
+
+                        <ImageView
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_gravity="top|center"
+                            android:layout_marginTop="25dp"
+                            android:src="@drawable/triangle_up"/>
+                    </FrameLayout>
+                </LinearLayout>
             </FrameLayout>
 
             <HorizontalScrollView
@@ -71,6 +113,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="10dp"
             android:layout_weight="1">
 
             <com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView
@@ -106,7 +149,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="@dimen/status_frame_padding"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <TextView
             android:layout_width="match_parent"
