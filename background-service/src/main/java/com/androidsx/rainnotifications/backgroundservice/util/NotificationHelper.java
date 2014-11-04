@@ -8,7 +8,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 
 import com.androidsx.commonlibrary.CommonConstants;
 import com.androidsx.rainnotifications.backgroundservice.R;
@@ -22,6 +21,8 @@ import org.joda.time.format.DateTimeFormat;
  * Helper to build and display notifications on mobile and wear.
  */
 public class NotificationHelper {
+
+    //TODO: Refactor this class with better report integration.
 
     private NotificationHelper() {
         // Non-instantiable
@@ -37,14 +38,14 @@ public class NotificationHelper {
     /**
      * Displays a standard notification, that will show up in both mobile and wear.
      */
-    public static void displayStandardNotification(Context context, Intent intent, String text, Bitmap largeIcon) {
-        displayStandardNotification(context, intent, Html.fromHtml(text), largeIcon);
+    public static void displayStandardNotification(Context context, Intent intent, String text, Bitmap largeIcon, String report) {
+        displayStandardNotification(context, intent, Html.fromHtml(text), largeIcon, report);
     }
 
     /**
      * @param largeIcon FIXME: not in use at the moment
      */
-    public static void displayStandardNotification(Context context, Intent intent, Spanned text, Bitmap largeIcon) {
+    public static void displayStandardNotification(Context context, Intent intent, Spanned text, Bitmap largeIcon, String report) {
         final int notificationId = 002;
 
         // Main intent for the notification (click for mobile, swipe left and click for wear)
@@ -70,20 +71,19 @@ public class NotificationHelper {
                         .setAutoCancel(true)
                 ;
 
-        if(CommonConstants.ENV.equals(CommonConstants.Env.DEV)) {
-            notificationBuilder.addAction(getMailForecastReportAction(context));
+        if(CommonConstants.ENV.equals(CommonConstants.Env.DEV) && report != null) {
+            notificationBuilder.addAction(getMailForecastReportAction(context, report));
         }
 
         // Build the notification and launch it
         NotificationManagerCompat.from(context).notify(notificationId, notificationBuilder.build());
     }
 
-    private static NotificationCompat.Action getMailForecastReportAction(Context context) {
-        Log.d("TMP", "getMailForecastReportAction"); //TODO: Remove
+    private static NotificationCompat.Action getMailForecastReportAction(Context context, String report) {
         Intent email = new Intent(Intent.ACTION_SEND);
-        email.putExtra(Intent.EXTRA_SUBJECT, "Forecast " + DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss").print(new DateTime()));
-        email.putExtra(Intent.EXTRA_TEXT, "message");
+        email.putExtra(Intent.EXTRA_SUBJECT, "Forecast report " + DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss").print(new DateTime()));
+        email.putExtra(Intent.EXTRA_TEXT, report);
         email.setType("message/rfc822");
-        return new NotificationCompat.Action(R.drawable.ic_action_new_email, "Send report", PendingIntent.getActivity(context, 0, email, 0));
+        return new NotificationCompat.Action(R.drawable.ic_action_new_email, "Send report", PendingIntent.getActivity(context, 0, email, PendingIntent.FLAG_CANCEL_CURRENT));
     }
 }

@@ -251,13 +251,13 @@ public class MainActivity extends Activity {
                             MainActivity.this,
                             new Intent(MainActivity.this, MainActivity.class),
                             Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)),
-                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher), null);
                 } else if (messageId == 2) {
                     NotificationHelper.displayStandardNotification(
                             MainActivity.this,
                             new Intent(MainActivity.this, MainActivity.class),
                             Html.fromHtml(String.format(getString(R.string.forecast_second_message), maxTemp)),
-                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
+                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher), null);
                     todayNumClicks = 0;
                 }
             }

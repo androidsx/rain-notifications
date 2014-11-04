@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.IBinder;
 
+import com.androidsx.commonlibrary.CommonConstants;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
 import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
@@ -15,6 +16,8 @@ import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetche
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.Alert;
+import com.androidsx.rainnotifications.model.Day;
+import com.androidsx.rainnotifications.model.DayTemplate;
 import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.model.Forecast;
 import com.androidsx.rainnotifications.model.ForecastTable;
@@ -59,11 +62,22 @@ public class WeatherService extends Service {
                     @Override
                     public void onForecastSuccess (ForecastTable forecastTable){
                         if (intent != null && intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {
+                            Day day = new Day(forecastTable);
+                            DayTemplate template = dayTemplateGenerator.getDayTemplate(day);
+                            String message;
+                            if(template == null) {
+                                message = getString(R.string.default_day_message);
+                            }
+                            else {
+                                message = template.resolveMessage(WeatherService.this, day);
+                            }
+
                             NotificationHelper.displayStandardNotification(
                                     getApplicationContext(),
                                     new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
-                                    dayTemplateGenerator.generateMessage(WeatherService.this, forecastTable, getString(R.string.default_day_message)),
-                                    BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default));
+                                    message,
+                                    BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default),
+                                    generateForecastReport(message, day, template, forecastTable));
                         } else {
                             if (!forecastTable.hasTransitions()) {
                                 Timber.d("No transitions are expected, so there's no notifications to generate");
@@ -90,7 +104,7 @@ public class WeatherService extends Service {
                                 new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                                 "Failed to get the forecast: " + exception.toString(),
                                 BitmapFactory.decodeResource(getResources(),
-                                R.drawable.owlie_default));
+                                R.drawable.owlie_default), null);
                     }
                 });
             }
@@ -102,11 +116,25 @@ public class WeatherService extends Service {
                         new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                         "Failed to get the location" + exception.toString(),
                         BitmapFactory.decodeResource(getResources(),
-                        R.drawable.owlie_default));
+                        R.drawable.owlie_default), null);
             }
         });
 
         return START_NOT_STICKY;
+    }
+
+    private String generateForecastReport(String message, Day day, DayTemplate template, ForecastTable forecastTable) {
+        if(CommonConstants.ENV.equals(CommonConstants.Env.DEV)) {
+            StringBuilder builder = new StringBuilder();
+            builder.append("SUMMARY:\n     " + message);
+            builder.append("\n\n" + day);
+            builder.append("\n\n" + template);
+            builder.append("\n\n" + forecastTable);
+            return builder.toString();
+        }
+        else {
+            return null;
+        }
     }
 
     private void setNextAlarm(ForecastTable forecastTable) {

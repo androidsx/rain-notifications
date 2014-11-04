@@ -166,18 +166,18 @@ public class DayTemplate {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("DayTemplate for: ");
+        builder.append("DAY TEMPLATE:");
 
         for (DayPeriod period : DayPeriod.values()) {
             for (WeatherPriority priority : WeatherPriority.values()) {
-                builder.append("\n" + period + " " + priority + " weather: " + getWeatherType(period, priority));
+                builder.append("\n     " + period + " " + priority + " weather: " + getWeatherType(period, priority));
             }
         }
 
         if (messages.containsKey("en")) {
-            builder.append("\n\nMessages:");
+            builder.append("\n\n     Messages:\n");
             for (String s : messages.get("en")) {
-                builder.append(String.format("Message (en): %s", s) + "\n");
+                builder.append(String.format("          Message (en): %s", s) + "\n");
             }
         }
         return builder.toString();

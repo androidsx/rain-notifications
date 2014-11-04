@@ -83,9 +83,9 @@ public class ForecastTable {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("FORECAST_TABLE: ");
+        builder.append("FORECAST_TABLE:");
         for (Forecast forecast : hourlyForecastList) {
-            builder.append("\n" + forecast);
+            builder.append("\n     " + forecast);
         }
         return builder.toString();
     }
