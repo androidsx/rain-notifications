@@ -20,6 +20,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.androidsx.commonlibrary.util.SharedPrefsHelper;
+import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
@@ -337,6 +338,10 @@ public class DebugActivity extends Activity {
         else {
             return new Interval(current.getTime(), current.getTime().plusHours(1));
         }
+    }
+
+    public void simulateDayAlarm(View view) {
+        startService(new Intent(this, WeatherService.class).putExtra(Constants.Extras.EXTRA_DAY_ALARM, Constants.Alarms.DAY_ALARM_ID));
     }
 
     public void startWeatherService(View view) {

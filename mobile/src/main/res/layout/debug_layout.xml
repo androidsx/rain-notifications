@@ -272,8 +272,8 @@ tools:context=".forecast_mobile" >
 
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
                 android:background="@color/highlighted"
                 android:text="Single Alert"
                 android:textSize="@dimen/text_size_debug_screen"
@@ -282,13 +282,23 @@ tools:context=".forecast_mobile" >
 
             <Button
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
                 android:background="@color/highlighted"
                 android:text="Day Message"
                 android:textSize="@dimen/text_size_debug_screen"
                 android:textColor="@android:color/white"
                 android:onClick="generateMessageOfTheDay"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_margin="5dp"
+                android:background="@color/highlighted"
+                android:text="Day Alarm"
+                android:textSize="@dimen/text_size_debug_screen"
+                android:textColor="@android:color/white"
+                android:onClick="simulateDayAlarm"/>
 
         </LinearLayout>
 
