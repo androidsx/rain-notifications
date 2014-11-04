@@ -8,7 +8,6 @@ import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -250,14 +249,14 @@ public class MainActivity extends Activity {
                     NotificationHelper.displayStandardNotification(
                             MainActivity.this,
                             new Intent(MainActivity.this, MainActivity.class),
-                            Html.fromHtml(String.format(getString(R.string.forecast_first_message), maxTemp)),
-                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher), null);
+                            String.format(getString(R.string.forecast_first_message), maxTemp),
+                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
                 } else if (messageId == 2) {
                     NotificationHelper.displayStandardNotification(
                             MainActivity.this,
                             new Intent(MainActivity.this, MainActivity.class),
-                            Html.fromHtml(String.format(getString(R.string.forecast_second_message), maxTemp)),
-                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher), null);
+                            String.format(getString(R.string.forecast_second_message), maxTemp),
+                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
                     todayNumClicks = 0;
                 }
             }

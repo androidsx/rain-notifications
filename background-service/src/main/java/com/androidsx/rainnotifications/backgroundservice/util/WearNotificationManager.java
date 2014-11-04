@@ -48,8 +48,7 @@ public class WearNotificationManager {
                                 context,
                                 new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                                 alert.getAlertMessage().getNotificationMessage(interval),
-                                BitmapFactory.decodeResource(context.getResources(), notificationIconRes),
-                                null
+                                BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
                         );
                     }
                 } else {
@@ -57,8 +56,7 @@ public class WearNotificationManager {
                             context,
                             new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                             alert.getAlertMessage().getNotificationMessage(interval),
-                            BitmapFactory.decodeResource(context.getResources(), notificationIconRes),
-                            null
+                            BitmapFactory.decodeResource(context.getResources(), notificationIconRes)
                     );
                 }
             }

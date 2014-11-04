@@ -364,7 +364,7 @@ public class DebugActivity extends Activity {
                 DebugActivity.this,
                 new Intent(DebugActivity.this, MainMobileActivity.class),
                 getString(R.string.notif_long_text_fake),
-                BitmapFactory.decodeResource(getResources(), R.drawable.owlie_debug), null);
+                BitmapFactory.decodeResource(getResources(), R.drawable.owlie_debug));
     }
 
     private class WeatherItemRow {

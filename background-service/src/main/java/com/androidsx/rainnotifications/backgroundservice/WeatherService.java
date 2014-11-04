@@ -25,6 +25,7 @@ import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.Interval;
+import org.joda.time.format.DateTimeFormat;
 
 import timber.log.Timber;
 
@@ -77,7 +78,8 @@ public class WeatherService extends Service {
                                     new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                                     message,
                                     BitmapFactory.decodeResource(getResources(), R.drawable.owlie_default),
-                                    generateForecastReport(message, day, template, forecastTable));
+                                    "Forecast report " + DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss").print(forecastTable.getBaselineStart()),
+                                    generateForecastReportMessage(message, day, template, forecastTable));
                         } else {
                             if (!forecastTable.hasTransitions()) {
                                 Timber.d("No transitions are expected, so there's no notifications to generate");
@@ -104,7 +106,7 @@ public class WeatherService extends Service {
                                 new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                                 "Failed to get the forecast: " + exception.toString(),
                                 BitmapFactory.decodeResource(getResources(),
-                                R.drawable.owlie_default), null);
+                                R.drawable.owlie_default));
                     }
                 });
             }
@@ -116,14 +118,14 @@ public class WeatherService extends Service {
                         new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
                         "Failed to get the location" + exception.toString(),
                         BitmapFactory.decodeResource(getResources(),
-                        R.drawable.owlie_default), null);
+                        R.drawable.owlie_default));
             }
         });
 
         return START_NOT_STICKY;
     }
 
-    private String generateForecastReport(String message, Day day, DayTemplate template, ForecastTable forecastTable) {
+    private String generateForecastReportMessage(String message, Day day, DayTemplate template, ForecastTable forecastTable) {
         if(CommonConstants.ENV.equals(CommonConstants.Env.DEV)) {
             StringBuilder builder = new StringBuilder();
             builder.append("SUMMARY:\n     " + message);
