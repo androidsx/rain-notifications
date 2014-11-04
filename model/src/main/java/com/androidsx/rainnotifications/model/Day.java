@@ -123,7 +123,7 @@ public class Day {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("DAY: ");
+        builder.append("DAY:");
 
         for (DayPeriod period : DayPeriod.values()) {
             for (WeatherPriority priority : WeatherPriority.values()) {
@@ -131,8 +131,8 @@ public class Day {
             }
         }
 
-        builder.append("\n     Min temperature on " + minTemperature);
-        builder.append("\n     Max temperature on " + maxTemperature);
+        builder.append("\n\n     Min temperature on " + minTemperature);
+        builder.append("\n\n     Max temperature on " + maxTemperature);
 
         return builder.toString();
     }
