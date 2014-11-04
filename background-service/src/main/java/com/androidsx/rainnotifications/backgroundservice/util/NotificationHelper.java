@@ -8,11 +8,15 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 
+import com.androidsx.commonlibrary.CommonConstants;
 import com.androidsx.rainnotifications.backgroundservice.R;
 import com.androidsx.rainnotifications.model.Alert;
 
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
+import org.joda.time.format.DateTimeFormat;
 
 /*
  * Helper to build and display notifications on mobile and wear.
@@ -66,7 +70,20 @@ public class NotificationHelper {
                         .setAutoCancel(true)
                 ;
 
+        if(CommonConstants.ENV.equals(CommonConstants.Env.DEV)) {
+            notificationBuilder.addAction(getMailForecastReportAction(context));
+        }
+
         // Build the notification and launch it
         NotificationManagerCompat.from(context).notify(notificationId, notificationBuilder.build());
+    }
+
+    private static NotificationCompat.Action getMailForecastReportAction(Context context) {
+        Log.d("TMP", "getMailForecastReportAction"); //TODO: Remove
+        Intent email = new Intent(Intent.ACTION_SEND);
+        email.putExtra(Intent.EXTRA_SUBJECT, "Forecast " + DateTimeFormat.forPattern("MM/dd/yyyy HH:mm:ss").print(new DateTime()));
+        email.putExtra(Intent.EXTRA_TEXT, "message");
+        email.setType("message/rfc822");
+        return new NotificationCompat.Action(R.drawable.ic_action_new_email, "Send report", PendingIntent.getActivity(context, 0, email, 0));
     }
 }
