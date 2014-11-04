@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.androidsx.commonlibrary.CommonConstants;
 import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
@@ -108,16 +109,18 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         cardContainer.setVisibility(View.GONE);
         loadingContainer.setVisibility(View.VISIBLE);
 
-        mascotImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: This trick should time out rather quickly
-                if (++numClicksForDebugScreenSoFar == NUM_CLICKS_FOR_DEBUG_SCREEN) {
-                    startActivity(new Intent(MainMobileActivity.this, DebugActivity.class));
-                    numClicksForDebugScreenSoFar = 0;
+        if(CommonConstants.ENV.equals(CommonConstants.Env.DEV)) {
+            mascotImageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // TODO: This trick should time out rather quickly
+                    if (++numClicksForDebugScreenSoFar == NUM_CLICKS_FOR_DEBUG_SCREEN) {
+                        startActivity(new Intent(MainMobileActivity.this, DebugActivity.class));
+                        numClicksForDebugScreenSoFar = 0;
+                    }
                 }
-            }
-        });
+            });
+        }
 
         locationTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_SLAB_REGULAR_URL));
         cardMessageTextView.setTypeface(getTypeface(Constants.Assets.ROBOTO_REGULAR_URL));
