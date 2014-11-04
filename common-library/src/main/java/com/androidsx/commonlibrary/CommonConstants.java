@@ -2,6 +2,25 @@ package com.androidsx.commonlibrary;
 
 public class CommonConstants {
 
+    /**
+     * Current application environment. It is essential to switch this to {@link Env#LIVE} for the Live APKs.
+     */
+    public static final Env ENV = Env.DEV;
+
+    /**
+     * Definition of the different runtime environments.
+     */
+    public enum Env {
+        /** Live build for the Play store. */
+        LIVE,
+
+        /** For beta testers. */
+        BETA,
+
+        /** While we're developing and debugging. */
+        DEV;
+    }
+
     public static final String WEAR_PATH = "/forecast";
     public static final String DISMISS_PATH = "/dismiss";
 
