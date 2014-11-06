@@ -18,12 +18,13 @@ import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
-import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
+import com.androidsx.rainnotifications.ui.debug.NotificationsTestActivity;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
 import com.androidsx.rainnotifications.util.AnimationHelper;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
@@ -53,6 +54,12 @@ public class MainMobileActivity extends BaseWelcomeActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //TODO: Remove this
+        startActivity(new Intent(MainMobileActivity.this, NotificationsTestActivity.class));
+        finish();
+
+
         Crashlytics.start(this);
         setContentView(R.layout.activity_forecast_mobile);
 

@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Weather Assistant</string> <!-- Careful: keep in sync with the one in wear -->
     <string name="action_share">Share</string>
     <string name="share_dialog_title">Share the app</string>
     <string name="share_text">Meet Mr. Owl, your weather assistant for Google Wear https://play.google.com/store/apps/details?id=com.androidsx.rainnotifications</string>
     <string name="location_error">Error occurred during obtaining the location.\n\nPlease check your GPS configuration.</string>
     <string name="weather_api_error">Error occurred during retrieving weather info.\n\nPlease check your internet connection.</string>
-
     <string name="welcome_step_1">Meet Mr. Owl, your weather assistant</string>
     <string name="welcome_step_2">He will let you know about weather changes that you care about</string>
     <string name="welcome_content_description">Logo</string> <!-- Just a generic one -->
     <string name="welcome_go_to_app">Open the app</string>
     <string name="welcome_skip">Skip</string>
-
     <string name="today">Today</string>
-
     <string name="notif_long_text_fake">Fake message from the debug activity. We didn\'t check with the alert generator</string>
-
     <string name="default_day_message">Ops! There has been an error. Please check your internet connection and if the problem persists contact us at support+weather@androidsx.com</string>
 
     <!-- DEBUG VIEW -->
     <string name="btn_show_notification">Show random notification</string>
+    <string name="title_activity_notifications_test">NotificationsTestActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
 </resources>
