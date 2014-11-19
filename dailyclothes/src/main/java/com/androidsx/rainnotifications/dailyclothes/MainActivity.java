@@ -82,6 +82,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         localeScale  = WeatherWrapper.TemperatureScale.getLocaleScale(this);
         setupUI();
+
+
+
     }
 
     @Override
