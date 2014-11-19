@@ -1,26 +1,23 @@
 package com.androidsx.rainnotifications.dailyclothes;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
-import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
-import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
-import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnHelper;
-import com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView;
 import com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
@@ -33,6 +30,7 @@ import com.androidsx.rainnotifications.model.WeatherType;
 import com.androidsx.rainnotifications.model.WeatherWrapper;
 import com.androidsx.rainnotifications.model.util.UiUtil;
 import com.androidsx.rainnotifications.weatherclientfactory.WeatherClientFactory;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
@@ -44,9 +42,10 @@ import java.util.List;
 
 import timber.log.Timber;
 
-public class MainActivity extends Activity {
 
-    private static final Duration EXPIRATION_DURATION = Duration.standardHours(1);
+public class MainActivity extends FragmentActivity {
+
+    private static final Duration EXPIRATION_DURATION = Duration.standardSeconds(5); // TODO: Use this Duration.standardHours(1)
     private static final int MAX_FORECAST_ITEMS = 24;
     private static final String TEMPERATURE_SYMBOL = "°";
 
@@ -59,32 +58,25 @@ public class MainActivity extends Activity {
     private DateTime forecastTableTime;
     private Day day;
     private String forecastMessage;
+    private MainImagePagerAdapter adapter;
     private List<Clothes> clothesList = new ArrayList<Clothes>();
-    private CustomListAdapter adapter;
-    private boolean destroyed = false;
 
+    private boolean destroyed = false;
     private View frameMain;
     private View frameLoading;
     private View frameError;
-    private QuickReturnListView mListView;
     private CustomFontTextView nowTemperature;
     private CustomFontTextView minTemperature;
     private CustomFontTextView maxTemperature;
+    private SlidingUpPanelLayout bottomSheet;
+    private ViewPager imagesPager;
 
-    // TODO: Remove this cheat.
-    private int maxTemp = 0;
-    private int todayNumClicks = 0;
-    private static final int CLICKS_FOR_FIRST_MESSAGE = 3;
-    private static final int CLICKS_FOR_SECOND_MESSAGE = 6;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         localeScale  = WeatherWrapper.TemperatureScale.getLocaleScale(this);
         setupUI();
-
-
-
     }
 
     @Override
@@ -139,10 +131,9 @@ public class MainActivity extends Activity {
                         MainActivity.this.day = new Day(forecastTable);
 
                         DayTemplate template = new DayTemplateGenerator(DayTemplateLoaderFactory.getDayTemplateLoader(MainActivity.this)).getDayTemplate(day);
-                        if(template == null) {
+                        if (template == null) {
                             MainActivity.this.forecastMessage = getString(R.string.default_day_message);
-                        }
-                        else {
+                        } else {
                             MainActivity.this.forecastMessage = template.resolveMessage(MainActivity.this, MainActivity.this.day);
                         }
 
@@ -172,13 +163,41 @@ public class MainActivity extends Activity {
         frameMain = findViewById(R.id.frame_main);
         frameLoading = findViewById(R.id.frame_loading);
         frameError = findViewById(R.id.frame_error);
+        bottomSheet = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
 
-        nowTemperature = (CustomFontTextView) frameMain.findViewById(R.id.now_temp);
-        minTemperature = (CustomFontTextView) frameMain.findViewById(R.id.today_min_temp);
-        maxTemperature = (CustomFontTextView) frameMain.findViewById(R.id.today_max_temp);
-        CustomFontTextView mQuickReturnView = (CustomFontTextView) frameMain.findViewById(R.id.forecast_message);
-        View mPlaceHolder = frameMain.findViewById(R.id.layout_weather);
-        mListView = (QuickReturnListView) frameMain.findViewById(R.id.clothes_list_view);
+        imagesPager = (ViewPager) frameMain.findViewById(R.id.view_pager);
+        nowTemperature = (CustomFontTextView) findViewById(R.id.now_temp);
+        minTemperature = (CustomFontTextView) findViewById(R.id.today_min_temp);
+        maxTemperature = (CustomFontTextView) findViewById(R.id.today_max_temp);
+
+        bottomSheet.hidePanel();
+
+        bottomSheet.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View view, float v) {
+                Log.d("TMP", "onPanelSlide: " + v);
+            }
+
+            @Override
+            public void onPanelCollapsed(View view) {
+                Log.d("TMP", "onPanelCollapsed");
+            }
+
+            @Override
+            public void onPanelExpanded(View view) {
+                Log.d("TMP", "onPanelExpanded");
+            }
+
+            @Override
+            public void onPanelAnchored(View view) {
+                Log.d("TMP", "onPanelAnchored");
+            }
+
+            @Override
+            public void onPanelHidden(View view) {
+                Log.d("TMP", "onPanelHidden");
+            }
+        });
 
         frameError.findViewById(R.id.button_error_retry).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,8 +206,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        fillClothesListView();
-        QuickReturnHelper.configureQuickReturn(mQuickReturnView, mListView, mPlaceHolder);
+        fillClothesViewPager();
     }
 
     private void updateUI() {
@@ -196,12 +214,14 @@ public class MainActivity extends Activity {
         if(!destroyed) {
             switch (dataState) {
                 case LOADING:
+                    bottomSheet.hidePanel();
                     frameLoading.setVisibility(View.VISIBLE);
 
                     frameError.setVisibility(View.INVISIBLE);
                     frameMain.setVisibility(View.INVISIBLE);
                     break;
                 case ERROR:
+                    bottomSheet.hidePanel();
                     frameError.setVisibility(View.VISIBLE);
 
                     frameLoading.setVisibility(View.INVISIBLE);
@@ -216,58 +236,20 @@ public class MainActivity extends Activity {
                     nowTemperature.setText(temperatureFormat.format(forecastTable.getBaselineForecast().getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
                     minTemperature.setText(temperatureFormat.format(day.getMinTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     maxTemperature.setText(temperatureFormat.format(day.getMaxTemperature().getWeatherWrapper().getTemperature(localeScale)));
-                    ((TextView)findViewById(R.id.forecast_message)).setText(forecastMessage);
+                    ((TextView)findViewById(R.id.forecast_message)).setText(forecastMessage); //TODO: Utilizar variable para esto
                     fillForecastView();
+
+                    bottomSheet.showPanel();
 
                     break;
             }
         }
     }
 
-    public void showNotification(View v) {
-        ++todayNumClicks;
-        if(todayNumClicks == CLICKS_FOR_FIRST_MESSAGE) {
-            showNotificationMessage(1);
-        } else if (todayNumClicks == CLICKS_FOR_SECOND_MESSAGE) {
-            showNotificationMessage(2);
-        }
-    }
-
-    private void showNotificationMessage(final int messageId) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                if (messageId == 1) {
-                    NotificationHelper.displayStandardNotification(
-                            MainActivity.this,
-                            new Intent(MainActivity.this, MainActivity.class),
-                            String.format(getString(R.string.forecast_first_message), maxTemp),
-                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-                } else if (messageId == 2) {
-                    NotificationHelper.displayStandardNotification(
-                            MainActivity.this,
-                            new Intent(MainActivity.this, MainActivity.class),
-                            String.format(getString(R.string.forecast_second_message), maxTemp),
-                            BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher));
-                    todayNumClicks = 0;
-                }
-            }
-        }.execute();
-    }
-
     private void fillForecastView() {
         ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
+        forecastView.removeAllViews();
+
         for(int i=0; i < Math.min(MAX_FORECAST_ITEMS, forecastTable.getHourlyForecastList().size()); i++) {
             Forecast current = forecastTable.getHourlyForecastList().get(i);
 
@@ -282,35 +264,6 @@ public class MainActivity extends Activity {
 
             forecastView.addView(view);
         }
-    }
-
-    private void fillClothesListView() {
-        adapter = new CustomListAdapter(this, clothesList);
-        mListView.setAdapter(adapter);
-        mListView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.header, null));
-
-        clothesList.add(new Clothes(R.drawable.lucky_1));
-        clothesList.add(new Clothes(R.drawable.lucky_2));
-        clothesList.add(new Clothes(R.drawable.lucky_3));
-        clothesList.add(new Clothes(R.drawable.lucky_4));
-        clothesList.add(new Clothes(R.drawable.lucky_5));
-        clothesList.add(new Clothes(R.drawable.ann_taylor_1));
-        clothesList.add(new Clothes(R.drawable.ann_taylor_2));
-        clothesList.add(new Clothes(R.drawable.ann_taylor_3));
-        clothesList.add(new Clothes(R.drawable.ann_taylor_4));
-        clothesList.add(new Clothes(R.drawable.ann_taylor_5));
-        clothesList.add(new Clothes(R.drawable.blogger_1));
-        clothesList.add(new Clothes(R.drawable.blogger_2));
-        clothesList.add(new Clothes(R.drawable.blogger_3));
-        clothesList.add(new Clothes(R.drawable.blogger_4));
-        clothesList.add(new Clothes(R.drawable.blogger_5));
-        clothesList.add(new Clothes(R.drawable.blogger_6));
-        clothesList.add(new Clothes(R.drawable.blogger_7));
-        clothesList.add(new Clothes(R.drawable.blogger_8));
-        clothesList.add(new Clothes(R.drawable.blogger_9));
-        clothesList.add(new Clothes(R.drawable.blogger_10));
-
-        adapter.notifyDataSetChanged();
     }
 
     private int getWeatherIcon(WeatherType type) {
@@ -332,59 +285,81 @@ public class MainActivity extends Activity {
         }
     }
 
-    public static class CustomListAdapter extends BaseAdapter {
-        private Context context;
-        private LayoutInflater inflater;
-        private List<Clothes> clothesItems;
+    private void fillClothesViewPager() {
+        clothesList.add(new Clothes(R.drawable.lucky_1));
+        clothesList.add(new Clothes(R.drawable.lucky_2));
+        clothesList.add(new Clothes(R.drawable.lucky_3));
+        clothesList.add(new Clothes(R.drawable.lucky_4));
+        clothesList.add(new Clothes(R.drawable.lucky_5));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_1));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_2));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_3));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_4));
+        clothesList.add(new Clothes(R.drawable.ann_taylor_5));
+        clothesList.add(new Clothes(R.drawable.blogger_1));
+        clothesList.add(new Clothes(R.drawable.blogger_2));
+        clothesList.add(new Clothes(R.drawable.blogger_3));
+        clothesList.add(new Clothes(R.drawable.blogger_4));
+        clothesList.add(new Clothes(R.drawable.blogger_5));
+        clothesList.add(new Clothes(R.drawable.blogger_6));
+        clothesList.add(new Clothes(R.drawable.blogger_7));
+        clothesList.add(new Clothes(R.drawable.blogger_8));
+        clothesList.add(new Clothes(R.drawable.blogger_9));
+        clothesList.add(new Clothes(R.drawable.blogger_10));
 
-        public CustomListAdapter(Context context, List<Clothes> clothesItems) {
-            this.context = context;
-            this.clothesItems = clothesItems;
+        adapter = new MainImagePagerAdapter(getSupportFragmentManager(), clothesList);
+        imagesPager.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    private class MainImagePagerAdapter extends FragmentStatePagerAdapter {
+
+        private List<Clothes> clothesList;
+
+        public MainImagePagerAdapter(FragmentManager fm, List<Clothes> clothesList) {
+            super(fm);
+            this.clothesList = clothesList;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return ImageFragment.newInstance(clothesList.get(position).getPhoto());
         }
 
         @Override
         public int getCount() {
-            return clothesItems.size();
-        }
-
-        @Override
-        public Object getItem(int location) {
-            return clothesItems.get(location);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            // Avoid unnecessary calls to findViewById() on each row, which is expensive!
-            ViewHolder holder;
-
-            if (inflater == null)
-                inflater = (LayoutInflater) context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            if (convertView == null) {
-                convertView = inflater.inflate(R.layout.clothes_list_item, null);
-
-                // Create a ViewHolder and store references to the children view
-                holder = new ViewHolder();
-                holder.icon = (ImageView) convertView.findViewById(R.id.photo);
-
-                // The tag can be any Object, this just happens to be the ViewHolder
-                convertView.setTag(holder);
-            } else {
-                // Get the ViewHolder back to get fast access to the ImageView.
-                holder = (ViewHolder) convertView.getTag();
-            }
-            holder.icon.setImageDrawable(context.getResources().getDrawable(clothesItems.get(position).getPhoto()));
-
-            return convertView;
+            return clothesList.size();
         }
     }
 
-    static class ViewHolder {
-        ImageView icon;
+    public static class ImageFragment extends Fragment {
+
+        private static final String ARG_IMAGE_RESOURCE = "ImageFragment:imageResource";
+        private int imageResource;
+
+        public static ImageFragment newInstance(int imageResource) {
+            ImageFragment fragment = new ImageFragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_IMAGE_RESOURCE, imageResource);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            imageResource = getArguments().getInt(ARG_IMAGE_RESOURCE);
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_main_image, container, false);
+
+            ((ImageView) rootView.findViewById(R.id.image_view)).setImageResource(imageResource); //TODO: Hacer con Picasso
+
+            return rootView;
+        }
     }
+
+
 }
