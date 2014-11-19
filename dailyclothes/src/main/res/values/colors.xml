@@ -9,6 +9,22 @@
     <color name="grey">#ffa7a7a7</color>
     <color name="grey_blue">#3c5f6e</color>
 
+    <color name="grey_blue_alpha">#803c5f6e</color>
+
+
+
+
+
+    <!-- Main Activity colors -->
+    <color name="weather_layout_background_start">@color/white</color>
+
+
+
+
+
+
+
+
     <!-- Main Activity colors -->
     <color name="primary_foreground">@color/light_brown</color>
 

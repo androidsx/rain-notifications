@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:customFont="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/sliding_panel_height">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/weather_layout_background_start"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <FrameLayout
+            android:id="@+id/layout_weather"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                android:id="@+id/now_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top"
+                android:gravity="center"
+                android:text="55°"
+                android:textColor="@color/today_text"
+                android:textSize="@dimen/today_temp_text_size"
+                android:textStyle="bold"
+                customFont:customFont="roboto_thin"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                android:layout_marginTop="65dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                        android:id="@+id/today_min_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|center"
+                        android:text="52"
+                        android:textColor="@color/today_text"
+                        android:textSize="@dimen/today_min_max_temp_text_size"
+                        customFont:customFont="roboto_thin"/>
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_gravity="top|center"
+                        android:layout_marginTop="25dp"
+                        android:src="@drawable/triangle_down"/>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp">
+
+                    <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                        android:id="@+id/today_max_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|center"
+                        android:text="68"
+                        android:textColor="@color/today_text"
+                        android:textSize="@dimen/today_min_max_temp_text_size"
+                        customFont:customFont="roboto_thin"/>
+
+                    <ImageView
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_gravity="top|center"
+                        android:layout_marginTop="25dp"
+                        android:src="@drawable/triangle_up"/>
+                </FrameLayout>
+            </LinearLayout>
+        </FrameLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="7dp"
+            android:background="@color/today_text"/>
+
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:overScrollMode="never"
+            android:scrollbarThumbHorizontal="@drawable/scrollbar">
+
+            <LinearLayout
+                android:id="@+id/hourly_forecast"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+            </LinearLayout>
+        </HorizontalScrollView>
+
+    </LinearLayout>
+
+    <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/floating_action_button_background"
+        android:gravity="center"
+        android:text="+"
+        android:textColor="@color/white"
+        android:textSize="40dp"
+        customFont:customFont="roboto_thin"/>
+</FrameLayout>
