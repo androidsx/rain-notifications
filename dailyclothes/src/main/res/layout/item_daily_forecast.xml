@@ -19,7 +19,7 @@
         android:src="@drawable/ic_rain"
         android:tint="@color/forecast_icon"/>
 
-    <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+    <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
         android:id="@+id/daily_forecast_day"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
                 android:id="@+id/daily_forecast_min_temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp">
 
-            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
                 android:id="@+id/daily_forecast_max_temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -1,4 +1,4 @@
-package com.androidsx.rainnotifications.dailyclothes.widget;
+package com.androidsx.rainnotifications.dailyclothes.ui.widget;
 
 import android.content.Context;
 import android.graphics.Typeface;
