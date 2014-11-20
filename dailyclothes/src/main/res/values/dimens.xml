@@ -41,10 +41,4 @@
 
     <!-- MainFrames dimens -->
     <dimen name="status_frame_padding">10dp</dimen>
-
-
-    <!-- SlidingPanel dimens -->
-    <dimen name="sliding_panel_height">138dp</dimen>
-
-
 </resources>

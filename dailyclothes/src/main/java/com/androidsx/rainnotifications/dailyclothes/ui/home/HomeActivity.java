@@ -186,6 +186,7 @@ public class HomeActivity extends FragmentActivity {
             }
         });
 
+        /* Si el fondo no es transparente ya no hace falta esto
         slidingPanel.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             //TODO: Do it in a better way
 
@@ -214,6 +215,7 @@ public class HomeActivity extends FragmentActivity {
 
             }
         });
+        */
     }
 
     private void setupClothesViewPager() {
@@ -269,7 +271,7 @@ public class HomeActivity extends FragmentActivity {
                     frameLoading.setVisibility(View.INVISIBLE);
                     break;
                 case DONE:
-                    nowTemperature.setText(temperatureFormat.format(forecastTable.getBaselineForecast().getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
+                    nowTemperature.setText(temperatureFormat.format(forecastTable.getBaselineForecast().getWeatherWrapper().getTemperature(localeScale)));
                     minTemperature.setText(temperatureFormat.format(day.getMinTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     maxTemperature.setText(temperatureFormat.format(day.getMaxTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     slidingPanelSummary.setText(forecastSummaryMessage);

@@ -5,7 +5,7 @@
     xmlns:customFont="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/grey_blue_alpha"
+    android:background="@color/grey_blue"
     android:padding="10dp">
 
     <LinearLayout

@@ -14,7 +14,8 @@
         android:gravity="bottom"
         sothree:fadeColor="@android:color/transparent"
         sothree:overlay="true"
-        sothree:shadowHeight="0dp">
+        sothree:shadowHeight="0dp"
+        sothree:paralaxOffset="100dp">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -31,7 +32,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_gravity="bottom|right"
-                android:layout_marginBottom="150dp"
+                android:layout_marginBottom="170dp"
                 android:layout_marginRight="15dp"
                 android:background="@drawable/rounded_background_grey_blue"
                 android:onClick="onHeartClick">
@@ -56,7 +57,7 @@
                 android:id="@+id/sliding_panel_today"
                 layout="@layout/sliding_panel_today_forecast"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/sliding_panel_height"/>
+                android:layout_height="wrap_content"/>
 
             <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
                 android:id="@+id/sliding_panel_summary"
