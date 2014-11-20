@@ -113,7 +113,7 @@
         <include
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/activity_main_sliding_week_forecast"/>
+            layout="@layout/sliding_week_forecast"/>
     </LinearLayout>
 
 

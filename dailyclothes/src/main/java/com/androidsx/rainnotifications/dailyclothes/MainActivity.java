@@ -8,11 +8,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
@@ -71,6 +74,10 @@ public class MainActivity extends FragmentActivity {
     private SlidingUpPanelLayout bottomSheet;
     private ViewPager imagesPager;
 
+
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,6 +172,12 @@ public class MainActivity extends FragmentActivity {
         frameError = findViewById(R.id.frame_error);
         bottomSheet = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
 
+
+
+
+        ((ListView) findViewById(R.id.week_forecast_list_view)).setAdapter(new DailyForecastAdapter(MockDailyForecast.getMockList()));
+
+
         imagesPager = (ViewPager) frameMain.findViewById(R.id.view_pager);
         nowTemperature = (CustomFontTextView) findViewById(R.id.now_temp);
         minTemperature = (CustomFontTextView) findViewById(R.id.today_min_temp);
@@ -253,7 +266,7 @@ public class MainActivity extends FragmentActivity {
         for(int i=0; i < Math.min(MAX_FORECAST_ITEMS, forecastTable.getHourlyForecastList().size()); i++) {
             Forecast current = forecastTable.getHourlyForecastList().get(i);
 
-            View view = LayoutInflater.from(this).inflate(R.layout.hourly_forecast_item, null);
+            View view = LayoutInflater.from(this).inflate(R.layout.item_hourly_forecast, null);
             ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
             TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
@@ -361,5 +374,90 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    private class DailyForecastAdapter extends BaseAdapter {
+        private List<MockDailyForecast> dailyForecasts;
 
+        public DailyForecastAdapter(List<MockDailyForecast> dailyForecasts) {
+            this.dailyForecasts = dailyForecasts;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return true;
+        }
+
+        @Override
+        public int getCount() {
+            return dailyForecasts.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return dailyForecasts.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if(convertView == null) {
+                convertView = getLayoutInflater().inflate(R.layout.item_daily_forecast, null);
+                convertView.setTag(new DailyForecastHolder(convertView));
+            }
+
+            ((DailyForecastHolder) convertView.getTag()).update(dailyForecasts.get(position));
+
+            return convertView;
+        }
+    }
+
+    private class DailyForecastHolder {
+        private ImageView icon;
+        private TextView day;
+        private TextView minTemperature;
+        private TextView maxTemperature;
+
+        public DailyForecastHolder(View v) {
+            icon = (ImageView) v.findViewById(R.id.daily_forecast_icon);
+            day = (TextView) v.findViewById(R.id.daily_forecast_day);
+            minTemperature = (TextView) v.findViewById(R.id.daily_forecast_min_temperature);
+            maxTemperature = (TextView) v.findViewById(R.id.daily_forecast_max_temperature);
+        }
+
+        public void update(MockDailyForecast mockDailyForecast) {
+            icon.setImageResource(mockDailyForecast.iconRes);
+            day.setText(mockDailyForecast.day);
+            minTemperature.setText("" + mockDailyForecast.minTemperature);
+            maxTemperature.setText("" + mockDailyForecast.maxTemperature);
+        }
+    }
+
+    private static class MockDailyForecast {
+        public int iconRes;
+        public String day;
+        public int minTemperature;
+        public int maxTemperature;
+
+        public MockDailyForecast(int iconRes, String day, int minTemperature, int maxTemperature) {
+            this.iconRes = iconRes;
+            this.day = day;
+            this.minTemperature = minTemperature;
+            this.maxTemperature = maxTemperature;
+        }
+
+        public static List<MockDailyForecast> getMockList() {
+            ArrayList<MockDailyForecast> list = new ArrayList<MockDailyForecast>();
+
+            list.add(new MockDailyForecast(R.drawable.ic_rain, "MONDAY", 52, 68));
+            list.add(new MockDailyForecast(R.drawable.ic_rain, "TUESDAY", 51, 66));
+            list.add(new MockDailyForecast(R.drawable.ic_clear, "WEDNESDAY", 49, 64));
+            list.add(new MockDailyForecast(R.drawable.ic_clear, "THURSDAY", 50, 61));
+            list.add(new MockDailyForecast(R.drawable.ic_partly_cloudy, "FRIDAY", 48, 60));
+
+            return list;
+        }
+    }
 }
