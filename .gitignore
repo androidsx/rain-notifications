@@ -28,6 +28,7 @@ proguard/
 
 # Android Studio
 .idea/
+*.iml
 
 # Crashlytics
 com_crashlytics_export_strings.xml
