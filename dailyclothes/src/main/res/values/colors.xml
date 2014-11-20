@@ -11,7 +11,8 @@
 
     <color name="grey_blue_alpha">#c83c5f6e</color>
 
-
+    <!-- Window colors -->
+    <color name="window_background">@color/white</color>
 
     <!-- Primary colors -->
     <color name="primary_color">@color/light_brown</color>

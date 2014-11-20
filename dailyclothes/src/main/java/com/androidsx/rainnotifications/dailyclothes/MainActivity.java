@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +64,6 @@ public class MainActivity extends FragmentActivity {
     private List<Clothes> clothesList = new ArrayList<Clothes>();
 
     private boolean destroyed = false;
-    private View frameMain;
     private View frameLoading;
     private View frameError;
     private View slidingPanelToday;
@@ -166,7 +164,6 @@ public class MainActivity extends FragmentActivity {
         // TODO: Enable support email link.
         setContentView(R.layout.activity_main);
 
-        frameMain = findViewById(R.id.frame_main);
         frameLoading = findViewById(R.id.frame_loading);
         frameError = findViewById(R.id.frame_error);
         bottomSheet = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
@@ -177,41 +174,12 @@ public class MainActivity extends FragmentActivity {
         ((ListView) findViewById(R.id.week_forecast_list_view)).setAdapter(new DailyForecastAdapter(MockDailyForecast.getMockList()));
 
 
-        imagesPager = (ViewPager) frameMain.findViewById(R.id.view_pager);
+        imagesPager = (ViewPager) findViewById(R.id.view_pager);
         nowTemperature = (CustomFontTextView) findViewById(R.id.now_temp);
         minTemperature = (CustomFontTextView) findViewById(R.id.today_min_temp);
         maxTemperature = (CustomFontTextView) findViewById(R.id.today_max_temp);
 
         fillClothesViewPager();
-
-
-
-        bottomSheet.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            @Override
-            public void onPanelSlide(View view, float v) {
-                Log.d("TMP", "onPanelSlide: " + v);
-            }
-
-            @Override
-            public void onPanelCollapsed(View view) {
-                Log.d("TMP", "onPanelCollapsed");
-            }
-
-            @Override
-            public void onPanelExpanded(View view) {
-                Log.d("TMP", "onPanelExpanded");
-            }
-
-            @Override
-            public void onPanelAnchored(View view) {
-                Log.d("TMP", "onPanelAnchored");
-            }
-
-            @Override
-            public void onPanelHidden(View view) {
-                Log.d("TMP", "onPanelHidden");
-            }
-        });
 
         frameError.findViewById(R.id.button_error_retry).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,8 +197,10 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void computeSlidingPanelSizes() {
-        bottomSheet.setPanelHeight(slidingPanelToday.getMeasuredHeight());
-        bottomSheet.setAnchorPoint((float) forecastSummary.getMeasuredHeight() / (forecastSummary.getMeasuredHeight() + slidingPanelWeek.getMeasuredHeight()));
+        if(!destroyed) {
+            bottomSheet.setPanelHeight(slidingPanelToday.getMeasuredHeight());
+            bottomSheet.setAnchorPoint((float) forecastSummary.getMeasuredHeight() / (forecastSummary.getMeasuredHeight() + slidingPanelWeek.getMeasuredHeight()));
+        }
     }
 
     private void updateUI() {
@@ -239,28 +209,21 @@ public class MainActivity extends FragmentActivity {
             switch (dataState) {
                 case LOADING:
                     frameLoading.setVisibility(View.VISIBLE);
-
                     frameError.setVisibility(View.INVISIBLE);
-                    frameMain.setVisibility(View.INVISIBLE);
                     break;
                 case ERROR:
                     frameError.setVisibility(View.VISIBLE);
-
                     frameLoading.setVisibility(View.INVISIBLE);
-                    frameMain.setVisibility(View.INVISIBLE);
                     break;
                 case DONE:
-                    frameMain.setVisibility(View.VISIBLE);
-
-                    frameLoading.setVisibility(View.INVISIBLE);
-                    frameError.setVisibility(View.INVISIBLE);
-
                     nowTemperature.setText(temperatureFormat.format(forecastTable.getBaselineForecast().getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
                     minTemperature.setText(temperatureFormat.format(day.getMinTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     maxTemperature.setText(temperatureFormat.format(day.getMaxTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     forecastSummary.setText(forecastMessage);
                     fillForecastView();
 
+                    frameLoading.setVisibility(View.INVISIBLE);
+                    frameError.setVisibility(View.INVISIBLE);
                     break;
             }
         }

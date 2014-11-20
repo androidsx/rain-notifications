@@ -1,26 +1,24 @@
-<com.sothree.slidinguppanel.SlidingUpPanelLayout
-    android:id="@+id/sliding_layout"
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:customFont="http://schemas.android.com/apk/res-auto"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="bottom"
-    sothree:fadeColor="@android:color/transparent"
-    sothree:overlay="true"
-    sothree:shadowHeight="0dp"
     tools:context="com.androidsx.rainnotifications.dailyclothes.MainActivity">
 
-    <FrameLayout
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        sothree:fadeColor="@android:color/transparent"
+        sothree:overlay="true"
+        sothree:shadowHeight="0dp">
 
         <FrameLayout
-            android:id="@+id/frame_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible">
+            android:layout_height="match_parent">
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager"
@@ -30,86 +28,86 @@
 
         </FrameLayout>
 
-        <!-- TODO Dar estilo a estos dos frames-->
         <LinearLayout
-            android:id="@+id/frame_loading"
+            android:id="@+id/sliding_panel"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/status_frame_padding"
-            android:visibility="visible">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <TextView
+            <include
+                android:id="@+id/sliding_panel_today"
+                layout="@layout/sliding_panel_today_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/sliding_panel_height"/>
+
+            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
+                android:id="@+id/sliding_panel_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/weather_layout_background_start"
                 android:gravity="center"
-                android:text="@string/forecast_loading"
-                android:textColor="@color/grey_blue"
-                android:textSize="18dp"/>
+                android:padding="10dp"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/forecast_message_text_size"
+                customFont:customFont="roboto_thin"/>
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
+            <include
+                android:id="@+id/sliding_panel_week"
+                layout="@layout/sliding_panel_week_forecast"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
-        <LinearLayout
-            android:id="@+id/frame_error"
+    <!-- TODO Dar estilo a estos dos frames-->
+    <LinearLayout
+        android:id="@+id/frame_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/window_background"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/status_frame_padding"
+        android:visibility="visible">
+
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical"
-            android:padding="@dimen/status_frame_padding"
-            android:visibility="invisible">
+            android:text="@string/forecast_loading"
+            android:textColor="@color/grey_blue"
+            android:textSize="18dp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/forecast_error"
-                android:textColor="@color/grey_blue"
-                android:textSize="18dp"/>
-
-            <Button
-                android:id="@+id/button_error_retry"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:onClick="getForecastData"
-                android:text="@string/retry"/>
-        </LinearLayout>
-    </FrameLayout>
-
-
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/sliding_panel"
+        android:id="@+id/frame_error"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:background="@color/window_background"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/status_frame_padding"
+        android:visibility="invisible">
 
-        <include
-            android:id="@+id/sliding_panel_today"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/sliding_panel_height"
-            layout="@layout/sliding_panel_today_forecast"/>
-
-        <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
-            android:id="@+id/sliding_panel_summary"
-            android:background="@color/weather_layout_background_start"
-            android:layout_width="match_parent"
-            android:padding="10dp"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/forecast_message_text_size"
             android:gravity="center"
-            customFont:customFont="roboto_thin"/>
+            android:text="@string/forecast_error"
+            android:textColor="@color/grey_blue"
+            android:textSize="18dp"/>
 
-        <include
-            android:id="@+id/sliding_panel_week"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/button_error_retry"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            layout="@layout/sliding_panel_week_forecast"/>
+            android:layout_marginTop="20dp"
+            android:onClick="getForecastData"
+            android:text="@string/retry"/>
     </LinearLayout>
-</com.sothree.slidinguppanel.SlidingUpPanelLayout>
+</FrameLayout>
