@@ -107,21 +107,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:onClick="onSlidingPanelClick">
             </LinearLayout>
         </HorizontalScrollView>
 
     </LinearLayout>
 
-    <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
+    <FrameLayout
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="top|right"
         android:layout_marginRight="15dp"
-        android:background="@drawable/floating_action_button_background"
-        android:gravity="center"
-        android:text="+"
-        android:textColor="@color/white"
-        android:textSize="40dp"
-        customFont:customFont="roboto_thin"/>
+        android:background="@drawable/rounded_background_brown"
+        android:onClick="onArrowButtonClick">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="2dp"
+            android:src="@drawable/ic_swap_vertical_white_24dp"/>
+    </FrameLayout>
 </FrameLayout>

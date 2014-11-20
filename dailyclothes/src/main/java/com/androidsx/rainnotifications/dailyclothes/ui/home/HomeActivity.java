@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -67,6 +68,7 @@ public class HomeActivity extends FragmentActivity {
     private CustomFontTextView nowTemperature;
     private CustomFontTextView minTemperature;
     private CustomFontTextView maxTemperature;
+    private View heartButton;
     private ViewPager clothesPager;
 
     private WeatherWrapper.TemperatureScale localeScale;
@@ -172,6 +174,7 @@ public class HomeActivity extends FragmentActivity {
         nowTemperature = (CustomFontTextView) findViewById(R.id.now_temp);
         minTemperature = (CustomFontTextView) findViewById(R.id.today_min_temp);
         maxTemperature = (CustomFontTextView) findViewById(R.id.today_max_temp);
+        heartButton = findViewById(R.id.heart_button);
 
         setupClothesViewPager();
         setupWeekForecastList();
@@ -180,6 +183,35 @@ public class HomeActivity extends FragmentActivity {
             @Override
             public void onGlobalLayout() {
                 computeSlidingPanelSizes();
+            }
+        });
+
+        slidingPanel.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            //TODO: Do it in a better way
+
+            @Override
+            public void onPanelSlide(View view, float v) {
+
+            }
+
+            @Override
+            public void onPanelCollapsed(View view) {
+                heartButton.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onPanelExpanded(View view) {
+                heartButton.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPanelAnchored(View view) {
+                heartButton.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onPanelHidden(View view) {
+
             }
         });
     }
@@ -213,7 +245,15 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void setupWeekForecastList() {
-        ((ListView) findViewById(R.id.week_forecast_list_view)).setAdapter(new DailyForecastAdapter(getLayoutInflater(), MockDailyForecast.getMockList()));
+        ListView weekList = (ListView) findViewById(R.id.week_forecast_list_view);
+
+        weekList.setAdapter(new DailyForecastAdapter(getLayoutInflater(), MockDailyForecast.getMockList()));
+        weekList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                onSlidingPanelClick(null);
+            }
+        });
     }
 
     private void updateUI() {
@@ -294,7 +334,37 @@ public class HomeActivity extends FragmentActivity {
     }
 
     /** Linked from the XML. */
+    public void onHeartClick(View v) {
+        // Nothing for the moment.
+    }
+
+    /** Linked from the XML. */
     public void onClothesClick(View v) {
-        clothesPager.setCurrentItem((clothesPager.getCurrentItem() + 1) % clothesPager.getAdapter().getCount());
+        if(slidingPanel.isPanelExpanded() || slidingPanel.isPanelAnchored()) {
+            slidingPanel.collapsePanel();
+        }
+        else {
+            clothesPager.setCurrentItem((clothesPager.getCurrentItem() + 1) % clothesPager.getAdapter().getCount());
+        }
+    }
+
+    /** Linked from the XML. */
+    public void onSlidingPanelClick(View v) {
+        if(slidingPanel.isPanelAnchored() || slidingPanel.isPanelExpanded()) {
+            slidingPanel.collapsePanel();
+        }
+        else {
+            slidingPanel.anchorPanel();
+        }
+    }
+
+    /** Linked from the XML. */
+    public void onArrowButtonClick(View v) {
+        if(slidingPanel.isPanelExpanded()) {
+            slidingPanel.collapsePanel();
+        }
+        else {
+            slidingPanel.expandPanel();
+        }
     }
 }
