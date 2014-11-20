@@ -40,7 +40,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     wearApp project(':wear')
     compile 'com.google.android.gms:play-services-wearable:+'
-    compile 'com.android.support:support-v4:20.0.+'
+    compile 'com.android.support:support-v4:21.0.2'
     compile 'com.crashlytics.android:crashlytics:1.+'
 
     // Animations framework: https://github.com/daimajia/AndroidViewAnimations
