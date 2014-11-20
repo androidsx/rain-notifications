@@ -8,11 +8,11 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -68,16 +68,15 @@ public class MainActivity extends FragmentActivity {
     private View frameMain;
     private View frameLoading;
     private View frameError;
+    private View slidingPanelToday;
+    private View slidingPanelWeek;
     private CustomFontTextView nowTemperature;
     private CustomFontTextView minTemperature;
     private CustomFontTextView maxTemperature;
+    private CustomFontTextView forecastSummary;
     private SlidingUpPanelLayout bottomSheet;
     private ViewPager imagesPager;
 
-
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,9 +170,9 @@ public class MainActivity extends FragmentActivity {
         frameLoading = findViewById(R.id.frame_loading);
         frameError = findViewById(R.id.frame_error);
         bottomSheet = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-
-
-
+        slidingPanelToday = findViewById(R.id.sliding_panel_today);
+        slidingPanelWeek = findViewById(R.id.sliding_panel_week);
+        forecastSummary = (CustomFontTextView) findViewById(R.id.sliding_panel_summary);
 
         ((ListView) findViewById(R.id.week_forecast_list_view)).setAdapter(new DailyForecastAdapter(MockDailyForecast.getMockList()));
 
@@ -183,7 +182,9 @@ public class MainActivity extends FragmentActivity {
         minTemperature = (CustomFontTextView) findViewById(R.id.today_min_temp);
         maxTemperature = (CustomFontTextView) findViewById(R.id.today_max_temp);
 
-        bottomSheet.hidePanel();
+        fillClothesViewPager();
+
+
 
         bottomSheet.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -219,7 +220,17 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
-        fillClothesViewPager();
+        findViewById(R.id.sliding_panel).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                computeSlidingPanelSizes();
+            }
+        });
+    }
+
+    private void computeSlidingPanelSizes() {
+        bottomSheet.setPanelHeight(slidingPanelToday.getMeasuredHeight());
+        bottomSheet.setAnchorPoint((float) forecastSummary.getMeasuredHeight() / (forecastSummary.getMeasuredHeight() + slidingPanelWeek.getMeasuredHeight()));
     }
 
     private void updateUI() {
@@ -227,14 +238,12 @@ public class MainActivity extends FragmentActivity {
         if(!destroyed) {
             switch (dataState) {
                 case LOADING:
-                    bottomSheet.hidePanel();
                     frameLoading.setVisibility(View.VISIBLE);
 
                     frameError.setVisibility(View.INVISIBLE);
                     frameMain.setVisibility(View.INVISIBLE);
                     break;
                 case ERROR:
-                    bottomSheet.hidePanel();
                     frameError.setVisibility(View.VISIBLE);
 
                     frameLoading.setVisibility(View.INVISIBLE);
@@ -249,10 +258,8 @@ public class MainActivity extends FragmentActivity {
                     nowTemperature.setText(temperatureFormat.format(forecastTable.getBaselineForecast().getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
                     minTemperature.setText(temperatureFormat.format(day.getMinTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     maxTemperature.setText(temperatureFormat.format(day.getMaxTemperature().getWeatherWrapper().getTemperature(localeScale)));
-                    ((TextView)findViewById(R.id.forecast_message)).setText(forecastMessage); //TODO: Utilizar variable para esto
+                    forecastSummary.setText(forecastMessage);
                     fillForecastView();
-
-                    bottomSheet.showPanel();
 
                     break;
             }
