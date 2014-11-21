@@ -71,7 +71,9 @@
                 android:layout_height="wrap_content"
                 android:background="@color/weather_layout_background_start"
                 android:gravity="center"
-                android:padding="10dp"
+                android:paddingLeft="@dimen/default_margin_padding"
+                android:paddingRight="@dimen/default_margin_padding"
+                android:paddingBottom="@dimen/default_margin_padding"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/forecast_message_text_size"
                 customFont:customFont="roboto_light"/>
