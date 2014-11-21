@@ -11,10 +11,12 @@
         android:layout_gravity="bottom"
         android:orientation="vertical">
 
+        <!-- This transparent view covers half the button with the arrows -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="25dp"/>
+            android:layout_height="@dimen/collapse_expand_button_half_size"/>
 
+        <!-- The actual box with the day weather -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -134,8 +136,8 @@
     </LinearLayout>
 
     <FrameLayout
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/collapse_expand_button_size"
+        android:layout_height="@dimen/collapse_expand_button_size"
         android:layout_gravity="top|right"
         android:layout_marginRight="15dp"
         android:background="@drawable/rounded_background_brown"

@@ -11,7 +11,8 @@
     <dimen name="today_min_max_temp_text_size">20sp</dimen>
     <dimen name="today_now_margin_top">-35dp</dimen>
     <dimen name="today_now_margin_left">5dp</dimen>
-
+    <dimen name="collapse_expand_button_size">50dp</dimen> <!-- Also for the heart button, at the moment -->
+    <dimen name="collapse_expand_button_half_size">25dp</dimen>
 
     <!-- Forecast Hourly Section dimens -->
     <dimen name="forecast_hourly_section_margin_top">10dp</dimen>
