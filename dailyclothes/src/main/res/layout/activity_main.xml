@@ -27,13 +27,19 @@
                 android:layout_height="match_parent">
             </android.support.v4.view.ViewPager>
 
+            <!--
+                 Floating heart button.
+
+                 Re-positioned programmatically with respect of the sliding panel. The left
+                 margin is set to half the expand button to keep the left and the bottom
+                 margins consistent.
+            -->
             <FrameLayout
                 android:id="@+id/heart_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="bottom|right"
-                android:layout_marginBottom="170dp"
-                android:layout_marginRight="15dp"
+                android:layout_width="@dimen/collapse_expand_button_size"
+                android:layout_height="@dimen/collapse_expand_button_size"
+                android:layout_gravity="bottom|left"
+                android:layout_marginLeft="@dimen/collapse_expand_button_half_size"
                 android:background="@drawable/rounded_background_grey_blue"
                 android:onClick="onHeartClick">
 
