@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -182,7 +183,10 @@ public class HomeActivity extends FragmentActivity {
         findViewById(R.id.sliding_panel_layout).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                computeSlidingPanelSizes();
+                if(!activityDestroyed) {
+                    computeSlidingPanelSizes();
+                    repositionHeartButton();
+                }
             }
         });
 
@@ -285,10 +289,23 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void computeSlidingPanelSizes() {
-        if(!activityDestroyed) {
-            slidingPanel.setPanelHeight(slidingPanelToday.getMeasuredHeight());
-            slidingPanel.setAnchorPoint((float) slidingPanelSummary.getMeasuredHeight() / (slidingPanelSummary.getMeasuredHeight() + slidingPanelWeek.getMeasuredHeight()));
-        }
+        slidingPanel.setPanelHeight(slidingPanelToday.getMeasuredHeight());
+        slidingPanel.setAnchorPoint((float) slidingPanelSummary.getMeasuredHeight() / (slidingPanelSummary.getMeasuredHeight() + slidingPanelWeek.getMeasuredHeight()));
+    }
+
+    /**
+     * Reposition the heart on top of the panel. Ideally, it would be R.dimen.default_margin_padding
+     * north of the solid color. But, it's not too bad as it is now aligned with the whole panel
+     * (that has a transparent band on top).
+     */
+    private void repositionHeartButton() {
+        final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) heartButton.getLayoutParams();
+        int newBottomMargin = slidingPanelToday.getMeasuredHeight();
+        layoutParams.setMargins(layoutParams.leftMargin,
+                layoutParams.topMargin,
+                layoutParams.rightMargin,
+                newBottomMargin);
+        heartButton.setLayoutParams(layoutParams);
     }
 
     private void updateHourlyForecastList() {

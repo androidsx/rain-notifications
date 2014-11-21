@@ -1,16 +1,8 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
-
-    defaultConfig {
-        applicationId "com.androidsx.rainnotifications.commonlibrary"
-        minSdkVersion 19
-        targetSdkVersion 19
-        versionCode 1
-        versionName "1.0"
-    }
+    compileSdkVersion 21
+    buildToolsVersion "21.1.1"
 
     buildTypes {
         release {
@@ -24,5 +16,5 @@ dependencies {
     compile 'joda-time:joda-time:2.3'
     compile 'com.jakewharton.timber:timber:2.4.+'
     compile 'com.loopj.android:android-async-http:1.4.5'
-    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.android.support:support-v4:21.0.2'
 }

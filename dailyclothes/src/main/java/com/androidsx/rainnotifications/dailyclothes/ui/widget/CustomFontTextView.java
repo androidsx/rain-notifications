@@ -22,7 +22,8 @@ public class CustomFontTextView extends TextView {
 
     static enum CustomFont {
         ROBOTO_THIN("fonts/Roboto-Thin.ttf"),
-        ROBOTO_LIGHT("fonts/Roboto-Light.ttf");
+        ROBOTO_LIGHT("fonts/Roboto-Light.ttf"),
+        ROBOTO_REGULAR("fonts/Roboto-Regular.ttf"); // Unnecessary, I know
 
         private final String fileName;
 
