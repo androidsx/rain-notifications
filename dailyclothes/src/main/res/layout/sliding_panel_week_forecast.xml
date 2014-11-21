@@ -27,8 +27,7 @@
                 android:text="@string/week_forecast_title"
                 android:textColor="@color/light_brown"
                 android:textSize="16dp"
-                android:textStyle="bold"
-                customFont:customFont="roboto_thin"
+                customFont:customFont="roboto_regular"
                 android:singleLine="true"/>
 
             <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
@@ -37,7 +36,7 @@
                 android:text=" // "
                 android:textColor="@color/light_brown"
                 android:textSize="16dp"
-                customFont:customFont="roboto_thin"/>
+                customFont:customFont="roboto_regular"/>
 
             <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
                 android:id="@+id/week_forecast_city"
@@ -46,7 +45,7 @@
                 android:text="NEW YORK CITY"
                 android:textColor="@color/light_brown"
                 android:textSize="16dp"
-                customFont:customFont="roboto_thin"
+                customFont:customFont="roboto_regular"
                 android:singleLine="true"/>
         </LinearLayout>
 

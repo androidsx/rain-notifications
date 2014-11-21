@@ -30,7 +30,7 @@
         android:text="MONDAY"
         android:textColor="@android:color/white"
         android:textSize="16dp"
-        customFont:customFont="roboto_thin"/>
+        customFont:customFont="roboto_light"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
