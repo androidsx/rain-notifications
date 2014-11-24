@@ -2,73 +2,63 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:customFont="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/grey_blue"
+    android:background="@color/week_background"
     android:padding="@dimen/default_margin_padding">
 
     <LinearLayout
-        android:layout_width="310dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginBottom="5dp">
+            android:layout_marginBottom="@dimen/week_title_margin_bottom"
+            android:gravity="center">
 
-            <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                style="@style/AppTextStyle.title"
+                android:singleLine="true"
                 android:text="@string/week_forecast_title"
-                android:textColor="@color/light_brown"
-                android:textSize="16dp"
-                customFont:customFont="roboto_regular"
-                android:singleLine="true"/>
+                android:textColor="@color/week_light"/>
 
-            <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                style="@style/AppTextStyle"
                 android:text=" // "
-                android:textColor="@color/light_brown"
-                android:textSize="16dp"
-                customFont:customFont="roboto_regular"/>
+                android:textColor="@color/week_dark"/>
 
-            <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                 android:id="@+id/week_forecast_city"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/AppTextStyle"
+                android:singleLine="true"
                 android:text="NEW YORK CITY"
-                android:textColor="@color/light_brown"
-                android:textSize="16dp"
-                customFont:customFont="roboto_regular"
-                android:singleLine="true"/>
+                android:textColor="@color/week_dark"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/daily_forecast_divider"/>
+            android:layout_height="@dimen/week_dividers_stroke_width"
+            android:background="@color/week_dividers"/>
 
         <ListView
             android:id="@+id/week_forecast_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@color/daily_forecast_divider"
-            android:dividerHeight="1dp"
-            android:listSelector="@android:color/transparent"
+            android:layout_gravity="center"
+            android:divider="@color/week_dividers"
+            android:dividerHeight="@dimen/week_dividers_stroke_width"
+            android:listSelector="@color/week_selector"
             android:overScrollMode="never"
             android:scrollbarThumbVertical="@drawable/scrollbar"
-            android:scrollbars="vertical"
-            android:layout_gravity="center"/>
+            android:scrollbars="vertical"/>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/daily_forecast_divider"/>
+            android:layout_height="@dimen/week_dividers_stroke_width"
+            android:background="@color/week_dividers"/>
     </LinearLayout>
 </FrameLayout>

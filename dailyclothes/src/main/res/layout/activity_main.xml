@@ -1,6 +1,5 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:customFont="http://schemas.android.com/apk/res-auto"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        sothree:fadeColor="@android:color/transparent"
+        sothree:fadeColor="@color/transparent"
         sothree:overlay="true"
-        sothree:shadowHeight="0dp"
-        sothree:paralaxOffset="100dp">
+        sothree:paralaxOffset="@dimen/sliding_parallax"
+        sothree:shadowHeight="@dimen/sliding_shadow_height">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -36,18 +35,18 @@
             -->
             <FrameLayout
                 android:id="@+id/heart_button"
-                android:layout_width="@dimen/collapse_expand_button_size"
-                android:layout_height="@dimen/collapse_expand_button_size"
+                android:layout_width="@dimen/floating_button_size"
+                android:layout_height="@dimen/floating_button_size"
                 android:layout_gravity="bottom|left"
-                android:layout_marginLeft="@dimen/collapse_expand_button_half_size"
+                android:layout_marginLeft="@dimen/floating_button_half_size"
                 android:background="@drawable/rounded_background_grey_blue"
                 android:onClick="onHeartClick">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="@dimen/floating_button_icon_size"
+                    android:layout_height="@dimen/floating_button_icon_size"
                     android:layout_gravity="center"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="@dimen/floating_button_icon_margin_top"
                     android:src="@drawable/ic_heart_white_24dp"/>
             </FrameLayout>
 
@@ -65,18 +64,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                 android:id="@+id/sliding_panel_summary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/weather_layout_background_start"
-                android:gravity="center"
-                android:paddingLeft="@dimen/default_margin_padding"
-                android:paddingRight="@dimen/default_margin_padding"
-                android:paddingBottom="@dimen/default_margin_padding"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/forecast_message_text_size"
-                customFont:customFont="roboto_light"/>
+                style="@style/AppTextStyle"
+                android:background="@color/summary_background"
+                android:padding="@dimen/summary_padding"/>
 
             <include
                 android:id="@+id/sliding_panel_week"
@@ -86,7 +78,7 @@
         </LinearLayout>
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 
-    <!-- TODO Dar estilo a estos dos frames-->
+    <!-- TODO Dar mejor estilo a estos dos frames-->
     <LinearLayout
         android:id="@+id/frame_loading"
         android:layout_width="match_parent"
@@ -94,16 +86,13 @@
         android:background="@color/window_background"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/status_frame_padding"
+        android:padding="@dimen/default_margin_padding"
         android:visibility="visible">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/forecast_loading"
-            android:textColor="@color/grey_blue"
-            android:textSize="18dp"/>
+        <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+            style="@style/AppTextStyle.medium"
+            android:text="@string/status_frame_loading"
+            android:textColor="@color/status_frames_text_color"/>
 
         <ProgressBar
             android:layout_width="wrap_content"
@@ -117,22 +106,19 @@
         android:background="@color/window_background"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/status_frame_padding"
+        android:padding="@dimen/default_margin_padding"
         android:visibility="invisible">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/forecast_error"
-            android:textColor="@color/grey_blue"
-            android:textSize="18dp"/>
+        <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+            style="@style/AppTextStyle.medium"
+            android:text="@string/status_frame_error"
+            android:textColor="@color/status_frames_text_color"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:onClick="onErrorRetry"
-            android:text="@string/retry"/>
+            android:text="@string/status_frame_retry"/>
     </LinearLayout>
 </FrameLayout>

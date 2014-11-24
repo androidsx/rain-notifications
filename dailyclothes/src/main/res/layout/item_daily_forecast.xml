@@ -1,36 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:customFont="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp">
+    android:paddingBottom="@dimen/daily_item_padding_top_bottom"
+    android:paddingLeft="@dimen/daily_item_padding_left_right"
+    android:paddingRight="@dimen/daily_item_padding_left_right"
+    android:paddingTop="@dimen/daily_item_padding_top_bottom">
 
     <ImageView
         android:id="@+id/daily_forecast_icon"
-        android:layout_width="@dimen/forecast_hourly_item_icon_width_height"
-        android:layout_height="@dimen/forecast_hourly_item_icon_width_height"
+        android:layout_width="@dimen/daily_item_icon_weather_size"
+        android:layout_height="@dimen/daily_item_icon_weather_size"
         android:scaleType="fitXY"
         android:src="@drawable/ic_rain"
-        android:tint="@color/forecast_icon"/>
+        android:tint="@color/week_icon"/>
 
-    <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
+    <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
         android:id="@+id/daily_forecast_day"
+        style="@style/AppTextStyle"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginLeft="@dimen/daily_item_day_padding_left_right"
+        android:layout_marginRight="@dimen/daily_item_day_padding_left_right"
         android:layout_weight="1"
         android:gravity="left"
         android:text="MONDAY"
-        android:textColor="@android:color/white"
-        android:textSize="16dp"
-        customFont:customFont="roboto_light"/>
+        android:textColor="@color/week_light"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -41,45 +38,41 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                 android:id="@+id/daily_forecast_min_temperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/AppTextStyle"
                 android:layout_gravity="top|center"
                 android:text="52"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/today_min_max_temp_text_size"
-                customFont:customFont="roboto_thin"/>
+                android:textColor="@color/week_light"/>
 
             <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="@dimen/daily_item_icon_temperature_size"
+                android:layout_height="@dimen/daily_item_icon_temperature_size"
                 android:layout_gravity="top|center"
-                android:layout_marginTop="25dp"
-                android:src="@drawable/triangle_down"/>
+                android:layout_marginTop="@dimen/daily_item_icon_temperature_margin_top"
+                android:src="@drawable/triangle_down"
+                android:tint="@color/week_icon"/>
         </FrameLayout>
 
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp">
+            android:layout_marginLeft="@dimen/daily_item_temperature_margin">
 
-            <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                 android:id="@+id/daily_forecast_max_temperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                style="@style/AppTextStyle"
                 android:layout_gravity="top|center"
                 android:text="68"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/today_min_max_temp_text_size"
-                customFont:customFont="roboto_thin"/>
+                android:textColor="@color/week_light"/>
 
             <ImageView
-                android:layout_width="10dp"
-                android:layout_height="10dp"
+                android:layout_width="@dimen/daily_item_icon_temperature_size"
+                android:layout_height="@dimen/daily_item_icon_temperature_size"
                 android:layout_gravity="top|center"
-                android:layout_marginTop="25dp"
-                android:src="@drawable/triangle_up"/>
+                android:layout_marginTop="@dimen/daily_item_icon_temperature_margin_top"
+                android:src="@drawable/triangle_up"
+                android:tint="@color/week_icon"/>
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>

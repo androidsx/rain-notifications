@@ -2,58 +2,49 @@
 <resources>
     <!-- Base colors -->
     <color name="white">#ffffff</color>
-    <color name="light_grey">#eeeeee</color>
-    <color name="light_grey_1">#ebeef0</color>
-    <color name="light_grey_2">#c2c3c8</color>
-    <color name="light_brown">#8e7f3a</color>
-    <color name="grey">#ffa7a7a7</color>
-    <color name="grey_blue">#3c5f6e</color>
-
-    <color name="grey_blue_alpha">#c83c5f6e</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    <color name="grey">#ffbebebe</color>
+    <color name="grey_dark">#ff848484</color>
+    <color name="grey_blue">#ff3a5665</color>
+    <color name="grey_cream">#ffb4b098</color>
+    <color name="gold">#ff807335</color>
+    <color name="cream_light">#fffef8d5</color>
+    <color name="cream_dark">#ffbda68c</color>
 
     <!-- Window colors -->
     <color name="window_background">@color/white</color>
 
-    <!-- Primary colors -->
-    <color name="primary_color">@color/light_brown</color>
-    <color name="primary_color_dark">@color/light_brown</color>
+    <!-- Primary colors See https://developer.android.com/training/material/theme.html#ColorPalette-->
+    <color name="primary_color">@color/gold</color>
+    <color name="primary_color_dark">@color/gold</color>
     <color name="accent_color">@color/grey_blue</color>
 
+    <!-- ScrollBar -->
+    <color name="scrollbar_color">@color/gold</color>
 
-    <!-- Main Activity colors -->
-    <color name="weather_layout_background_start">@color/white</color>
+    <!-- Sliding Panel -->
+    <color name="sliding_fade_color">@color/transparent</color>
 
+    <!-- Today Forecast -->
+    <color name="today_collapsed_background">@color/white</color>
+    <color name="today_collapsed_primary_color">@color/gold</color>
+    <color name="today_collapsed_secondary_color">@color/grey_dark</color>
+    <color name="today_expanded_background">@color/gold</color>
+    <color name="today_expanded_primary_color">@color/white</color>
+    <color name="today_expanded_secondary_color">@color/grey_dark</color>
 
-    <!-- Daily Forecast colors -->
-    <color name="daily_forecast_divider">@color/light_brown</color>
+    <!-- Summary Forecast -->
+    <color name="summary_background">@color/white</color>
 
+    <!-- Week Forecast -->
+    <color name="week_background">@color/grey_blue</color>
+    <color name="week_light">@color/cream_light</color>
+    <color name="week_dark">@color/grey_cream</color>
+    <color name="week_icon">@color/grey</color>
+    <color name="week_dividers">@color/cream_dark</color>
+    <color name="week_selector">@color/transparent</color>
 
-
-
-
-    <!-- Main Activity colors -->
-    <color name="primary_foreground">@color/light_brown</color>
-
-    <!-- Today colors -->
-    <color name="today_text">@color/light_brown</color>
-    <color name="today_background">@color/light_grey</color>
-
-    <!-- Forecast Hourly section colors -->
-    <color name="forecast_icon">@color/grey</color>
-    <color name="forecast_text">@color/light_brown</color>
-
-    <!-- Forecast Message colors -->
-    <color name="forecast_message">@color/grey_blue</color>
-    <color name="forecast_message_background">@color/light_grey</color>
-
-    <!-- List row colors -->
-    <color name="list_row_start_color">@color/white</color>
-    <color name="list_row_end_color">@color/white</color>
-    <color name="list_row_hover_start_color">@color/light_grey_1</color>
-    <color name="list_row_hover_end_color">@color/light_grey_1</color>
-
-    <!-- Card colors -->
-    <color name="feed_bg">@color/light_grey</color>
-    <color name="feed_item_bg">@color/white</color>
-    <color name="feed_item_border">@color/light_grey_2</color>
+    <!-- Status Frames -->
+    <color name="status_frames_text_color">@color/grey_blue</color>
 </resources>

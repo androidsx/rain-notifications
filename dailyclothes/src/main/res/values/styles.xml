@@ -1,5 +1,4 @@
 <resources>
-
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
@@ -30,5 +29,25 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <!-- TextViews Styles -->
+    <style name="AppTextStyle" parent="@android:style/TextAppearance">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/text_size_normal</item>
+        <item name="font">fonts/Roboto-Light.ttf</item>
+    </style>
 
+    <style name="AppTextStyle.medium">
+        <item name="android:textSize">@dimen/text_size_medium</item>
+    </style>
+
+    <style name="AppTextStyle.numbers">
+        <item name="font">fonts/Roboto-Thin.ttf</item>
+    </style>
+
+    <style name="AppTextStyle.title">
+        <item name="font">fonts/Roboto-Bold.ttf</item>
+    </style>
 </resources>

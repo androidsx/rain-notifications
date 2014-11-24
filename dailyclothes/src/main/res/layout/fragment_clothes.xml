@@ -9,6 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop"
-        android:onClick="onClothesClick"/>
+        android:onClick="onClothesClick"
+        android:scaleType="centerCrop"/>
 </FrameLayout>

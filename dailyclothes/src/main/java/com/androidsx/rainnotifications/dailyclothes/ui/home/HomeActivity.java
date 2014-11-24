@@ -20,7 +20,7 @@ import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetche
 import com.androidsx.rainnotifications.dailyclothes.R;
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
 import com.androidsx.rainnotifications.dailyclothes.model.MockDailyForecast;
-import com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView;
+import com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.Day;
@@ -65,10 +65,10 @@ public class HomeActivity extends FragmentActivity {
     private SlidingUpPanelLayout slidingPanel;
     private View slidingPanelToday;
     private View slidingPanelWeek;
-    private CustomFontTextView slidingPanelSummary;
-    private CustomFontTextView nowTemperature;
-    private CustomFontTextView minTemperature;
-    private CustomFontTextView maxTemperature;
+    private CustomTextView slidingPanelSummary;
+    private CustomTextView nowTemperature;
+    private CustomTextView minTemperature;
+    private CustomTextView maxTemperature;
     private View heartButton;
     private ViewPager clothesPager;
 
@@ -171,10 +171,10 @@ public class HomeActivity extends FragmentActivity {
         slidingPanel = (SlidingUpPanelLayout) findViewById(R.id.sliding_panel);
         slidingPanelToday = findViewById(R.id.sliding_panel_today);
         slidingPanelWeek = findViewById(R.id.sliding_panel_week);
-        slidingPanelSummary = (CustomFontTextView) findViewById(R.id.sliding_panel_summary);
-        nowTemperature = (CustomFontTextView) findViewById(R.id.now_temp);
-        minTemperature = (CustomFontTextView) findViewById(R.id.today_min_temp);
-        maxTemperature = (CustomFontTextView) findViewById(R.id.today_max_temp);
+        slidingPanelSummary = (CustomTextView) findViewById(R.id.sliding_panel_summary);
+        nowTemperature = (CustomTextView) findViewById(R.id.now_temp);
+        minTemperature = (CustomTextView) findViewById(R.id.today_min_temp);
+        maxTemperature = (CustomTextView) findViewById(R.id.today_max_temp);
         heartButton = findViewById(R.id.heart_button);
 
         setupClothesViewPager();

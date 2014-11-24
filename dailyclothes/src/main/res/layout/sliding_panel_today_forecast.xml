@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:customFont="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -14,40 +13,38 @@
         <!-- This transparent view covers half the button with the arrows -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/collapse_expand_button_half_size"/>
+            android:layout_height="@dimen/floating_button_half_size"/>
 
         <!-- The actual box with the day weather -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/default_margin_padding"
-            android:background="@color/weather_layout_background_start"
-            android:gravity="center_vertical"
+            android:paddingTop="@dimen/weather_layout_padding_top"
+            android:paddingLeft="@dimen/default_margin_padding"
+            android:paddingRight="@dimen/default_margin_padding"
+            android:paddingBottom="@dimen/default_margin_padding"
+            android:background="@color/today_collapsed_background"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <FrameLayout
-                android:id="@+id/layout_weather"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
-                <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
+                <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                     android:id="@+id/now_temp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_gravity="top|center_horizontal"
-                    android:gravity="center"
+                    android:layout_marginTop="@dimen/current_temp_margin_top"
                     android:text="5"
-                    android:textColor="@color/today_text"
-                    android:textSize="@dimen/today_temp_text_size"
-                    android:textStyle="bold"
-                    customFont:customFont="roboto_thin"/>
+                    android:textColor="@color/today_collapsed_primary_color"
+                    android:textSize="@dimen/current_temp_text_size"
+                    style="@style/AppTextStyle.numbers"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top|center_horizontal"
-                    android:layout_marginTop="65dp"
+                    android:layout_marginTop="@dimen/today_min_max_temp_margin_top"
                     android:gravity="center_horizontal"
                     android:orientation="horizontal">
 
@@ -55,70 +52,65 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
-                        <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
+                        <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                             android:id="@+id/today_min_temp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:layout_gravity="top|center"
                             android:text="52"
-                            android:textColor="@color/today_text"
+                            android:textColor="@color/today_collapsed_secondary_color"
                             android:textSize="@dimen/today_min_max_temp_text_size"
-                            customFont:customFont="roboto_thin"/>
+                            style="@style/AppTextStyle.numbers"/>
 
                         <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
+                            android:layout_width="@dimen/today_icon_temperature_size"
+                            android:layout_height="@dimen/today_icon_temperature_size"
                             android:layout_gravity="top|center"
-                            android:layout_marginTop="25dp"
-                            android:src="@drawable/triangle_down"/>
+                            android:layout_marginTop="@dimen/today_icon_temperature_margin_top"
+                            android:src="@drawable/triangle_down"
+                            android:tint="@color/today_collapsed_secondary_color"/>
                     </FrameLayout>
 
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp">
+                        android:layout_marginLeft="@dimen/today_temperature_margin">
 
-                        <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
+                        <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                             android:id="@+id/today_max_temp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:layout_gravity="top|center"
                             android:text="68"
-                            android:textColor="@color/today_text"
+                            android:textColor="@color/today_collapsed_secondary_color"
                             android:textSize="@dimen/today_min_max_temp_text_size"
-                            customFont:customFont="roboto_thin"/>
+                            style="@style/AppTextStyle.numbers"/>
+
 
                         <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
+                            android:layout_width="@dimen/today_icon_temperature_size"
+                            android:layout_height="@dimen/today_icon_temperature_size"
                             android:layout_gravity="top|center"
-                            android:layout_marginTop="25dp"
-                            android:src="@drawable/triangle_up"/>
+                            android:layout_marginTop="@dimen/today_icon_temperature_margin_top"
+                            android:src="@drawable/triangle_up"
+                            android:tint="@color/today_collapsed_secondary_color"/>
                     </FrameLayout>
                 </LinearLayout>
             </FrameLayout>
 
-            <com.androidsx.rainnotifications.dailyclothes.ui.widget.CustomFontTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                 android:layout_gravity="top"
-                android:text="°"
-                android:textColor="@color/today_text"
-                android:textSize="@dimen/today_temp_text_size"
-                android:textStyle="bold"
-                customFont:customFont="roboto_thin"/>
+                android:text="@string/temperature_symbol"
+                android:textColor="@color/today_collapsed_primary_color"
+                android:textSize="@dimen/current_temp_text_size"
+                style="@style/AppTextStyle.numbers"/>
 
             <View
-                android:layout_width="1dp"
+                android:layout_width="@dimen/today_divider_stroke_width"
                 android:layout_height="match_parent"
-                android:layout_marginTop="7dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:background="@color/today_text"/>
+                android:layout_marginLeft="@dimen/today_divider_margin"
+                android:layout_marginRight="@dimen/today_divider_margin"
+                android:background="@color/today_collapsed_primary_color"/>
 
             <HorizontalScrollView
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:overScrollMode="never"
                 android:scrollbarThumbHorizontal="@drawable/scrollbar">
@@ -126,7 +118,7 @@
                 <LinearLayout
                     android:id="@+id/hourly_forecast"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:onClick="onSlidingPanelClick"
                     android:orientation="horizontal">
@@ -136,18 +128,18 @@
     </LinearLayout>
 
     <FrameLayout
-        android:layout_width="@dimen/collapse_expand_button_size"
-        android:layout_height="@dimen/collapse_expand_button_size"
+        android:layout_width="@dimen/floating_button_size"
+        android:layout_height="@dimen/floating_button_size"
         android:layout_gravity="top|right"
-        android:layout_marginRight="15dp"
-        android:background="@drawable/rounded_background_brown"
+        android:layout_marginRight="@dimen/default_margin_padding"
+        android:background="@drawable/rounded_background_gold"
         android:onClick="onArrowButtonClick">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="@dimen/floating_button_icon_size"
+            android:layout_height="@dimen/floating_button_icon_size"
             android:layout_gravity="center"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="@dimen/floating_button_icon_margin_top"
             android:src="@drawable/ic_swap_vertical_white_24dp"/>
     </FrameLayout>
 </FrameLayout>
