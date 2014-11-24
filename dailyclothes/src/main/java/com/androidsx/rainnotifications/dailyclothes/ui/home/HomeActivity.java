@@ -53,7 +53,7 @@ public class HomeActivity extends FragmentActivity {
     private static final Duration EXPIRATION_DURATION = Duration.standardSeconds(5); // TODO: Use this Duration.standardHours(1)
     private static final int MAX_FORECAST_ITEMS = 24;
     private static final String TEMPERATURE_SYMBOL = "°";
-    private static final int COLOR_TRANSITION_DURATION = 150;
+    private static final int COLOR_TRANSITION_DURATION = 100;
 
     private enum ForecastDataState {LOADING, ERROR, DONE};
 
@@ -73,14 +73,18 @@ public class HomeActivity extends FragmentActivity {
     private CustomTextView nowTemperature;
     private CustomTextView minTemperature;
     private CustomTextView maxTemperature;
+    private CustomTextView symbolTemperature;
     private View heartButton;
     private ViewPager clothesPager;
 
     private TransitionDrawable todayPanelTransition;
+    private TransitionDrawable todayDividerTransition;
     private Integer todayCollapsedPrimaryColor;
     private Integer todayCollapsedSecondaryColor;
     private Integer todayExpandedPrimaryColor;
     private Integer todayExpandedSecondaryColor;
+    private ImageView todayMinTemperature;
+    private ImageView todayMaxTemperature;
     private ArrayList<TextView> animatedColorTextViews;
     private ArrayList<ImageView> animatedColorIcons;
 
@@ -187,9 +191,13 @@ public class HomeActivity extends FragmentActivity {
         nowTemperature = (CustomTextView) findViewById(R.id.now_temp);
         minTemperature = (CustomTextView) findViewById(R.id.today_min_temp);
         maxTemperature = (CustomTextView) findViewById(R.id.today_max_temp);
+        symbolTemperature = (CustomTextView) findViewById(R.id.today_symbol_temp);
         heartButton = findViewById(R.id.heart_button);
 
         todayPanelTransition = (TransitionDrawable) findViewById(R.id.today_forecast_layout).getBackground();
+        todayDividerTransition = (TransitionDrawable) findViewById(R.id.today_forecast_divider).getBackground();
+        todayMinTemperature = (ImageView) findViewById(R.id.today_min_temp_icon);
+        todayMaxTemperature = (ImageView) findViewById(R.id.today_max_temp_icon);
         todayCollapsedPrimaryColor = getResources().getColor(R.color.today_collapsed_primary_color);
         todayCollapsedSecondaryColor = getResources().getColor(R.color.today_collapsed_secondary_color);
         todayExpandedPrimaryColor = getResources().getColor(R.color.today_expanded_primary_color);
@@ -380,6 +388,7 @@ public class HomeActivity extends FragmentActivity {
 
         if(toExpanded) {
             todayPanelTransition.startTransition(COLOR_TRANSITION_DURATION);
+            todayDividerTransition.startTransition(COLOR_TRANSITION_DURATION);
             primaryColorFrom = todayCollapsedPrimaryColor;
             secondaryColorFrom = todayCollapsedSecondaryColor;
             primaryColorTo = todayExpandedPrimaryColor;
@@ -387,6 +396,7 @@ public class HomeActivity extends FragmentActivity {
         }
         else {
             todayPanelTransition.reverseTransition(COLOR_TRANSITION_DURATION);
+            todayDividerTransition.reverseTransition(COLOR_TRANSITION_DURATION);
             primaryColorFrom = todayExpandedPrimaryColor;
             secondaryColorFrom = todayExpandedSecondaryColor;
             primaryColorTo = todayCollapsedPrimaryColor;
@@ -399,6 +409,7 @@ public class HomeActivity extends FragmentActivity {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 nowTemperature.setTextColor((Integer) animator.getAnimatedValue());
+                symbolTemperature.setTextColor((Integer) animator.getAnimatedValue());
                 for (TextView tv : animatedColorTextViews) {
                     tv.setTextColor((Integer) animator.getAnimatedValue());
                 }
@@ -413,6 +424,8 @@ public class HomeActivity extends FragmentActivity {
             public void onAnimationUpdate(ValueAnimator animator) {
                 minTemperature.setTextColor((Integer) animator.getAnimatedValue());
                 maxTemperature.setTextColor((Integer) animator.getAnimatedValue());
+                todayMinTemperature.setColorFilter((Integer) animator.getAnimatedValue());
+                todayMaxTemperature.setColorFilter((Integer) animator.getAnimatedValue());
                 for (ImageView iv : animatedColorIcons) {
                     iv.setColorFilter((Integer) animator.getAnimatedValue());
                 }
