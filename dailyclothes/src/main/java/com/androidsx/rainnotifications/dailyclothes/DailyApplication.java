@@ -119,8 +119,13 @@ public class DailyApplication extends Application {
 
         @Override
         public void i(String message, Object... args) {
-            super.i(message, args);
-            currentLog.append(String.format("\n" + message, args));
+            try{
+                super.i(message, args); // I don't really know where is the supposed crash: https://trello.com/c/OKQ3YpSm/79-bug-que-provoca-crash-creo-que-tiene-que-ver-con-un-log-que-viene-de-weatherservice
+                currentLog.append(String.format("\n" + message, args));
+            } catch (Exception e) {
+                currentLog.append("\n" + message);
+            }
+
             sharedPrefs.edit().putString(HISTORY_SHARED_PREF, currentLog.toString()).commit();
         }
 
