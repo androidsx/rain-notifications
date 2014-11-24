@@ -1,6 +1,9 @@
 package com.androidsx.rainnotifications.dailyclothes.ui.home;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.res.TypedArray;
+import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -50,6 +53,7 @@ public class HomeActivity extends FragmentActivity {
     private static final Duration EXPIRATION_DURATION = Duration.standardSeconds(5); // TODO: Use this Duration.standardHours(1)
     private static final int MAX_FORECAST_ITEMS = 24;
     private static final String TEMPERATURE_SYMBOL = "°";
+    private static final int COLOR_TRANSITION_DURATION = 150;
 
     private enum ForecastDataState {LOADING, ERROR, DONE};
 
@@ -71,6 +75,12 @@ public class HomeActivity extends FragmentActivity {
     private CustomTextView maxTemperature;
     private View heartButton;
     private ViewPager clothesPager;
+
+    private TransitionDrawable todayPanelTransition;
+    private Integer todayCollapsedPrimaryColor;
+    private Integer todayExpandedPrimaryColor;
+    private ArrayList<TextView> hourlyTextViews;
+
 
     private WeatherWrapper.TemperatureScale localeScale;
     private DecimalFormat temperatureFormat = new DecimalFormat("#");
@@ -177,6 +187,10 @@ public class HomeActivity extends FragmentActivity {
         maxTemperature = (CustomTextView) findViewById(R.id.today_max_temp);
         heartButton = findViewById(R.id.heart_button);
 
+        todayPanelTransition = (TransitionDrawable) findViewById(R.id.today_forecast_layout).getBackground();
+        todayCollapsedPrimaryColor = getResources().getColor(R.color.today_collapsed_primary_color);
+        todayExpandedPrimaryColor = getResources().getColor(R.color.today_expanded_primary_color);
+
         setupClothesViewPager();
         setupWeekForecastList();
 
@@ -190,28 +204,31 @@ public class HomeActivity extends FragmentActivity {
             }
         });
 
-        /* Si el fondo no es transparente ya no hace falta esto
         slidingPanel.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-            //TODO: Do it in a better way
+
+            private float lastScroll = 0;
 
             @Override
             public void onPanelSlide(View view, float v) {
-
+                if(v > 0 && lastScroll == 0) {
+                    animateColors(true);
+                }
+                else if(v == 0 && lastScroll > 0) {
+                    animateColors(false);
+                }
+                lastScroll = v;
             }
 
             @Override
             public void onPanelCollapsed(View view) {
-                heartButton.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onPanelExpanded(View view) {
-                heartButton.setVisibility(View.GONE);
             }
 
             @Override
             public void onPanelAnchored(View view) {
-                heartButton.setVisibility(View.GONE);
             }
 
             @Override
@@ -219,7 +236,6 @@ public class HomeActivity extends FragmentActivity {
 
             }
         });
-        */
     }
 
     private void setupClothesViewPager() {
@@ -311,6 +327,7 @@ public class HomeActivity extends FragmentActivity {
     private void updateHourlyForecastList() {
         ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
         forecastView.removeAllViews();
+        hourlyTextViews = new ArrayList<TextView>();
 
         for(int i=0; i < Math.min(MAX_FORECAST_ITEMS, forecastTable.getHourlyForecastList().size()); i++) {
             Forecast current = forecastTable.getHourlyForecastList().get(i);
@@ -319,6 +336,9 @@ public class HomeActivity extends FragmentActivity {
             ImageView icon = (ImageView) view.findViewById(R.id.forecast_icon);
             TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
+
+            hourlyTextViews.add(temp);
+            hourlyTextViews.add(hour);
 
             Picasso.with(this).load(getWeatherIcon(current.getWeatherWrapper().getWeatherType())).into(icon);
             temp.setText(temperatureFormat.format(current.getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
@@ -345,6 +365,35 @@ public class HomeActivity extends FragmentActivity {
                 // TODO: Consultar con Pablo y/o Omar que hacer en este caso.
                 return 0;
         }
+    }
+
+    private void animateColors(boolean toExpanded) {
+        Integer colorFrom;
+        Integer colorTo;
+
+        if(toExpanded) {
+            todayPanelTransition.startTransition(COLOR_TRANSITION_DURATION);
+            colorFrom = todayCollapsedPrimaryColor;
+            colorTo = todayExpandedPrimaryColor;
+        }
+        else {
+            todayPanelTransition.reverseTransition(COLOR_TRANSITION_DURATION);
+            colorFrom = todayExpandedPrimaryColor;
+            colorTo = todayCollapsedPrimaryColor;
+        }
+
+        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
+        colorAnimation.setDuration(COLOR_TRANSITION_DURATION);
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                nowTemperature.setTextColor((Integer)animator.getAnimatedValue());
+                for (TextView tv : hourlyTextViews) {
+                    tv.setTextColor((Integer)animator.getAnimatedValue());
+                }
+            }
+        });
+        colorAnimation.start();
     }
 
     /** Linked from the XML. */

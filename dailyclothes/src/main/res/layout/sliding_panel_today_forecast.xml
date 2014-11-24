@@ -17,15 +17,16 @@
 
         <!-- The actual box with the day weather -->
         <LinearLayout
+            android:id="@+id/today_forecast_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/weather_layout_padding_top"
+            android:background="@drawable/today_background_transition"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/default_margin_padding"
             android:paddingLeft="@dimen/default_margin_padding"
             android:paddingRight="@dimen/default_margin_padding"
-            android:paddingBottom="@dimen/default_margin_padding"
-            android:background="@color/today_collapsed_background"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:paddingTop="@dimen/weather_layout_padding_top">
 
             <FrameLayout
                 android:layout_width="wrap_content"
@@ -33,12 +34,12 @@
 
                 <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                     android:id="@+id/now_temp"
+                    style="@style/AppTextStyle.numbers"
                     android:layout_gravity="top|center_horizontal"
                     android:layout_marginTop="@dimen/current_temp_margin_top"
                     android:text="5"
                     android:textColor="@color/today_collapsed_primary_color"
-                    android:textSize="@dimen/current_temp_text_size"
-                    style="@style/AppTextStyle.numbers"/>
+                    android:textSize="@dimen/current_temp_text_size"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -54,11 +55,11 @@
 
                         <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                             android:id="@+id/today_min_temp"
+                            style="@style/AppTextStyle.numbers"
                             android:layout_gravity="top|center"
                             android:text="52"
                             android:textColor="@color/today_collapsed_secondary_color"
-                            android:textSize="@dimen/today_min_max_temp_text_size"
-                            style="@style/AppTextStyle.numbers"/>
+                            android:textSize="@dimen/today_min_max_temp_text_size"/>
 
                         <ImageView
                             android:layout_width="@dimen/today_icon_temperature_size"
@@ -76,11 +77,11 @@
 
                         <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                             android:id="@+id/today_max_temp"
+                            style="@style/AppTextStyle.numbers"
                             android:layout_gravity="top|center"
                             android:text="68"
                             android:textColor="@color/today_collapsed_secondary_color"
-                            android:textSize="@dimen/today_min_max_temp_text_size"
-                            style="@style/AppTextStyle.numbers"/>
+                            android:textSize="@dimen/today_min_max_temp_text_size"/>
 
 
                         <ImageView
@@ -95,11 +96,12 @@
             </FrameLayout>
 
             <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                style="@style/AppTextStyle.numbers"
                 android:layout_gravity="top"
+                android:layout_marginTop="@dimen/current_temp_margin_top"
                 android:text="@string/temperature_symbol"
                 android:textColor="@color/today_collapsed_primary_color"
-                android:textSize="@dimen/current_temp_text_size"
-                style="@style/AppTextStyle.numbers"/>
+                android:textSize="@dimen/current_temp_text_size"/>
 
             <View
                 android:layout_width="@dimen/today_divider_stroke_width"
