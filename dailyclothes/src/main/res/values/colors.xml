@@ -32,7 +32,7 @@
     <color name="today_collapsed_secondary_color">@color/grey_dark</color>
     <color name="today_expanded_background">@color/gold</color>
     <color name="today_expanded_primary_color">@color/white</color>
-    <color name="today_expanded_secondary_color">@color/grey_dark</color>
+    <color name="today_expanded_secondary_color">@color/grey_blue</color>
 
     <!-- Summary Forecast -->
     <color name="summary_background">@color/white</color>

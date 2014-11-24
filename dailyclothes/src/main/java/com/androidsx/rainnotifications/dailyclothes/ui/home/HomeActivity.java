@@ -78,9 +78,11 @@ public class HomeActivity extends FragmentActivity {
 
     private TransitionDrawable todayPanelTransition;
     private Integer todayCollapsedPrimaryColor;
+    private Integer todayCollapsedSecondaryColor;
     private Integer todayExpandedPrimaryColor;
-    private ArrayList<TextView> hourlyTextViews;
-
+    private Integer todayExpandedSecondaryColor;
+    private ArrayList<TextView> animatedColorTextViews;
+    private ArrayList<ImageView> animatedColorIcons;
 
     private WeatherWrapper.TemperatureScale localeScale;
     private DecimalFormat temperatureFormat = new DecimalFormat("#");
@@ -189,7 +191,9 @@ public class HomeActivity extends FragmentActivity {
 
         todayPanelTransition = (TransitionDrawable) findViewById(R.id.today_forecast_layout).getBackground();
         todayCollapsedPrimaryColor = getResources().getColor(R.color.today_collapsed_primary_color);
+        todayCollapsedSecondaryColor = getResources().getColor(R.color.today_collapsed_secondary_color);
         todayExpandedPrimaryColor = getResources().getColor(R.color.today_expanded_primary_color);
+        todayExpandedSecondaryColor = getResources().getColor(R.color.today_expanded_secondary_color);
 
         setupClothesViewPager();
         setupWeekForecastList();
@@ -279,7 +283,6 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void updateUI() {
-        // FIXME: La fuente utilizada muestra los símbolos de temperatura en negrita, Aghhh!
         if(!activityDestroyed) {
             switch (dataState) {
                 case LOADING:
@@ -327,7 +330,8 @@ public class HomeActivity extends FragmentActivity {
     private void updateHourlyForecastList() {
         ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
         forecastView.removeAllViews();
-        hourlyTextViews = new ArrayList<TextView>();
+        animatedColorTextViews = new ArrayList<TextView>();
+        animatedColorIcons = new ArrayList<ImageView>();
 
         for(int i=0; i < Math.min(MAX_FORECAST_ITEMS, forecastTable.getHourlyForecastList().size()); i++) {
             Forecast current = forecastTable.getHourlyForecastList().get(i);
@@ -337,8 +341,9 @@ public class HomeActivity extends FragmentActivity {
             TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
 
-            hourlyTextViews.add(temp);
-            hourlyTextViews.add(hour);
+            animatedColorTextViews.add(temp);
+            animatedColorTextViews.add(hour);
+            animatedColorIcons.add(icon);
 
             Picasso.with(this).load(getWeatherIcon(current.getWeatherWrapper().getWeatherType())).into(icon);
             temp.setText(temperatureFormat.format(current.getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
@@ -368,32 +373,54 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void animateColors(boolean toExpanded) {
-        Integer colorFrom;
-        Integer colorTo;
+        Integer primaryColorFrom;
+        Integer secondaryColorFrom;
+        Integer primaryColorTo;
+        Integer secondaryColorTo;
 
         if(toExpanded) {
             todayPanelTransition.startTransition(COLOR_TRANSITION_DURATION);
-            colorFrom = todayCollapsedPrimaryColor;
-            colorTo = todayExpandedPrimaryColor;
+            primaryColorFrom = todayCollapsedPrimaryColor;
+            secondaryColorFrom = todayCollapsedSecondaryColor;
+            primaryColorTo = todayExpandedPrimaryColor;
+            secondaryColorTo = todayExpandedSecondaryColor;
         }
         else {
             todayPanelTransition.reverseTransition(COLOR_TRANSITION_DURATION);
-            colorFrom = todayExpandedPrimaryColor;
-            colorTo = todayCollapsedPrimaryColor;
+            primaryColorFrom = todayExpandedPrimaryColor;
+            secondaryColorFrom = todayExpandedSecondaryColor;
+            primaryColorTo = todayCollapsedPrimaryColor;
+            secondaryColorTo = todayCollapsedSecondaryColor;
         }
 
-        ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.setDuration(COLOR_TRANSITION_DURATION);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        ValueAnimator primaryAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primaryColorFrom, primaryColorTo);
+        primaryAnimation.setDuration(COLOR_TRANSITION_DURATION);
+        primaryAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
-                nowTemperature.setTextColor((Integer)animator.getAnimatedValue());
-                for (TextView tv : hourlyTextViews) {
-                    tv.setTextColor((Integer)animator.getAnimatedValue());
+                nowTemperature.setTextColor((Integer) animator.getAnimatedValue());
+                for (TextView tv : animatedColorTextViews) {
+                    tv.setTextColor((Integer) animator.getAnimatedValue());
                 }
             }
         });
-        colorAnimation.start();
+        primaryAnimation.start();
+
+        ValueAnimator secondaryAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), secondaryColorFrom, secondaryColorTo);
+        secondaryAnimation.setDuration(COLOR_TRANSITION_DURATION);
+        secondaryAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                minTemperature.setTextColor((Integer) animator.getAnimatedValue());
+                maxTemperature.setTextColor((Integer) animator.getAnimatedValue());
+                for (ImageView iv : animatedColorIcons) {
+                    iv.setColorFilter((Integer) animator.getAnimatedValue());
+                }
+            }
+        });
+        secondaryAnimation.start();
+
+
     }
 
     /** Linked from the XML. */
