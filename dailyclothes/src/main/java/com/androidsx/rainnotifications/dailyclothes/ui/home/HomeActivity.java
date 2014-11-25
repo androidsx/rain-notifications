@@ -1,9 +1,9 @@
 package com.androidsx.rainnotifications.dailyclothes.ui.home;
 
+import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.res.TypedArray;
-import android.graphics.drawable.TransitionDrawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -73,20 +73,22 @@ public class HomeActivity extends FragmentActivity {
     private CustomTextView nowTemperature;
     private CustomTextView minTemperature;
     private CustomTextView maxTemperature;
-    private CustomTextView symbolTemperature;
     private View heartButton;
     private ViewPager clothesPager;
 
-    private TransitionDrawable todayPanelTransition;
-    private TransitionDrawable todayDividerTransition;
+    private Integer todayCollapsedBackgroundColor;
     private Integer todayCollapsedPrimaryColor;
     private Integer todayCollapsedSecondaryColor;
+    private Integer todayExpandedBackgroundColor;
     private Integer todayExpandedPrimaryColor;
     private Integer todayExpandedSecondaryColor;
-    private ImageView todayMinTemperature;
-    private ImageView todayMaxTemperature;
-    private ArrayList<TextView> animatedColorTextViews;
-    private ArrayList<ImageView> animatedColorIcons;
+    private View todayForecastLayout;
+    private View todayDivider;
+    private CustomTextView temperatureSymbol;
+    private ImageView todayMinTemperatureIcon;
+    private ImageView todayMaxTemperatureIcon;
+    private ArrayList<TextView> hourlyTextViews;
+    private ArrayList<ImageView> hourlyIcons;
 
     private WeatherWrapper.TemperatureScale localeScale;
     private DecimalFormat temperatureFormat = new DecimalFormat("#");
@@ -191,15 +193,18 @@ public class HomeActivity extends FragmentActivity {
         nowTemperature = (CustomTextView) findViewById(R.id.now_temp);
         minTemperature = (CustomTextView) findViewById(R.id.today_min_temp);
         maxTemperature = (CustomTextView) findViewById(R.id.today_max_temp);
-        symbolTemperature = (CustomTextView) findViewById(R.id.today_symbol_temp);
+        temperatureSymbol = (CustomTextView) findViewById(R.id.today_symbol_temp);
         heartButton = findViewById(R.id.heart_button);
 
-        todayPanelTransition = (TransitionDrawable) findViewById(R.id.today_forecast_layout).getBackground();
-        todayDividerTransition = (TransitionDrawable) findViewById(R.id.today_forecast_divider).getBackground();
-        todayMinTemperature = (ImageView) findViewById(R.id.today_min_temp_icon);
-        todayMaxTemperature = (ImageView) findViewById(R.id.today_max_temp_icon);
+        todayForecastLayout = findViewById(R.id.today_forecast_layout);
+        todayDivider = findViewById(R.id.today_forecast_divider);
+        todayMinTemperatureIcon = (ImageView) findViewById(R.id.today_min_temp_icon);
+        todayMaxTemperatureIcon = (ImageView) findViewById(R.id.today_max_temp_icon);
+
+        todayCollapsedBackgroundColor = getResources().getColor(R.color.today_collapsed_background);
         todayCollapsedPrimaryColor = getResources().getColor(R.color.today_collapsed_primary_color);
         todayCollapsedSecondaryColor = getResources().getColor(R.color.today_collapsed_secondary_color);
+        todayExpandedBackgroundColor = getResources().getColor(R.color.today_expanded_background);
         todayExpandedPrimaryColor = getResources().getColor(R.color.today_expanded_primary_color);
         todayExpandedSecondaryColor = getResources().getColor(R.color.today_expanded_secondary_color);
 
@@ -216,8 +221,7 @@ public class HomeActivity extends FragmentActivity {
             }
         });
 
-        slidingPanel.setPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
-
+        slidingPanel.setPanelSlideListener(new SlidingUpPanelLayout.SimplePanelSlideListener(){
             private float lastScroll = 0;
 
             @Override
@@ -229,23 +233,6 @@ public class HomeActivity extends FragmentActivity {
                     animateColors(false);
                 }
                 lastScroll = v;
-            }
-
-            @Override
-            public void onPanelCollapsed(View view) {
-            }
-
-            @Override
-            public void onPanelExpanded(View view) {
-            }
-
-            @Override
-            public void onPanelAnchored(View view) {
-            }
-
-            @Override
-            public void onPanelHidden(View view) {
-
             }
         });
     }
@@ -338,8 +325,8 @@ public class HomeActivity extends FragmentActivity {
     private void updateHourlyForecastList() {
         ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
         forecastView.removeAllViews();
-        animatedColorTextViews = new ArrayList<TextView>();
-        animatedColorIcons = new ArrayList<ImageView>();
+        hourlyTextViews = new ArrayList<TextView>();
+        hourlyIcons = new ArrayList<ImageView>();
 
         for(int i=0; i < Math.min(MAX_FORECAST_ITEMS, forecastTable.getHourlyForecastList().size()); i++) {
             Forecast current = forecastTable.getHourlyForecastList().get(i);
@@ -349,9 +336,9 @@ public class HomeActivity extends FragmentActivity {
             TextView temp = (TextView) view.findViewById(R.id.forecast_temp);
             TextView hour = (TextView) view.findViewById(R.id.forecast_hour);
 
-            animatedColorTextViews.add(temp);
-            animatedColorTextViews.add(hour);
-            animatedColorIcons.add(icon);
+            hourlyTextViews.add(temp);
+            hourlyTextViews.add(hour);
+            hourlyIcons.add(icon);
 
             Picasso.with(this).load(getWeatherIcon(current.getWeatherWrapper().getWeatherType())).into(icon);
             temp.setText(temperatureFormat.format(current.getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
@@ -381,59 +368,55 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void animateColors(boolean toExpanded) {
-        Integer primaryColorFrom;
-        Integer secondaryColorFrom;
-        Integer primaryColorTo;
-        Integer secondaryColorTo;
+        Integer backgroundColorFrom = toExpanded ? todayCollapsedBackgroundColor : todayExpandedBackgroundColor;
+        Integer primaryColorFrom = toExpanded ? todayCollapsedPrimaryColor : todayExpandedPrimaryColor;
+        Integer secondaryColorFrom = toExpanded ? todayCollapsedSecondaryColor : todayExpandedSecondaryColor;
+        Integer backgroundColorTo = toExpanded ? todayExpandedBackgroundColor : todayCollapsedBackgroundColor;
+        Integer primaryColorTo = toExpanded ? todayExpandedPrimaryColor : todayCollapsedPrimaryColor;
+        Integer secondaryColorTo = toExpanded ? todayExpandedSecondaryColor : todayCollapsedSecondaryColor;
 
-        if(toExpanded) {
-            todayPanelTransition.startTransition(COLOR_TRANSITION_DURATION);
-            todayDividerTransition.startTransition(COLOR_TRANSITION_DURATION);
-            primaryColorFrom = todayCollapsedPrimaryColor;
-            secondaryColorFrom = todayCollapsedSecondaryColor;
-            primaryColorTo = todayExpandedPrimaryColor;
-            secondaryColorTo = todayExpandedSecondaryColor;
-        }
-        else {
-            todayPanelTransition.reverseTransition(COLOR_TRANSITION_DURATION);
-            todayDividerTransition.reverseTransition(COLOR_TRANSITION_DURATION);
-            primaryColorFrom = todayExpandedPrimaryColor;
-            secondaryColorFrom = todayExpandedSecondaryColor;
-            primaryColorTo = todayCollapsedPrimaryColor;
-            secondaryColorTo = todayCollapsedSecondaryColor;
-        }
-
-        ValueAnimator primaryAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), primaryColorFrom, primaryColorTo);
-        primaryAnimation.setDuration(COLOR_TRANSITION_DURATION);
-        primaryAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        ValueAnimator backgroundAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), backgroundColorFrom, backgroundColorTo);
+        backgroundAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
-                nowTemperature.setTextColor((Integer) animator.getAnimatedValue());
-                symbolTemperature.setTextColor((Integer) animator.getAnimatedValue());
-                for (TextView tv : animatedColorTextViews) {
-                    tv.setTextColor((Integer) animator.getAnimatedValue());
+                Integer value = (Integer) animator.getAnimatedValue();
+                todayForecastLayout.setBackgroundColor(value);
+            }
+        });
+
+        ValueAnimator primaryAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), primaryColorFrom, primaryColorTo);
+        primaryAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                Integer value = (Integer) animator.getAnimatedValue();
+                nowTemperature.setTextColor(value);
+                temperatureSymbol.setTextColor(value);
+                todayDivider.setBackgroundColor(value);
+                for (TextView tv : hourlyTextViews) {
+                    tv.setTextColor(value);
                 }
             }
         });
-        primaryAnimation.start();
 
-        ValueAnimator secondaryAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), secondaryColorFrom, secondaryColorTo);
-        secondaryAnimation.setDuration(COLOR_TRANSITION_DURATION);
-        secondaryAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        ValueAnimator secondaryAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), secondaryColorFrom, secondaryColorTo);
+        secondaryAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
-                minTemperature.setTextColor((Integer) animator.getAnimatedValue());
-                maxTemperature.setTextColor((Integer) animator.getAnimatedValue());
-                todayMinTemperature.setColorFilter((Integer) animator.getAnimatedValue());
-                todayMaxTemperature.setColorFilter((Integer) animator.getAnimatedValue());
-                for (ImageView iv : animatedColorIcons) {
-                    iv.setColorFilter((Integer) animator.getAnimatedValue());
+                Integer value = (Integer) animator.getAnimatedValue();
+                minTemperature.setTextColor(value);
+                maxTemperature.setTextColor(value);
+                todayMinTemperatureIcon.setColorFilter(value);
+                todayMaxTemperatureIcon.setColorFilter(value);
+                for (ImageView iv : hourlyIcons) {
+                    iv.setColorFilter(value);
                 }
             }
         });
-        secondaryAnimation.start();
 
-
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(backgroundAnimator, primaryAnimator, secondaryAnimator);
+        animatorSet.setDuration(COLOR_TRANSITION_DURATION);
+        animatorSet.start();
     }
 
     /** Linked from the XML. */

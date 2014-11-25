@@ -20,7 +20,7 @@
             android:id="@+id/today_forecast_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/today_background_transition"
+            android:background="@color/today_collapsed_background"
             android:gravity="center"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/default_margin_padding"
@@ -112,7 +112,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/today_divider_margin"
                 android:layout_marginRight="@dimen/today_divider_margin"
-                android:background="@drawable/today_divider_transition"/>
+                android:background="@color/today_collapsed_primary_color"/>
 
             <HorizontalScrollView
                 android:layout_width="0dp"
