@@ -13,9 +13,9 @@
     <dimen name="floating_button_half_size">28dp</dimen>
     <dimen name="floating_button_icon_size">24dp</dimen>
     <dimen name="floating_button_icon_margin_top">2dp</dimen> <!-- For visual center vertical -->
+    <dimen name="floating_button_heart_margin_bottom">82dp</dimen> <!-- default_margin_padding + floating_button_size + default_margin_padding -->
 
     <!-- Today Forecast -->
-    <dimen name="weather_layout_padding_top">30dp</dimen> <!-- This is for add space for floating button (2dp + floating_button_half_size) -->
     <dimen name="current_temp_text_size">60sp</dimen>
     <dimen name="current_temp_margin_top">-19sp</dimen> <!-- NOTE: it's a negative value, this is a cheat for achieve perfect alignment -->
     <dimen name="today_min_max_temp_text_size">20sp</dimen>

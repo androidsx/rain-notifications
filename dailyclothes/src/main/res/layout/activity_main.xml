@@ -26,30 +26,6 @@
                 android:layout_height="match_parent">
             </android.support.v4.view.ViewPager>
 
-            <!--
-                 Floating heart button.
-
-                 Re-positioned programmatically with respect of the sliding panel. The left
-                 margin is set to half the expand button to keep the left and the bottom
-                 margins consistent.
-            -->
-            <FrameLayout
-                android:id="@+id/heart_button"
-                android:layout_width="@dimen/floating_button_size"
-                android:layout_height="@dimen/floating_button_size"
-                android:layout_gravity="bottom|left"
-                android:layout_marginLeft="@dimen/floating_button_half_size"
-                android:background="@drawable/rounded_background_grey_blue"
-                android:onClick="onHeartClick">
-
-                <ImageView
-                    android:layout_width="@dimen/floating_button_icon_size"
-                    android:layout_height="@dimen/floating_button_icon_size"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="@dimen/floating_button_icon_margin_top"
-                    android:src="@drawable/ic_heart_white_24dp"/>
-            </FrameLayout>
-
         </FrameLayout>
 
         <LinearLayout
@@ -121,4 +97,40 @@
             android:onClick="onErrorRetry"
             android:text="@string/status_frame_retry"/>
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/heart_button"
+        android:layout_width="@dimen/floating_button_size"
+        android:layout_height="@dimen/floating_button_size"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="@dimen/default_margin_padding"
+        android:layout_marginBottom="@dimen/floating_button_heart_margin_bottom"
+        android:background="@drawable/rounded_background_grey_blue"
+        android:onClick="onHeartClick">
+
+        <ImageView
+            android:layout_width="@dimen/floating_button_icon_size"
+            android:layout_height="@dimen/floating_button_icon_size"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/floating_button_icon_margin_top"
+            android:src="@drawable/ic_heart_white_24dp"/>
+    </FrameLayout>
+
+
+    <FrameLayout
+        android:layout_width="@dimen/floating_button_size"
+        android:layout_height="@dimen/floating_button_size"
+        android:layout_gravity="bottom|right"
+        android:layout_marginRight="@dimen/default_margin_padding"
+        android:layout_marginBottom="@dimen/default_margin_padding"
+        android:background="@drawable/rounded_background_gold"
+        android:onClick="onArrowButtonClick">
+
+        <ImageView
+            android:layout_width="@dimen/floating_button_icon_size"
+            android:layout_height="@dimen/floating_button_icon_size"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/floating_button_icon_margin_top"
+            android:src="@drawable/ic_swap_vertical_white_24dp"/>
+    </FrameLayout>
 </FrameLayout>

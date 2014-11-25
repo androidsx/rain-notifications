@@ -82,7 +82,6 @@ public class HomeActivity extends FragmentActivity {
     private Integer todayExpandedBackgroundColor;
     private Integer todayExpandedPrimaryColor;
     private Integer todayExpandedSecondaryColor;
-    private View todayForecastLayout;
     private View todayDivider;
     private CustomTextView temperatureSymbol;
     private ImageView todayMinTemperatureIcon;
@@ -196,7 +195,6 @@ public class HomeActivity extends FragmentActivity {
         temperatureSymbol = (CustomTextView) findViewById(R.id.today_symbol_temp);
         heartButton = findViewById(R.id.heart_button);
 
-        todayForecastLayout = findViewById(R.id.today_forecast_layout);
         todayDivider = findViewById(R.id.today_forecast_divider);
         todayMinTemperatureIcon = (ImageView) findViewById(R.id.today_min_temp_icon);
         todayMaxTemperatureIcon = (ImageView) findViewById(R.id.today_max_temp_icon);
@@ -216,7 +214,7 @@ public class HomeActivity extends FragmentActivity {
             public void onGlobalLayout() {
                 if(!activityDestroyed) {
                     computeSlidingPanelSizes();
-                    repositionHeartButton();
+                    //repositionHeartButton();
                 }
             }
         });
@@ -380,7 +378,7 @@ public class HomeActivity extends FragmentActivity {
             @Override
             public void onAnimationUpdate(ValueAnimator animator) {
                 Integer value = (Integer) animator.getAnimatedValue();
-                todayForecastLayout.setBackgroundColor(value);
+                slidingPanelToday.setBackgroundColor(value);
             }
         });
 
