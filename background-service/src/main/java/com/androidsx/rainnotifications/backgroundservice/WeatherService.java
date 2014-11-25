@@ -32,7 +32,7 @@ import timber.log.Timber;
 /**
  * This service is responsible to make API calls to forecast.io
  * Once it starts, make an API call to forecast.io with the obtained coordinates.
- *
+ * <p/>
  * The response is analyzed for determine the next alarm time, and if it's appropriate
  * notify to user the next significant weather change.
  */
@@ -61,15 +61,14 @@ public class WeatherService extends Service {
             public void onLocationSuccess(Location location) {
                 WeatherClientFactory.requestForecastForLocation(getApplicationContext(), location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
                     @Override
-                    public void onForecastSuccess (ForecastTable forecastTable){
+                    public void onForecastSuccess(ForecastTable forecastTable) {
                         if (intent != null && intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {
                             Day day = new Day(forecastTable);
                             DayTemplate template = dayTemplateGenerator.getDayTemplate(day);
                             String message;
-                            if(template == null) {
+                            if (template == null) {
                                 message = getString(R.string.default_day_message);
-                            }
-                            else {
+                            } else {
                                 message = template.resolveMessage(WeatherService.this, day);
                             }
 
@@ -99,14 +98,16 @@ public class WeatherService extends Service {
                     }
 
                     @Override
-                    public void onForecastFailure (WeatherClientException exception){
+                    public void onForecastFailure(WeatherClientException exception) {
                         Timber.e(exception, "Failed to get the forecast");
-                        NotificationHelper.displayStandardNotification(
-                                WeatherService.this,
-                                new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
-                                "Failed to get the forecast: " + exception.toString(),
-                                BitmapFactory.decodeResource(getResources(),
-                                R.drawable.owlie_default));
+                        if (CommonConstants.ENV == CommonConstants.Env.DEV) {
+                            NotificationHelper.displayStandardNotification(
+                                    WeatherService.this,
+                                    new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
+                                    "Failed to get the forecast: " + exception.toString(),
+                                    BitmapFactory.decodeResource(getResources(),
+                                            R.drawable.owlie_default));
+                        }
                     }
                 });
             }
@@ -114,11 +115,13 @@ public class WeatherService extends Service {
             @Override
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 Timber.e(exception, "Failed to get the location");
-                NotificationHelper.displayStandardNotification(WeatherService.this,
-                        new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
-                        "Failed to get the location" + exception.toString(),
-                        BitmapFactory.decodeResource(getResources(),
-                        R.drawable.owlie_default));
+                if (CommonConstants.ENV == CommonConstants.Env.DEV) {
+                    NotificationHelper.displayStandardNotification(WeatherService.this,
+                            new Intent(Constants.CustomIntent.BACKGROUND_INTENT),
+                            "Failed to get the location" + exception.toString(),
+                            BitmapFactory.decodeResource(getResources(),
+                                    R.drawable.owlie_default));
+                }
             }
         });
 
@@ -126,15 +129,14 @@ public class WeatherService extends Service {
     }
 
     private String generateForecastReportMessage(String message, Day day, DayTemplate template, ForecastTable forecastTable) {
-        if(CommonConstants.ENV.equals(CommonConstants.Env.DEV)) {
+        if (CommonConstants.ENV.equals(CommonConstants.Env.DEV)) {
             StringBuilder builder = new StringBuilder();
             builder.append("SUMMARY:\n     " + message);
             builder.append("\n\n" + day);
             builder.append("\n\n" + template);
             builder.append("\n\n" + forecastTable);
             return builder.toString();
-        }
-        else {
+        } else {
             return null;
         }
     }

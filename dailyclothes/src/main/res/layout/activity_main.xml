@@ -23,8 +23,45 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/clothes_view_pager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:overScrollMode="never">
             </android.support.v4.view.ViewPager>
+
+            <FrameLayout
+                android:id="@+id/heart_button"
+                android:layout_width="@dimen/floating_button_size"
+                android:layout_height="@dimen/floating_button_size"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="@dimen/floating_button_heart_margin_bottom"
+                android:layout_marginRight="@dimen/default_margin_padding"
+                android:background="@drawable/button_grey_blue"
+                android:onClick="onHeartClick">
+
+                <ImageView
+                    android:layout_width="@dimen/floating_button_icon_size"
+                    android:layout_height="@dimen/floating_button_icon_size"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/floating_button_icon_margin_top"
+                    android:src="@drawable/ic_heart_white_24dp"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="@dimen/floating_button_size"
+                android:layout_height="@dimen/floating_button_size"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="@dimen/default_margin_padding"
+                android:layout_marginRight="@dimen/default_margin_padding"
+                android:background="@drawable/button_gold"
+                android:onClick="onTemperatureButtonClick" >
+
+                <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                    android:id="@+id/temperature_button_label"
+                    style="@style/AppTextStyle"
+                    android:layout_gravity="center"
+                    android:text="19°"
+                    android:textColor="@android:color/white"
+                    android:textSize="18dp"/>
+            </FrameLayout>
 
         </FrameLayout>
 
@@ -97,40 +134,4 @@
             android:onClick="onErrorRetry"
             android:text="@string/status_frame_retry"/>
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/heart_button"
-        android:layout_width="@dimen/floating_button_size"
-        android:layout_height="@dimen/floating_button_size"
-        android:layout_gravity="bottom|right"
-        android:layout_marginRight="@dimen/default_margin_padding"
-        android:layout_marginBottom="@dimen/floating_button_heart_margin_bottom"
-        android:background="@drawable/rounded_background_grey_blue"
-        android:onClick="onHeartClick">
-
-        <ImageView
-            android:layout_width="@dimen/floating_button_icon_size"
-            android:layout_height="@dimen/floating_button_icon_size"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/floating_button_icon_margin_top"
-            android:src="@drawable/ic_heart_white_24dp"/>
-    </FrameLayout>
-
-
-    <FrameLayout
-        android:layout_width="@dimen/floating_button_size"
-        android:layout_height="@dimen/floating_button_size"
-        android:layout_gravity="bottom|right"
-        android:layout_marginRight="@dimen/default_margin_padding"
-        android:layout_marginBottom="@dimen/default_margin_padding"
-        android:background="@drawable/rounded_background_gold"
-        android:onClick="onArrowButtonClick">
-
-        <ImageView
-            android:layout_width="@dimen/floating_button_icon_size"
-            android:layout_height="@dimen/floating_button_icon_size"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/floating_button_icon_margin_top"
-            android:src="@drawable/ic_swap_vertical_white_24dp"/>
-    </FrameLayout>
 </FrameLayout>

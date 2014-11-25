@@ -53,7 +53,7 @@
             android:dividerHeight="@dimen/week_dividers_stroke_width"
             android:listSelector="@color/week_selector"
             android:overScrollMode="never"
-            android:scrollbarThumbVertical="@drawable/scrollbar"
+            android:scrollbarThumbVertical="@drawable/scrollbar_dark"
             android:scrollbars="vertical"/>
 
         <View

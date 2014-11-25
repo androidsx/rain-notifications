@@ -96,11 +96,12 @@
         android:background="@color/today_collapsed_primary_color"/>
 
     <HorizontalScrollView
+        android:id="@+id/hourly_scroll"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:overScrollMode="never"
-        android:scrollbarThumbHorizontal="@drawable/scrollbar">
+        android:scrollbarThumbHorizontal="@drawable/scrollbar_dark">
 
         <LinearLayout
             android:id="@+id/hourly_forecast"

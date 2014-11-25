@@ -2,19 +2,22 @@ package com.androidsx.rainnotifications.dailyclothes.ui.home;
 
 import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,6 +44,8 @@ import com.squareup.picasso.Picasso;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +56,14 @@ import timber.log.Timber;
 public class HomeActivity extends FragmentActivity {
 
     private static final Duration EXPIRATION_DURATION = Duration.standardSeconds(5); // TODO: Use this Duration.standardHours(1)
+    private static final long FORECAST_DATA_DONE_DELAY = 1000;
+    private static final long FORECAST_PANEL_EXPANDED_DELAY = 1500;
+    private static final long HEART_BUTTON_ANIMATION_DURATION = 200;
     private static final int MAX_FORECAST_ITEMS = 24;
     private static final String TEMPERATURE_SYMBOL = "°";
     private static final int COLOR_TRANSITION_DURATION = 100;
 
-    private enum ForecastDataState {LOADING, ERROR, DONE};
+    private enum ForecastDataState {LOADING, ERROR, LOADED, DONE};
 
     private ForecastDataState dataState;
     private DateTime forecastTableTime;
@@ -71,10 +79,13 @@ public class HomeActivity extends FragmentActivity {
     private View slidingPanelWeek;
     private CustomTextView slidingPanelSummary;
     private CustomTextView nowTemperature;
+    private CustomTextView nowTemperatureButton;
     private CustomTextView minTemperature;
     private CustomTextView maxTemperature;
     private View heartButton;
     private ViewPager clothesPager;
+    private LinearLayout hourlyLinear;
+    private HorizontalScrollView hourlyScroll;
 
     private Integer todayCollapsedBackgroundColor;
     private Integer todayCollapsedPrimaryColor;
@@ -88,6 +99,12 @@ public class HomeActivity extends FragmentActivity {
     private ImageView todayMaxTemperatureIcon;
     private ArrayList<TextView> hourlyTextViews;
     private ArrayList<ImageView> hourlyIcons;
+    private PanelListener panelListener;
+
+    private float positionHeartPanelHidden = 0f;
+    private float positionHeartPanelCollapsed;
+    private float positionHeartPanelAnchored;
+    private float positionHeartPanelExpanded;
 
     private WeatherWrapper.TemperatureScale localeScale;
     private DecimalFormat temperatureFormat = new DecimalFormat("#");
@@ -131,6 +148,8 @@ public class HomeActivity extends FragmentActivity {
                 break;
             case ERROR:
                 break;
+            case LOADED:
+                break;
             case DONE:
                 break;
         }
@@ -160,7 +179,7 @@ public class HomeActivity extends FragmentActivity {
                             HomeActivity.this.forecastSummaryMessage = template.resolveMessage(HomeActivity.this, HomeActivity.this.day);
                         }
 
-                        setForecastDataState(ForecastDataState.DONE);
+                        setForecastDataState(ForecastDataState.LOADED);
                     }
 
                     @Override
@@ -190,10 +209,13 @@ public class HomeActivity extends FragmentActivity {
         slidingPanelWeek = findViewById(R.id.sliding_panel_week);
         slidingPanelSummary = (CustomTextView) findViewById(R.id.sliding_panel_summary);
         nowTemperature = (CustomTextView) findViewById(R.id.now_temp);
+        nowTemperatureButton = (CustomTextView) findViewById(R.id.temperature_button_label);
         minTemperature = (CustomTextView) findViewById(R.id.today_min_temp);
         maxTemperature = (CustomTextView) findViewById(R.id.today_max_temp);
         temperatureSymbol = (CustomTextView) findViewById(R.id.today_symbol_temp);
         heartButton = findViewById(R.id.heart_button);
+        hourlyLinear = (LinearLayout) findViewById(R.id.hourly_forecast);
+        hourlyScroll = (HorizontalScrollView) findViewById(R.id.hourly_scroll);
 
         todayDivider = findViewById(R.id.today_forecast_divider);
         todayMinTemperatureIcon = (ImageView) findViewById(R.id.today_min_temp_icon);
@@ -206,8 +228,13 @@ public class HomeActivity extends FragmentActivity {
         todayExpandedPrimaryColor = getResources().getColor(R.color.today_expanded_primary_color);
         todayExpandedSecondaryColor = getResources().getColor(R.color.today_expanded_secondary_color);
 
+        positionHeartPanelExpanded = getResources().getDimension(R.dimen.floating_button_heart_translate_out_screen);
+
         setupClothesViewPager();
         setupWeekForecastList();
+
+        panelListener = new PanelListener();
+        slidingPanel.setPanelSlideListener(panelListener);
 
         findViewById(R.id.sliding_panel_layout).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -218,30 +245,15 @@ public class HomeActivity extends FragmentActivity {
                 }
             }
         });
-
-        slidingPanel.setPanelSlideListener(new SlidingUpPanelLayout.SimplePanelSlideListener(){
-            private float lastScroll = 0;
-
-            @Override
-            public void onPanelSlide(View view, float v) {
-                if(v > 0 && lastScroll == 0) {
-                    animateColors(true);
-                }
-                else if(v == 0 && lastScroll > 0) {
-                    animateColors(false);
-                }
-                lastScroll = v;
-            }
-        });
     }
 
     private void setupClothesViewPager() {
         clothesPager = (ViewPager) findViewById(R.id.clothes_view_pager);
         List<Clothes> clothesList = new ArrayList<Clothes>();
 
+        clothesList.add(new Clothes(R.drawable.lucky_3));
         clothesList.add(new Clothes(R.drawable.lucky_1));
         clothesList.add(new Clothes(R.drawable.lucky_2));
-        clothesList.add(new Clothes(R.drawable.lucky_3));
         clothesList.add(new Clothes(R.drawable.lucky_4));
         clothesList.add(new Clothes(R.drawable.lucky_5));
         clothesList.add(new Clothes(R.drawable.ann_taylor_1));
@@ -261,6 +273,7 @@ public class HomeActivity extends FragmentActivity {
         clothesList.add(new Clothes(R.drawable.blogger_10));
 
         clothesPager.setAdapter(new ClothesPagerAdapter(getSupportFragmentManager(), clothesList));
+        clothesPager.setOnPageChangeListener(new ClothesPagerListener());
     }
 
     private void setupWeekForecastList() {
@@ -282,19 +295,41 @@ public class HomeActivity extends FragmentActivity {
                     frameLoading.setVisibility(View.VISIBLE);
                     frameError.setVisibility(View.INVISIBLE);
                     break;
+
                 case ERROR:
                     frameError.setVisibility(View.VISIBLE);
                     frameLoading.setVisibility(View.INVISIBLE);
                     break;
-                case DONE:
-                    nowTemperature.setText(temperatureFormat.format(forecastTable.getBaselineForecast().getWeatherWrapper().getTemperature(localeScale)));
+
+                case LOADED:
+                    String temperature = temperatureFormat.format(forecastTable.getBaselineForecast().getWeatherWrapper().getTemperature(localeScale));
+                    nowTemperature.setText(temperature);
+                    nowTemperatureButton.setText(temperature + getString(R.string.temperature_symbol));
                     minTemperature.setText(temperatureFormat.format(day.getMinTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     maxTemperature.setText(temperatureFormat.format(day.getMaxTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     slidingPanelSummary.setText(forecastSummaryMessage);
                     updateHourlyForecastList();
+                    demoPanel();
 
+                    slidingPanel.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setForecastDataState(ForecastDataState.DONE);
+                        }
+                    }, FORECAST_DATA_DONE_DELAY);
+                    break;
+
+                case DONE:
                     frameLoading.setVisibility(View.INVISIBLE);
                     frameError.setVisibility(View.INVISIBLE);
+
+                    animateHeartButton(positionHeartPanelHidden);
+                    slidingPanel.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            hidePanel();
+                        }
+                    }, FORECAST_PANEL_EXPANDED_DELAY);
                     break;
             }
         }
@@ -303,6 +338,12 @@ public class HomeActivity extends FragmentActivity {
     private void computeSlidingPanelSizes() {
         slidingPanel.setPanelHeight(slidingPanelToday.getMeasuredHeight());
         slidingPanel.setAnchorPoint((float) slidingPanelSummary.getMeasuredHeight() / (slidingPanelSummary.getMeasuredHeight() + slidingPanelWeek.getMeasuredHeight()));
+
+        positionHeartPanelCollapsed = - slidingPanelToday.getMeasuredHeight()
+                - getResources().getDimension(R.dimen.default_margin_padding)
+                + getResources().getDimension(R.dimen.floating_button_heart_margin_bottom);
+        positionHeartPanelAnchored = positionHeartPanelCollapsed - slidingPanelSummary.getMeasuredHeight();
+
     }
 
     /**
@@ -321,8 +362,7 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void updateHourlyForecastList() {
-        ViewGroup forecastView = (ViewGroup)findViewById(R.id.hourly_forecast);
-        forecastView.removeAllViews();
+        hourlyLinear.removeAllViews();
         hourlyTextViews = new ArrayList<TextView>();
         hourlyIcons = new ArrayList<ImageView>();
 
@@ -342,7 +382,7 @@ public class HomeActivity extends FragmentActivity {
             temp.setText(temperatureFormat.format(current.getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
             hour.setText(UiUtil.getReadableHour(current.getInterval().getStart()));
 
-            forecastView.addView(view);
+            hourlyLinear.addView(view);
         }
     }
 
@@ -361,17 +401,118 @@ public class HomeActivity extends FragmentActivity {
                 return iconTypedArray.getResourceId(3,0);
             default:
                 // TODO: Consultar con Pablo y/o Omar que hacer en este caso.
-                return 0;
+                //return 0;
+                return iconTypedArray.getResourceId(0,0); // TODO: Esto está mal no, fatal
         }
     }
 
-    private void animateColors(boolean toExpanded) {
-        Integer backgroundColorFrom = toExpanded ? todayCollapsedBackgroundColor : todayExpandedBackgroundColor;
-        Integer primaryColorFrom = toExpanded ? todayCollapsedPrimaryColor : todayExpandedPrimaryColor;
-        Integer secondaryColorFrom = toExpanded ? todayCollapsedSecondaryColor : todayExpandedSecondaryColor;
-        Integer backgroundColorTo = toExpanded ? todayExpandedBackgroundColor : todayCollapsedBackgroundColor;
-        Integer primaryColorTo = toExpanded ? todayExpandedPrimaryColor : todayCollapsedPrimaryColor;
-        Integer secondaryColorTo = toExpanded ? todayExpandedSecondaryColor : todayCollapsedSecondaryColor;
+    private void showPanel() {
+        slidingPanel.showPanel();
+    }
+
+    private void demoPanel() {
+        animateColors(PanelScrollValue.EXPANDED);
+        slidingPanel.expandPanel();
+    }
+
+    private void hidePanel() {
+        panelListener.stopListening();
+
+        if(slidingPanel.isPanelExpanded() || slidingPanel.isPanelAnchored()) {
+            animateColors(PanelScrollValue.COLLAPSED);
+        }
+        slidingPanel.hidePanel();
+    }
+
+    private enum PanelScrollValue {
+        COLLAPSED(0f),
+        EXPANDED(1f);
+
+        private float scrollValue;
+
+        private PanelScrollValue(float scrollValue) {
+            this.scrollValue = scrollValue;
+        }
+
+        public float getScrollValue() {
+            return scrollValue;
+        }
+    }
+
+    private class PanelListener extends SlidingUpPanelLayout.SimplePanelSlideListener {
+
+        private boolean listening = false;
+        private float lastScroll;
+
+        public void startListening(PanelScrollValue panelScrollValue) {
+            this.lastScroll = panelScrollValue.getScrollValue();
+            listening = true;
+        }
+
+        public void stopListening() {
+            listening = false;
+        }
+
+        @Override
+        public void onPanelSlide(View view, float scrollValue) {
+
+            if(listening) {
+                if(scrollValue > PanelScrollValue.COLLAPSED.getScrollValue() && lastScroll == PanelScrollValue.COLLAPSED.getScrollValue()) {
+                    animateColors(PanelScrollValue.EXPANDED);
+                }
+                else if(scrollValue == PanelScrollValue.COLLAPSED.getScrollValue() && lastScroll > PanelScrollValue.COLLAPSED.getScrollValue()) {
+                    animateColors(PanelScrollValue.COLLAPSED);
+                }
+                lastScroll = scrollValue;
+            }
+        }
+
+        @Override
+        public void onPanelCollapsed(View view) {
+            startListening(PanelScrollValue.COLLAPSED);
+            animateHeartButton(positionHeartPanelCollapsed);
+        }
+
+        @Override
+        public void onPanelExpanded(View view) {
+            animateHeartButton(positionHeartPanelExpanded);
+        }
+
+        @Override
+        public void onPanelAnchored(View view) {
+            animateHeartButton(positionHeartPanelAnchored);
+        }
+
+        @Override
+        public void onPanelHidden(View view) {
+            animateHeartButton(positionHeartPanelHidden);
+        }
+    }
+
+    private class ClothesPagerListener implements ViewPager.OnPageChangeListener {
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+
+        @Override
+        public void onPageSelected(int position) { }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            if(state == ViewPager.SCROLL_STATE_IDLE) {
+                hidePanel();
+            }
+        }
+    }
+
+    private void animateColors(PanelScrollValue panelScrollValue) {
+        boolean isToExpanded = panelScrollValue.equals(PanelScrollValue.EXPANDED);
+        Integer backgroundColorFrom = isToExpanded ? todayCollapsedBackgroundColor : todayExpandedBackgroundColor;
+        Integer primaryColorFrom = isToExpanded ? todayCollapsedPrimaryColor : todayExpandedPrimaryColor;
+        Integer secondaryColorFrom = isToExpanded ? todayCollapsedSecondaryColor : todayExpandedSecondaryColor;
+        Integer backgroundColorTo = isToExpanded ? todayExpandedBackgroundColor : todayCollapsedBackgroundColor;
+        Integer primaryColorTo = isToExpanded ? todayExpandedPrimaryColor : todayCollapsedPrimaryColor;
+        Integer secondaryColorTo = isToExpanded ? todayExpandedSecondaryColor : todayCollapsedSecondaryColor;
 
         ValueAnimator backgroundAnimator = ValueAnimator.ofObject(new ArgbEvaluator(), backgroundColorFrom, backgroundColorTo);
         backgroundAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -415,6 +556,27 @@ public class HomeActivity extends FragmentActivity {
         animatorSet.playTogether(backgroundAnimator, primaryAnimator, secondaryAnimator);
         animatorSet.setDuration(COLOR_TRANSITION_DURATION);
         animatorSet.start();
+
+        int scrollDrawableRef = isToExpanded ? R.drawable.scrollbar_light : R.drawable.scrollbar_dark;
+        try
+        {
+            Field mScrollCacheField = View.class.getDeclaredField("mScrollCache");
+            mScrollCacheField.setAccessible(true);
+            Object mScrollCache = mScrollCacheField.get(hourlyScroll);
+            Field scrollBarField = mScrollCache.getClass().getDeclaredField("scrollBar");
+            scrollBarField.setAccessible(true);
+            Object scrollBar = scrollBarField.get(mScrollCache);
+            Method method = scrollBar.getClass().getDeclaredMethod("setHorizontalThumbDrawable", Drawable.class);
+            method.setAccessible(true);
+            method.invoke(scrollBar, getResources().getDrawable(scrollDrawableRef));
+        }
+        catch(Exception e) {}
+    }
+
+    private void animateHeartButton(float translationY) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(heartButton, "translationY", translationY);
+        anim.setDuration(HEART_BUTTON_ANIMATION_DURATION);
+        anim.start();
     }
 
     /** Linked from the XML. */
@@ -448,12 +610,7 @@ public class HomeActivity extends FragmentActivity {
     }
 
     /** Linked from the XML. */
-    public void onArrowButtonClick(View v) {
-        if(slidingPanel.isPanelExpanded()) {
-            slidingPanel.collapsePanel();
-        }
-        else {
-            slidingPanel.expandPanel();
-        }
+    public void onTemperatureButtonClick(View v) {
+        showPanel();
     }
 }

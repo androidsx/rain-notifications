@@ -3,7 +3,7 @@
     android:insetLeft="6dp"
     android:insetTop="6dp">
     <shape android:shape="rectangle">
-        <solid android:color="@color/scrollbar_color"/>
+        <solid android:color="@color/scrollbar_light"/>
         <corners android:radius="2dp"/>
     </shape>
 </inset>
