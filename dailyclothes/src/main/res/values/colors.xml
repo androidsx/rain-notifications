@@ -7,8 +7,10 @@
     <color name="grey">#ffbebebe</color>
     <color name="grey_dark">#ff848484</color>
     <color name="grey_blue">#ff3a5665</color>
+    <color name="grey_blue_light">#ff658c9b</color>
     <color name="grey_cream">#ffb4b098</color>
     <color name="gold">#ff807335</color>
+    <color name="gold_light">#ffaea13e</color>
     <color name="cream_light">#fffef8d5</color>
     <color name="cream_dark">#ffbda68c</color>
 
@@ -21,7 +23,8 @@
     <color name="accent_color">@color/grey_blue</color>
 
     <!-- ScrollBar -->
-    <color name="scrollbar_color">@color/gold</color>
+    <color name="scrollbar_dark">@color/gold</color>
+    <color name="scrollbar_light">@color/white</color>
 
     <!-- Sliding Panel -->
     <color name="sliding_fade_color">@color/transparent</color>
