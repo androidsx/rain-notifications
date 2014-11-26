@@ -457,6 +457,7 @@ public class HomeActivity extends FragmentActivity {
         animatorSet.setDuration(COLOR_TRANSITION_DURATION);
         animatorSet.start();
 
+        // This is for change the scrollbar color. It uses reflection, if it fails there is nothing to do.
         int scrollDrawableRef = isToExpanded ? R.drawable.scrollbar_light : R.drawable.scrollbar_dark;
         try
         {
@@ -470,7 +471,9 @@ public class HomeActivity extends FragmentActivity {
             method.setAccessible(true);
             method.invoke(scrollBar, getResources().getDrawable(scrollDrawableRef));
         }
-        catch(Exception e) {}
+        catch(Exception e) {
+            // Reflection fail, so the scrollbar remains in the original color.
+        }
     }
 
     private void animateHeartButton(float translationY) {
