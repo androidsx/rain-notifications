@@ -4,7 +4,6 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
@@ -387,22 +386,20 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private int getWeatherIcon(WeatherType type) {
-        TypedArray iconTypedArray = getResources().obtainTypedArray(R.array.weatherIcons);
-
+        // TODO: Pensar que hacer con las versiones night.
         switch (type) {
             case CLEAR:
-                return iconTypedArray.getResourceId(0,0); //TODO: Que usamos como default?
+                return R.drawable.ic_clear;
             case CLOUDY:
-                return iconTypedArray.getResourceId(1,0);
+                return R.drawable.ic_cloudy;
             case RAIN:
-                return iconTypedArray.getResourceId(2,0);
+                return R.drawable.ic_rain;
             case SNOW:
-                // FIXME: Falta el icono
-                return iconTypedArray.getResourceId(3,0);
+                // FIXME: Falta el icono de SNOW
+                return R.drawable.ic_rain;
             default:
-                // TODO: Consultar con Pablo y/o Omar que hacer en este caso.
-                //return 0;
-                return iconTypedArray.getResourceId(0,0); // TODO: Esto está mal no, fatal
+                // FIXME: No tenemos icono default, aunque en realidad aquí no pueden llegar tipos de tiempo desconocidos porque los elimina ForecastTable.
+                return R.drawable.ic_clear;
         }
     }
 
