@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/forecast"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/hourly_item_width"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/hourly_item_padding_left_right"
+    android:paddingRight="@dimen/hourly_item_padding_left_right">
+
+    <ImageView
+        android:id="@+id/forecast_icon"
+        android:layout_width="@dimen/hourly_item_icon_weather_size"
+        android:layout_height="@dimen/hourly_item_icon_weather_size"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_clear"
+        android:tint="@color/today_collapsed_secondary_color"/>
+
+    <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+        android:id="@+id/forecast_temp"
+        style="@style/AppTextStyle.numbers"
+        android:text="63°"
+        android:textColor="@color/today_collapsed_primary_color"
+        android:textSize="@dimen/hourly_item_temp_text_size"/>
+
+    <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+        android:id="@+id/forecast_hour"
+        style="@style/AppTextStyle.numbers"
+        android:text="10am"
+        android:textColor="@color/today_collapsed_primary_color"
+        android:textSize="@dimen/hourly_item_hour_text_size"/>
+
+</LinearLayout>

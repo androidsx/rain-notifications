@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion '20.0.0'
+    compileSdkVersion 21
+    buildToolsVersion '21.1.1'
 
     defaultConfig {
         applicationId "com.androidsx.rainnotifications.dailyclothes"
         minSdkVersion 19
-        targetSdkVersion 20
-        versionCode 2
-        versionName "0.2"
+        targetSdkVersion 21
+        versionCode 4
+        versionName "0.4"
     }
     signingConfigs {
         release {
@@ -52,7 +52,10 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.sothree.slidinguppanel:library:+'
+    compile 'com.android.support:appcompat-v7:21.0.2'
+    compile 'com.android.support:support-v4:21.0.2'
+    compile 'com.android.support:recyclerview-v7:21.0.2'
     compile 'com.squareup.picasso:picasso:2.3.4'
 
     compile project(':common-library')

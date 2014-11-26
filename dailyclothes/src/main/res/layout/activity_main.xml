@@ -1,166 +1,113 @@
-<!--
-    TODO: Eliminar dimensiones estrictas y pasarlo a variables en dimens.xml
--->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.androidsx.rainnotifications.dailyclothes.ui.home.HomeActivity">
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:customAttrs="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@color/today_background"
-             tools:context=".MainActivity">
-
-    <LinearLayout
-        android:id="@+id/frame_main"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        android:id="@+id/sliding_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="visible">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <FrameLayout
-                android:id="@+id/layout_weather"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:onClick="showNotification"
-                android:orientation="vertical">
-
-                <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
-                    android:id="@+id/now_temp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|center"
-                    android:textColor="@color/today_text"
-                    android:textSize="@dimen/today_temp_text_size"
-                    android:textStyle="bold"
-                    customAttrs:customFont="roboto_thin"/>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top|center"
-                    android:layout_marginTop="65dp"
-                    android:orientation="horizontal">
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-
-                        <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
-                            android:id="@+id/today_min_temp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top|center"
-                            android:textColor="@color/today_text"
-                            android:textSize="@dimen/today_min_max_temp_text_size"
-                            customAttrs:customFont="roboto_thin"/>
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_gravity="top|center"
-                            android:layout_marginTop="25dp"
-                            android:src="@drawable/triangle_down"/>
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp">
-
-                        <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
-                            android:id="@+id/today_max_temp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="top|center"
-                            android:textColor="@color/today_text"
-                            android:textSize="@dimen/today_min_max_temp_text_size"
-                            customAttrs:customFont="roboto_thin"/>
-
-                        <ImageView
-                            android:layout_width="10dp"
-                            android:layout_height="10dp"
-                            android:layout_gravity="top|center"
-                            android:layout_marginTop="25dp"
-                            android:src="@drawable/triangle_up"/>
-                    </FrameLayout>
-                </LinearLayout>
-            </FrameLayout>
-
-            <HorizontalScrollView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:overScrollMode="never"
-                android:scrollbarThumbHorizontal="@drawable/scrollbar">
-
-                <LinearLayout
-                    android:id="@+id/hourly_forecast"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-                </LinearLayout>
-            </HorizontalScrollView>
-
-        </LinearLayout>
+        android:gravity="bottom"
+        sothree:fadeColor="@color/transparent"
+        sothree:overlay="true"
+        sothree:paralaxOffset="@dimen/sliding_parallax"
+        sothree:shadowHeight="@dimen/sliding_shadow_height">
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent">
 
-            <com.androidsx.rainnotifications.dailyclothes.quickreturn.QuickReturnListView
-                android:id="@+id/clothes_list_view"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/clothes_view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@null"
-                android:overScrollMode="never"
-                android:scrollbarThumbVertical="@drawable/scrollbar"/>
+                android:overScrollMode="never">
+            </android.support.v4.view.ViewPager>
 
-            <com.androidsx.rainnotifications.dailyclothes.widget.CustomFontTextView
-                android:id="@+id/forecast_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                android:layout_marginRight="@dimen/forecast_message_margin_right"
-                android:background="@color/forecast_message_background"
-                android:paddingBottom="@dimen/forecast_message_padding_top_bottom"
-                android:paddingLeft="@dimen/forecast_message_padding_left_right"
-                android:paddingRight="@dimen/forecast_message_padding_left_right"
-                android:textColor="@color/forecast_message"
-                android:textSize="@dimen/forecast_message_text_size"
-                customAttrs:customFont="roboto_light"/>
+            <FrameLayout
+                android:id="@+id/heart_button"
+                android:layout_width="@dimen/floating_button_size"
+                android:layout_height="@dimen/floating_button_size"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="@dimen/floating_button_heart_margin_bottom"
+                android:layout_marginRight="@dimen/default_margin_padding"
+                android:background="@drawable/button_grey_blue"
+                android:onClick="onHeartClick">
+
+                <ImageView
+                    android:layout_width="@dimen/floating_button_icon_size"
+                    android:layout_height="@dimen/floating_button_icon_size"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/floating_button_icon_margin_top"
+                    android:src="@drawable/ic_heart_white_24dp"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="@dimen/floating_button_size"
+                android:layout_height="@dimen/floating_button_size"
+                android:layout_gravity="bottom|right"
+                android:layout_marginBottom="@dimen/default_margin_padding"
+                android:layout_marginRight="@dimen/default_margin_padding"
+                android:background="@drawable/button_gold"
+                android:onClick="onTemperatureButtonClick">
+
+                <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                    android:id="@+id/temperature_button_label"
+                    style="@style/AppTextStyle"
+                    android:layout_gravity="center"
+                    android:text="19°"
+                    android:textColor="@android:color/white"
+                    android:textSize="18dp"/>
+            </FrameLayout>
+
         </FrameLayout>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/sliding_panel_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <!-- Dar estilo a estos dos frames-->
+            <include
+                android:id="@+id/sliding_panel_today"
+                layout="@layout/sliding_panel_today_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                android:id="@+id/sliding_panel_summary"
+                style="@style/AppTextStyle"
+                android:background="@color/summary_background"
+                android:padding="@dimen/summary_padding"/>
+
+            <include
+                android:id="@+id/sliding_panel_week"
+                layout="@layout/sliding_panel_week_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+    <!-- TODO Dar mejor estilo a estos dos frames-->
     <LinearLayout
         android:id="@+id/frame_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/window_background"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/status_frame_padding"
-        android:visibility="invisible">
+        android:padding="@dimen/default_margin_padding"
+        android:visibility="visible">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/forecast_loading"
-            android:textColor="@color/grey_blue"
-            android:textSize="18dp"/>
+        <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+            style="@style/AppTextStyle.medium"
+            android:text="@string/status_frame_loading"
+            android:textColor="@color/status_frames_text_color"/>
 
         <ProgressBar
-            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -169,25 +116,29 @@
         android:id="@+id/frame_error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/window_background"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/status_frame_padding"
+        android:padding="@dimen/default_margin_padding"
         android:visibility="invisible">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/forecast_error"
-            android:textColor="@color/grey_blue"
-            android:textSize="18dp"/>
+        <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+            style="@style/AppTextStyle.medium"
+            android:text="@string/status_frame_error"
+            android:textColor="@color/status_frames_text_color"/>
+
+        <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+            android:id="@+id/frame_error_support"
+            style="@style/AppTextStyle.medium"
+            android:layout_marginTop="10dp"
+            android:text="@string/support"
+            android:textColor="@color/status_frames_text_color"/>
 
         <Button
-            android:id="@+id/button_error_retry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:onClick="getForecastData"
-            android:text="@string/retry"/>
+            android:onClick="onErrorRetry"
+            android:text="@string/status_frame_retry"/>
     </LinearLayout>
 </FrameLayout>

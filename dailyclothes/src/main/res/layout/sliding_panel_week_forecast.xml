@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/week_background"
+    android:padding="@dimen/default_margin_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/week_title_margin_bottom"
+            android:gravity="center">
+
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                style="@style/AppTextStyle.title"
+                android:singleLine="true"
+                android:text="@string/week_forecast_title"
+                android:textColor="@color/week_light"/>
+
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                style="@style/AppTextStyle"
+                android:text=" // "
+                android:textColor="@color/week_dark"/>
+
+            <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                android:id="@+id/week_forecast_city"
+                style="@style/AppTextStyle"
+                android:singleLine="true"
+                android:text="NEW YORK CITY"
+                android:textColor="@color/week_dark"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/week_dividers_stroke_width"
+            android:background="@color/week_dividers"/>
+
+        <ListView
+            android:id="@+id/week_forecast_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:divider="@color/week_dividers"
+            android:dividerHeight="@dimen/week_dividers_stroke_width"
+            android:listSelector="@color/week_selector"
+            android:overScrollMode="never"
+            android:scrollbarThumbVertical="@drawable/scrollbar_dark"
+            android:scrollbars="vertical"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/week_dividers_stroke_width"
+            android:background="@color/week_dividers"/>
+    </LinearLayout>
+</FrameLayout>
