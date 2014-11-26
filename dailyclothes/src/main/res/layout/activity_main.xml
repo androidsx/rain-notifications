@@ -52,7 +52,7 @@
                 android:layout_marginBottom="@dimen/default_margin_padding"
                 android:layout_marginRight="@dimen/default_margin_padding"
                 android:background="@drawable/button_gold"
-                android:onClick="onTemperatureButtonClick" >
+                android:onClick="onTemperatureButtonClick">
 
                 <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
                     android:id="@+id/temperature_button_label"
@@ -125,6 +125,13 @@
         <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
             style="@style/AppTextStyle.medium"
             android:text="@string/status_frame_error"
+            android:textColor="@color/status_frames_text_color"/>
+
+        <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+            android:id="@+id/frame_error_support"
+            style="@style/AppTextStyle.medium"
+            android:layout_marginTop="10dp"
+            android:text="@string/support"
             android:textColor="@color/status_frames_text_color"/>
 
         <Button

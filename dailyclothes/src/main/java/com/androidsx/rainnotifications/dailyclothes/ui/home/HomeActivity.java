@@ -9,11 +9,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,18 +52,31 @@ import java.util.List;
 
 import timber.log.Timber;
 
-
 public class HomeActivity extends FragmentActivity {
 
-    private static final Duration EXPIRATION_DURATION = Duration.standardSeconds(5); // TODO: Use this Duration.standardHours(1)
+    private static final Duration FORECAST_DATA_EXPIRATION_DURATION = Duration.standardMinutes(30);
     private static final long FORECAST_DATA_DONE_DELAY = 1000;
-    private static final long FORECAST_PANEL_EXPANDED_DELAY = 1500;
+    private static final long PANEL_DEMO_EXPANDED_DURATION = 1500;
     private static final long HEART_BUTTON_ANIMATION_DURATION = 200;
     private static final int MAX_FORECAST_ITEMS = 24;
-    private static final String TEMPERATURE_SYMBOL = "°";
     private static final int COLOR_TRANSITION_DURATION = 100;
 
     private enum ForecastDataState {LOADING, ERROR, LOADED, DONE};
+
+    private enum PanelScrollValue {
+        COLLAPSED(0f),
+        EXPANDED(1f);
+
+        private float scrollValue;
+
+        private PanelScrollValue(float scrollValue) {
+            this.scrollValue = scrollValue;
+        }
+
+        public float getScrollValue() {
+            return scrollValue;
+        }
+    }
 
     private ForecastDataState dataState;
     private DateTime forecastTableTime;
@@ -120,6 +134,7 @@ public class HomeActivity extends FragmentActivity {
         super.onStart();
         checkDataState();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -130,7 +145,7 @@ public class HomeActivity extends FragmentActivity {
         if(dataState == null || dataState.equals(ForecastDataState.ERROR)) {
             setForecastDataState(ForecastDataState.LOADING);
         }
-        else if(dataState.equals(ForecastDataState.DONE) && new Duration(forecastTableTime, new DateTime()).isLongerThan(EXPIRATION_DURATION)) {
+        else if(dataState.equals(ForecastDataState.DONE) && new Duration(forecastTableTime, new DateTime()).isLongerThan(FORECAST_DATA_EXPIRATION_DURATION)) {
             setForecastDataState(ForecastDataState.LOADING);
         }
     }
@@ -178,7 +193,7 @@ public class HomeActivity extends FragmentActivity {
                             HomeActivity.this.forecastSummaryMessage = template.resolveMessage(HomeActivity.this, HomeActivity.this.day);
                         }
 
-                        setForecastDataState(ForecastDataState.LOADED);
+                        setForecastDataState(ForecastDataState.ERROR);
                     }
 
                     @Override
@@ -198,7 +213,6 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void setupUI() {
-        // TODO: Enable support email link.
         setContentView(R.layout.activity_main);
 
         frameLoading = findViewById(R.id.frame_loading);
@@ -238,12 +252,15 @@ public class HomeActivity extends FragmentActivity {
         findViewById(R.id.sliding_panel_layout).getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if(!activityDestroyed) {
+                if (!activityDestroyed) {
                     computeSlidingPanelSizes();
-                    //repositionHeartButton();
                 }
             }
         });
+
+        TextView feedback = (TextView) findViewById(R.id.frame_error_support);
+        feedback.setText(Html.fromHtml(getString(R.string.support)));
+        feedback.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     private void setupClothesViewPager() {
@@ -277,7 +294,6 @@ public class HomeActivity extends FragmentActivity {
 
     private void setupWeekForecastList() {
         ListView weekList = (ListView) findViewById(R.id.week_forecast_list_view);
-
         weekList.setAdapter(new DailyForecastAdapter(getLayoutInflater(), MockDailyForecast.getMockList()));
         weekList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -285,6 +301,16 @@ public class HomeActivity extends FragmentActivity {
                 onSlidingPanelClick(null);
             }
         });
+    }
+
+    private void computeSlidingPanelSizes() {
+        slidingPanel.setPanelHeight(slidingPanelToday.getMeasuredHeight());
+        slidingPanel.setAnchorPoint((float) slidingPanelSummary.getMeasuredHeight() / (slidingPanelSummary.getMeasuredHeight() + slidingPanelWeek.getMeasuredHeight()));
+
+        positionHeartPanelCollapsed = - slidingPanelToday.getMeasuredHeight()
+                - getResources().getDimension(R.dimen.default_margin_padding)
+                + getResources().getDimension(R.dimen.floating_button_heart_margin_bottom);
+        positionHeartPanelAnchored = positionHeartPanelCollapsed - slidingPanelSummary.getMeasuredHeight();
     }
 
     private void updateUI() {
@@ -328,42 +354,18 @@ public class HomeActivity extends FragmentActivity {
                         public void run() {
                             hidePanel();
                         }
-                    }, FORECAST_PANEL_EXPANDED_DELAY);
+                    }, PANEL_DEMO_EXPANDED_DURATION);
                     break;
             }
         }
-    }
-
-    private void computeSlidingPanelSizes() {
-        slidingPanel.setPanelHeight(slidingPanelToday.getMeasuredHeight());
-        slidingPanel.setAnchorPoint((float) slidingPanelSummary.getMeasuredHeight() / (slidingPanelSummary.getMeasuredHeight() + slidingPanelWeek.getMeasuredHeight()));
-
-        positionHeartPanelCollapsed = - slidingPanelToday.getMeasuredHeight()
-                - getResources().getDimension(R.dimen.default_margin_padding)
-                + getResources().getDimension(R.dimen.floating_button_heart_margin_bottom);
-        positionHeartPanelAnchored = positionHeartPanelCollapsed - slidingPanelSummary.getMeasuredHeight();
-
-    }
-
-    /**
-     * Reposition the heart on top of the panel. Ideally, it would be R.dimen.default_margin_padding
-     * north of the solid color. But, it's not too bad as it is now aligned with the whole panel
-     * (that has a transparent band on top).
-     */
-    private void repositionHeartButton() {
-        final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) heartButton.getLayoutParams();
-        int newBottomMargin = slidingPanelToday.getMeasuredHeight();
-        layoutParams.setMargins(layoutParams.leftMargin,
-                layoutParams.topMargin,
-                layoutParams.rightMargin,
-                newBottomMargin);
-        heartButton.setLayoutParams(layoutParams);
     }
 
     private void updateHourlyForecastList() {
         hourlyLinear.removeAllViews();
         hourlyTextViews = new ArrayList<TextView>();
         hourlyIcons = new ArrayList<ImageView>();
+
+        String temperatureSymbol = getString(R.string.temperature_symbol);
 
         for(int i=0; i < Math.min(MAX_FORECAST_ITEMS, forecastTable.getHourlyForecastList().size()); i++) {
             Forecast current = forecastTable.getHourlyForecastList().get(i);
@@ -378,7 +380,7 @@ public class HomeActivity extends FragmentActivity {
             hourlyIcons.add(icon);
 
             Picasso.with(this).load(getWeatherIcon(current.getWeatherWrapper().getWeatherType())).into(icon);
-            temp.setText(temperatureFormat.format(current.getWeatherWrapper().getTemperature(localeScale)) + TEMPERATURE_SYMBOL);
+            temp.setText(temperatureFormat.format(current.getWeatherWrapper().getTemperature(localeScale)) + temperatureSymbol);
             hour.setText(UiUtil.getReadableHour(current.getInterval().getStart()));
 
             hourlyLinear.addView(view);
@@ -400,105 +402,6 @@ public class HomeActivity extends FragmentActivity {
             default:
                 // FIXME: No tenemos icono default, aunque en realidad aquí no pueden llegar tipos de tiempo desconocidos porque los elimina ForecastTable.
                 return R.drawable.ic_clear;
-        }
-    }
-
-    private void showPanel() {
-        slidingPanel.showPanel();
-    }
-
-    private void demoPanel() {
-        animateColors(PanelScrollValue.EXPANDED);
-        slidingPanel.expandPanel();
-    }
-
-    private void hidePanel() {
-        panelListener.stopListening();
-
-        if(slidingPanel.isPanelExpanded() || slidingPanel.isPanelAnchored()) {
-            animateColors(PanelScrollValue.COLLAPSED);
-        }
-        slidingPanel.hidePanel();
-    }
-
-    private enum PanelScrollValue {
-        COLLAPSED(0f),
-        EXPANDED(1f);
-
-        private float scrollValue;
-
-        private PanelScrollValue(float scrollValue) {
-            this.scrollValue = scrollValue;
-        }
-
-        public float getScrollValue() {
-            return scrollValue;
-        }
-    }
-
-    private class PanelListener extends SlidingUpPanelLayout.SimplePanelSlideListener {
-
-        private boolean listening = false;
-        private float lastScroll;
-
-        public void startListening(PanelScrollValue panelScrollValue) {
-            this.lastScroll = panelScrollValue.getScrollValue();
-            listening = true;
-        }
-
-        public void stopListening() {
-            listening = false;
-        }
-
-        @Override
-        public void onPanelSlide(View view, float scrollValue) {
-
-            if(listening) {
-                if(scrollValue > PanelScrollValue.COLLAPSED.getScrollValue() && lastScroll == PanelScrollValue.COLLAPSED.getScrollValue()) {
-                    animateColors(PanelScrollValue.EXPANDED);
-                }
-                else if(scrollValue == PanelScrollValue.COLLAPSED.getScrollValue() && lastScroll > PanelScrollValue.COLLAPSED.getScrollValue()) {
-                    animateColors(PanelScrollValue.COLLAPSED);
-                }
-                lastScroll = scrollValue;
-            }
-        }
-
-        @Override
-        public void onPanelCollapsed(View view) {
-            startListening(PanelScrollValue.COLLAPSED);
-            animateHeartButton(positionHeartPanelCollapsed);
-        }
-
-        @Override
-        public void onPanelExpanded(View view) {
-            animateHeartButton(positionHeartPanelExpanded);
-        }
-
-        @Override
-        public void onPanelAnchored(View view) {
-            animateHeartButton(positionHeartPanelAnchored);
-        }
-
-        @Override
-        public void onPanelHidden(View view) {
-            animateHeartButton(positionHeartPanelHidden);
-        }
-    }
-
-    private class ClothesPagerListener implements ViewPager.OnPageChangeListener {
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
-
-        @Override
-        public void onPageSelected(int position) { }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            if(state == ViewPager.SCROLL_STATE_IDLE) {
-                hidePanel();
-            }
         }
     }
 
@@ -576,6 +479,89 @@ public class HomeActivity extends FragmentActivity {
         anim.start();
     }
 
+    private void showPanel() {
+        slidingPanel.showPanel();
+    }
+
+    private void demoPanel() {
+        animateColors(PanelScrollValue.EXPANDED);
+        slidingPanel.expandPanel();
+    }
+
+    private void hidePanel() {
+        panelListener.stopListening();
+
+        if(slidingPanel.isPanelExpanded() || slidingPanel.isPanelAnchored()) {
+            animateColors(PanelScrollValue.COLLAPSED);
+        }
+        slidingPanel.hidePanel();
+    }
+
+    private class PanelListener extends SlidingUpPanelLayout.SimplePanelSlideListener {
+        private boolean listening = false;
+        private float lastScroll;
+
+        public void startListening(PanelScrollValue panelScrollValue) {
+            this.lastScroll = panelScrollValue.getScrollValue();
+            listening = true;
+        }
+
+        public void stopListening() {
+            listening = false;
+        }
+
+        @Override
+        public void onPanelSlide(View view, float scrollValue) {
+
+            if(listening) {
+                if(scrollValue > PanelScrollValue.COLLAPSED.getScrollValue() && lastScroll == PanelScrollValue.COLLAPSED.getScrollValue()) {
+                    animateColors(PanelScrollValue.EXPANDED);
+                }
+                else if(scrollValue == PanelScrollValue.COLLAPSED.getScrollValue() && lastScroll > PanelScrollValue.COLLAPSED.getScrollValue()) {
+                    animateColors(PanelScrollValue.COLLAPSED);
+                }
+                lastScroll = scrollValue;
+            }
+        }
+
+        @Override
+        public void onPanelCollapsed(View view) {
+            startListening(PanelScrollValue.COLLAPSED);
+            animateHeartButton(positionHeartPanelCollapsed);
+        }
+
+        @Override
+        public void onPanelExpanded(View view) {
+            animateHeartButton(positionHeartPanelExpanded);
+        }
+
+        @Override
+        public void onPanelAnchored(View view) {
+            animateHeartButton(positionHeartPanelAnchored);
+        }
+
+        @Override
+        public void onPanelHidden(View view) {
+            animateHeartButton(positionHeartPanelHidden);
+        }
+    }
+
+    private class ClothesPagerListener implements ViewPager.OnPageChangeListener {
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+
+        @Override
+        public void onPageSelected(int position) { }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+            if(state == ViewPager.SCROLL_STATE_IDLE) {
+                hidePanel();
+            }
+        }
+    }
+
     /** Linked from the XML. */
     public void onErrorRetry(View v) {
         setForecastDataState(ForecastDataState.LOADING);
@@ -584,6 +570,11 @@ public class HomeActivity extends FragmentActivity {
     /** Linked from the XML. */
     public void onHeartClick(View v) {
         // Nothing for the moment.
+    }
+
+    /** Linked from the XML. */
+    public void onTemperatureButtonClick(View v) {
+        showPanel();
     }
 
     /** Linked from the XML. */
@@ -604,10 +595,5 @@ public class HomeActivity extends FragmentActivity {
         else {
             slidingPanel.anchorPanel();
         }
-    }
-
-    /** Linked from the XML. */
-    public void onTemperatureButtonClick(View v) {
-        showPanel();
     }
 }
