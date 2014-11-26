@@ -193,7 +193,7 @@ public class HomeActivity extends FragmentActivity {
                             HomeActivity.this.forecastSummaryMessage = template.resolveMessage(HomeActivity.this, HomeActivity.this.day);
                         }
 
-                        setForecastDataState(ForecastDataState.ERROR);
+                        setForecastDataState(ForecastDataState.LOADED);
                     }
 
                     @Override
