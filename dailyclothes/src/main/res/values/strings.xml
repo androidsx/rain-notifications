@@ -3,10 +3,10 @@
     <string name="app_name">Weather UP</string>
 
     <string name="status_frame_loading">Loading</string>
-    <string name="status_frame_error">Wops! Something wrong happen while retrieving weather forecast data. Please check your internet connection and if the problem persist contact us at support+weather@androidsx.com</string>
+    <string name="status_frame_error">Wops! Something wrong happen while retrieving weather forecast data. Please check your internet connection and if the problem persist contact us at weatherup-support@androidsx.com</string>
     <string name="status_frame_retry">Retry</string>
 
-    <string name="default_day_message">Ops! There has been an error. Please check your internet connection and if the problem persists contact us at support+weather@androidsx.com</string>
+    <string name="default_day_message">Ops! There has been an error. Please check your internet connection and if the problem persists contact us at weatherup-support@androidsx.com</string>
     <string name="week_forecast_title">5-DAY FORECAST</string>
     <string name="temperature_symbol">°</string>
 </resources>
