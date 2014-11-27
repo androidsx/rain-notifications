@@ -50,4 +50,5 @@
 
     <!-- Status Frames -->
     <color name="status_frames_text_color">@color/grey_blue</color>
+    <color name="status_frames_button_text_color">@color/white</color>
 </resources>

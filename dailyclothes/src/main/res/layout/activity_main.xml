@@ -34,7 +34,7 @@
                 android:layout_gravity="bottom|right"
                 android:layout_marginBottom="@dimen/floating_button_heart_margin_bottom"
                 android:layout_marginRight="@dimen/default_margin_padding"
-                android:background="@drawable/button_grey_blue"
+                android:background="@drawable/button_rounded_grey_blue"
                 android:onClick="onHeartClick">
 
                 <ImageView
@@ -51,7 +51,7 @@
                 android:layout_gravity="bottom|right"
                 android:layout_marginBottom="@dimen/default_margin_padding"
                 android:layout_marginRight="@dimen/default_margin_padding"
-                android:background="@drawable/button_gold"
+                android:background="@drawable/button_rounded_gold"
                 android:onClick="onTemperatureButtonClick">
 
                 <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
@@ -123,8 +123,9 @@
         android:visibility="invisible">
 
         <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+            android:id="@+id/frame_error_message"
             style="@style/AppTextStyle.medium"
-            android:text="@string/status_frame_error"
+            android:text="@string/status_frame_error_forecast"
             android:textColor="@color/status_frames_text_color"/>
 
         <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
@@ -135,10 +136,14 @@
             android:textColor="@color/status_frames_text_color"/>
 
         <Button
+            android:id="@+id/frame_error_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:background="@drawable/button_gold"
+            android:minWidth="150dp"
             android:onClick="onErrorRetry"
-            android:text="@string/status_frame_retry"/>
+            android:text="@string/status_frame_retry_button"
+            android:textColor="@color/status_frames_button_text_color"/>
     </LinearLayout>
 </FrameLayout>

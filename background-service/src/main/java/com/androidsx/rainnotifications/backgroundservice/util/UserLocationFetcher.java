@@ -20,42 +20,7 @@ import java.util.Locale;
 public class UserLocationFetcher {
 
     public static void getUserLocation(final Context context, final UserLocationResultListener userLocationResultListener) {
-        new UserLocation(context, userLocationResultListener).connect();
-    }
-
-    public static class UserLocation {
-
-        private final LocationClient mLocationClient;
-
-        public UserLocation(final Context context, final UserLocationResultListener userLocationResultListener) {
-            mLocationClient = new LocationClient(context, new GooglePlayServicesClient.ConnectionCallbacks() {
-                @Override
-                public void onConnected(Bundle bundle) {
-                    if (mLocationClient.isConnected()) {
-                        Location loc = mLocationClient.getLastLocation();
-                        if (loc != null) {
-                            userLocationResultListener.onLocationSuccess(loc);
-                        } else {
-                            userLocationResultListener.onLocationFailure(new UserLocationException());
-                        }
-                    }
-                }
-
-                @Override
-                public void onDisconnected() {
-
-                }
-            }, new GooglePlayServicesClient.OnConnectionFailedListener() {
-                @Override
-                public void onConnectionFailed(ConnectionResult connectionResult) {
-
-                }
-            });
-        }
-
-        public void connect() {
-            mLocationClient.connect();
-        }
+        new UserLocation(context, userLocationResultListener);
     }
 
     /**
@@ -84,6 +49,42 @@ public class UserLocationFetcher {
         }
 
         return address;
+    }
+
+    private static class UserLocation implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
+        private final LocationClient locationClient;
+        private final UserLocationResultListener userLocationResultListener;
+
+        public UserLocation(final Context context, final UserLocationResultListener userLocationResultListener) {
+            this.userLocationResultListener = userLocationResultListener;
+            locationClient = new LocationClient(context, this, this);
+            locationClient.connect();
+        }
+
+        @Override
+        public void onConnected(Bundle bundle) {
+            sendLocation(locationClient.getLastLocation());
+            locationClient.disconnect();
+        }
+
+        @Override
+        public void onDisconnected() {
+            sendLocation(null);
+        }
+
+        @Override
+        public void onConnectionFailed(ConnectionResult connectionResult) {
+            sendLocation(null);
+        }
+
+        private void sendLocation(Location location) {
+            if(location != null) {
+                userLocationResultListener.onLocationSuccess(location);
+            }
+            else {
+                userLocationResultListener.onLocationFailure(new UserLocationException());
+            }
+        }
     }
 
     public static interface UserLocationResultListener {
