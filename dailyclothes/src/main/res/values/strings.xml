@@ -4,8 +4,10 @@
     <string name="support"><![CDATA[<a href="mailto:weatherup-support@androidsx.com">Weather UP support</a>]]></string>
 
     <string name="status_frame_loading">Loading</string>
-    <string name="status_frame_error">Wops! Something wrong happen while retrieving weather forecast data. Please check your internet connection and if the problem persist contact us at</string>
-    <string name="status_frame_retry">Retry</string>
+    <string name="status_frame_error_location">Wops! Something wrong happen while retrieving your location. Please check your location settings and if the problem persist contact us at</string>
+    <string name="status_frame_error_forecast">Wops! Something wrong happen while retrieving weather forecast data. Please check your internet connection and if the problem persist contact us at</string>
+    <string name="status_frame_retry_button">Retry</string>
+    <string name="status_frame_settings_button">Location Settings</string>
 
     <string name="default_day_message">Ops! There has been an error. Please check your internet connection and if the problem persists contact us at weatherup-support@androidsx.com</string>
     <string name="week_forecast_title">5-DAY FORECAST</string>
