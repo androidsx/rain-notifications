@@ -4,9 +4,11 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -61,7 +64,7 @@ public class HomeActivity extends FragmentActivity {
     private static final int MAX_FORECAST_ITEMS = 24;
     private static final int COLOR_TRANSITION_DURATION = 100;
 
-    private enum ForecastDataState {LOADING, ERROR, LOADED, DONE};
+    private enum ForecastDataState {LOADING, ERROR_LOCATION, ERROR_FORECAST, LOADED, DONE};
 
     private enum PanelScrollValue {
         COLLAPSED(0f),
@@ -87,6 +90,8 @@ public class HomeActivity extends FragmentActivity {
     private boolean activityDestroyed = false; // Panic mode. It's used for not modify any view.
     private View frameLoading;
     private View frameError;
+    private CustomTextView errorMessage;
+    private Button errorButton;
     private SlidingUpPanelLayout slidingPanel;
     private View slidingPanelToday;
     private View slidingPanelWeek;
@@ -142,7 +147,7 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void checkDataState() {
-        if(dataState == null || dataState.equals(ForecastDataState.ERROR)) {
+        if(dataState == null || dataState.equals(ForecastDataState.ERROR_LOCATION) || dataState.equals(ForecastDataState.ERROR_FORECAST)) {
             setForecastDataState(ForecastDataState.LOADING);
         }
         else if(dataState.equals(ForecastDataState.DONE) && new Duration(forecastTableTime, new DateTime()).isLongerThan(FORECAST_DATA_EXPIRATION_DURATION)) {
@@ -160,14 +165,15 @@ public class HomeActivity extends FragmentActivity {
                 forecastSummaryMessage = null;
                 getForecastData();
                 break;
-            case ERROR:
+            case ERROR_LOCATION:
+                break;
+            case ERROR_FORECAST:
                 break;
             case LOADED:
                 break;
             case DONE:
                 break;
         }
-
         updateUI();
     }
 
@@ -199,7 +205,7 @@ public class HomeActivity extends FragmentActivity {
                     @Override
                     public void onForecastFailure(WeatherClientException exception) {
                         Timber.e(exception, "Failed to get the forecast");
-                        setForecastDataState(ForecastDataState.ERROR);
+                        setForecastDataState(ForecastDataState.ERROR_FORECAST);
                     }
                 });
             }
@@ -207,7 +213,7 @@ public class HomeActivity extends FragmentActivity {
             @Override
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 Timber.e(exception, "Failed to get the location");
-                setForecastDataState(ForecastDataState.ERROR);
+                setForecastDataState(ForecastDataState.ERROR_LOCATION);
             }
         });
     }
@@ -217,6 +223,8 @@ public class HomeActivity extends FragmentActivity {
 
         frameLoading = findViewById(R.id.frame_loading);
         frameError = findViewById(R.id.frame_error);
+        errorMessage = (CustomTextView) findViewById(R.id.frame_error_message);
+        errorButton = (Button) findViewById(R.id.frame_error_button);
         slidingPanel = (SlidingUpPanelLayout) findViewById(R.id.sliding_panel);
         slidingPanelToday = findViewById(R.id.sliding_panel_today);
         slidingPanelWeek = findViewById(R.id.sliding_panel_week);
@@ -321,7 +329,16 @@ public class HomeActivity extends FragmentActivity {
                     frameError.setVisibility(View.INVISIBLE);
                     break;
 
-                case ERROR:
+                case ERROR_LOCATION:
+                    errorMessage.setText(getString(R.string.status_frame_error_location));
+                    errorButton.setText(getString(R.string.status_frame_settings_button));
+                    frameError.setVisibility(View.VISIBLE);
+                    frameLoading.setVisibility(View.INVISIBLE);
+                    break;
+
+                case ERROR_FORECAST:
+                    errorMessage.setText(getString(R.string.status_frame_error_forecast));
+                    errorButton.setText(getString(R.string.status_frame_retry_button));
                     frameError.setVisibility(View.VISIBLE);
                     frameLoading.setVisibility(View.INVISIBLE);
                     break;
@@ -567,7 +584,12 @@ public class HomeActivity extends FragmentActivity {
 
     /** Linked from the XML. */
     public void onErrorRetry(View v) {
-        setForecastDataState(ForecastDataState.LOADING);
+        if(dataState.equals(ForecastDataState.ERROR_LOCATION)) {
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
+        else if(dataState.equals(ForecastDataState.ERROR_FORECAST)) {
+            setForecastDataState(ForecastDataState.LOADING);
+        }
     }
 
     /** Linked from the XML. */
