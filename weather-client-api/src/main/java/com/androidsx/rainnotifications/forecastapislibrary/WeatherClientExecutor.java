@@ -8,12 +8,16 @@ import android.content.Context;
 public interface WeatherClientExecutor {
 
     /**
-     * Executes the request in a background thread.
+     * Executes an hourly request in a background thread.
      *
      * @param responseListener where the results will be returned after the call is performed
      */
-    public void execute(Context context,
-                        double latitude,
-                        double longitude,
-                        WeatherClientResponseListener responseListener);
+    public void executeHourly(Context context, double latitude, double longitude, WeatherClientHourlyResponseListener responseListener);
+
+    /**
+     * Executes a daily request in a background thread.
+     *
+     * @param responseListener where the results will be returned after the call is performed
+     */
+    public void executeDaily(Context context, double latitude, double longitude, WeatherClientDailyResponseListener responseListener);
 }

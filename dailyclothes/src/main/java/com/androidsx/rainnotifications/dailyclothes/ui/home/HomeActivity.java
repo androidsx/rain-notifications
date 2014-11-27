@@ -15,8 +15,10 @@ import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
@@ -28,10 +30,12 @@ import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.dailyclothes.R;
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
-import com.androidsx.rainnotifications.dailyclothes.model.MockDailyForecast;
 import com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientDailyResponseListener;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientHourlyResponseListener;
+import com.androidsx.rainnotifications.model.DailyForecast;
+import com.androidsx.rainnotifications.model.DailyForecastTable;
 import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.DayTemplate;
 import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
@@ -45,6 +49,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Picasso;
 
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeConstants;
 import org.joda.time.Duration;
 
 import java.lang.reflect.Field;
@@ -63,6 +68,7 @@ public class HomeActivity extends FragmentActivity {
     private static final long HEART_BUTTON_ANIMATION_DURATION = 200;
     private static final int MAX_FORECAST_ITEMS = 24;
     private static final int COLOR_TRANSITION_DURATION = 100;
+    private static final int WEEK_FORECAST_DAYS = 5;
 
     private enum ForecastDataState {LOADING, ERROR_LOCATION, ERROR_FORECAST, LOADED, DONE};
 
@@ -86,6 +92,8 @@ public class HomeActivity extends FragmentActivity {
     private ForecastTable forecastTable;
     private Day day;
     private String forecastSummaryMessage;
+    private String city;
+    private DailyForecastTable dailyForecastTable;
 
     private boolean activityDestroyed = false; // Panic mode. It's used for not modify any view.
     private View frameLoading;
@@ -104,6 +112,9 @@ public class HomeActivity extends FragmentActivity {
     private ViewPager clothesPager;
     private LinearLayout hourlyLinear;
     private HorizontalScrollView hourlyScroll;
+
+    private DailyForecastAdapter dailyAdapter;
+    private CustomTextView cityLabel;
 
     private Integer todayCollapsedBackgroundColor;
     private Integer todayCollapsedPrimaryColor;
@@ -180,14 +191,21 @@ public class HomeActivity extends FragmentActivity {
     private void getForecastData() {
         // FIXME: we do exactly the same in the weather service. grr..
         UserLocationFetcher.getUserLocation(this, new UserLocationFetcher.UserLocationResultListener() {
+
+            private boolean hourlyDone = false;
+            private boolean dailyDone = false;
+
             @Override
             public void onLocationSuccess(final Location location) {
-                WeatherClientFactory.requestForecastForLocation(HomeActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
+
+                // FIXME: This happens on UI Thread and skips frames.
+                HomeActivity.this.city = UserLocationFetcher.getLocationAddress(HomeActivity.this, location.getLatitude(), location.getLongitude());
+
+                WeatherClientFactory.requestHourlyForecastForLocation(HomeActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientHourlyResponseListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
 
                         // FIXME: This happens on UI Thread and skips frames.
-
                         HomeActivity.this.forecastTable = forecastTable;
                         HomeActivity.this.forecastTableTime = new DateTime();
                         HomeActivity.this.day = new Day(forecastTable);
@@ -199,12 +217,28 @@ public class HomeActivity extends FragmentActivity {
                             HomeActivity.this.forecastSummaryMessage = template.resolveMessage(HomeActivity.this, HomeActivity.this.day);
                         }
 
-                        setForecastDataState(ForecastDataState.LOADED);
+                        hourlyDone = true;
+                        checkBothRequestDone();
                     }
 
                     @Override
                     public void onForecastFailure(WeatherClientException exception) {
-                        Timber.e(exception, "Failed to get the forecast");
+                        Timber.e(exception, "Failed to get hourly forecast");
+                        setForecastDataState(ForecastDataState.ERROR_FORECAST);
+                    }
+                });
+
+                WeatherClientFactory.requestDailyForecastForLocation(HomeActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientDailyResponseListener() {
+                    @Override
+                    public void onForecastSuccess(DailyForecastTable dailyForecastTable) {
+                        HomeActivity.this.dailyForecastTable = dailyForecastTable;
+                        dailyDone = true;
+                        checkBothRequestDone();
+                    }
+
+                    @Override
+                    public void onForecastFailure(WeatherClientException weatherClientException) {
+                        Timber.e(weatherClientException, "Failed to get daily forecast");
                         setForecastDataState(ForecastDataState.ERROR_FORECAST);
                     }
                 });
@@ -214,6 +248,12 @@ public class HomeActivity extends FragmentActivity {
             public void onLocationFailure(UserLocationFetcher.UserLocationException exception) {
                 Timber.e(exception, "Failed to get the location");
                 setForecastDataState(ForecastDataState.ERROR_LOCATION);
+            }
+
+            private void checkBothRequestDone() {
+                if(hourlyDone && dailyDone) {
+                    setForecastDataState(ForecastDataState.LOADED);
+                }
             }
         });
     }
@@ -237,6 +277,7 @@ public class HomeActivity extends FragmentActivity {
         heartButton = findViewById(R.id.heart_button);
         hourlyLinear = (LinearLayout) findViewById(R.id.hourly_forecast);
         hourlyScroll = (HorizontalScrollView) findViewById(R.id.hourly_scroll);
+        cityLabel = (CustomTextView) findViewById(R.id.week_forecast_city);
 
         todayDivider = findViewById(R.id.today_forecast_divider);
         todayMinTemperatureIcon = (ImageView) findViewById(R.id.today_min_temp_icon);
@@ -302,7 +343,8 @@ public class HomeActivity extends FragmentActivity {
 
     private void setupWeekForecastList() {
         ListView weekList = (ListView) findViewById(R.id.week_forecast_list_view);
-        weekList.setAdapter(new DailyForecastAdapter(getLayoutInflater(), MockDailyForecast.getMockList()));
+        dailyAdapter = new DailyForecastAdapter(getLayoutInflater(), null);
+        weekList.setAdapter(dailyAdapter);
         weekList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -351,6 +393,7 @@ public class HomeActivity extends FragmentActivity {
                     maxTemperature.setText(temperatureFormat.format(day.getMaxTemperature().getWeatherWrapper().getTemperature(localeScale)));
                     slidingPanelSummary.setText(forecastSummaryMessage);
                     updateHourlyForecastList();
+                    updateDailyForecastList();
                     demoPanel();
 
                     slidingPanel.postDelayed(new Runnable() {
@@ -402,6 +445,11 @@ public class HomeActivity extends FragmentActivity {
 
             hourlyLinear.addView(view);
         }
+    }
+
+    private void updateDailyForecastList() {
+        cityLabel.setText(city.toUpperCase());
+        dailyAdapter.updateForecast(dailyForecastTable.getDailyForecastList());
     }
 
     private int getWeatherIcon(WeatherType type) {
@@ -579,6 +627,90 @@ public class HomeActivity extends FragmentActivity {
             if(state == ViewPager.SCROLL_STATE_IDLE) {
                 hidePanel();
             }
+        }
+    }
+
+    private class DailyForecastAdapter extends BaseAdapter {
+        private List<DailyForecast> dailyForecasts;
+        private LayoutInflater inflater;
+
+        public DailyForecastAdapter(LayoutInflater inflater, List<DailyForecast> dailyForecasts) {
+            this.inflater = inflater;
+            this.dailyForecasts = dailyForecasts;
+        }
+
+        public void updateForecast(List<DailyForecast> dailyForecasts) {
+            this.dailyForecasts = dailyForecasts;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return dailyForecasts != null ? Math.min(WEEK_FORECAST_DAYS, dailyForecasts.size() - 1) : 0; // First is today
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return dailyForecasts.get(position + 1); // First is today
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = inflater.inflate(R.layout.item_daily_forecast, null);
+                convertView.setTag(new DailyForecastHolder(convertView));
+            }
+
+            ((DailyForecastHolder) convertView.getTag()).update(dailyForecasts.get(position + 1)); // First is today
+
+            return convertView;
+        }
+
+        private class DailyForecastHolder {
+            private ImageView icon;
+            private TextView day;
+            private TextView minTemperature;
+            private TextView maxTemperature;
+
+            public DailyForecastHolder(View v) {
+                icon = (ImageView) v.findViewById(R.id.daily_forecast_icon);
+                day = (TextView) v.findViewById(R.id.daily_forecast_day);
+                minTemperature = (TextView) v.findViewById(R.id.daily_forecast_min_temperature);
+                maxTemperature = (TextView) v.findViewById(R.id.daily_forecast_max_temperature);
+            }
+
+            public void update(DailyForecast dailyForecast) {
+                icon.setImageResource(getWeatherIcon(dailyForecast.getWeatherWrapper().getWeatherType()));
+                day.setText(getDayOfWeek(dailyForecast.getDay()));
+                minTemperature.setText(temperatureFormat.format(dailyForecast.getWeatherWrapper().getMinTemperature(localeScale)));
+                maxTemperature.setText(temperatureFormat.format(dailyForecast.getWeatherWrapper().getMaxTemperature(localeScale)));
+            }
+        }
+    }
+
+    private String getDayOfWeek(DateTime day) {
+        switch (day.getDayOfWeek()) {
+            case DateTimeConstants.MONDAY:
+                return getString(R.string.day_monday);
+            case DateTimeConstants.TUESDAY:
+                return getString(R.string.day_tuesday);
+            case DateTimeConstants.WEDNESDAY:
+                return getString(R.string.day_wednesday);
+            case DateTimeConstants.THURSDAY:
+                return getString(R.string.day_thursday);
+            case DateTimeConstants.FRIDAY:
+                return getString(R.string.day_friday);
+            case DateTimeConstants.SATURDAY:
+                return getString(R.string.day_saturday);
+            case DateTimeConstants.SUNDAY:
+                return getString(R.string.day_sunday);
+            default:
+                return ""; // Impossible
         }
     }
 
