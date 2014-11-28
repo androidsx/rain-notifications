@@ -97,6 +97,7 @@ public class HomeActivity extends FragmentActivity {
     private String forecastSummaryMessage;
     private String city;
     private DailyForecastTable dailyForecastTable;
+    private List<Clothes> clothesList;
 
     private boolean activityDestroyed = false; // Panic mode. It's used for not modify any view.
     private View frameLoading;
@@ -116,6 +117,7 @@ public class HomeActivity extends FragmentActivity {
     private LinearLayout hourlyLinear;
     private HorizontalScrollView hourlyScroll;
 
+    private ClothesPagerAdapter clothesAdapter;
     private DailyForecastAdapter dailyAdapter;
     private CustomTextView cityLabel;
 
@@ -220,8 +222,21 @@ public class HomeActivity extends FragmentActivity {
                             HomeActivity.this.forecastSummaryMessage = template.resolveMessage(HomeActivity.this, HomeActivity.this.day);
                         }
 
-                        hourlyDone = true;
-                        checkBothRequestDone();
+                        ClothesLoaderFactory.getClothes(day, new ClothesLoaderListener() {
+                            @Override
+                            public void onClothesLoaderSuccess(List<Clothes> clothesList) {
+                                HomeActivity.this.clothesList = clothesList;
+                                hourlyDone = true;
+                                checkBothRequestDone();
+
+                            }
+
+                            @Override
+                            public void onClothesLoaderFailure(ClothesLoaderException exception) {
+                                Timber.e(exception, "Failed to get clothes");
+                                setForecastDataState(ForecastDataState.ERROR_FORECAST);
+                            }
+                        });
                     }
 
                     @Override
@@ -316,20 +331,10 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void setupClothesViewPager() {
+        clothesAdapter = new ClothesPagerAdapter(getSupportFragmentManager(), clothesList);
         clothesPager = (ViewPager) findViewById(R.id.clothes_view_pager);
-
-        ClothesLoaderFactory.getClothes(null, new ClothesLoaderListener() {
-            @Override
-            public void onClothesLoaderSuccess(List<Clothes> clothesList) {
-                clothesPager.setAdapter(new ClothesPagerAdapter(getSupportFragmentManager(), clothesList));
-                clothesPager.setOnPageChangeListener(new ClothesPagerListener());
-            }
-
-            @Override
-            public void onClothesLoaderFailure(ClothesLoaderException exception) {
-
-            }
-        });
+        clothesPager.setAdapter(clothesAdapter);
+        clothesPager.setOnPageChangeListener(new ClothesPagerListener());
     }
 
     private void setupWeekForecastList() {
@@ -385,6 +390,7 @@ public class HomeActivity extends FragmentActivity {
                     slidingPanelSummary.setText(forecastSummaryMessage);
                     updateHourlyForecastList();
                     updateDailyForecastList();
+                    updateClothesViewPager();
 
                     slidingPanel.postDelayed(new Runnable() {
                         @Override
@@ -415,6 +421,10 @@ public class HomeActivity extends FragmentActivity {
                     break;
             }
         }
+    }
+
+    private void updateClothesViewPager() {
+        clothesAdapter.updateClothesList(clothesList);
     }
 
     private void updateHourlyForecastList() {

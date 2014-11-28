@@ -23,6 +23,11 @@ public class ClothesPagerAdapter extends FragmentStatePagerAdapter {
         this.clothesList = clothesList;
     }
 
+    public void updateClothesList(List<Clothes> clothesList) {
+        this.clothesList = clothesList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public Fragment getItem(int position) {
         return ClothesFragment.newInstance(clothesList.get(position));
@@ -30,7 +35,7 @@ public class ClothesPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return clothesList.size();
+        return clothesList != null ? clothesList.size() : 0;
     }
 
     public static class ClothesFragment extends Fragment {

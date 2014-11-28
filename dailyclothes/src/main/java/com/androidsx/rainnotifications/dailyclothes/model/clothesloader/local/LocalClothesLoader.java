@@ -1,5 +1,7 @@
 package com.androidsx.rainnotifications.dailyclothes.model.clothesloader.local;
 
+import android.os.Handler;
+
 import com.androidsx.rainnotifications.dailyclothes.R;
 import com.androidsx.rainnotifications.dailyclothes.model.Clothes;
 import com.androidsx.rainnotifications.dailyclothes.model.clothesloader.ClothesLoader;
@@ -9,12 +11,14 @@ import com.androidsx.rainnotifications.model.Day;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LocalClothesLoader implements ClothesLoader{
+public class LocalClothesLoader implements ClothesLoader {
+
+    private static final int SIMULATE_ASYNC_TASK_DELAY = 200;
 
     @Override
-    public void loadClothes(Day day, ClothesLoaderListener listener) {
+    public void loadClothes(Day day, final ClothesLoaderListener listener) {
 
-        List<Clothes> clothesList = new ArrayList<Clothes>();
+        final List<Clothes> clothesList = new ArrayList<Clothes>();
 
         clothesList.add(new LocalClothes(R.drawable.lucky_3));
         clothesList.add(new LocalClothes(R.drawable.lucky_1));
@@ -39,7 +43,12 @@ public class LocalClothesLoader implements ClothesLoader{
         clothesList.add(new LocalClothes(R.drawable.blogger_10));
         */
 
-        //TODO: Esto en asincorono
-        listener.onClothesLoaderSuccess(clothesList);
+        // This is to simulate an asynchronous task
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                listener.onClothesLoaderSuccess(clothesList);
+            }
+        }, SIMULATE_ASYNC_TASK_DELAY);
     }
 }
