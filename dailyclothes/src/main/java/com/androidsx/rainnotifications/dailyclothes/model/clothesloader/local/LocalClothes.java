@@ -20,19 +20,19 @@ public class LocalClothes extends Clothes{
         }
     };
 
-    private final int photo;
+    private final String imagePath;
 
-    public LocalClothes(int photo) {
-        this.photo = photo;
+    public LocalClothes(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     private LocalClothes(Parcel in) {
-        photo = in.readInt();
+        imagePath = in.readString();
     }
 
     @Override
     public void loadOnImageView(Context context, ImageView imageView) {
-        Picasso.with(context).load(photo).into(imageView);
+        Picasso.with(context).load(imagePath).into(imageView);
     }
 
     @Override
@@ -42,8 +42,6 @@ public class LocalClothes extends Clothes{
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(photo);
+        out.writeString(imagePath);
     }
-
-
 }

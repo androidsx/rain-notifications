@@ -1,7 +1,9 @@
 package com.androidsx.rainnotifications.dailyclothes.model.clothesloader;
 
-import com.androidsx.rainnotifications.model.Day;
+import android.content.Context;
+
+import com.androidsx.rainnotifications.model.DailyWeatherWrapper;
 
 public interface ClothesLoader {
-    public void loadClothes(Day day, ClothesLoaderListener listener);
+    public void loadClothes(Context context, DailyWeatherWrapper dailyWeather, ClothesLoaderListener listener);
 }

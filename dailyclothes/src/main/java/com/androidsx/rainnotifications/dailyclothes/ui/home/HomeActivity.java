@@ -222,21 +222,8 @@ public class HomeActivity extends FragmentActivity {
                             HomeActivity.this.forecastSummaryMessage = template.resolveMessage(HomeActivity.this, HomeActivity.this.day);
                         }
 
-                        ClothesLoaderFactory.getClothes(day, new ClothesLoaderListener() {
-                            @Override
-                            public void onClothesLoaderSuccess(List<Clothes> clothesList) {
-                                HomeActivity.this.clothesList = clothesList;
-                                hourlyDone = true;
-                                checkBothRequestDone();
-
-                            }
-
-                            @Override
-                            public void onClothesLoaderFailure(ClothesLoaderException exception) {
-                                Timber.e(exception, "Failed to get clothes");
-                                setForecastDataState(ForecastDataState.ERROR_FORECAST);
-                            }
-                        });
+                        hourlyDone = true;
+                        checkBothRequestDone();
                     }
 
                     @Override
@@ -250,8 +237,21 @@ public class HomeActivity extends FragmentActivity {
                     @Override
                     public void onForecastSuccess(DailyForecastTable dailyForecastTable) {
                         HomeActivity.this.dailyForecastTable = dailyForecastTable;
-                        dailyDone = true;
-                        checkBothRequestDone();
+
+                        ClothesLoaderFactory.getClothes(HomeActivity.this, dailyForecastTable.getDailyForecastList().get(0).getWeatherWrapper(), new ClothesLoaderListener() {
+                            @Override
+                            public void onClothesLoaderSuccess(List<Clothes> clothesList) {
+                                HomeActivity.this.clothesList = clothesList;
+                                dailyDone = true;
+                                checkBothRequestDone();
+                            }
+
+                            @Override
+                            public void onClothesLoaderFailure(ClothesLoaderException exception) {
+                                Timber.e(exception, "Failed to get clothes");
+                                setForecastDataState(ForecastDataState.ERROR_FORECAST);
+                            }
+                        });
                     }
 
                     @Override
