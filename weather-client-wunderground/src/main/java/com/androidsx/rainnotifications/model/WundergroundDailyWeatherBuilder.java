@@ -8,7 +8,7 @@ import org.json.JSONObject;
  * <p/>
  * Should not be used from outside of this project.
  */
-public class WundergroundDayWeatherBuilder {
+public class WundergroundDailyWeatherBuilder {
     public static DailyWeatherWrapper buildFromWunderground(JSONObject weather) throws JSONException {
         return new DailyWeatherWrapper(retrieveWeatherType(weather), retrieveMinCelsiusTemperature(weather), retrieveMaxCelsiusTemperature(weather), WeatherWrapper.TemperatureScale.CELSIUS);
     }

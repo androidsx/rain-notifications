@@ -36,7 +36,7 @@ public class WundergroundDailyTableBuilder {
     private static List<DailyForecast> getForecastListFromDaily(JSONArray daily) throws JSONException {
         List<DailyForecast> forecasts = new ArrayList<DailyForecast>();
         for (int i = 0 ; i < daily.length() - 1 ; i++) {
-            forecasts.add(new DailyForecast(getDay(daily.getJSONObject(i)), WundergroundDayWeatherBuilder.buildFromWunderground(daily.getJSONObject(i))));
+            forecasts.add(new DailyForecast(getDay(daily.getJSONObject(i)), WundergroundDailyWeatherBuilder.buildFromWunderground(daily.getJSONObject(i))));
         }
         return forecasts;
     }
