@@ -394,7 +394,13 @@ public class HomeActivity extends FragmentActivity {
                     slidingPanelSummary.setText(forecastSummaryMessage);
                     updateHourlyForecastList();
                     updateDailyForecastList();
-                    demoPanel();
+
+                    slidingPanel.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            demoPanel();
+                        }
+                    }, FORECAST_DATA_DONE_DELAY/2);
 
                     slidingPanel.postDelayed(new Runnable() {
                         @Override
@@ -553,7 +559,7 @@ public class HomeActivity extends FragmentActivity {
 
     private void demoPanel() {
         animateColors(PanelScrollValue.EXPANDED);
-        slidingPanel.expandPanel();
+        slidingPanel.expandPanel(PanelScrollValue.EXPANDED.getScrollValue());
     }
 
     private void hidePanel() {
