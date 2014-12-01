@@ -120,6 +120,7 @@ public class HomeActivity extends FragmentActivity {
     private ClothesPagerAdapter clothesAdapter;
     private DailyForecastAdapter dailyAdapter;
     private CustomTextView cityLabel;
+    private CustomTextView weekTitleDivider;
 
     private Integer todayCollapsedBackgroundColor;
     private Integer todayCollapsedPrimaryColor;
@@ -296,6 +297,7 @@ public class HomeActivity extends FragmentActivity {
         hourlyLinear = (LinearLayout) findViewById(R.id.hourly_forecast);
         hourlyScroll = (HorizontalScrollView) findViewById(R.id.hourly_scroll);
         cityLabel = (CustomTextView) findViewById(R.id.week_forecast_city);
+        weekTitleDivider = (CustomTextView) findViewById(R.id.week_forecast_title_divider);
 
         todayDivider = findViewById(R.id.today_forecast_divider);
         todayMinTemperatureIcon = (ImageView) findViewById(R.id.today_min_temp_icon);
@@ -455,7 +457,16 @@ public class HomeActivity extends FragmentActivity {
     }
 
     private void updateDailyForecastList() {
-        cityLabel.setText(city.toUpperCase());
+        if(city != null) {
+            cityLabel.setText(city.toUpperCase());
+            cityLabel.setVisibility(View.VISIBLE);
+            weekTitleDivider.setVisibility(View.VISIBLE);
+        }
+        else {
+            cityLabel.setVisibility(View.GONE);
+            weekTitleDivider.setVisibility(View.GONE);
+        }
+
         dailyAdapter.updateForecast(dailyForecastTable.getDailyForecastList());
     }
 
