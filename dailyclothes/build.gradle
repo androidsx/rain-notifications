@@ -22,7 +22,7 @@ android {
     }
     buildTypes {
         debug {
-            runProguard false
+            minifyEnabled false
         }
         /**
          * To generate a signed APK, just execute {@code ./gradlew clean assembleRelease} as usual,
