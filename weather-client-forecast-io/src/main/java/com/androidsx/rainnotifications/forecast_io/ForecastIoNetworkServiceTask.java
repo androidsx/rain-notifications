@@ -3,9 +3,10 @@ package com.androidsx.rainnotifications.forecast_io;
 import android.content.Context;
 import android.util.Log;
 
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientDailyResponseListener;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientExecutor;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientHourlyResponseListener;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.model.ForecastTableBuilder;
 import com.forecast.io.network.responses.INetworkResponse;
@@ -21,12 +22,17 @@ import com.forecast.io.v2.network.services.ForecastService;
  */
 public final class ForecastIoNetworkServiceTask extends NetworkServiceTask implements WeatherClientExecutor {
     private static final String TAG = ForecastIoNetworkServiceTask.class.getSimpleName();
-    private WeatherClientResponseListener responseListener;
+    private WeatherClientHourlyResponseListener responseListener;
 
     @Override
-    public void execute(Context context, double latitude, double longitude, WeatherClientResponseListener responseListener) {
+    public void executeHourly(Context context, double latitude, double longitude, WeatherClientHourlyResponseListener responseListener) {
         this.responseListener = responseListener;
         this.execute(new ForecastIoRequest(latitude, longitude).getRequest());
+    }
+
+    @Override
+    public void executeDaily(Context context, double latitude, double longitude, WeatherClientDailyResponseListener responseListener) {
+        throw new IllegalArgumentException("Unimplemented method for Forecast.io client");
     }
 
     @Override
