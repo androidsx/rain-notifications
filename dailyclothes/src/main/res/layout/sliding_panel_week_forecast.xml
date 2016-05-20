@@ -27,6 +27,7 @@
                 android:textColor="@color/week_light"/>
 
             <com.androidsx.rainnotifications.dailyclothes.ui.widget.customfont.CustomTextView
+                android:id="@+id/week_forecast_title_divider"
                 style="@style/AppTextStyle"
                 android:text=" // "
                 android:textColor="@color/week_dark"/>

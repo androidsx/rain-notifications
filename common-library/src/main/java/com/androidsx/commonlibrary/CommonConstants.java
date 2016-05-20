@@ -5,7 +5,7 @@ public class CommonConstants {
     /**
      * Current application environment. It is essential to switch this to {@link Env#LIVE} for the Live APKs.
      */
-    public static final Env ENV = Env.DEV;
+    public static final Env ENV = Env.BETA;
 
     /**
      * Definition of the different runtime environments.

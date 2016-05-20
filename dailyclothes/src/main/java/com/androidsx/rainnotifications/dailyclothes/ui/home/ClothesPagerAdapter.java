@@ -23,25 +23,30 @@ public class ClothesPagerAdapter extends FragmentStatePagerAdapter {
         this.clothesList = clothesList;
     }
 
+    public void updateClothesList(List<Clothes> clothesList) {
+        this.clothesList = clothesList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public Fragment getItem(int position) {
-        return ClothesFragment.newInstance(clothesList.get(position).getPhoto());
+        return ClothesFragment.newInstance(clothesList.get(position));
     }
 
     @Override
     public int getCount() {
-        return clothesList.size();
+        return clothesList != null ? clothesList.size() : 0;
     }
 
     public static class ClothesFragment extends Fragment {
 
-        private static final String ARG_IMAGE_RESOURCE = "ImageFragment:imageResource";
-        private int imageResource;
+        private static final String ARG_CLOTHES = "ImageFragment:clothes";
+        private Clothes clothes;
 
-        public static ClothesFragment newInstance(int imageResource) {
+        public static ClothesFragment newInstance(Clothes clothes) {
             ClothesFragment fragment = new ClothesFragment();
             Bundle args = new Bundle();
-            args.putInt(ARG_IMAGE_RESOURCE, imageResource);
+            args.putParcelable(ARG_CLOTHES, clothes);
             fragment.setArguments(args);
             return fragment;
         }
@@ -49,15 +54,13 @@ public class ClothesPagerAdapter extends FragmentStatePagerAdapter {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            imageResource = getArguments().getInt(ARG_IMAGE_RESOURCE);
+            clothes = getArguments().getParcelable(ARG_CLOTHES);
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_clothes, container, false);
-
-            ((ImageView) rootView.findViewById(R.id.image_view)).setImageResource(imageResource); //TODO: Hacer con Picasso
-
+            clothes.loadOnImageView(getActivity(), (ImageView) rootView.findViewById(R.id.image_view));
             return rootView;
         }
     }

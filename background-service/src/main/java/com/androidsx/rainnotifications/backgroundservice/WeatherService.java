@@ -14,7 +14,7 @@ import com.androidsx.rainnotifications.backgroundservice.util.AlarmHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.NotificationHelper;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientHourlyResponseListener;
 import com.androidsx.rainnotifications.model.Alert;
 import com.androidsx.rainnotifications.model.Day;
 import com.androidsx.rainnotifications.model.DayTemplate;
@@ -59,7 +59,7 @@ public class WeatherService extends Service {
         UserLocationFetcher.getUserLocation(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(Location location) {
-                WeatherClientFactory.requestForecastForLocation(getApplicationContext(), location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
+                WeatherClientFactory.requestHourlyForecastForLocation(getApplicationContext(), location.getLatitude(), location.getLongitude(), new WeatherClientHourlyResponseListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
                         if (intent != null && intent.getIntExtra(Constants.Extras.EXTRA_DAY_ALARM, 0) == Constants.Alarms.DAY_ALARM_ID) {

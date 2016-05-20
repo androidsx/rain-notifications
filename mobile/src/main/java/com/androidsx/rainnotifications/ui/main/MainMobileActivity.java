@@ -18,10 +18,10 @@ import com.androidsx.rainnotifications.Constants;
 import com.androidsx.rainnotifications.R;
 import com.androidsx.rainnotifications.alert.AlertGenerator;
 import com.androidsx.rainnotifications.alert.DayTemplateGenerator;
+import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientHourlyResponseListener;
 import com.androidsx.rainnotifications.model.DayTemplateLoaderFactory;
 import com.androidsx.rainnotifications.backgroundservice.util.UserLocationFetcher;
 import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientException;
-import com.androidsx.rainnotifications.forecastapislibrary.WeatherClientResponseListener;
 import com.androidsx.rainnotifications.model.ForecastTable;
 import com.androidsx.rainnotifications.ui.debug.DebugActivity;
 import com.androidsx.rainnotifications.ui.welcome.BaseWelcomeActivity;
@@ -66,7 +66,7 @@ public class MainMobileActivity extends BaseWelcomeActivity {
         UserLocationFetcher.getUserLocation(this, new UserLocationFetcher.UserLocationResultListener() {
             @Override
             public void onLocationSuccess(final Location location) {
-                WeatherClientFactory.requestForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientResponseListener() {
+                WeatherClientFactory.requestHourlyForecastForLocation(MainMobileActivity.this, location.getLatitude(), location.getLongitude(), new WeatherClientHourlyResponseListener() {
                     @Override
                     public void onForecastSuccess(ForecastTable forecastTable) {
                         final String locationAddress = UserLocationFetcher.getLocationAddress(

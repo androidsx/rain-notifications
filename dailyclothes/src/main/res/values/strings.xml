@@ -12,4 +12,12 @@
     <string name="default_day_message">Ops! There has been an error. Please check your internet connection and if the problem persists contact us at weatherup-support@androidsx.com</string>
     <string name="week_forecast_title">5-DAY FORECAST</string>
     <string name="temperature_symbol">°</string>
+
+    <string name="day_monday">MONDAY</string>
+    <string name="day_tuesday">TUESDAY</string>
+    <string name="day_wednesday">WEDNESDAY</string>
+    <string name="day_thursday">THURSDAY</string>
+    <string name="day_friday">FRIDAY</string>
+    <string name="day_saturday">SATURDAY</string>
+    <string name="day_sunday">SUNDAY</string>
 </resources>

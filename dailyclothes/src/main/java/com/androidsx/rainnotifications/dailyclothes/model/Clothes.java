@@ -1,13 +1,9 @@
 package com.androidsx.rainnotifications.dailyclothes.model;
 
-public class Clothes {
-    private final int photo;
+import android.content.Context;
+import android.os.Parcelable;
+import android.widget.ImageView;
 
-    public Clothes (int photo) {
-        this.photo = photo;
-    }
-
-    public int getPhoto() {
-        return photo;
-    }
+public abstract class Clothes implements Parcelable{
+    public abstract void loadOnImageView(Context context, ImageView imageView);
 }
